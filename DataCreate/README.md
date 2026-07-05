@@ -18,7 +18,9 @@ pip install -e .
 | Tool | Purpose | Windows example path |
 |------|---------|---------------------|
 | **MuseScore 4.2+** | Reference audio synthesis (Stage 3) | `C:/Program Files/MuseScore 4/bin/MuseScore4.exe` |
-| **Audiveris** | PDF → MusicXML OMR (Stage 2) | `C:/Program Files/Audiveris/Audiveris.bat` |
+| **Audiveris** | PDF → MusicXML OMR (Stage 2) | `C:/Program Files/Audiveris/Audiveris.exe` |
+
+Windows installs use the jpackage layout (`Audiveris.exe`, `app/audiveris.jar`, `runtime/`). Set either `paths.audiveris` to the `.exe` or `paths.audiveris_home` to the install folder.
 
 Set `paths.musescore`, `paths.audiveris`, and optionally `paths.soundfont` in `config/default.yaml`.
 

@@ -17,7 +17,7 @@ def process_pdf(
 ) -> Path:
     omr_dir = sample_dir / "omr"
     draft = run_omr(config, pdf_path, omr_dir, logger)
-    open_for_manual_correction(draft, config)
+    open_for_manual_correction(draft, config, logger)
     if verified_path and verified_path.exists():
         logger.info("Using provided verified score: %s", verified_path)
         return validate_score(verified_path, logger)

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from datacreate.audio_utils import load_audio
 import librosa
 import numpy as np
 from librosa.sequence import dtw
@@ -37,15 +38,14 @@ def run_alignment(
     logger: logging.Logger,
 ) -> AlignmentResult:
     sr = config.sample_rate()
-    perf, _ = librosa.load(performance_wav, sr=sr, mono=True)
-    ref, _ = librosa.load(reference_wav, sr=sr, mono=True)
+    perf, _ = load_audio(performance_wav, sr, mono=True)
+    ref, _ = load_audio(reference_wav, sr, mono=True)
 
     perf_feat = extract_features(perf, sr, config)
     ref_feat = extract_features(ref, sr, config)
 
     band_ratio = float(config.alignment.get("dtw_band_ratio", 0.1))
-    max_w = max(1, int(band_ratio * max(perf_feat.shape[1], ref_feat.shape[1])))
-    wp, cost = _run_dtw(ref_feat, perf_feat, max_w, config, logger)
+    cost_matrix, wp = _run_dtw(ref_feat, perf_feat, band_ratio, config, logger)
 
     hop = int(config.mel.get("hop_length", 512))
     frame_to_sec = hop / sr
@@ -58,7 +58,7 @@ def run_alignment(
         ref_features=ref_feat,
         perf_features=perf_feat,
         warping_path=wp,
-        dtw_cost=cost,
+        dtw_cost=cost_matrix,
         frame_residuals=residuals,
         hop_length=hop,
         sample_rate=sr,
@@ -70,26 +70,26 @@ def run_alignment(
 def _run_dtw(
     ref_feat: np.ndarray,
     perf_feat: np.ndarray,
-    max_w: int,
+    band_ratio: float,
     config: PipelineConfig,
     logger: logging.Logger,
-) -> tuple[np.ndarray, float]:
+) -> tuple[np.ndarray, np.ndarray]:
     if config.alignment.get("jump_dtw", True):
-        logger.info("Running bounded DTW (jump-tolerant band=%d frames)", max_w)
-    wp, cost = dtw(
+        logger.info("Running bounded DTW (band_rad=%.3f)", band_ratio)
+    cost_matrix, wp = dtw(
         X=ref_feat,
         Y=perf_feat,
         metric="cosine",
         subseq=False,
-        band=max_w,
+        band_rad=band_ratio,
     )
-    return wp, float(cost)
+    return cost_matrix, wp
 
 
 def _frame_residuals(ref_feat: np.ndarray, perf_feat: np.ndarray, wp: np.ndarray) -> np.ndarray:
     residuals = []
-    for ref_i, perf_i in wp.T:
-        diff = ref_feat[:, ref_i] - perf_feat[:, perf_i]
+    for ref_i, perf_i in wp:
+        diff = ref_feat[:, int(ref_i)] - perf_feat[:, int(perf_i)]
         residuals.append(float(np.linalg.norm(diff)))
     return np.asarray(residuals, dtype=np.float32)
 
@@ -112,14 +112,14 @@ def _detect_candidates(
 
     matched_ref = set()
     matched_perf = set()
-    for k in range(wp.shape[1]):
-        ref_i, perf_i = int(wp[0, k]), int(wp[1, k])
+    for k in range(wp.shape[0]):
+        ref_i, perf_i = int(wp[k, 0]), int(wp[k, 1])
         matched_ref.add(ref_i)
         matched_perf.add(perf_i)
 
         if k == 0:
             continue
-        prev_ref, prev_perf = int(wp[0, k - 1]), int(wp[1, k - 1])
+        prev_ref, prev_perf = int(wp[k - 1, 0]), int(wp[k - 1, 1])
         delta_ref = ref_i - prev_ref
         delta_perf = perf_i - prev_perf
         if delta_ref <= 0:

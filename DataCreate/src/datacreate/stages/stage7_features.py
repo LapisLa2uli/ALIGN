@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+from datacreate.audio_utils import load_audio
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,7 +29,7 @@ def extract_mels(
 
     outputs: dict[str, Path] = {}
     for name, wav in [("performance", performance_wav), ("reference", reference_wav)]:
-        audio, _ = librosa.load(wav, sr=sr, mono=True)
+        audio, _ = load_audio(wav, sr, mono=True)
         mel = librosa.feature.melspectrogram(
             y=audio,
             sr=sr,

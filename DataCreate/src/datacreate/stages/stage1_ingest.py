@@ -42,5 +42,7 @@ def _validate_mxl(score_path: Path, logger: logging.Logger) -> Path:
 
 def copy_verified_score(source: Path, dest: Path) -> Path:
     dest.parent.mkdir(parents=True, exist_ok=True)
+    if source.resolve() == dest.resolve():
+        return dest
     shutil.copy2(source, dest)
     return dest
