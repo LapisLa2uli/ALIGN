@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MusicEval Annotator</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script>
+  <script src="https://unpkg.com/opensheetmusicdisplay@1.8.9/build/opensheetmusicdisplay.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>MusicEval Annotation</h1>
+    <div class="controls">
+      <label>Sample
+        <select id="sampleSelect"></select>
+      </label>
+      <label>Annotator ID <input id="annotatorId" type="text" placeholder="annotator_01" /></label>
+      <button id="saveBtn">Save labels</button>
+    </div>
+  </header>
+
+  <section id="scorePanel">
+    <div id="osmdContainer"></div>
+  </section>
+
+  <section id="timelinePanel">
+    <div class="transport">
+      <button id="playBtn">Play/Pause</button>
+      <button id="loopBtn">Loop selection</button>
+      <label>Speed
+        <select id="speedSelect">
+          <option value="0.5">0.5x</option>
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+        </select>
+      </label>
+      <span id="timeDisplay">00:00.000</span>
+    </div>
+    <div id="waveform"></div>
+    <div id="candidateTrack" class="track-label">Candidates (dashed)</div>
+    <div id="labelTrack" class="track-label">Confirmed labels</div>
+  </section>
+
+  <aside id="inspector">
+    <h2>Selected region</h2>
+    <p id="selectionInfo">Click-drag on waveform to select a range.</p>
+    <label>Type
+      <select id="labelType"></select>
+    </label>
+    <label>Severity (1-5)
+      <input id="severity" type="range" min="1" max="5" value="3" />
+    </label>
+    <label>Comment <textarea id="comment" rows="3"></textarea></label>
+    <div class="actions">
+      <button id="applyLabelBtn">Apply label</button>
+      <button id="confirmCandidateBtn">Confirm candidate</button>
+      <button id="rejectCandidateBtn">Reject (stylistic)</button>
+      <button id="deleteRegionBtn">Delete region</button>
+    </div>
+    <h3>Hotkeys</h3>
+    <ul class="hotkeys">
+      <li>1-7: assign label type</li>
+      <li>Space: play/pause</li>
+      <li>←/→: nudge selection edge</li>
+    </ul>
+  </aside>
+
+  <script src="/static/annotate.js"></script>
+</body>
+</html>

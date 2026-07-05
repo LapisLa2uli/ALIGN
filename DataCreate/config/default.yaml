@@ -1,0 +1,53 @@
+schema_version: "1.1"
+
+paths:
+  audiveris: null          # e.g. C:/Program Files/Audiveris/bin/Audiveris.bat
+  musescore: null          # e.g. C:/Program Files/MuseScore 4/bin/MuseScore4.exe
+  soundfont: null          # optional .sf2/.sf3 path for MuseScore rendering
+  samples_root: ./samples
+  synthetic_root: ./samples/synthetic
+  work_dir: ./work
+
+audio:
+  sample_rate: 22050
+  mono: true
+
+mel:
+  n_fft: 2048
+  hop_length: 512
+  n_mels: 128
+  fmin: 30.0
+  fmax: null
+
+alignment:
+  feature: chroma          # chroma | cqt
+  cqt_bins: 84
+  dtw_band_ratio: 0.1      # Sakoe-Chiba band as fraction of sequence length
+  jump_dtw: true
+  ms_tolerance: 100
+  cents_tolerance: 20
+  warping_slope_min: 0.5
+  warping_slope_max: 2.0
+
+taxonomy:
+  - wrong_pitch
+  - missed_note
+  - extra_note
+  - intonation_error
+  - rhythm_error
+  - repetition
+  - stylistic_choice
+
+musescore:
+  min_version: "4.2.0"
+  export_format: wav
+
+omr:
+  open_in_gui: true
+
+review:
+  sampling_rate: 0.1
+
+synthetic:
+  output_separate_root: true
+  corruptions_per_score: 3
