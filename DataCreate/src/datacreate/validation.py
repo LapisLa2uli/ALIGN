@@ -9,6 +9,9 @@ from jsonschema import Draft202012Validator
 from datacreate.config import PipelineConfig
 from datacreate.models import CandidatesDocument, LabelsDocument
 
+# Auto-detect types kept for backward compatibility with older pipeline runs.
+LEGACY_TAXONOMY_TYPES = {"wrong_pitch"}
+
 
 LABELS_SCHEMA: dict[str, Any] = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -78,7 +81,7 @@ def validate_labels_file(path: Path, config: PipelineConfig | None = None) -> li
         errors.append(f"{path}: pydantic validation failed: {exc}")
         return errors
 
-    allowed = config.taxonomy_set()
+    allowed = config.taxonomy_set() | LEGACY_TAXONOMY_TYPES
     for label in doc.labels:
         if label.type not in allowed:
             errors.append(
@@ -104,7 +107,7 @@ def validate_candidates_file(path: Path, config: PipelineConfig | None = None) -
     except Exception as exc:
         errors.append(f"{path}: {exc}")
         return errors
-    allowed = config.taxonomy_set()
+    allowed = config.taxonomy_set() | LEGACY_TAXONOMY_TYPES
     for label in doc.labels:
         if label.type not in allowed:
             errors.append(f"{path}: candidate {label.id} has invalid type {label.type}")

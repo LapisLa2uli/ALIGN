@@ -103,7 +103,7 @@ def _apply_corruption(
     if corruption == "shift_pitch":
         semitones = rng.choice([-2, -1, 1, 2])
         target.pitch.transpose(semitones, inPlace=True)
-        label_type = "wrong_pitch"
+        label_type = "wrong_note"
         comment = f"shifted {semitones} semitones"
     elif corruption == "shift_timing":
         shift = rng.choice([0.25, 0.5, -0.25])

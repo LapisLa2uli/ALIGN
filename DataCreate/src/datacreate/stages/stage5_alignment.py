@@ -134,7 +134,7 @@ def _detect_candidates(
 
         if pitch_diff:
             candidates.append(
-                _make_candidate(idx, t_start, t_end, "wrong_pitch", cents, timing_ms)
+                _make_candidate(idx, t_start, t_end, "wrong_note", cents, timing_ms)
             )
             idx += 1
         elif cents and abs(cents) > cents_tol:

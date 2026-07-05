@@ -4,15 +4,28 @@ let taxonomy = [];
 let currentSample = null;
 let selectedRegion = null;
 let loopSelection = false;
+let scrubbing = false;
 
 const TYPE_COLORS = {
-  wrong_pitch: "rgba(255,80,80,0.4)",
+  wrong_note: "rgba(255,60,60,0.45)",
+  wrong_pitch: "rgba(255,60,60,0.45)", // legacy auto-detect alias
   missed_note: "rgba(255,140,0,0.4)",
   extra_note: "rgba(255,200,0,0.4)",
   intonation_error: "rgba(180,80,255,0.4)",
   rhythm_error: "rgba(80,180,255,0.4)",
   repetition: "rgba(80,255,160,0.4)",
   stylistic_choice: "rgba(160,160,160,0.35)",
+};
+
+const TYPE_LABELS = {
+  wrong_note: "Wrong note (different pitch than score)",
+  wrong_pitch: "Wrong note (legacy auto-detect)",
+  intonation_error: "Intonation / tuning error",
+  missed_note: "Missed note",
+  extra_note: "Extra note",
+  rhythm_error: "Rhythm / timing error",
+  repetition: "Repetition",
+  stylistic_choice: "Stylistic choice (not an error)",
 };
 
 async function init() {
@@ -22,19 +35,23 @@ async function init() {
     waveColor: "#6af",
     progressColor: "#2d6cdf",
     cursorColor: "#fff",
+    cursorWidth: 2,
     height: 140,
     minPxPerSec: 50,
+    dragToSeek: true,
     plugins: [regionsPlugin],
   });
 
-  wavesurfer.on("timeupdate", (t) => {
-    document.getElementById("timeDisplay").textContent = formatTime(t);
-  });
+  wavesurfer.on("timeupdate", updatePlayhead);
+  wavesurfer.on("seeking", updatePlayhead);
+  wavesurfer.on("ready", updatePlayhead);
   wavesurfer.on("finish", () => {
     if (loopSelection && selectedRegion) {
       selectedRegion.play();
     }
   });
+
+  setupScrubber();
 
   regionsPlugin.enableDragSelection({ color: "rgba(45,108,223,0.25)" });
   regionsPlugin.on("region-clicked", (region, e) => {
@@ -62,6 +79,60 @@ async function init() {
   await loadSampleList();
 }
 
+function setupScrubber() {
+  const scrubber = document.getElementById("scrubber");
+  const playhead = document.getElementById("playhead");
+
+  const seekFromPointer = (clientX) => {
+    const duration = wavesurfer.getDuration();
+    if (!duration) return;
+    const rect = scrubber.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    wavesurfer.setTime(ratio * duration);
+    updatePlayhead();
+  };
+
+  scrubber.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    scrubbing = true;
+    playhead.classList.add("dragging");
+    scrubber.setPointerCapture(e.pointerId);
+    seekFromPointer(e.clientX);
+    e.preventDefault();
+  });
+
+  scrubber.addEventListener("pointermove", (e) => {
+    if (!scrubbing) return;
+    seekFromPointer(e.clientX);
+  });
+
+  const stopScrub = (e) => {
+    if (!scrubbing) return;
+    scrubbing = false;
+    playhead.classList.remove("dragging");
+    if (e && scrubber.hasPointerCapture(e.pointerId)) {
+      scrubber.releasePointerCapture(e.pointerId);
+    }
+  };
+
+  scrubber.addEventListener("pointerup", stopScrub);
+  scrubber.addEventListener("pointercancel", stopScrub);
+}
+
+function updatePlayhead() {
+  const duration = wavesurfer.getDuration();
+  const scrubber = document.getElementById("scrubber");
+  const progress = document.getElementById("scrubberProgress");
+  const playhead = document.getElementById("playhead");
+  if (!duration || !scrubber) return;
+
+  const ratio = wavesurfer.getCurrentTime() / duration;
+  const x = ratio * scrubber.clientWidth;
+  playhead.style.left = `${x}px`;
+  progress.style.width = `${ratio * 100}%`;
+  document.getElementById("timeDisplay").textContent = formatTime(wavesurfer.getCurrentTime());
+}
+
 async function loadSampleList() {
   const res = await fetch("/api/samples");
   const samples = await res.json();
@@ -82,26 +153,37 @@ async function loadSample(sampleId) {
   regionsPlugin.clearRegions();
   await wavesurfer.load(data.audio_url);
 
-  data.candidates.forEach((c) => addRegion(c, true));
-  data.labels.forEach((l) => addRegion(l, false));
+  data.candidates.forEach((c) => addRegion(normalizeLabelType(c), true));
+  data.labels.forEach((l) => addRegion(normalizeLabelType(l), false));
 
+  updatePlayhead();
   await renderScore(data.score_url);
+}
+
+function normalizeLabelType(label) {
+  if (label.type === "wrong_pitch") {
+    return { ...label, type: "wrong_note", _legacyWrongPitch: true };
+  }
+  return label;
 }
 
 function populateTypeSelect() {
   const sel = document.getElementById("labelType");
-  sel.innerHTML = taxonomy.map((t) => `<option value="${t}">${t}</option>`).join("");
+  sel.innerHTML = taxonomy
+    .map((t) => `<option value="${t}">${TYPE_LABELS[t] || t}</option>`)
+    .join("");
 }
 
 function addRegion(label, isCandidate) {
   const color = TYPE_COLORS[label.type] || "rgba(45,108,223,0.35)";
+  const display = TYPE_LABELS[label.type] || label.type;
   const region = regionsPlugin.addRegion({
     start: label.start_time,
     end: label.end_time,
     color,
     drag: true,
     resize: true,
-    content: label.type,
+    content: display.split(" (")[0],
     data: { ...label, isCandidate },
   });
   region.element.classList.add(isCandidate ? "region-candidate" : "region-label");
@@ -111,8 +193,9 @@ function addRegion(label, isCandidate) {
 function selectRegion(region) {
   selectedRegion = region;
   const d = region.data || {};
+  const typeLabel = TYPE_LABELS[d.type] || d.type || "unlabeled";
   document.getElementById("selectionInfo").textContent =
-    `${formatTime(region.start)} – ${formatTime(region.end)} (${d.type || "unlabeled"})`;
+    `${formatTime(region.start)} – ${formatTime(region.end)} (${typeLabel})`;
   if (d.type) document.getElementById("labelType").value = d.type;
   if (d.severity) document.getElementById("severity").value = d.severity;
   document.getElementById("comment").value = d.comment || "";
@@ -131,8 +214,9 @@ function applyLabelToSelection() {
     severity: parseInt(document.getElementById("severity").value, 10),
     comment: document.getElementById("comment").value || null,
   };
+  const display = (TYPE_LABELS[type] || type).split(" (")[0];
   selectedRegion.setOptions({
-    content: type,
+    content: display,
     color: TYPE_COLORS[type] || selectedRegion.color,
   });
   selectedRegion.element.classList.remove("region-candidate");

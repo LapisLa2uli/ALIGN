@@ -38,6 +38,10 @@
       </label>
       <span id="timeDisplay">00:00.000</span>
     </div>
+    <div id="scrubber" class="scrubber" title="Click or drag to move playhead">
+      <div id="scrubberProgress" class="scrubber-progress"></div>
+      <div id="playhead" class="playhead"></div>
+    </div>
     <div id="waveform"></div>
     <div id="candidateTrack" class="track-label">Candidates (dashed)</div>
     <div id="labelTrack" class="track-label">Confirmed labels</div>
@@ -61,8 +65,9 @@
     </div>
     <h3>Hotkeys</h3>
     <ul class="hotkeys">
-      <li>1-7: assign label type</li>
+      <li>1-8: assign label type</li>
       <li>Space: play/pause</li>
+      <li>Click/drag scrubber or waveform to move playhead</li>
       <li>←/→: nudge selection edge</li>
     </ul>
   </aside>
