@@ -3,8 +3,8 @@ schema_version: "1.1"
 paths:
   audiveris: C:/Program Files/Audiveris/Audiveris.exe
   audiveris_home: C:/Program Files/Audiveris   # jpackage layout: Audiveris.exe + app/ + runtime/
-  musescore: null          # e.g. C:/Program Files/MuseScore 4/bin/MuseScore4.exe
-  soundfont: null          # optional .sf2/.sf3 path for MuseScore rendering
+  musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
   samples_root: ./samples
   synthetic_root: ./samples/synthetic
   work_dir: ./work
@@ -44,6 +44,8 @@ taxonomy:
 musescore:
   min_version: "4.2.0"
   export_format: wav
+  synthesizer_gain_db: -6
+  tail_seconds: 2.0
 
 omr:
   open_in_gui: true

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import shutil
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -32,6 +33,7 @@ class DataCreatePipeline:
         self.samples_root = ensure_dir(
             self.config.resolved_path("samples_root") or Path("samples")
         )
+        self._reference_cache: dict[str, Path] = {}
 
     def create_sample(
         self,
@@ -81,9 +83,18 @@ class DataCreatePipeline:
         score = score_path or job.sample_dir / "verified_score.musicxml"
         if not score.exists():
             raise FileNotFoundError(f"Verified score missing: {score}")
-        wav = synthesize_reference(score, job.sample_dir, self.config, logger)
+        output_wav = job.sample_dir / "reference_audio.wav"
+        cache_key = f"{score.resolve()}:{score.stat().st_mtime_ns}"
+        cached = self._reference_cache.get(cache_key)
+        if cached is not None and cached.exists():
+            shutil.copy2(cached, output_wav)
+            logger.info("Reused cached reference audio from %s", cached)
+        else:
+            wav = synthesize_reference(score, job.sample_dir, self.config, logger)
+            self._reference_cache[cache_key] = wav
+            output_wav = wav
         job.state["reference"] = True
-        return wav
+        return output_wav
 
     def run_stage4(self, job: SampleJob) -> Path:
         logger = setup_sample_logger(job.sample_dir)

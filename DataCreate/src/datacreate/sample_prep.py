@@ -7,7 +7,6 @@ from typing import Any
 
 from datacreate.audio_utils import load_audio, save_wav
 from datacreate.config import PipelineConfig
-from datacreate.config import PipelineConfig
 from datacreate.score_segment import extract_measure_range, get_score_info
 from datacreate.stages.stage3_reference import synthesize_reference
 from datacreate.stages.stage5_alignment import run_alignment, write_candidates
@@ -48,11 +47,18 @@ def get_prep_state(sample_dir: Path, config: PipelineConfig | None = None) -> di
         audio, sr = load_audio(perf_path, config.sample_rate())
         perf_duration = len(audio) / sr
 
+    reference_duration = None
+    ref_path = sample_dir / "reference_audio.wav"
+    if ref_path.exists():
+        ref_audio, sr = load_audio(ref_path, config.sample_rate())
+        reference_duration = len(ref_audio) / sr
+
     return {
         **info,
         "score_segment": metadata.get("score_segment"),
         "performance_trim": metadata.get("performance_trim"),
         "performance_duration": perf_duration,
+        "reference_duration_seconds": reference_duration,
     }
 
 
@@ -62,18 +68,31 @@ def apply_score_segment(
     end_measure: int,
     config: PipelineConfig,
     logger: logging.Logger,
+    start_beat: int = 1,
+    end_beat: int | None = None,
 ) -> dict[str, Any]:
     full_score = ensure_full_score(sample_dir)
     verified = sample_dir / "verified_score.musicxml"
-    extract_measure_range(full_score, verified, start_measure, end_measure, logger)
+    extract_measure_range(
+        full_score,
+        verified,
+        start_measure,
+        end_measure,
+        logger,
+        start_beat=start_beat,
+        end_beat=end_beat,
+    )
     synthesize_reference(verified, sample_dir, config, logger)
     _reprocess_alignment_and_features(sample_dir, config, logger)
 
-    segment_info = {
+    segment_info: dict[str, Any] = {
         "start_measure": start_measure,
         "end_measure": end_measure,
+        "start_beat": start_beat,
         "source": "full_score.musicxml",
     }
+    if end_beat is not None:
+        segment_info["end_beat"] = end_beat
     _update_metadata(sample_dir, config, {"score_segment": segment_info}, logger)
     return segment_info
 

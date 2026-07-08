@@ -1,25 +1,36 @@
 * { box-sizing: border-box; }
-body {
+html, body {
   margin: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
   font-family: "Segoe UI", system-ui, sans-serif;
   background: #111;
   color: #eee;
   display: grid;
-  grid-template-columns: 1fr 320px;
-  grid-template-rows: auto auto 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  grid-template-rows: auto auto minmax(0, 280px) minmax(280px, 1fr);
   min-height: 100vh;
+  overflow-x: clip;
+  overflow-y: auto;
 }
 header {
   grid-column: 1 / -1;
+  grid-row: 1;
   padding: 12px 16px;
   background: #1a1a1a;
   border-bottom: 1px solid #333;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .batch-panel {
   grid-column: 1 / -1;
+  grid-row: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -38,27 +49,49 @@ header {
   border-radius: 4px;
   cursor: pointer;
 }
-.controls { display: flex; gap: 12px; align-items: center; }
+.controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 #scorePanel {
   grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: start;
   background: #fff;
   color: #000;
   max-height: 280px;
   overflow: auto;
   padding: 8px;
+  width: 100%;
+}
+#osmdContainer {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#osmdContainer svg {
+  display: block;
+  max-width: none;
 }
 #timelinePanel {
+  grid-row: 4;
+  grid-column: 1;
+  min-width: 0;
+  min-height: 0;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  contain: layout style;
 }
 .scrubber {
   position: relative;
   height: 28px;
+  width: 100%;
   background: #2a2a2a;
   border: 1px solid #444;
   border-radius: 6px 6px 0 0;
   cursor: pointer;
   user-select: none;
   touch-action: none;
+  flex-shrink: 0;
 }
 .scrubber-progress {
   position: absolute;
@@ -85,19 +118,41 @@ header {
   cursor: grabbing;
   background: #6af;
 }
+.waveform-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  flex: 1 1 160px;
+  min-height: 160px;
+  contain: layout style;
+  position: relative;
+}
 #waveform {
   background: #222;
   border: 1px solid #444;
   border-radius: 0 0 6px 6px;
   min-height: 160px;
+  max-width: 100%;
   margin-top: -1px;
 }
-.track-label { font-size: 12px; color: #888; margin-top: 8px; }
-.transport { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+.track-label { font-size: 12px; color: #888; margin-top: 8px; flex-shrink: 0; }
+.transport {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
 #inspector {
+  grid-row: 4;
+  grid-column: 2;
+  min-width: 0;
+  min-height: 0;
   padding: 16px;
   background: #1a1a1a;
   border-left: 1px solid #333;
+  overflow-y: auto;
 }
 #inspector label { display: block; margin: 10px 0; }
 #inspector select, #inspector input, #inspector textarea {
@@ -124,10 +179,26 @@ button:hover { background: #1f57c3; }
   background: #f0f0f0;
   border-bottom: 1px solid #ccc;
   font-size: 13px;
+  flex-shrink: 0;
 }
 .score-toolbar input[type="number"] {
-  width: 64px;
+  width: 52px;
   margin-left: 4px;
+}
+.score-toolbar input[type="number"]#endBeat {
+  width: 44px;
+}
+.score-toolbar .segment-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+.score-toolbar .segment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }
 .score-toolbar button, .trim-toolbar button {
   background: #2d6cdf;
@@ -139,7 +210,58 @@ button:hover { background: #1f57c3; }
   font-size: 12px;
 }
 .hint { color: #666; font-size: 12px; }
+#measureTotal {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
 .region-trim { border: 2px solid #3c3 !important; background: rgba(60, 200, 60, 0.12) !important; z-index: 1; }
 .region-trim-handle { background: #3c3 !important; }
 .region-candidate { border: 2px dashed #f90 !important; background: rgba(255,153,0,0.15) !important; }
 .region-label { background: rgba(45,108,223,0.35) !important; }
+
+/* WaveSurfer v7 renders regions inside Shadow DOM — style via ::part() */
+#waveform::part(region-selected) {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45) !important;
+  z-index: 10 !important;
+  box-sizing: border-box !important;
+}
+#waveform::part(region-candidate) {
+  border: 2px dashed #f90 !important;
+  box-sizing: border-box !important;
+}
+#waveform::part(region-trim) {
+  border: 2px solid #3c3 !important;
+  background-color: rgba(60, 200, 60, 0.12) !important;
+  box-sizing: border-box !important;
+}
+#waveform::part(region-handle-left),
+#waveform::part(region-handle-right) {
+  background-color: #3c3 !important;
+}
+.score-placeholder {
+  margin: 0;
+  padding: 16px;
+  color: #444;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Stack inspector below timeline when the window is too narrow for side-by-side */
+@media (max-width: 1280px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(0, 240px) minmax(260px, 1fr) auto;
+  }
+  #timelinePanel {
+    grid-row: 4;
+    grid-column: 1;
+  }
+  #inspector {
+    grid-row: 5;
+    grid-column: 1;
+    border-left: none;
+    border-top: 1px solid #333;
+    max-height: 40vh;
+  }
+}

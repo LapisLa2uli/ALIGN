@@ -22,9 +22,9 @@ pip install -e .
 
 Windows installs use the jpackage layout (`Audiveris.exe`, `app/audiveris.jar`, `runtime/`). Set either `paths.audiveris` to the `.exe` or `paths.audiveris_home` to the install folder.
 
-Set `paths.musescore`, `paths.audiveris`, and optionally `paths.soundfont` in `config/default.yaml`.
+Set `paths.musescore`, `paths.audiveris`, and `paths.soundfont` in `config/default.yaml`. Defaults point at the standard MuseScore 4 install and its bundled `MS Basic.sf3` SoundFont.
 
-> MuseScore **4.2+** is required — earlier 4.x CLI exports can produce silent WAV files.
+> **Stage 3 reference audio:** MuseScore’s direct WAV export is unreliable from Python on Windows (exit code 1331). The pipeline exports MIDI via MuseScore, then renders WAV with `tinysoundfont` and the configured SoundFont. MuseScore **4.2+** is still required for MIDI export.
 
 ## Pipeline stages
 
@@ -32,7 +32,7 @@ Set `paths.musescore`, `paths.audiveris`, and optionally `paths.soundfont` in `c
 |-------|--------|-------------|
 | 1 | `stage1_ingest` | Validate MusicXML/MXL |
 | 2 | `stage2_omr` | Audiveris PDF → draft MusicXML + manual correction |
-| 3 | `stage3_reference` | MuseScore CLI → `reference_audio.wav` |
+| 3 | `stage3_reference` | MuseScore MIDI export + SoundFont render → `reference_audio.wav` |
 | 4 | `stage4_performance` | Ingest/record performance audio |
 | 5 | `stage5_alignment` | Chroma/CQT DTW + candidate error detection |
 | 6 | Web UI | NLE-style annotation (`datacreate serve`) |

@@ -1,5 +1,6 @@
 let wavesurfer;
 let regionsPlugin;
+let osmdInstance = null;
 let taxonomy = [];
 let currentSample = null;
 let sampleData = null;
@@ -7,6 +8,9 @@ let selectedRegion = null;
 let trimRegion = null;
 let loopSelection = false;
 let scrubbing = false;
+let pendingRegions = [];
+let lastRegionClick = { id: null, time: 0 };
+const REGION_DOUBLE_CLICK_MS = 400;
 
 const TYPE_COLORS = {
   wrong_note: "rgba(255,60,60,0.45)",
@@ -30,6 +34,186 @@ const TYPE_LABELS = {
   stylistic_choice: "Stylistic choice (not an error)",
 };
 
+const LARGE_SCORE_MEASURES = 40;
+const MAX_SEGMENT_PREVIEW_MEASURES = 64;
+
+function audioUrlWithCacheBust(baseUrl, audioMtime) {
+  const token = audioMtime || Date.now();
+  const sep = baseUrl.includes("?") ? "&" : "?";
+  return `${baseUrl}${sep}v=${encodeURIComponent(String(token))}`;
+}
+
+function defaultMeasureRange(prep) {
+  const total = prep?.total_measures || 1;
+  if (prep?.score_segment) {
+    return {
+      start: prep.score_segment.start_measure,
+      end: prep.score_segment.end_measure,
+      startBeat: prep.score_segment.start_beat || 1,
+      endBeat: prep.score_segment.end_beat ?? null,
+    };
+  }
+  if (total <= LARGE_SCORE_MEASURES) {
+    return { start: 1, end: total, startBeat: 1, endBeat: null };
+  }
+  const perf = prep?.performance_duration;
+  const refSec = prep?.reference_duration_seconds;
+  if (perf && refSec && refSec > 0) {
+    const estimatedEnd = Math.ceil(total * (perf / refSec) * 1.1);
+    return {
+      start: 1,
+      end: Math.max(1, Math.min(total, estimatedEnd)),
+      startBeat: 1,
+      endBeat: null,
+    };
+  }
+  return {
+    start: 1,
+    end: Math.min(total, LARGE_SCORE_MEASURES),
+    startBeat: 1,
+    endBeat: null,
+  };
+}
+
+function parseBeatInput(id) {
+  const raw = document.getElementById(id).value.trim();
+  if (!raw) return null;
+  const value = parseInt(raw, 10);
+  return Number.isNaN(value) ? null : value;
+}
+
+function formatSegmentLabel(start, end, startBeat, endBeat) {
+  const startPart = startBeat > 1 ? `m${start} beat ${startBeat}` : `m${start}`;
+  const endPart = endBeat != null ? `m${end} beat ${endBeat}` : `m${end}`;
+  return `${startPart}–${endPart}`;
+}
+
+function getDragSelectionColor() {
+  const type = document.getElementById("labelType")?.value;
+  return TYPE_COLORS[type] || "rgba(45,108,223,0.35)";
+}
+
+function refreshDragSelection() {
+  if (!regionsPlugin?.enableDragSelection) return;
+  if (typeof regionsPlugin.disableDragSelection === "function") {
+    regionsPlugin.disableDragSelection();
+  }
+  regionsPlugin.enableDragSelection({ color: getDragSelectionColor() });
+}
+
+function getRegionKind(region) {
+  if (isTrimRegion(region)) return "trim";
+  if (region.data?.isCandidate) return "candidate";
+  return "label";
+}
+
+function syncRegionVisual(region, { selected = false } = {}) {
+  const el = region.element;
+  if (!el) return;
+
+  const kind = getRegionKind(region);
+  const parts = ["region"];
+  if (kind === "trim") parts.push("region-trim");
+  else if (kind === "candidate") parts.push("region-candidate");
+  else parts.push("region-label");
+  if (selected) parts.push("region-selected");
+  el.setAttribute("part", parts.join(" "));
+
+  if (kind === "trim") {
+    el.style.border = "2px solid #3c3";
+    el.style.backgroundColor = "rgba(60, 200, 60, 0.12)";
+    el.style.boxShadow = selected ? "0 0 0 1px rgba(0, 0, 0, 0.45)" : "";
+    el.style.zIndex = selected ? "10" : "1";
+    el.style.boxSizing = "border-box";
+    return;
+  }
+
+  el.style.boxSizing = "border-box";
+  if (selected) {
+    el.style.border = "3px solid #fff";
+    el.style.boxShadow = "0 0 0 1px rgba(0, 0, 0, 0.45)";
+    el.style.zIndex = "10";
+  } else if (kind === "candidate") {
+    el.style.border = "2px dashed #f90";
+    el.style.boxShadow = "";
+    el.style.zIndex = "";
+  } else {
+    el.style.border = "none";
+    el.style.boxShadow = "";
+    el.style.zIndex = "";
+  }
+}
+
+function clearRegionSelection() {
+  regionsPlugin.getRegions().forEach((region) => {
+    syncRegionVisual(region, { selected: false });
+  });
+}
+
+function resetSelectionInfo() {
+  document.getElementById("selectionInfo").textContent =
+    "Drag on waveform to add a label. Double-click a region to edit it.";
+}
+
+function computeFitPxPerSec(duration) {
+  const wrap = document.querySelector(".waveform-wrap");
+  if (!wrap || !duration || duration <= 0) return 1;
+  const width = wrap.clientWidth;
+  if (width <= 0) return 1;
+  return width / duration;
+}
+
+function debounce(fn, ms) {
+  let timer = null;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+}
+
+let layoutFitTimer = null;
+
+function fitWaveformToContainer() {
+  const wrap = document.querySelector(".waveform-wrap");
+  if (!wrap || !wavesurfer) return;
+  const duration = wavesurfer.getDuration();
+  if (!duration || duration <= 0) return;
+  const width = wrap.clientWidth;
+  if (width <= 0) return;
+  const fitPx = width / duration;
+  if (typeof wavesurfer.zoom === "function") {
+    wavesurfer.zoom(fitPx);
+  } else if (typeof wavesurfer.setOptions === "function") {
+    wavesurfer.setOptions({ minPxPerSec: fitPx });
+  }
+}
+
+function scheduleWaveformFit() {
+  clearTimeout(layoutFitTimer);
+  layoutFitTimer = setTimeout(() => {
+    requestAnimationFrame(() => {
+      fitWaveformToContainer();
+      updatePlayhead();
+    });
+  }, 50);
+}
+
+function showScorePlaceholder(measures) {
+  const container = document.getElementById("osmdContainer");
+  container.innerHTML =
+    `<p class="score-placeholder">Full score has ${measures} measures. ` +
+    "Adjust the measure range above, then click <strong>View segment</strong>. " +
+    "Use <strong>Apply &amp; regenerate</strong> to persist and regenerate reference audio.</p>";
+  scheduleWaveformFit();
+}
+
+function setScoreStatus(message) {
+  const container = document.getElementById("osmdContainer");
+  if (message) {
+    container.innerHTML = `<p class="score-placeholder">${message}</p>`;
+  }
+}
+
 async function init() {
   regionsPlugin = WaveSurfer.Regions.create();
   wavesurfer = WaveSurfer.create({
@@ -39,8 +223,8 @@ async function init() {
     cursorColor: "#fff",
     cursorWidth: 2,
     height: 140,
-    minPxPerSec: 50,
-    dragToSeek: true,
+    minPxPerSec: 1,
+    dragToSeek: false,
     plugins: [regionsPlugin],
   });
 
@@ -56,11 +240,12 @@ async function init() {
   setupScrubber();
   setupPrepControls();
   setupBatchControls();
+  window.addEventListener("resize", debounce(scheduleWaveformFit, 150));
 
-  regionsPlugin.enableDragSelection({ color: "rgba(45,108,223,0.25)" });
+  refreshDragSelection();
   regionsPlugin.on("region-created", (region) => {
     if (isTrimRegion(region)) return;
-    selectRegion(region);
+    applyLabelToRegion(region, { comment: null });
   });
   regionsPlugin.on("region-clicked", (region, e) => {
     e.stopPropagation();
@@ -68,14 +253,30 @@ async function init() {
       updateTrimInfo();
       return;
     }
-    selectRegion(region);
+    const now = Date.now();
+    const isDoubleClick =
+      lastRegionClick.id === region.id &&
+      now - lastRegionClick.time <= REGION_DOUBLE_CLICK_MS;
+    if (isDoubleClick) {
+      selectRegion(region);
+      lastRegionClick = { id: null, time: 0 };
+    } else {
+      lastRegionClick = { id: region.id, time: now };
+    }
   });
   regionsPlugin.on("region-updated", (region) => {
     if (isTrimRegion(region)) {
       updateTrimInfo();
       return;
     }
-    selectRegion(region);
+    if (selectedRegion === region) {
+      if (region.data) {
+        region.data.start_time = region.start;
+        region.data.end_time = region.end;
+      }
+      updateSelectionInfo(region);
+      syncRegionVisual(region, { selected: true });
+    }
   });
 
   document.getElementById("playBtn").onclick = () => wavesurfer.playPause();
@@ -168,15 +369,37 @@ async function runBatchRange() {
   }
 }
 
+function getMeasureRange() {
+  const start = parseInt(document.getElementById("measureStart").value, 10);
+  const end = parseInt(document.getElementById("measureEnd").value, 10);
+  const startBeat = parseBeatInput("startBeat") ?? 1;
+  const endBeat = parseBeatInput("endBeat");
+  return { start, end, startBeat, endBeat };
+}
+
+function buildScoreSegmentQuery({ start, end, startBeat, endBeat }) {
+  const params = new URLSearchParams({
+    start_measure: String(start),
+    end_measure: String(end),
+    start_beat: String(startBeat ?? 1),
+  });
+  if (endBeat != null) {
+    params.set("end_beat", String(endBeat));
+  }
+  return params.toString();
+}
+
 function setupPrepControls() {
   document.getElementById("applySegmentBtn").onclick = applyScoreSegment;
   document.getElementById("applyTrimBtn").onclick = applyPerformanceTrim;
   document.getElementById("viewFullScoreBtn").onclick = () => {
-    if (sampleData?.full_score_url) renderScore(sampleData.full_score_url);
+    if (!sampleData?.full_score_url) return;
+    if ((sampleData.prep?.total_measures || 0) > LARGE_SCORE_MEASURES) {
+      if (!confirm("Rendering the full score may be slow and can affect layout. Continue?")) return;
+    }
+    renderScore(sampleData.full_score_url, { mode: "full" });
   };
-  document.getElementById("viewSegmentScoreBtn").onclick = () => {
-    if (sampleData?.score_url) renderScore(sampleData.score_url);
-  };
+  document.getElementById("viewSegmentScoreBtn").onclick = () => viewScoreSegment();
 }
 
 function setupScrubber() {
@@ -219,23 +442,33 @@ function setupScrubber() {
   scrubber.addEventListener("pointercancel", stopScrub);
 }
 
-function updatePlayhead() {
-  const duration = wavesurfer.getDuration();
-  const scrubber = document.getElementById("scrubber");
-  const progress = document.getElementById("scrubberProgress");
-  const playhead = document.getElementById("playhead");
-  if (!duration || !scrubber) return;
+let playheadRaf = null;
 
-  const ratio = wavesurfer.getCurrentTime() / duration;
-  const x = ratio * scrubber.clientWidth;
-  playhead.style.left = `${x}px`;
-  progress.style.width = `${ratio * 100}%`;
-  document.getElementById("timeDisplay").textContent = formatTime(wavesurfer.getCurrentTime());
+function updatePlayhead() {
+  if (playheadRaf) return;
+  playheadRaf = requestAnimationFrame(() => {
+    playheadRaf = null;
+    const duration = wavesurfer.getDuration();
+    const scrubber = document.getElementById("scrubber");
+    const progress = document.getElementById("scrubberProgress");
+    const playhead = document.getElementById("playhead");
+    if (!duration || !scrubber) return;
+
+    const ratio = wavesurfer.getCurrentTime() / duration;
+    const x = ratio * scrubber.clientWidth;
+    playhead.style.left = `${x}px`;
+    progress.style.width = `${ratio * 100}%`;
+    document.getElementById("timeDisplay").textContent = formatTime(wavesurfer.getCurrentTime());
+  });
 }
 
 function onWaveformReady() {
-  updatePlayhead();
+  fitWaveformToContainer();
+  pendingRegions.forEach(({ label, isCandidate }) => addRegion(label, isCandidate));
+  pendingRegions = [];
   ensureTrimRegion();
+  updatePlayhead();
+  scheduleWaveformFit();
 }
 
 function ensureTrimRegion() {
@@ -257,7 +490,7 @@ function ensureTrimRegion() {
     id: "trim-keep",
     data: { role: "trim" },
   });
-  trimRegion.element.classList.add("region-trim");
+  syncRegionVisual(trimRegion);
   updateTrimInfo();
 }
 
@@ -272,20 +505,28 @@ function updateTrimInfo() {
 
 function updateMeasureControls(prep) {
   const total = prep?.total_measures || 1;
+  const beatsPerMeasure = prep?.beats_per_measure || 4;
+  const { start, end, startBeat, endBeat } = defaultMeasureRange(prep);
   const startInput = document.getElementById("measureStart");
   const endInput = document.getElementById("measureEnd");
+  const startBeatInput = document.getElementById("startBeat");
+  const endBeatInput = document.getElementById("endBeat");
+  if (!startInput || !endInput || !startBeatInput || !endBeatInput) return;
   startInput.max = total;
   endInput.max = total;
+  startBeatInput.max = beatsPerMeasure;
+  endBeatInput.max = beatsPerMeasure;
+  startInput.value = start;
+  endInput.value = end;
+  startBeatInput.value = startBeat;
+  endBeatInput.value = endBeat ?? "";
 
-  if (prep?.score_segment) {
-    startInput.value = prep.score_segment.start_measure;
-    endInput.value = prep.score_segment.end_measure;
-  } else {
-    startInput.value = 1;
-    endInput.value = total;
-  }
-
-  document.getElementById("measureTotal").textContent = `(${total} measures in full score)`;
+  const perf = prep?.performance_duration;
+  const rangeLabel = formatSegmentLabel(start, end, startBeat, endBeat);
+  const hint = perf
+    ? `(${total} measures in full score; performance ~${perf.toFixed(1)}s — suggested ${rangeLabel})`
+    : `(${total} measures in full score; suggested ${rangeLabel})`;
+  document.getElementById("measureTotal").textContent = hint;
 }
 
 async function loadSampleList() {
@@ -323,14 +564,38 @@ async function loadSample(sampleId) {
 
   trimRegion = null;
   selectedRegion = null;
+  lastRegionClick = { id: null, time: 0 };
+  resetSelectionInfo();
   regionsPlugin.clearRegions();
-  await wavesurfer.load(data.audio_url);
+  pendingRegions = [
+    ...data.candidates.map((c) => ({ label: normalizeLabelType(c), isCandidate: true })),
+    ...data.labels.map((l) => ({ label: normalizeLabelType(l), isCandidate: false })),
+  ];
 
-  data.candidates.forEach((c) => addRegion(normalizeLabelType(c), true));
-  data.labels.forEach((l) => addRegion(normalizeLabelType(l), false));
+  const duration = data.prep?.performance_duration || 0;
+  if (typeof wavesurfer.setOptions === "function") {
+    wavesurfer.setOptions({ minPxPerSec: computeFitPxPerSec(duration) });
+  }
 
-  const scoreUrl = data.prep?.score_segment ? data.score_url : data.full_score_url;
-  await renderScore(scoreUrl || data.score_url);
+  const audioUrl = audioUrlWithCacheBust(data.audio_url, data.audio_mtime);
+  await wavesurfer.load(audioUrl);
+  scheduleWaveformFit();
+
+  const measures = data.prep?.total_measures || 0;
+  const hasSegment = !!data.prep?.score_segment;
+  if (hasSegment) {
+    const seg = data.prep.score_segment;
+    await viewScoreSegment(
+      seg.start_measure,
+      seg.end_measure,
+      seg.start_beat || 1,
+      seg.end_beat ?? null,
+    );
+  } else if (measures > LARGE_SCORE_MEASURES) {
+    showScorePlaceholder(measures);
+  } else {
+    await renderScore(data.full_score_url || data.score_url, { mode: "full" });
+  }
 }
 
 function normalizeLabelType(label) {
@@ -345,6 +610,8 @@ function populateTypeSelect() {
   sel.innerHTML = taxonomy
     .map((t) => `<option value="${t}">${TYPE_LABELS[t] || t}</option>`)
     .join("");
+  sel.onchange = () => refreshDragSelection();
+  refreshDragSelection();
 }
 
 function addRegion(label, isCandidate) {
@@ -359,42 +626,65 @@ function addRegion(label, isCandidate) {
     content: display.split(" (")[0],
     data: { ...label, isCandidate },
   });
-  region.element.classList.add(isCandidate ? "region-candidate" : "region-label");
+  syncRegionVisual(region, { selected: selectedRegion === region });
   return region;
 }
 
-function selectRegion(region) {
-  if (isTrimRegion(region)) return;
-  selectedRegion = region;
+function updateSelectionInfo(region) {
   const d = region.data || {};
   const typeLabel = TYPE_LABELS[d.type] || d.type || "unlabeled";
   document.getElementById("selectionInfo").textContent =
     `${formatTime(region.start)} – ${formatTime(region.end)} (${typeLabel})`;
+}
+
+function selectRegion(region) {
+  if (isTrimRegion(region)) return;
+  clearRegionSelection();
+  selectedRegion = region;
+  syncRegionVisual(region, { selected: true });
+  requestAnimationFrame(() => {
+    if (selectedRegion === region) {
+      syncRegionVisual(region, { selected: true });
+    }
+  });
+  const d = region.data || {};
+  updateSelectionInfo(region);
   if (d.type) document.getElementById("labelType").value = d.type;
   if (d.severity) document.getElementById("severity").value = d.severity;
   document.getElementById("comment").value = d.comment || "";
 }
 
-function applyLabelToSelection() {
-  if (!selectedRegion || isTrimRegion(selectedRegion)) return;
-  const type = document.getElementById("labelType").value;
-  selectedRegion.data = {
-    ...(selectedRegion.data || {}),
-    id: (selectedRegion.data && selectedRegion.data.id) || `lbl_${Date.now()}`,
-    source: (selectedRegion.data && selectedRegion.data.source) || "manual",
-    start_time: selectedRegion.start,
-    end_time: selectedRegion.end,
+function applyLabelToRegion(region, overrides = {}) {
+  if (!region || isTrimRegion(region)) return;
+  const type = overrides.type || document.getElementById("labelType").value;
+  const severity = overrides.severity ?? parseInt(document.getElementById("severity").value, 10);
+  const comment = "comment" in overrides
+    ? overrides.comment
+    : document.getElementById("comment").value || null;
+  region.data = {
+    ...(region.data || {}),
+    id: (region.data && region.data.id) || `lbl_${Date.now()}`,
+    source: (region.data && region.data.source) || "manual",
+    start_time: region.start,
+    end_time: region.end,
     type,
-    severity: parseInt(document.getElementById("severity").value, 10),
-    comment: document.getElementById("comment").value || null,
+    severity,
+    comment,
   };
   const display = (TYPE_LABELS[type] || type).split(" (")[0];
-  selectedRegion.setOptions({
+  region.setOptions({
     content: display,
-    color: TYPE_COLORS[type] || selectedRegion.color,
+    color: TYPE_COLORS[type] || region.color,
   });
-  selectedRegion.element.classList.remove("region-candidate");
-  selectedRegion.element.classList.add("region-label");
+  if (selectedRegion === region) {
+    updateSelectionInfo(region);
+  }
+  syncRegionVisual(region, { selected: selectedRegion === region });
+}
+
+function applyLabelToSelection() {
+  if (!selectedRegion || isTrimRegion(selectedRegion)) return;
+  applyLabelToRegion(selectedRegion);
 }
 
 function promoteCandidate(source, overrideType) {
@@ -409,14 +699,15 @@ function deleteSelectedRegion() {
   if (selectedRegion && !isTrimRegion(selectedRegion)) {
     selectedRegion.remove();
     selectedRegion = null;
+    resetSelectionInfo();
   }
 }
 
 async function applyScoreSegment() {
-  const start = parseInt(document.getElementById("measureStart").value, 10);
-  const end = parseInt(document.getElementById("measureEnd").value, 10);
+  const { start, end, startBeat, endBeat } = getMeasureRange();
+  const rangeLabel = formatSegmentLabel(start, end, startBeat, endBeat);
   if (!confirm(
-    `Extract measures ${start}–${end} and regenerate reference audio + alignment? ` +
+    `Extract ${rangeLabel} and regenerate reference audio + alignment? ` +
     "Existing auto-candidates will be replaced."
   )) return;
 
@@ -424,10 +715,18 @@ async function applyScoreSegment() {
   btn.disabled = true;
   btn.textContent = "Processing…";
   try {
+    const payload = {
+      start_measure: start,
+      end_measure: end,
+      start_beat: startBeat,
+    };
+    if (endBeat != null) {
+      payload.end_beat = endBeat;
+    }
     const res = await fetch(`/api/samples/${currentSample}/score-segment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ start_measure: start, end_measure: end }),
+      body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error(await res.text());
     await loadSample(currentSample);
@@ -436,7 +735,7 @@ async function applyScoreSegment() {
     alert(err.message || String(err));
   } finally {
     btn.disabled = false;
-    btn.textContent = "Apply segment & regenerate reference";
+    btn.textContent = "Apply & regenerate";
   }
 }
 
@@ -444,7 +743,7 @@ async function applyPerformanceTrim() {
   if (!trimRegion) return;
   if (!confirm(
     `Trim performance to ${formatTime(trimRegion.start)} – ${formatTime(trimRegion.end)} ` +
-    "and re-run alignment? Existing auto-candidates will be replaced."
+    "and re-run alignment? This may take up to a minute for long scores. Existing auto-candidates will be replaced."
   )) return;
 
   const btn = document.getElementById("applyTrimBtn");
@@ -460,8 +759,12 @@ async function applyPerformanceTrim() {
       }),
     });
     if (!res.ok) throw new Error(await res.text());
+    const result = await res.json();
     await loadSample(currentSample);
-    alert("Performance trimmed. Audio and candidates updated.");
+    alert(
+      `Performance trimmed to ${result.performance_trim?.trimmed_duration?.toFixed?.(1) ?? "?"}s. ` +
+      "Waveform and alignment updated."
+    );
   } catch (err) {
     alert(err.message || String(err));
   } finally {
@@ -508,16 +811,83 @@ async function saveLabels() {
   alert("Labels saved.");
 }
 
-async function renderScore(url) {
+async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat) {
+  const range =
+    startMeasure != null && endMeasure != null
+      ? {
+          start: startMeasure,
+          end: endMeasure,
+          startBeat: startBeat ?? 1,
+          endBeat: endBeat ?? null,
+        }
+      : getMeasureRange();
+  const { start, end } = range;
+  if (!currentSample || Number.isNaN(start) || Number.isNaN(end)) return;
+
+  const span = end - start + 1;
+  if (span > MAX_SEGMENT_PREVIEW_MEASURES) {
+    alert(
+      `Selected range spans ${span} measures (max ${MAX_SEGMENT_PREVIEW_MEASURES} for preview). ` +
+      "Narrow the measure range to match your recording."
+    );
+    return;
+  }
+
+  const rangeLabel = formatSegmentLabel(
+    start,
+    end,
+    range.startBeat,
+    range.endBeat,
+  );
+  setScoreStatus(`Rendering ${rangeLabel}…`);
+  const url =
+    `/api/samples/${currentSample}/score-preview?${buildScoreSegmentQuery(range)}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    alert(await res.text());
+    setScoreStatus("Could not load score segment.");
+    return;
+  }
+  const xml = await res.text();
+  await renderScoreXml(xml, {
+    mode: "segment",
+    start,
+    end,
+    startBeat: range.startBeat,
+    endBeat: range.endBeat,
+    xmlBytes: xml.length,
+  });
+}
+
+async function renderScore(url, meta = {}) {
+  setScoreStatus("Loading score…");
+  const res = await fetch(url);
+  if (!res.ok) {
+    alert(await res.text());
+    setScoreStatus("Could not load score.");
+    return;
+  }
+  const xml = await res.text();
+  await renderScoreXml(xml, { ...meta, url, xmlBytes: xml.length });
+}
+
+async function renderScoreXml(xml, meta = {}) {
   const container = document.getElementById("osmdContainer");
   container.innerHTML = "";
-  const osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, {
-    autoResize: true,
+  osmdInstance = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, {
+    autoResize: false,
     drawTitle: true,
   });
-  const xml = await (await fetch(url)).text();
-  await osmd.load(xml);
-  osmd.render();
+  await osmdInstance.load(xml);
+  const pageWidth = Math.max(400, container.clientWidth - 24);
+  if (osmdInstance.EngravingRules) {
+    osmdInstance.EngravingRules.PageWidth = pageWidth;
+  }
+  osmdInstance.render();
+  if (meta.mode === "segment" && meta.start != null && meta.end != null) {
+    container.dataset.segment = `${meta.start}-${meta.end}`;
+  }
+  scheduleWaveformFit();
 }
 
 function formatTime(sec) {
@@ -534,7 +904,10 @@ function onKeyDown(e) {
   const idx = parseInt(e.key, 10);
   if (idx >= 1 && idx <= taxonomy.length) {
     document.getElementById("labelType").value = taxonomy[idx - 1];
-    applyLabelToSelection();
+    refreshDragSelection();
+    if (selectedRegion && !isTrimRegion(selectedRegion)) {
+      applyLabelToSelection();
+    }
   }
   if (!selectedRegion || isTrimRegion(selectedRegion)) return;
   const step = 0.01;

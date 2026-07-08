@@ -34,12 +34,16 @@
   <section id="scorePanel">
     <div class="score-toolbar">
       <strong>Score segment</strong>
-      <label>From measure <input id="measureStart" type="number" min="1" value="1" /></label>
-      <label>to <input id="measureEnd" type="number" min="1" value="1" /></label>
+      <div class="segment-range">
+        <label>m<input id="measureStart" type="number" min="1" value="1" title="Start measure" /> : <input id="startBeat" type="number" min="1" value="1" title="Start beat" /></label>
+        <label>– m<input id="measureEnd" type="number" min="1" value="1" title="End measure" /> : <input id="endBeat" type="number" min="1" placeholder="·" title="End beat (empty = full measure)" /></label>
+      </div>
+      <div class="segment-actions">
+        <button id="viewFullScoreBtn" type="button">View full</button>
+        <button id="viewSegmentScoreBtn" type="button">View segment</button>
+        <button id="applySegmentBtn" type="button">Apply &amp; regenerate</button>
+      </div>
       <span id="measureTotal" class="hint"></span>
-      <button id="viewFullScoreBtn" type="button">View full score</button>
-      <button id="viewSegmentScoreBtn" type="button">View segment</button>
-      <button id="applySegmentBtn" type="button">Apply segment &amp; regenerate reference</button>
     </div>
     <div id="osmdContainer"></div>
   </section>
@@ -61,7 +65,9 @@
       <div id="scrubberProgress" class="scrubber-progress"></div>
       <div id="playhead" class="playhead"></div>
     </div>
-    <div id="waveform"></div>
+    <div class="waveform-wrap">
+      <div id="waveform"></div>
+    </div>
     <div class="trim-toolbar">
       <strong>Performance trim</strong>
       <span id="trimInfo" class="hint">Drag the green handles to discard silence at start/end.</span>
@@ -73,7 +79,7 @@
 
   <aside id="inspector">
     <h2>Selected region</h2>
-    <p id="selectionInfo">Click-drag on waveform to select a range.</p>
+    <p id="selectionInfo">Drag on waveform to add a label. Double-click a region to edit it.</p>
     <label>Type
       <select id="labelType"></select>
     </label>
@@ -89,10 +95,11 @@
     </div>
     <h3>Hotkeys</h3>
     <ul class="hotkeys">
-      <li>1-8: assign label type</li>
+      <li>1-8: assign label type to selected region</li>
       <li>Space: play/pause</li>
-      <li>Click/drag scrubber or waveform to move playhead</li>
-      <li>←/→: nudge selection edge</li>
+      <li>Drag scrubber to move playhead</li>
+      <li>Drag waveform to add a label (uses type above)</li>
+      <li>Double-click a region to select and edit</li>
     </ul>
   </aside>
 

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import logging
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -12,6 +14,47 @@ from librosa.sequence import dtw
 
 from datacreate.config import PipelineConfig
 from datacreate.models import Label
+
+_DEBUG_LOG = Path(__file__).resolve().parents[4] / "debug-e01e0d.log"
+
+
+def _debug_log(
+    location: str,
+    message: str,
+    data: dict[str, Any],
+    hypothesis_id: str,
+    run_id: str = "pre-fix",
+) -> None:
+    # region agent log
+    try:
+        payload = {
+            "sessionId": "e01e0d",
+            "runId": run_id,
+            "hypothesisId": hypothesis_id,
+            "location": location,
+            "message": message,
+            "data": data,
+            "timestamp": int(time.time() * 1000),
+        }
+        with _DEBUG_LOG.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(payload) + "\n")
+    except OSError:
+        pass
+    # endregion
+
+
+def _zero_norm_columns(feat: np.ndarray, eps: float = 1e-8) -> int:
+    return int(np.sum(np.linalg.norm(feat, axis=0) < eps))
+
+
+def _sanitize_features(feat: np.ndarray, eps: float = 1e-8) -> np.ndarray:
+    """Replace silent chroma frames so cosine DTW stays finite."""
+    out = feat.copy()
+    norms = np.linalg.norm(out, axis=0)
+    silent = norms < eps
+    if np.any(silent):
+        out[:, silent] = 1.0 / np.sqrt(out.shape[0])
+    return out
 
 
 @dataclass
@@ -41,8 +84,56 @@ def run_alignment(
     perf, _ = load_audio(performance_wav, sr, mono=True)
     ref, _ = load_audio(reference_wav, sr, mono=True)
 
+    # region agent log
+    _debug_log(
+        "stage5_alignment.py:run_alignment",
+        "loaded audio",
+        {
+            "perf_samples": int(len(perf)),
+            "ref_samples": int(len(ref)),
+            "perf_nan": int(np.isnan(perf).sum()),
+            "ref_nan": int(np.isnan(ref).sum()),
+            "perf_rms": float(np.sqrt(np.mean(np.square(perf)))),
+            "ref_rms": float(np.sqrt(np.mean(np.square(ref)))),
+        },
+        "A,B",
+    )
+    # endregion
+
     perf_feat = extract_features(perf, sr, config)
     ref_feat = extract_features(ref, sr, config)
+
+    # region agent log
+    _debug_log(
+        "stage5_alignment.py:run_alignment",
+        "raw features before sanitize",
+        {
+            "perf_shape": list(perf_feat.shape),
+            "ref_shape": list(ref_feat.shape),
+            "perf_zero_norm_cols": _zero_norm_columns(perf_feat),
+            "ref_zero_norm_cols": _zero_norm_columns(ref_feat),
+            "perf_feat_nan": int(np.isnan(perf_feat).sum()),
+            "ref_feat_nan": int(np.isnan(ref_feat).sum()),
+        },
+        "C,D",
+    )
+    # endregion
+
+    perf_feat = _sanitize_features(perf_feat)
+    ref_feat = _sanitize_features(ref_feat)
+
+    # region agent log
+    _debug_log(
+        "stage5_alignment.py:run_alignment",
+        "features after sanitize",
+        {
+            "perf_zero_norm_cols": _zero_norm_columns(perf_feat),
+            "ref_zero_norm_cols": _zero_norm_columns(ref_feat),
+        },
+        "D",
+        run_id="post-fix",
+    )
+    # endregion
 
     band_ratio = float(config.alignment.get("dtw_band_ratio", 0.1))
     cost_matrix, wp = _run_dtw(ref_feat, perf_feat, band_ratio, config, logger)
@@ -76,13 +167,40 @@ def _run_dtw(
 ) -> tuple[np.ndarray, np.ndarray]:
     if config.alignment.get("jump_dtw", True):
         logger.info("Running bounded DTW (band_rad=%.3f)", band_ratio)
-    cost_matrix, wp = dtw(
-        X=ref_feat,
-        Y=perf_feat,
-        metric="cosine",
-        subseq=False,
-        band_rad=band_ratio,
+    try:
+        cost_matrix, wp = dtw(
+            X=ref_feat,
+            Y=perf_feat,
+            metric="cosine",
+            subseq=False,
+            band_rad=band_ratio,
+        )
+    except Exception as exc:
+        # region agent log
+        _debug_log(
+            "stage5_alignment.py:_run_dtw",
+            "dtw failed",
+            {
+                "error": str(exc),
+                "ref_zero_norm_cols": _zero_norm_columns(ref_feat),
+                "perf_zero_norm_cols": _zero_norm_columns(perf_feat),
+            },
+            "D",
+        )
+        # endregion
+        raise
+    # region agent log
+    _debug_log(
+        "stage5_alignment.py:_run_dtw",
+        "dtw succeeded",
+        {
+            "cost_nan": int(np.isnan(cost_matrix).sum()),
+            "wp_shape": list(wp.shape),
+        },
+        "D",
+        run_id="post-fix",
     )
+    # endregion
     return cost_matrix, wp
 
 

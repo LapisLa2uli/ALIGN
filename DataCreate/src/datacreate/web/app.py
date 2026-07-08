@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import tempfile
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -19,6 +21,7 @@ from datacreate.sample_prep import (
     ensure_full_score,
     get_prep_state,
 )
+from datacreate.score_segment import extract_measure_range
 from datacreate.utils import read_json, setup_sample_logger, write_json
 from datacreate.validation import validate_labels_file
 
@@ -41,6 +44,8 @@ class ReviewPayload(BaseModel):
 class ScoreSegmentPayload(BaseModel):
     start_measure: int
     end_measure: int
+    start_beat: int = 1
+    end_beat: int | None = None
 
 
 class PerformanceTrimPayload(BaseModel):
@@ -88,7 +93,11 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
     @app.get("/", response_class=HTMLResponse)
     def index() -> HTMLResponse:
         html = (TEMPLATES_DIR / "annotate.html").read_text(encoding="utf-8")
-        return HTMLResponse(html)
+        js_v = int((STATIC_DIR / "annotate.js").stat().st_mtime)
+        css_v = int((STATIC_DIR / "style.css").stat().st_mtime)
+        html = html.replace("/static/style.css", f"/static/style.css?v={css_v}")
+        html = html.replace("/static/annotate.js", f"/static/annotate.js?v={js_v}")
+        return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
     @app.get("/api/samples")
     def list_samples() -> list[dict[str, Any]]:
@@ -169,6 +178,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                 ensure_full_score(sample_dir)
             except FileNotFoundError:
                 pass
+        perf_path = sample_dir / "performance_audio.wav"
+        audio_mtime = int(perf_path.stat().st_mtime * 1000) if perf_path.exists() else 0
         return {
             "sample_id": sample_id,
             "taxonomy": config.taxonomy,
@@ -178,6 +189,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             "self_reported": labels.get("self_reported", []),
             "annotator_id": labels.get("annotator_id"),
             "audio_url": f"/api/samples/{sample_id}/audio",
+            "audio_mtime": audio_mtime,
             "score_url": f"/api/samples/{sample_id}/score",
             "full_score_url": f"/api/samples/{sample_id}/full-score",
             "prep": prep,
@@ -188,7 +200,11 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         path = samples_root / sample_id / "performance_audio.wav"
         if not path.exists():
             raise HTTPException(404, "Audio not found")
-        return FileResponse(path, media_type="audio/wav")
+        return FileResponse(
+            path,
+            media_type="audio/wav",
+            headers={"Cache-Control": "no-store"},
+        )
 
     @app.get("/api/samples/{sample_id}/score")
     def get_score(sample_id: str) -> FileResponse:
@@ -208,6 +224,39 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                 raise HTTPException(404, "Full score not found") from exc
         return FileResponse(path, media_type="application/xml")
 
+    @app.get("/api/samples/{sample_id}/score-preview")
+    def preview_score_segment(
+        sample_id: str,
+        start_measure: int = Query(..., ge=1),
+        end_measure: int = Query(..., ge=1),
+        start_beat: int = Query(1, ge=1),
+        end_beat: int | None = Query(None, ge=1),
+    ) -> Response:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        full_score = ensure_full_score(sample_dir)
+        logger = setup_sample_logger(sample_dir, name="prep")
+        fd, tmp_name = tempfile.mkstemp(suffix=".musicxml")
+        tmp_path = Path(tmp_name)
+        try:
+            os.close(fd)
+            extract_measure_range(
+                full_score,
+                tmp_path,
+                start_measure,
+                end_measure,
+                logger,
+                start_beat=start_beat,
+                end_beat=end_beat,
+            )
+            xml = tmp_path.read_text(encoding="utf-8")
+        except (ValueError, FileNotFoundError) as exc:
+            raise HTTPException(400, str(exc)) from exc
+        finally:
+            tmp_path.unlink(missing_ok=True)
+        return Response(content=xml, media_type="application/xml")
+
     @app.post("/api/samples/{sample_id}/score-segment")
     def set_score_segment(sample_id: str, payload: ScoreSegmentPayload) -> dict[str, Any]:
         sample_dir = samples_root / sample_id
@@ -221,6 +270,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                 payload.end_measure,
                 config,
                 logger,
+                start_beat=payload.start_beat,
+                end_beat=payload.end_beat,
             )
         except (ValueError, FileNotFoundError, RuntimeError) as exc:
             raise HTTPException(400, str(exc)) from exc
