@@ -18,6 +18,26 @@ header {
   justify-content: space-between;
   align-items: center;
 }
+.batch-panel {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 16px;
+  background: #151515;
+  border-bottom: 1px solid #333;
+  font-size: 13px;
+}
+.batch-panel input[type="number"] { width: 72px; margin-left: 4px; }
+.batch-panel button {
+  background: #2d6cdf;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 .controls { display: flex; gap: 12px; align-items: center; }
 #scorePanel {
   grid-column: 1 / -1;
@@ -95,5 +115,31 @@ button {
 }
 button:hover { background: #1f57c3; }
 .hotkeys { font-size: 12px; color: #aaa; padding-left: 18px; }
+.score-toolbar, .trim-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  font-size: 13px;
+}
+.score-toolbar input[type="number"] {
+  width: 64px;
+  margin-left: 4px;
+}
+.score-toolbar button, .trim-toolbar button {
+  background: #2d6cdf;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.hint { color: #666; font-size: 12px; }
+.region-trim { border: 2px solid #3c3 !important; background: rgba(60, 200, 60, 0.12) !important; z-index: 1; }
+.region-trim-handle { background: #3c3 !important; }
 .region-candidate { border: 2px dashed #f90 !important; background: rgba(255,153,0,0.15) !important; }
 .region-label { background: rgba(45,108,223,0.35) !important; }

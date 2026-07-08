@@ -15,7 +15,8 @@ def synthesize_reference(
     config: PipelineConfig,
     logger: logging.Logger,
 ) -> Path:
-    verified = copy_verified_score(score_path, sample_dir / "verified_score.musicxml")
+    dest = sample_dir / "verified_score.musicxml"
+    verified = copy_verified_score(score_path, dest)
     version = check_musescore_version(config, logger)
     output_wav = sample_dir / "reference_audio.wav"
     render_score_to_wav(config, verified, output_wav, logger)

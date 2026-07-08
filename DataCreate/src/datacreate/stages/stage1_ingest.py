@@ -46,3 +46,11 @@ def copy_verified_score(source: Path, dest: Path) -> Path:
         return dest
     shutil.copy2(source, dest)
     return dest
+
+
+def ingest_verified_score(source: Path, sample_dir: Path) -> tuple[Path, Path]:
+    """Store full score archive and working verified copy."""
+    sample_dir.mkdir(parents=True, exist_ok=True)
+    full = copy_verified_score(source, sample_dir / "full_score.musicxml")
+    verified = copy_verified_score(source, sample_dir / "verified_score.musicxml")
+    return full, verified

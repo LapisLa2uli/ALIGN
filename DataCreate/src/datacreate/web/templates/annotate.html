@@ -13,7 +13,7 @@
   <header>
     <h1>MusicEval Annotation</h1>
     <div class="controls">
-      <label>Sample
+      <label>Sample ID
         <select id="sampleSelect"></select>
       </label>
       <label>Annotator ID <input id="annotatorId" type="text" placeholder="annotator_01" /></label>
@@ -21,7 +21,26 @@
     </div>
   </header>
 
+  <section id="batchPanel" class="batch-panel">
+    <strong>Batch process</strong>
+    <span id="batchDefaults" class="hint"></span>
+    <label>From ID <input id="batchFrom" type="number" min="1" value="1" /></label>
+    <label>to <input id="batchTo" type="number" min="1" value="1" /></label>
+    <label><input id="batchSkipExisting" type="checkbox" checked /> Skip already processed</label>
+    <button id="runBatchBtn" type="button">Run batch</button>
+    <span id="batchStatus" class="hint"></span>
+  </section>
+
   <section id="scorePanel">
+    <div class="score-toolbar">
+      <strong>Score segment</strong>
+      <label>From measure <input id="measureStart" type="number" min="1" value="1" /></label>
+      <label>to <input id="measureEnd" type="number" min="1" value="1" /></label>
+      <span id="measureTotal" class="hint"></span>
+      <button id="viewFullScoreBtn" type="button">View full score</button>
+      <button id="viewSegmentScoreBtn" type="button">View segment</button>
+      <button id="applySegmentBtn" type="button">Apply segment &amp; regenerate reference</button>
+    </div>
     <div id="osmdContainer"></div>
   </section>
 
@@ -43,6 +62,11 @@
       <div id="playhead" class="playhead"></div>
     </div>
     <div id="waveform"></div>
+    <div class="trim-toolbar">
+      <strong>Performance trim</strong>
+      <span id="trimInfo" class="hint">Drag the green handles to discard silence at start/end.</span>
+      <button id="applyTrimBtn" type="button">Apply trim &amp; re-align</button>
+    </div>
     <div id="candidateTrack" class="track-label">Candidates (dashed)</div>
     <div id="labelTrack" class="track-label">Confirmed labels</div>
   </section>

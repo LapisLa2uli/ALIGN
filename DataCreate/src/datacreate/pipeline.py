@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from datacreate.config import PipelineConfig
-from datacreate.stages.stage1_ingest import copy_verified_score, validate_score
+from datacreate.stages.stage1_ingest import ingest_verified_score, validate_score
 from datacreate.stages.stage2_omr import process_pdf
 from datacreate.stages.stage3_reference import synthesize_reference
 from datacreate.stages.stage4_performance import ingest_performance
@@ -30,7 +30,7 @@ class DataCreatePipeline:
     def __init__(self, config: PipelineConfig | None = None):
         self.config = config or PipelineConfig.load()
         self.samples_root = ensure_dir(
-            self.config.path("samples_root") or Path("samples")
+            self.config.resolved_path("samples_root") or Path("samples")
         )
 
     def create_sample(
@@ -70,7 +70,7 @@ class DataCreatePipeline:
             verified = validate_score(job.score_path, logger)
             if job.verified_score_path and job.verified_score_path.exists():
                 verified = job.verified_score_path
-            copy_verified_score(verified, job.sample_dir / "verified_score.musicxml")
+            ingest_verified_score(verified, job.sample_dir)
         else:
             raise ValueError(f"Unsupported score input: {job.score_path}")
         job.state["ingest"] = True

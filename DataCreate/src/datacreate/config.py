@@ -33,6 +33,15 @@ class PipelineConfig:
         value = self.paths.get(key, default)
         return Path(value) if value else None
 
+    def resolved_path(self, key: str, default: str | None = None) -> Path | None:
+        path = self.path(key, default)
+        if path is None:
+            return None
+        if path.is_absolute():
+            return path
+        base = Path(__file__).resolve().parents[2]
+        return (base / path).resolve()
+
     def sample_rate(self) -> int:
         return int(self.audio.get("sample_rate", 22050))
 

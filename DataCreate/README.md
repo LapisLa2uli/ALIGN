@@ -44,9 +44,30 @@ Set `paths.musescore`, `paths.audiveris`, and optionally `paths.soundfont` in `c
 
 ### Batch mode (Stages 1–5, 7 — no UI)
 
+Single sample:
+
 ```powershell
 conda activate MusicEval
 datacreate run --score fixtures/demo_scale.musicxml --performance path/to/recording.wav --sample-id demo_001
+```
+
+**Batch range** — process many performance takes against one shared MusicXML (e.g. partial recordings `001`–`014` in `RawData/Audio/`):
+
+```powershell
+cd "D:\stuff\Audio Evaluation\ALIGN\DataCreate"
+datacreate batch-range --from 1 --to 14
+# or explicitly:
+datacreate batch-range --score "../RawData/Score/001.musicxml" --audio-dir "../RawData/Audio" --from 001 --to 014
+```
+
+Each ID becomes a sample folder (`samples/001/`, `samples/002/`, …). Already-processed IDs are skipped unless you pass `--no-skip-existing`. Supported audio extensions: `.mp3`, `.m4a`, `.wav`, `.flac`, etc.
+
+Configure default raw-data paths in `config/default.yaml`:
+
+```yaml
+paths:
+  raw_data_score: ../RawData/Score
+  raw_data_audio: ../RawData/Audio
 ```
 
 Output lands in `samples/<sample_id>/`:
@@ -73,6 +94,10 @@ datacreate serve
 ```
 
 Open http://127.0.0.1:8765 — zoomable waveform with draggable regions (wavesurfer.js), score view (OpenSheetMusicDisplay), candidate confirm/reject workflow.
+
+Use the **Batch process** bar to run an ID range (e.g. 1–14) against the shared score, then pick any **Sample ID** from the dropdown to segment, trim, and label that take.
+
+**Partial-piece workflow:** If your recording covers only part of a long score, use the score toolbar to pick a measure range (e.g. 12–48). Click **Apply segment & regenerate reference** to extract that slice from the full MusicXML and synthesize matching reference audio. Use the green **trim** handles on the waveform to discard leading/trailing silence, then **Apply trim & re-align**.
 
 ### Synthetic batch mode (Stage 9)
 

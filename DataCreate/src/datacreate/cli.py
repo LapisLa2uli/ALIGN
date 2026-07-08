@@ -6,6 +6,7 @@ from pathlib import Path
 
 import uvicorn
 
+from datacreate.batch_audio import run_batch_range
 from datacreate.config import PipelineConfig
 from datacreate.pipeline import DataCreatePipeline
 from datacreate.stages.stage9_synthetic import generate_synthetic_samples
@@ -31,6 +32,17 @@ def main() -> None:
     resume = sub.add_parser("resume", help="Resume an existing sample")
     resume.add_argument("--sample-id", type=str, required=True)
 
+    batch_range = sub.add_parser(
+        "batch-range",
+        help="Batch process audio IDs against one MusicXML score",
+    )
+    batch_range.add_argument("--score", type=Path, help="Path to shared MusicXML score")
+    batch_range.add_argument("--audio-dir", type=Path, help="Directory of performance audio files")
+    batch_range.add_argument("--from", dest="id_from", required=True, help="Start ID (e.g. 1 or 001)")
+    batch_range.add_argument("--to", dest="id_to", required=True, help="End ID inclusive (e.g. 14 or 014)")
+    batch_range.add_argument("--id-width", type=int, default=3)
+    batch_range.add_argument("--no-skip-existing", action="store_true")
+
     sub.add_parser("serve", help="Launch annotation web UI")
 
     args = parser.parse_args()
@@ -48,12 +60,45 @@ def main() -> None:
     elif args.command == "resume":
         job = pipeline.resume(args.sample_id)
         print(f"Resumed sample {job.sample_id}: state={job.state}")
+    elif args.command == "batch-range":
+        score = args.score
+        audio_dir = args.audio_dir
+        if score is None:
+            score = config.resolved_path("raw_data_score")
+        if audio_dir is None:
+            audio_dir = config.resolved_path("raw_data_audio")
+        if score is None:
+            raise SystemExit("Provide --score or set paths.raw_data_score in config")
+        if audio_dir is None:
+            raise SystemExit("Provide --audio-dir or set paths.raw_data_audio in config")
+        score_path = Path(score)
+        if score_path.is_dir():
+            candidates = sorted(score_path.glob("*.musicxml")) + sorted(score_path.glob("*.mxl"))
+            if not candidates:
+                raise SystemExit(f"No MusicXML in {score_path}")
+            score_path = candidates[0]
+        batch = run_batch_range(
+            score_path=score_path,
+            audio_dir=Path(audio_dir),
+            id_from=args.id_from,
+            id_to=args.id_to,
+            config=config,
+            id_width=args.id_width,
+            skip_existing=not args.no_skip_existing,
+        )
+        print(
+            f"Batch complete: {batch.succeeded} ok, {batch.skipped} skipped, "
+            f"{batch.failed} failed (IDs {batch.id_from}-{batch.id_to})"
+        )
+        for item in batch.results:
+            if item.status == "error":
+                print(f"  ERROR {item.sample_id}: {item.error}", file=sys.stderr)
     elif args.command == "serve":
         serve_main(config)
 
 
 def batch_main() -> None:
-    sys.argv = ["datacreate-batch", "run"] + sys.argv[1:]
+    sys.argv = ["datacreate-batch", "batch-range"] + sys.argv[1:]
     main()
 
 

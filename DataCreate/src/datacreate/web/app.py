@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -9,9 +10,16 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from datacreate.batch_audio import list_available_audio_ids, run_batch_range
 from datacreate.config import PipelineConfig
 from datacreate.models import LabelsDocument
-from datacreate.utils import read_json, write_json
+from datacreate.sample_prep import (
+    apply_performance_trim,
+    apply_score_segment,
+    ensure_full_score,
+    get_prep_state,
+)
+from datacreate.utils import read_json, setup_sample_logger, write_json
 from datacreate.validation import validate_labels_file
 
 
@@ -30,9 +38,50 @@ class ReviewPayload(BaseModel):
     annotator_b_labels: LabelsPayload
 
 
+class ScoreSegmentPayload(BaseModel):
+    start_measure: int
+    end_measure: int
+
+
+class PerformanceTrimPayload(BaseModel):
+    trim_start: float
+    trim_end: float | None = None
+
+
+class BatchRangePayload(BaseModel):
+    id_from: int | str
+    id_to: int | str
+    score_path: str | None = None
+    audio_dir: str | None = None
+    id_width: int = 3
+    skip_existing: bool = True
+
+
+def _sample_sort_key(name: str) -> tuple[int, str]:
+    match = re.search(r"(\d+)", name)
+    return (int(match.group(1)) if match else 0, name)
+
+
+def _resolve_score_path(config: PipelineConfig, override: str | None) -> Path:
+    if override:
+        path = Path(override)
+    else:
+        path = config.resolved_path("raw_data_score")
+        if path is None:
+            path = Path(__file__).resolve().parents[3] / "RawData" / "Score"
+        if path.is_dir():
+            candidates = sorted(path.glob("*.musicxml")) + sorted(path.glob("*.mxl"))
+            if not candidates:
+                raise FileNotFoundError(f"No MusicXML in {path}")
+            return candidates[0]
+    if not path.exists():
+        raise FileNotFoundError(f"Score not found: {path}")
+    return path
+
+
 def create_app(config: PipelineConfig | None = None) -> FastAPI:
     config = config or PipelineConfig.load()
-    samples_root = config.path("samples_root") or Path("samples")
+    samples_root = config.resolved_path("samples_root") or Path("samples")
     app = FastAPI(title="MusicEval Annotator", version="0.1.0")
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
@@ -42,12 +91,69 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         return HTMLResponse(html)
 
     @app.get("/api/samples")
-    def list_samples() -> list[str]:
+    def list_samples() -> list[dict[str, Any]]:
         if not samples_root.exists():
             return []
-        return sorted(
-            d.name for d in samples_root.iterdir() if d.is_dir() and (d / "performance_audio.wav").exists()
-        )
+        items = []
+        for d in samples_root.iterdir():
+            if not d.is_dir() or not (d / "performance_audio.wav").exists():
+                continue
+            label_count = 0
+            labels_path = d / "labels.json"
+            if labels_path.exists():
+                label_count = len(read_json(labels_path).get("labels", []))
+            items.append(
+                {
+                    "id": d.name,
+                    "label_count": label_count,
+                    "has_candidates": (d / "candidates.json").exists(),
+                }
+            )
+        items.sort(key=lambda x: _sample_sort_key(x["id"]))
+        return items
+
+    @app.get("/api/batch/info")
+    def batch_info() -> dict[str, Any]:
+        audio_dir = config.resolved_path("raw_data_audio")
+        score_path = config.resolved_path("raw_data_score")
+        if score_path and score_path.is_dir():
+            scores = sorted(score_path.glob("*.musicxml")) + sorted(score_path.glob("*.mxl"))
+            score_file = str(scores[0]) if scores else None
+        else:
+            score_file = str(score_path) if score_path else None
+        available = list_available_audio_ids(audio_dir) if audio_dir else []
+        return {
+            "audio_dir": str(audio_dir) if audio_dir else None,
+            "score_path": score_file,
+            "available_audio_ids": available,
+        }
+
+    @app.post("/api/batch/range")
+    def batch_range(payload: BatchRangePayload) -> dict[str, Any]:
+        try:
+            score_path = _resolve_score_path(config, payload.score_path)
+            audio_dir = Path(payload.audio_dir) if payload.audio_dir else config.resolved_path("raw_data_audio")
+            if audio_dir is None or not audio_dir.is_dir():
+                raise FileNotFoundError(f"Audio directory not found: {audio_dir}")
+            batch = run_batch_range(
+                score_path=score_path,
+                audio_dir=audio_dir,
+                id_from=payload.id_from,
+                id_to=payload.id_to,
+                config=config,
+                id_width=payload.id_width,
+                skip_existing=payload.skip_existing,
+            )
+        except (ValueError, FileNotFoundError) as exc:
+            raise HTTPException(400, str(exc)) from exc
+        except Exception as exc:
+            raise HTTPException(500, str(exc)) from exc
+        return {
+            "succeeded": batch.succeeded,
+            "skipped": batch.skipped,
+            "failed": batch.failed,
+            "results": [r.__dict__ for r in batch.results],
+        }
 
     @app.get("/api/samples/{sample_id}")
     def get_sample(sample_id: str) -> dict[str, Any]:
@@ -56,6 +162,13 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             raise HTTPException(404, "Sample not found")
         candidates = read_json(sample_dir / "candidates.json") if (sample_dir / "candidates.json").exists() else {"labels": []}
         labels = read_json(sample_dir / "labels.json") if (sample_dir / "labels.json").exists() else {"labels": [], "self_reported": []}
+        prep = get_prep_state(sample_dir, config)
+        full_score = sample_dir / "full_score.musicxml"
+        if not full_score.exists():
+            try:
+                ensure_full_score(sample_dir)
+            except FileNotFoundError:
+                pass
         return {
             "sample_id": sample_id,
             "taxonomy": config.taxonomy,
@@ -66,6 +179,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             "annotator_id": labels.get("annotator_id"),
             "audio_url": f"/api/samples/{sample_id}/audio",
             "score_url": f"/api/samples/{sample_id}/score",
+            "full_score_url": f"/api/samples/{sample_id}/full-score",
+            "prep": prep,
         }
 
     @app.get("/api/samples/{sample_id}/audio")
@@ -81,6 +196,53 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         if not path.exists():
             raise HTTPException(404, "Score not found")
         return FileResponse(path, media_type="application/xml")
+
+    @app.get("/api/samples/{sample_id}/full-score")
+    def get_full_score(sample_id: str) -> FileResponse:
+        sample_dir = samples_root / sample_id
+        path = sample_dir / "full_score.musicxml"
+        if not path.exists():
+            try:
+                path = ensure_full_score(sample_dir)
+            except FileNotFoundError as exc:
+                raise HTTPException(404, "Full score not found") from exc
+        return FileResponse(path, media_type="application/xml")
+
+    @app.post("/api/samples/{sample_id}/score-segment")
+    def set_score_segment(sample_id: str, payload: ScoreSegmentPayload) -> dict[str, Any]:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        logger = setup_sample_logger(sample_dir, name="prep")
+        try:
+            info = apply_score_segment(
+                sample_dir,
+                payload.start_measure,
+                payload.end_measure,
+                config,
+                logger,
+            )
+        except (ValueError, FileNotFoundError, RuntimeError) as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return {"status": "ok", "score_segment": info}
+
+    @app.post("/api/samples/{sample_id}/trim-performance")
+    def trim_performance(sample_id: str, payload: PerformanceTrimPayload) -> dict[str, Any]:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        logger = setup_sample_logger(sample_dir, name="prep")
+        try:
+            info = apply_performance_trim(
+                sample_dir,
+                payload.trim_start,
+                payload.trim_end,
+                config,
+                logger,
+            )
+        except (ValueError, FileNotFoundError) as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return {"status": "ok", "performance_trim": info}
 
     @app.put("/api/samples/{sample_id}/labels")
     def save_labels(sample_id: str, payload: LabelsPayload) -> dict[str, str]:
