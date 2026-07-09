@@ -87,6 +87,15 @@
       <input id="severity" type="range" min="1" max="5" value="3" />
     </label>
     <label>Comment <textarea id="comment" rows="3"></textarea></label>
+    <div id="repetitionPanel" class="repetition-panel hidden">
+      <h3>Original passage</h3>
+      <p id="repetitionLinkInfo" class="hint">Required: link the earlier range this repetition restates.</p>
+      <div class="actions">
+        <button id="linkRepetitionRegionBtn" type="button">Link to region</button>
+        <button id="drawRepetitionLinkBtn" type="button">Draw original range</button>
+        <button id="clearRepetitionLinkBtn" type="button">Clear link</button>
+      </div>
+    </div>
     <div class="actions">
       <button id="applyLabelBtn">Apply label</button>
       <button id="confirmCandidateBtn">Confirm candidate</button>
@@ -100,6 +109,7 @@
       <li>Drag scrubber to move playhead</li>
       <li>Drag waveform to add a label (uses type above)</li>
       <li>Double-click a region to select and edit</li>
+      <li>Repetition labels: link the original passage before saving</li>
     </ul>
   </aside>
 

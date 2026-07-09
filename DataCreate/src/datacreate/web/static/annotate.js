@@ -11,6 +11,18 @@ let scrubbing = false;
 let pendingRegions = [];
 let lastRegionClick = { id: null, time: 0 };
 const REGION_DOUBLE_CLICK_MS = 400;
+let repetitionLinkMode = null; // null | "pick" | "draw"
+/** >0 while addRegion is called from code (labels, trim, link overlays) — skip auto-label. */
+let programmaticRegionDepth = 0;
+
+function withProgrammaticRegions(fn) {
+  programmaticRegionDepth += 1;
+  try {
+    return fn();
+  } finally {
+    programmaticRegionDepth -= 1;
+  }
+}
 
 const TYPE_COLORS = {
   wrong_note: "rgba(255,60,60,0.45)",
@@ -89,6 +101,9 @@ function formatSegmentLabel(start, end, startBeat, endBeat) {
 }
 
 function getDragSelectionColor() {
+  if (repetitionLinkMode === "draw") {
+    return "rgba(200, 200, 210, 0.35)";
+  }
   const type = document.getElementById("labelType")?.value;
   return TYPE_COLORS[type] || "rgba(45,108,223,0.35)";
 }
@@ -101,8 +116,17 @@ function refreshDragSelection() {
   regionsPlugin.enableDragSelection({ color: getDragSelectionColor() });
 }
 
+function generateLabelId() {
+  return `lbl_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function isLinkOverlay(region) {
+  return region?.data?.role === "repetition-link";
+}
+
 function getRegionKind(region) {
   if (isTrimRegion(region)) return "trim";
+  if (isLinkOverlay(region)) return "link";
   if (region.data?.isCandidate) return "candidate";
   return "label";
 }
@@ -114,6 +138,7 @@ function syncRegionVisual(region, { selected = false } = {}) {
   const kind = getRegionKind(region);
   const parts = ["region"];
   if (kind === "trim") parts.push("region-trim");
+  else if (kind === "link") parts.push("region-link");
   else if (kind === "candidate") parts.push("region-candidate");
   else parts.push("region-label");
   if (selected) parts.push("region-selected");
@@ -125,6 +150,16 @@ function syncRegionVisual(region, { selected = false } = {}) {
     el.style.boxShadow = selected ? "0 0 0 1px rgba(0, 0, 0, 0.45)" : "";
     el.style.zIndex = selected ? "10" : "1";
     el.style.boxSizing = "border-box";
+    return;
+  }
+
+  if (kind === "link") {
+    el.style.border = "2px dashed #c8c8d0";
+    el.style.backgroundColor = "rgba(200, 200, 210, 0.35)";
+    el.style.boxShadow = "";
+    el.style.zIndex = "0";
+    el.style.boxSizing = "border-box";
+    el.style.pointerEvents = "none";
     return;
   }
 
@@ -142,6 +177,165 @@ function syncRegionVisual(region, { selected = false } = {}) {
     el.style.boxShadow = "";
     el.style.zIndex = "";
   }
+}
+
+function findLinkOverlay(parentRegion) {
+  const parentId = parentRegion?.data?.id;
+  if (!parentId) return null;
+  return regionsPlugin.getRegions().find(
+    (region) => region.data?.role === "repetition-link" && region.data?.parentId === parentId,
+  );
+}
+
+function syncRepetitionLinkOverlay(parentRegion) {
+  const existing = findLinkOverlay(parentRegion);
+  if (existing) existing.remove();
+
+  const range = parentRegion?.data?.repeats_label_range;
+  if (!range || parentRegion.data?.type !== "repetition") return;
+
+  const createOverlay = () =>
+    regionsPlugin.addRegion({
+      start: range.start_time,
+      end: range.end_time,
+      color: "rgba(200, 200, 210, 0.35)",
+      drag: false,
+      resize: false,
+      content: "original",
+      id: `link-${parentRegion.data.id}`,
+      data: { role: "repetition-link", parentId: parentRegion.data.id },
+    });
+  const overlay =
+    programmaticRegionDepth > 0
+      ? createOverlay()
+      : withProgrammaticRegions(createOverlay);
+  syncRegionVisual(overlay);
+}
+
+function setRepetitionLinkRange(parentRegion, start, end, existingRegion = null) {
+  if (!parentRegion?.data || parentRegion.data.type !== "repetition") return;
+  const lo = Math.min(start, end);
+  const hi = Math.max(start, end);
+  if (hi - lo < 1e-4) {
+    existingRegion?.remove();
+    return;
+  }
+
+  parentRegion.data.repeats_label_range = { start_time: lo, end_time: hi };
+  repetitionLinkMode = null;
+  refreshDragSelection();
+
+  // Prefer converting the just-drawn region into the overlay so no label is created.
+  if (existingRegion && !isTrimRegion(existingRegion)) {
+    const oldOverlay = findLinkOverlay(parentRegion);
+    if (oldOverlay && oldOverlay !== existingRegion) oldOverlay.remove();
+
+    existingRegion.data = {
+      role: "repetition-link",
+      parentId: parentRegion.data.id,
+    };
+    existingRegion.setOptions({
+      start: lo,
+      end: hi,
+      color: "rgba(200, 200, 210, 0.35)",
+      drag: false,
+      resize: false,
+      content: "original",
+    });
+    if (typeof existingRegion.setId === "function") {
+      existingRegion.setId(`link-${parentRegion.data.id}`);
+    } else {
+      existingRegion.id = `link-${parentRegion.data.id}`;
+    }
+    syncRegionVisual(existingRegion);
+  } else {
+    syncRepetitionLinkOverlay(parentRegion);
+  }
+  updateRepetitionPanel(parentRegion);
+}
+
+function updateRepetitionPanel(region) {
+  const panel = document.getElementById("repetitionPanel");
+  const info = document.getElementById("repetitionLinkInfo");
+  if (!panel || !info) return;
+
+  const isRepetition = region && !isTrimRegion(region) && !isLinkOverlay(region)
+    && region.data?.type === "repetition";
+  panel.classList.toggle("hidden", !isRepetition);
+  if (!isRepetition) {
+    repetitionLinkMode = null;
+    return;
+  }
+
+  const range = region.data?.repeats_label_range;
+  if (range) {
+    info.textContent =
+      `Linked original: ${formatTime(range.start_time)} – ${formatTime(range.end_time)}`;
+  } else if (repetitionLinkMode === "pick") {
+    info.textContent = "Double-click the original passage region on the waveform.";
+  } else if (repetitionLinkMode === "draw") {
+    info.textContent = "Drag on the waveform to mark the original passage.";
+  } else {
+    info.textContent = "Required: link the earlier range this repetition restates.";
+  }
+}
+
+function regionDataToLabel(region) {
+  const d = region.data || {};
+  const label = {
+    id: d.id || generateLabelId(),
+    source: d.source || "manual",
+    start_time: region.start,
+    end_time: region.end,
+    type: d.type || document.getElementById("labelType").value,
+    severity: d.severity ?? null,
+    comment: d.comment ?? null,
+    deviation_cents: d.deviation_cents ?? null,
+    deviation_ms: d.deviation_ms ?? null,
+    measure_number: d.measure_number ?? null,
+    note_id: d.note_id ?? null,
+  };
+  if (label.type === "repetition" && d.repeats_label_range) {
+    label.repeats_label_range = {
+      start_time: d.repeats_label_range.start_time,
+      end_time: d.repeats_label_range.end_time,
+    };
+  }
+  return label;
+}
+
+function setupRepetitionControls() {
+  document.getElementById("linkRepetitionRegionBtn").onclick = () => {
+    if (!selectedRegion || selectedRegion.data?.type !== "repetition") return;
+    repetitionLinkMode = "pick";
+    refreshDragSelection();
+    updateRepetitionPanel(selectedRegion);
+  };
+  document.getElementById("drawRepetitionLinkBtn").onclick = () => {
+    if (!selectedRegion || selectedRegion.data?.type !== "repetition") return;
+    repetitionLinkMode = "draw";
+    refreshDragSelection();
+    updateRepetitionPanel(selectedRegion);
+  };
+  document.getElementById("clearRepetitionLinkBtn").onclick = () => {
+    if (!selectedRegion || selectedRegion.data?.type !== "repetition") return;
+    delete selectedRegion.data.repeats_label_range;
+    repetitionLinkMode = null;
+    refreshDragSelection();
+    syncRepetitionLinkOverlay(selectedRegion);
+    updateRepetitionPanel(selectedRegion);
+  };
+  document.getElementById("labelType").addEventListener("change", () => {
+    refreshDragSelection();
+    if (selectedRegion && !isTrimRegion(selectedRegion)) {
+      if (selectedRegion.data?.type === "repetition"
+        && document.getElementById("labelType").value !== "repetition") {
+        delete selectedRegion.data.repeats_label_range;
+        syncRepetitionLinkOverlay(selectedRegion);
+      }
+      updateRepetitionPanel(selectedRegion);
+    }
+  });
 }
 
 function clearRegionSelection() {
@@ -240,11 +434,30 @@ async function init() {
   setupScrubber();
   setupPrepControls();
   setupBatchControls();
+  setupRepetitionControls();
   window.addEventListener("resize", debounce(scheduleWaveformFit, 150));
 
   refreshDragSelection();
   regionsPlugin.on("region-created", (region) => {
-    if (isTrimRegion(region)) return;
+    if (programmaticRegionDepth > 0) return;
+    if (isTrimRegion(region) || isLinkOverlay(region)) return;
+
+    // Drawing the original passage for a repetition: never create a label.
+    if (
+      repetitionLinkMode === "draw" &&
+      selectedRegion?.data?.type === "repetition"
+    ) {
+      setRepetitionLinkRange(
+        selectedRegion,
+        region.start,
+        region.end,
+        region,
+      );
+      return;
+    }
+
+    // Loaded / already-typed regions must not be overwritten by the type dropdown.
+    if (region.data?.type || region.data?.role) return;
     applyLabelToRegion(region, { comment: null });
   });
   regionsPlugin.on("region-clicked", (region, e) => {
@@ -253,11 +466,26 @@ async function init() {
       updateTrimInfo();
       return;
     }
+    if (isLinkOverlay(region)) return;
+
     const now = Date.now();
     const isDoubleClick =
       lastRegionClick.id === region.id &&
       now - lastRegionClick.time <= REGION_DOUBLE_CLICK_MS;
+
+    if (
+      isDoubleClick &&
+      repetitionLinkMode === "pick" &&
+      selectedRegion?.data?.type === "repetition" &&
+      region !== selectedRegion
+    ) {
+      setRepetitionLinkRange(selectedRegion, region.start, region.end);
+      lastRegionClick = { id: null, time: 0 };
+      return;
+    }
+
     if (isDoubleClick) {
+      repetitionLinkMode = null;
       selectRegion(region);
       lastRegionClick = { id: null, time: 0 };
     } else {
@@ -299,7 +527,7 @@ async function init() {
 }
 
 function isTrimRegion(region) {
-  return region?.data?.role === "trim";
+  return region?.data?.role === "trim" || region?.id === "trim-keep";
 }
 
 function setupBatchControls() {
@@ -464,9 +692,11 @@ function updatePlayhead() {
 
 function onWaveformReady() {
   fitWaveformToContainer();
-  pendingRegions.forEach(({ label, isCandidate }) => addRegion(label, isCandidate));
-  pendingRegions = [];
-  ensureTrimRegion();
+  withProgrammaticRegions(() => {
+    pendingRegions.forEach(({ label, isCandidate }) => addRegion(label, isCandidate));
+    pendingRegions = [];
+    ensureTrimRegion();
+  });
   updatePlayhead();
   scheduleWaveformFit();
 }
@@ -480,16 +710,23 @@ function ensureTrimRegion() {
     trimRegion = null;
   }
 
-  trimRegion = regionsPlugin.addRegion({
-    start: 0,
-    end: duration,
-    color: "rgba(60, 200, 60, 0.15)",
-    drag: false,
-    resize: true,
-    content: "keep",
-    id: "trim-keep",
-    data: { role: "trim" },
-  });
+  const createTrim = () =>
+    regionsPlugin.addRegion({
+      start: 0,
+      end: duration,
+      color: "rgba(60, 200, 60, 0.15)",
+      drag: false,
+      resize: true,
+      content: "keep",
+      id: "trim-keep",
+      data: { role: "trim" },
+    });
+
+  trimRegion =
+    programmaticRegionDepth > 0 ? createTrim() : withProgrammaticRegions(createTrim);
+  if (trimRegion) {
+    trimRegion.data = { ...(trimRegion.data || {}), role: "trim" };
+  }
   syncRegionVisual(trimRegion);
   updateTrimInfo();
 }
@@ -564,6 +801,7 @@ async function loadSample(sampleId) {
 
   trimRegion = null;
   selectedRegion = null;
+  repetitionLinkMode = null;
   lastRegionClick = { id: null, time: 0 };
   resetSelectionInfo();
   regionsPlugin.clearRegions();
@@ -617,16 +855,38 @@ function populateTypeSelect() {
 function addRegion(label, isCandidate) {
   const color = TYPE_COLORS[label.type] || "rgba(45,108,223,0.35)";
   const display = TYPE_LABELS[label.type] || label.type;
-  const region = regionsPlugin.addRegion({
-    start: label.start_time,
-    end: label.end_time,
-    color,
-    drag: true,
-    resize: true,
+  const create = () =>
+    regionsPlugin.addRegion({
+      start: label.start_time,
+      end: label.end_time,
+      color,
+      drag: true,
+      resize: true,
+      content: display.split(" (")[0],
+      data: {
+        ...label,
+        isCandidate,
+        repeats_label_range: label.repeats_label_range || null,
+      },
+    });
+  const region =
+    programmaticRegionDepth > 0 ? create() : withProgrammaticRegions(create);
+  // Re-assert label data in case the plugin event path mutated it.
+  region.data = {
+    ...(region.data || {}),
+    ...label,
+    isCandidate,
+    type: label.type,
+    repeats_label_range: label.repeats_label_range || null,
+  };
+  region.setOptions({
     content: display.split(" (")[0],
-    data: { ...label, isCandidate },
+    color,
   });
   syncRegionVisual(region, { selected: selectedRegion === region });
+  if (label.type === "repetition" && label.repeats_label_range) {
+    syncRepetitionLinkOverlay(region);
+  }
   return region;
 }
 
@@ -652,18 +912,25 @@ function selectRegion(region) {
   if (d.type) document.getElementById("labelType").value = d.type;
   if (d.severity) document.getElementById("severity").value = d.severity;
   document.getElementById("comment").value = d.comment || "";
+  updateRepetitionPanel(region);
 }
 
 function applyLabelToRegion(region, overrides = {}) {
-  if (!region || isTrimRegion(region)) return;
-  const type = overrides.type || document.getElementById("labelType").value;
-  const severity = overrides.severity ?? parseInt(document.getElementById("severity").value, 10);
+  if (!region || isTrimRegion(region) || isLinkOverlay(region)) return;
+  const type =
+    overrides.type ||
+    region.data?.type ||
+    document.getElementById("labelType").value;
+  const severity =
+    overrides.severity ??
+    region.data?.severity ??
+    parseInt(document.getElementById("severity").value, 10);
   const comment = "comment" in overrides
     ? overrides.comment
-    : document.getElementById("comment").value || null;
+    : (region.data?.comment ?? document.getElementById("comment").value || null);
   region.data = {
     ...(region.data || {}),
-    id: (region.data && region.data.id) || `lbl_${Date.now()}`,
+    id: (region.data && region.data.id) || generateLabelId(),
     source: (region.data && region.data.source) || "manual",
     start_time: region.start,
     end_time: region.end,
@@ -671,6 +938,10 @@ function applyLabelToRegion(region, overrides = {}) {
     severity,
     comment,
   };
+  if (type !== "repetition") {
+    delete region.data.repeats_label_range;
+    syncRepetitionLinkOverlay(region);
+  }
   const display = (TYPE_LABELS[type] || type).split(" (")[0];
   region.setOptions({
     content: display,
@@ -678,6 +949,7 @@ function applyLabelToRegion(region, overrides = {}) {
   });
   if (selectedRegion === region) {
     updateSelectionInfo(region);
+    updateRepetitionPanel(region);
   }
   syncRegionVisual(region, { selected: selectedRegion === region });
 }
@@ -697,9 +969,12 @@ function promoteCandidate(source, overrideType) {
 
 function deleteSelectedRegion() {
   if (selectedRegion && !isTrimRegion(selectedRegion)) {
+    findLinkOverlay(selectedRegion)?.remove();
     selectedRegion.remove();
     selectedRegion = null;
+    repetitionLinkMode = null;
     resetSelectionInfo();
+    updateRepetitionPanel(null);
   }
 }
 
@@ -777,21 +1052,23 @@ async function saveLabels() {
   const labels = [];
   const candidatesLeft = [];
   regionsPlugin.getRegions().forEach((r) => {
-    if (isTrimRegion(r)) return;
-    const d = r.data || {
-      id: `lbl_${r.start}`,
-      source: "manual",
-      start_time: r.start,
-      end_time: r.end,
-      type: document.getElementById("labelType").value,
-    };
-    d.start_time = r.start;
-    d.end_time = r.end;
-    if (d.isCandidate) candidatesLeft.push(d);
-    else labels.push(d);
+    if (isTrimRegion(r) || isLinkOverlay(r)) return;
+    const label = regionDataToLabel(r);
+    if (r.data?.isCandidate) candidatesLeft.push(label);
+    else labels.push(label);
   });
   if (candidatesLeft.length) {
     alert(`${candidatesLeft.length} candidates still unreviewed. Confirm or reject them before saving.`);
+    return;
+  }
+  const missingRepetitionLink = labels.filter(
+    (label) => label.type === "repetition" && !label.repeats_label_range,
+  );
+  if (missingRepetitionLink.length) {
+    alert(
+      `${missingRepetitionLink.length} repetition label(s) need an original passage link. ` +
+      "Select each repetition, then use Link to region or Draw original range.",
+    );
     return;
   }
   const payload = {
