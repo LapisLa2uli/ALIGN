@@ -7,7 +7,6 @@ from typing import Any
 import numpy as np
 from music21 import chord, converter, note, stream, tempo
 
-from datacreate.sample_prep import ensure_full_score
 from datacreate.utils import read_json
 
 _PITCH_TYPES = (note.Note, note.Rest, note.Unpitched, chord.Chord)
@@ -125,7 +124,45 @@ def _residual_for_ref_range(
     return round(float(np.mean(vals)), 4)
 
 
+def align_score_events(
+    score_path: Path,
+    wp: np.ndarray,
+    n_ref: int,
+    frame_to_sec: float,
+    residuals: np.ndarray | None = None,
+) -> list[dict[str, Any]]:
+    """Map MusicXML note/rest events onto performance time via the DTW path.
+
+    Shared by the annotate UI (`build_note_alignment`) and Stage 5 rhythm detection.
+    """
+    score_events = _extract_score_events(score_path)
+    ref_to_perf = _build_ref_to_perf(wp, n_ref)
+
+    aligned_events: list[dict[str, Any]] = []
+    for ev in score_events:
+        perf_start = _ref_sec_to_perf_sec(ev["ref_start"], frame_to_sec, ref_to_perf)
+        perf_end = _ref_sec_to_perf_sec(ev["ref_end"], frame_to_sec, ref_to_perf)
+        if perf_end < perf_start:
+            perf_start, perf_end = perf_end, perf_start
+        residual = None
+        if residuals is not None:
+            residual = _residual_for_ref_range(
+                ev["ref_start"], ev["ref_end"], frame_to_sec, wp, residuals
+            )
+        aligned_events.append(
+            {
+                **ev,
+                "perf_start": round(perf_start, 4),
+                "perf_end": round(max(perf_end, perf_start + 0.001), 4),
+                "residual_mean": residual,
+            }
+        )
+    return aligned_events
+
+
 def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None) -> dict[str, Any]:
+    from datacreate.sample_prep import ensure_full_score
+
     logger = logger or logging.getLogger(__name__)
     align_path = sample_dir / "alignment.npz"
     if not align_path.exists():
@@ -143,26 +180,9 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
     frame_to_sec = hop / sr
     n_ref = int(data["ref_features"].shape[1])
 
-    score_events = _extract_score_events(score_path)
-    ref_to_perf = _build_ref_to_perf(wp, n_ref)
-
-    aligned_events: list[dict[str, Any]] = []
-    for ev in score_events:
-        perf_start = _ref_sec_to_perf_sec(ev["ref_start"], frame_to_sec, ref_to_perf)
-        perf_end = _ref_sec_to_perf_sec(ev["ref_end"], frame_to_sec, ref_to_perf)
-        if perf_end < perf_start:
-            perf_start, perf_end = perf_end, perf_start
-        residual = _residual_for_ref_range(
-            ev["ref_start"], ev["ref_end"], frame_to_sec, wp, residuals
-        )
-        aligned_events.append(
-            {
-                **ev,
-                "perf_start": round(perf_start, 4),
-                "perf_end": round(max(perf_end, perf_start + 0.001), 4),
-                "residual_mean": residual,
-            }
-        )
+    aligned_events = align_score_events(
+        score_path, wp, n_ref, frame_to_sec, residuals=residuals
+    )
 
     candidate_count = 0
     cand_path = sample_dir / "candidates.json"

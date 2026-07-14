@@ -14,6 +14,7 @@ from librosa.sequence import dtw
 
 from datacreate.config import PipelineConfig
 from datacreate.models import Label
+from datacreate.note_alignment import align_score_events
 
 _DEBUG_LOG = Path(__file__).resolve().parents[4] / "debug-e01e0d.log"
 
@@ -141,8 +142,29 @@ def run_alignment(
     hop = int(config.mel.get("hop_length", 512))
     frame_to_sec = hop / sr
     residuals = _frame_residuals(ref_feat, perf_feat, wp)
+
+    score_path = sample_dir / "verified_score.musicxml"
+    if not score_path.exists():
+        from datacreate.sample_prep import ensure_full_score
+
+        score_path = ensure_full_score(sample_dir)
+    aligned_events = align_score_events(
+        score_path,
+        wp,
+        int(ref_feat.shape[1]),
+        frame_to_sec,
+        residuals=residuals,
+    )
+
     candidates = _detect_candidates(
-        ref_feat, perf_feat, wp, frame_to_sec, config, logger, residuals
+        ref_feat,
+        perf_feat,
+        wp,
+        frame_to_sec,
+        config,
+        logger,
+        residuals,
+        aligned_events,
     )
 
     alignment_path = sample_dir / "alignment.npz"
@@ -222,12 +244,9 @@ def _detect_candidates(
     config: PipelineConfig,
     logger: logging.Logger,
     residuals: np.ndarray,
+    aligned_events: list[dict[str, Any]] | None = None,
 ) -> list[Label]:
-    ms_tol = float(config.alignment.get("ms_tolerance", 100))
     cents_tol = float(config.alignment.get("cents_tolerance", 20))
-    slope_min = float(config.alignment.get("warping_slope_min", 0.5))
-    slope_max = float(config.alignment.get("warping_slope_max", 2.0))
-    residual_tol = float(config.alignment.get("residual_tolerance", 1.2))
     min_dur = float(config.alignment.get("min_candidate_duration_sec", 0.15))
 
     candidates: list[Label] = []
@@ -247,7 +266,6 @@ def _detect_candidates(
         delta_perf = perf_i - prev_perf
         if delta_ref <= 0:
             continue
-        slope = delta_perf / delta_ref
         t_start = prev_perf * frame_to_sec
         t_end = perf_i * frame_to_sec
 
@@ -265,50 +283,11 @@ def _detect_candidates(
                 _make_candidate(idx, t_start, t_end, "intonation_error", cents, timing_ms, min_dur)
             )
             idx += 1
-        elif timing_ms > ms_tol:
-            candidates.append(
-                _make_candidate(idx, t_start, t_end, "rhythm_error", cents, timing_ms, min_dur)
-            )
-            idx += 1
 
-        if slope < slope_min or slope > slope_max:
-            candidates.append(
-                _make_candidate(
-                    idx,
-                    t_start,
-                    t_end,
-                    "rhythm_error",
-                    cents,
-                    timing_ms,
-                    min_dur,
-                    comment="structural discontinuity in warping path",
-                )
-            )
-            idx += 1
-
-    for k in range(1, wp.shape[0]):
-        if float(residuals[k]) <= residual_tol:
-            continue
-        prev_perf = int(wp[k - 1, 1])
-        perf_i = int(wp[k, 1])
-        t_start = prev_perf * frame_to_sec
-        t_end = perf_i * frame_to_sec
-        ref_i, perf_i_idx = int(wp[k, 0]), int(wp[k, 1])
-        cents = _cents_off(ref_feat, perf_feat, ref_i, perf_i_idx)
-        timing_ms = abs(perf_i - prev_perf) * frame_to_sec * 1000
-        candidates.append(
-            _make_candidate(
-                idx,
-                t_start,
-                t_end,
-                "rhythm_error",
-                cents,
-                timing_ms,
-                min_dur,
-                comment=f"high alignment residual ({residuals[k]:.2f})",
-            )
-        )
-        idx += 1
+    rhythm_cands, idx = _detect_rhythm_errors(
+        aligned_events or [], config, min_dur, idx
+    )
+    candidates.extend(rhythm_cands)
 
     for ref_i in range(ref_feat.shape[1]):
         if ref_i not in matched_ref:
@@ -333,16 +312,101 @@ def _detect_candidates(
     candidates = _merge_candidates(candidates, min_dur)
 
     if not candidates:
-        above_residual = int(np.sum(residuals > residual_tol))
-        logger.info(
-            "Zero candidates after detection (residual steps above %.2f: %d / %d)",
-            residual_tol,
-            above_residual,
-            len(residuals),
-        )
+        logger.info("Zero candidates after detection (%d aligned score events)", len(aligned_events or []))
     else:
         logger.info("Detected %d alignment candidates", len(candidates))
     return candidates
+
+
+def _event_duration_ratio(ev: dict[str, Any], eps: float = 1e-4) -> float | None:
+    ref_dur = float(ev["ref_end"]) - float(ev["ref_start"])
+    perf_dur = float(ev["perf_end"]) - float(ev["perf_start"])
+    if ref_dur < eps or perf_dur < eps:
+        return None
+    return perf_dur / ref_dur
+
+
+def _detect_rhythm_errors(
+    aligned_events: list[dict[str, Any]],
+    config: PipelineConfig,
+    min_dur: float,
+    idx: int,
+) -> tuple[list[Label], int]:
+    """Flag rhythm_error from note/rest duration ratios via EWMA + far-window."""
+    alpha = float(config.alignment.get("rhythm_ewma_alpha", 0.3))
+    ewma_thresh = float(config.alignment.get("rhythm_ewma_log_threshold", 0.25))
+    far_window = int(config.alignment.get("rhythm_far_window", 12))
+    far_gap = int(config.alignment.get("rhythm_far_gap", 6))
+    far_thresh = float(config.alignment.get("rhythm_far_log_threshold", 0.35))
+
+    candidates: list[Label] = []
+    by_part: dict[int, list[dict[str, Any]]] = {}
+    for ev in aligned_events:
+        part = int(ev.get("part", 0))
+        by_part.setdefault(part, []).append(ev)
+
+    for part_events in by_part.values():
+        ratios: list[float | None] = [_event_duration_ratio(ev) for ev in part_events]
+        ewma: float | None = None
+        ewma_flagged: set[int] = set()
+
+        for i, (ev, ratio) in enumerate(zip(part_events, ratios)):
+            if ratio is None:
+                continue
+            if ewma is None:
+                ewma = ratio
+                continue
+            log_jump = abs(float(np.log(ratio / ewma)))
+            if log_jump > ewma_thresh:
+                ewma_flagged.add(i)
+                deviation_ms = (float(ev["perf_end"]) - float(ev["perf_start"])) * 1000
+                candidates.append(
+                    _make_candidate(
+                        idx,
+                        float(ev["perf_start"]),
+                        float(ev["perf_end"]),
+                        "rhythm_error",
+                        None,
+                        deviation_ms,
+                        min_dur,
+                        comment=f"ewma tempo jump (log={log_jump:.3f})",
+                    )
+                )
+                idx += 1
+            ewma = alpha * ratio + (1.0 - alpha) * ewma
+
+        for i, (ev, ratio) in enumerate(zip(part_events, ratios)):
+            if ratio is None or i in ewma_flagged:
+                continue
+            # Lag window: events ending `far_gap` before i, length `far_window`.
+            end = i - far_gap
+            if end <= 0:
+                continue
+            start = max(0, end - far_window)
+            window_ratios = [r for r in ratios[start:end] if r is not None]
+            if len(window_ratios) < max(3, far_window // 3):
+                continue
+            far_median = float(np.median(window_ratios))
+            if far_median <= 0:
+                continue
+            log_drift = abs(float(np.log(ratio / far_median)))
+            if log_drift > far_thresh:
+                deviation_ms = (float(ev["perf_end"]) - float(ev["perf_start"])) * 1000
+                candidates.append(
+                    _make_candidate(
+                        idx,
+                        float(ev["perf_start"]),
+                        float(ev["perf_end"]),
+                        "rhythm_error",
+                        None,
+                        deviation_ms,
+                        min_dur,
+                        comment=f"far-window tempo drift (log={log_drift:.3f})",
+                    )
+                )
+                idx += 1
+
+    return candidates, idx
 
 
 def _merge_candidates(candidates: list[Label], min_dur: float) -> list[Label]:

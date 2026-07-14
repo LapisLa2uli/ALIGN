@@ -27,11 +27,14 @@ alignment:
   cqt_bins: 84
   dtw_band_ratio: 0.1      # Sakoe-Chiba band as fraction of sequence length
   jump_dtw: true
-  ms_tolerance: 100
   cents_tolerance: 20
-  warping_slope_min: 0.5
-  warping_slope_max: 2.0
-  residual_tolerance: 1.2  # L2 chroma residual threshold for auto-candidates
+  # Rhythm: note/rest duration ratios (perf/ref) via EWMA + far-window (not absolute DTW slope)
+  rhythm_ewma_alpha: 0.3
+  rhythm_ewma_log_threshold: 0.25   # |log(ratio/ewma)|; ~0.25 ≈ 28% tempo jump
+  rhythm_far_window: 12
+  rhythm_far_gap: 6
+  rhythm_far_log_threshold: 0.35
+  residual_tolerance: 1.2  # stored in alignment.npz; not emitted as rhythm_error
   min_candidate_duration_sec: 0.15
 
 taxonomy:
