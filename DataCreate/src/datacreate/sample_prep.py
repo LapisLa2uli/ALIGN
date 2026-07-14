@@ -146,16 +146,30 @@ def apply_performance_trim(
     return trim_info
 
 
+def reprocess_alignment(
+    sample_dir: Path,
+    config: PipelineConfig,
+    logger: logging.Logger,
+) -> dict[str, Any]:
+    perf = sample_dir / "performance_audio.wav"
+    ref = sample_dir / "reference_audio.wav"
+    if not perf.exists() or not ref.exists():
+        raise FileNotFoundError("performance_audio.wav or reference_audio.wav missing")
+    result = run_alignment(perf, ref, sample_dir, config, logger)
+    write_candidates(result.candidates, sample_dir, config.schema_version)
+    extract_mels(perf, ref, sample_dir, config, logger)
+    return {
+        "candidate_count": len(result.candidates),
+        "alignment_path": str(result.alignment_path),
+    }
+
+
 def _reprocess_alignment_and_features(
     sample_dir: Path,
     config: PipelineConfig,
     logger: logging.Logger,
 ) -> None:
-    perf = sample_dir / "performance_audio.wav"
-    ref = sample_dir / "reference_audio.wav"
-    result = run_alignment(perf, ref, sample_dir, config, logger)
-    write_candidates(result.candidates, sample_dir, config.schema_version)
-    extract_mels(perf, ref, sample_dir, config, logger)
+    reprocess_alignment(sample_dir, config, logger)
     if not (sample_dir / "labels.json").exists():
         write_labels_template(sample_dir, config)
 

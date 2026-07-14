@@ -137,6 +137,8 @@ Key fields per label: `id`, `source`, `start_time`, `end_time`, `type`, `severit
 
 `source` values: `auto`, `auto_confirmed`, `auto_edited`, `auto_rejected`, `manual`, `synthetic`.
 
+Stage 5 DTW auto-candidates can be any of: `wrong_note`, `intonation_error`, `rhythm_error`, `missed_note`, `extra_note` (not rhythm-only). Timing, warping-slope, and high residual all map to `rhythm_error`; missed/extra are unmatched DTW frames. Samples that look rhythm-heavy after re-align are often threshold-driven rather than a missing detector.
+
 ## Adding a new error type
 
 1. Add the type string to `taxonomy` in `config/default.yaml`

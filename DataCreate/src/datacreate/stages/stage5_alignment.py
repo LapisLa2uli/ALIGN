@@ -140,10 +140,12 @@ def run_alignment(
 
     hop = int(config.mel.get("hop_length", 512))
     frame_to_sec = hop / sr
-    candidates = _detect_candidates(ref_feat, perf_feat, wp, frame_to_sec, config, logger)
+    residuals = _frame_residuals(ref_feat, perf_feat, wp)
+    candidates = _detect_candidates(
+        ref_feat, perf_feat, wp, frame_to_sec, config, logger, residuals
+    )
 
     alignment_path = sample_dir / "alignment.npz"
-    residuals = _frame_residuals(ref_feat, perf_feat, wp)
     np.savez(
         alignment_path,
         ref_features=ref_feat,
@@ -219,11 +221,14 @@ def _detect_candidates(
     frame_to_sec: float,
     config: PipelineConfig,
     logger: logging.Logger,
+    residuals: np.ndarray,
 ) -> list[Label]:
     ms_tol = float(config.alignment.get("ms_tolerance", 100))
     cents_tol = float(config.alignment.get("cents_tolerance", 20))
     slope_min = float(config.alignment.get("warping_slope_min", 0.5))
     slope_max = float(config.alignment.get("warping_slope_max", 2.0))
+    residual_tol = float(config.alignment.get("residual_tolerance", 1.2))
+    min_dur = float(config.alignment.get("min_candidate_duration_sec", 0.15))
 
     candidates: list[Label] = []
     idx = 0
@@ -252,17 +257,17 @@ def _detect_candidates(
 
         if pitch_diff:
             candidates.append(
-                _make_candidate(idx, t_start, t_end, "wrong_note", cents, timing_ms)
+                _make_candidate(idx, t_start, t_end, "wrong_note", cents, timing_ms, min_dur)
             )
             idx += 1
         elif cents and abs(cents) > cents_tol:
             candidates.append(
-                _make_candidate(idx, t_start, t_end, "intonation_error", cents, timing_ms)
+                _make_candidate(idx, t_start, t_end, "intonation_error", cents, timing_ms, min_dur)
             )
             idx += 1
         elif timing_ms > ms_tol:
             candidates.append(
-                _make_candidate(idx, t_start, t_end, "rhythm_error", cents, timing_ms)
+                _make_candidate(idx, t_start, t_end, "rhythm_error", cents, timing_ms, min_dur)
             )
             idx += 1
 
@@ -275,16 +280,43 @@ def _detect_candidates(
                     "rhythm_error",
                     cents,
                     timing_ms,
+                    min_dur,
                     comment="structural discontinuity in warping path",
                 )
             )
             idx += 1
 
+    for k in range(1, wp.shape[0]):
+        if float(residuals[k]) <= residual_tol:
+            continue
+        prev_perf = int(wp[k - 1, 1])
+        perf_i = int(wp[k, 1])
+        t_start = prev_perf * frame_to_sec
+        t_end = perf_i * frame_to_sec
+        ref_i, perf_i_idx = int(wp[k, 0]), int(wp[k, 1])
+        cents = _cents_off(ref_feat, perf_feat, ref_i, perf_i_idx)
+        timing_ms = abs(perf_i - prev_perf) * frame_to_sec * 1000
+        candidates.append(
+            _make_candidate(
+                idx,
+                t_start,
+                t_end,
+                "rhythm_error",
+                cents,
+                timing_ms,
+                min_dur,
+                comment=f"high alignment residual ({residuals[k]:.2f})",
+            )
+        )
+        idx += 1
+
     for ref_i in range(ref_feat.shape[1]):
         if ref_i not in matched_ref:
             t = ref_i * frame_to_sec
             candidates.append(
-                _make_candidate(idx, max(0, t - 0.05), t + 0.05, "missed_note", None, None)
+                _make_candidate(
+                    idx, max(0, t - min_dur / 2), t + min_dur / 2, "missed_note", None, None, min_dur
+                )
             )
             idx += 1
 
@@ -292,12 +324,73 @@ def _detect_candidates(
         if perf_i not in matched_perf:
             t = perf_i * frame_to_sec
             candidates.append(
-                _make_candidate(idx, max(0, t - 0.05), t + 0.05, "extra_note", None, None)
+                _make_candidate(
+                    idx, max(0, t - min_dur / 2), t + min_dur / 2, "extra_note", None, None, min_dur
+                )
             )
             idx += 1
 
-    logger.info("Detected %d alignment candidates", len(candidates))
+    candidates = _merge_candidates(candidates, min_dur)
+
+    if not candidates:
+        above_residual = int(np.sum(residuals > residual_tol))
+        logger.info(
+            "Zero candidates after detection (residual steps above %.2f: %d / %d)",
+            residual_tol,
+            above_residual,
+            len(residuals),
+        )
+    else:
+        logger.info("Detected %d alignment candidates", len(candidates))
     return candidates
+
+
+def _merge_candidates(candidates: list[Label], min_dur: float) -> list[Label]:
+    if not candidates:
+        return candidates
+    ordered = sorted(candidates, key=lambda c: (c.start_time, c.end_time))
+    merged: list[Label] = [ordered[0]]
+    for cand in ordered[1:]:
+        last = merged[-1]
+        if cand.type == last.type and cand.start_time <= last.end_time + 0.05:
+            merged[-1] = Label(
+                id=last.id,
+                source=last.source,
+                start_time=last.start_time,
+                end_time=max(last.end_time, cand.end_time),
+                type=last.type,
+                deviation_cents=last.deviation_cents or cand.deviation_cents,
+                deviation_ms=last.deviation_ms or cand.deviation_ms,
+                comment=last.comment or cand.comment,
+            )
+        else:
+            merged.append(cand)
+
+    out: list[Label] = []
+    for i, cand in enumerate(merged):
+        start, end = _expand_to_min_duration(cand.start_time, cand.end_time, min_dur)
+        out.append(
+            Label(
+                id=f"cand_{i:03d}",
+                source=cand.source,
+                start_time=round(start, 4),
+                end_time=round(end, 4),
+                type=cand.type,
+                deviation_cents=cand.deviation_cents,
+                deviation_ms=cand.deviation_ms,
+                comment=cand.comment,
+            )
+        )
+    return out
+
+
+def _expand_to_min_duration(start: float, end: float, min_dur: float) -> tuple[float, float]:
+    duration = end - start
+    if duration >= min_dur:
+        return start, end
+    center = (start + end) / 2
+    half = min_dur / 2
+    return max(0.0, center - half), center + half
 
 
 def _pitch_class_mismatch(
@@ -335,8 +428,10 @@ def _make_candidate(
     label_type: str,
     cents: float | None,
     ms: float | None,
+    min_dur: float = 0.15,
     comment: str | None = None,
 ) -> Label:
+    start, end = _expand_to_min_duration(start, end, min_dur)
     return Label(
         id=f"cand_{idx:03d}",
         source="auto",

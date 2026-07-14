@@ -31,6 +31,8 @@ alignment:
   cents_tolerance: 20
   warping_slope_min: 0.5
   warping_slope_max: 2.0
+  residual_tolerance: 1.2  # L2 chroma residual threshold for auto-candidates
+  min_candidate_duration_sec: 0.15
 
 taxonomy:
   - wrong_note          # different pitch than the score (e.g. played B instead of C)

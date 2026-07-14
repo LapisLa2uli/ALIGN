@@ -86,8 +86,8 @@ header {
   height: 28px;
   width: 100%;
   background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 6px 6px 0 0;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
   cursor: pointer;
   user-select: none;
   touch-action: none;
@@ -118,22 +118,150 @@ header {
   cursor: grabbing;
   background: #6af;
 }
+.waveform-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1 1 200px;
+  min-height: 200px;
+  border: 1px solid #444;
+  border-radius: 0 0 6px 6px;
+  background: #1a1a1a;
+}
+.alignment-stack {
+  position: relative;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+.marquee-select {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(45, 108, 223, 0.2);
+  border: 1px solid rgba(106, 175, 255, 0.85);
+  pointer-events: none;
+  z-index: 20;
+}
+.staff-strip {
+  min-height: 0;
+  background: #f8f8f8;
+  border-bottom: 1px solid #ccc;
+  overflow: visible;
+  position: relative;
+  flex-shrink: 0;
+}
+.staff-strip.hidden {
+  display: none;
+}
+.staff-strip svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.note-boundaries {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--overlay-top, 28px);
+  bottom: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.note-boundary-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.35);
+}
+.note-boundary-line.start {
+  background: rgba(120, 180, 255, 0.55);
+}
+.note-boundary-line.end {
+  background: rgba(255, 160, 80, 0.45);
+}
 .waveform-wrap {
   width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  flex: 1 1 160px;
-  min-height: 160px;
-  contain: layout style;
+  overflow: visible;
+  flex-shrink: 0;
+  min-height: 140px;
   position: relative;
 }
 #waveform {
   background: #222;
+  border: none;
+  border-radius: 0;
+  min-height: 140px;
+  max-width: none;
+  margin-top: 0;
+}
+.view-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.view-toolbar button.mode-btn.active {
+  background: #1a4a9e;
+  box-shadow: inset 0 0 0 1px #6af;
+}
+.view-toolbar button {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.zoom-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #ccc;
+}
+.zoom-control input[type="range"] {
+  width: 120px;
+  accent-color: #2d6cdf;
+}
+#alignmentInfo {
+  margin-top: 8px;
+  max-height: 180px;
+  overflow: auto;
+  background: #1a1a1a;
   border: 1px solid #444;
-  border-radius: 0 0 6px 6px;
-  min-height: 160px;
-  max-width: 100%;
-  margin-top: -1px;
+  border-radius: 4px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+#alignmentInfo table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#alignmentInfo th,
+#alignmentInfo td {
+  padding: 4px 8px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+#alignmentInfo th {
+  position: sticky;
+  top: 0;
+  background: #222;
+  color: #aaa;
+}
+#alignmentInfo .summary {
+  padding: 8px;
+  color: #aaa;
+  border-bottom: 1px solid #333;
+}
+#scorePanel.collapsed {
+  display: none;
+}
+#candidateHint {
+  flex: 1 1 200px;
+  color: #aaa;
 }
 .track-label { font-size: 12px; color: #888; margin-top: 8px; flex-shrink: 0; }
 .transport {
@@ -240,6 +368,7 @@ button:hover { background: #1f57c3; }
 #waveform::part(region-candidate) {
   border: 2px dashed #f90 !important;
   box-sizing: border-box !important;
+  z-index: 5 !important;
 }
 #waveform::part(region-trim) {
   border: 2px solid #3c3 !important;

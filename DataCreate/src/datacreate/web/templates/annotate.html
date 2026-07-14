@@ -61,13 +61,32 @@
       </label>
       <span id="timeDisplay">00:00.000</span>
     </div>
-    <div id="scrubber" class="scrubber" title="Click or drag to move playhead">
-      <div id="scrubberProgress" class="scrubber-progress"></div>
-      <div id="playhead" class="playhead"></div>
+    <div class="view-toolbar">
+      <strong>View</strong>
+      <button id="viewNormalBtn" type="button" class="mode-btn active">Normal</button>
+      <button id="viewAlignmentBtn" type="button" class="mode-btn">Alignment</button>
+      <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide label regions">Labels</button>
+      <label class="zoom-control">Zoom
+        <input id="zoomSlider" type="range" min="0" max="100" value="50" title="Zoom level" />
+      </label>
+      <button id="zoomFitBtn" type="button" title="Fit to width">Fit</button>
+      <button id="realignBtn" type="button">Re-run alignment</button>
+      <span id="candidateHint" class="hint"></span>
     </div>
-    <div class="waveform-wrap">
-      <div id="waveform"></div>
+    <div id="waveformScroll" class="waveform-scroll">
+      <div id="alignmentStack" class="alignment-stack">
+        <div id="staffStrip" class="staff-strip hidden" aria-hidden="true"></div>
+        <div id="scrubber" class="scrubber" title="Click or drag to move playhead">
+          <div id="scrubberProgress" class="scrubber-progress"></div>
+          <div id="playhead" class="playhead"></div>
+        </div>
+        <div id="noteBoundaries" class="note-boundaries hidden" aria-hidden="true"></div>
+        <div class="waveform-wrap">
+          <div id="waveform"></div>
+        </div>
+      </div>
     </div>
+    <div id="alignmentInfo" class="alignment-info hidden"></div>
     <div class="trim-toolbar">
       <strong>Performance trim</strong>
       <span id="trimInfo" class="hint">Drag the green handles to discard silence at start/end.</span>
@@ -104,12 +123,16 @@
     </div>
     <h3>Hotkeys</h3>
     <ul class="hotkeys">
-      <li>1-8: assign label type to selected region</li>
+      <li>1-8: assign label type to selected region(s)</li>
       <li>Space: play/pause</li>
+      <li>Delete / Backspace: delete selected region(s)</li>
       <li>Drag scrubber to move playhead</li>
       <li>Drag waveform to add a label (uses type above)</li>
       <li>Double-click a region to select and edit</li>
+      <li>Ctrl+click: toggle region in multi-select</li>
+      <li>Ctrl+drag on waveform: select multiple regions</li>
       <li>Repetition labels: link the original passage before saving</li>
+      <li>Ctrl+wheel on waveform: zoom; wheel: scroll horizontally</li>
     </ul>
   </aside>
 

@@ -4,16 +4,30 @@ let osmdInstance = null;
 let taxonomy = [];
 let currentSample = null;
 let sampleData = null;
+let selectedRegions = [];
+/** Sole selection when exactly one region is selected; null when empty or multi. */
 let selectedRegion = null;
 let trimRegion = null;
 let loopSelection = false;
 let scrubbing = false;
+let marqueeSelecting = false;
 let pendingRegions = [];
 let lastRegionClick = { id: null, time: 0 };
 const REGION_DOUBLE_CLICK_MS = 400;
 let repetitionLinkMode = null; // null | "pick" | "draw"
 /** >0 while addRegion is called from code (labels, trim, link overlays) — skip auto-label. */
 let programmaticRegionDepth = 0;
+let viewMode = "normal"; // normal | alignment
+let zoomFactor = 1;
+let fitPxPerSec = 1;
+let userZoomed = false;
+let noteAlignmentData = null;
+let labelsVisible = true;
+let staffStripHeight = 0;
+const SCRUBBER_HEIGHT = 28;
+const ZOOM_STEP = 1.25;
+const MIN_ZOOM_FACTOR = 1;
+const MAX_ZOOM_FACTOR = 32;
 
 function withProgrammaticRegions(fn) {
   programmaticRegionDepth += 1;
@@ -171,12 +185,37 @@ function syncRegionVisual(region, { selected = false } = {}) {
   } else if (kind === "candidate") {
     el.style.border = "2px dashed #f90";
     el.style.boxShadow = "";
-    el.style.zIndex = "";
+    el.style.zIndex = selected ? "10" : "5";
   } else {
     el.style.border = "none";
     el.style.boxShadow = "";
     el.style.zIndex = "";
   }
+  applyRegionLabelVisibility(region);
+}
+
+function applyRegionLabelVisibility(region) {
+  if (!region?.element) return;
+  if (isTrimRegion(region) || isLinkOverlay(region)) {
+    region.element.style.visibility = "visible";
+    return;
+  }
+  region.element.style.visibility = labelsVisible ? "visible" : "hidden";
+}
+
+function applyAllLabelsVisibility() {
+  if (!regionsPlugin) return;
+  regionsPlugin.getRegions().forEach((region) => applyRegionLabelVisibility(region));
+}
+
+function toggleLabelsVisibility() {
+  labelsVisible = !labelsVisible;
+  const btn = document.getElementById("toggleLabelsBtn");
+  if (btn) {
+    btn.classList.toggle("active", labelsVisible);
+    btn.textContent = labelsVisible ? "Labels" : "Labels (off)";
+  }
+  applyAllLabelsVisibility();
 }
 
 function findLinkOverlay(parentRegion) {
@@ -339,22 +378,602 @@ function setupRepetitionControls() {
 }
 
 function clearRegionSelection() {
+  selectedRegions = [];
+  selectedRegion = null;
+  if (!regionsPlugin) return;
   regionsPlugin.getRegions().forEach((region) => {
     syncRegionVisual(region, { selected: false });
   });
 }
 
+function syncPrimarySelection() {
+  selectedRegion = selectedRegions.length === 1 ? selectedRegions[0] : null;
+}
+
+function isRegionSelected(region) {
+  return selectedRegions.includes(region);
+}
+
+function refreshSelectionVisuals() {
+  if (!regionsPlugin) return;
+  regionsPlugin.getRegions().forEach((region) => {
+    syncRegionVisual(region, { selected: isRegionSelected(region) });
+  });
+}
+
+function updateMultiSelectionInspector() {
+  const confirmBtn = document.getElementById("confirmCandidateBtn");
+  const rejectBtn = document.getElementById("rejectCandidateBtn");
+  const n = selectedRegions.length;
+  if (n === 0) {
+    resetSelectionInfo();
+    updateRepetitionPanel(null);
+    if (confirmBtn) confirmBtn.disabled = false;
+    if (rejectBtn) rejectBtn.disabled = false;
+    return;
+  }
+  if (n > 1) {
+    document.getElementById("selectionInfo").textContent =
+      `${n} regions selected. Delete or assign type (1–8) applies to all.`;
+    updateRepetitionPanel(null);
+    if (confirmBtn) confirmBtn.disabled = true;
+    if (rejectBtn) rejectBtn.disabled = true;
+    return;
+  }
+  if (confirmBtn) confirmBtn.disabled = false;
+  if (rejectBtn) rejectBtn.disabled = false;
+  const region = selectedRegions[0];
+  const d = region.data || {};
+  updateSelectionInfo(region);
+  if (d.type) document.getElementById("labelType").value = d.type;
+  if (d.severity) document.getElementById("severity").value = d.severity;
+  document.getElementById("comment").value = d.comment || "";
+  updateRepetitionPanel(region);
+}
+
+function selectRegion(region) {
+  if (isTrimRegion(region) || isLinkOverlay(region)) return;
+  clearRegionSelection();
+  selectedRegions = [region];
+  syncPrimarySelection();
+  syncRegionVisual(region, { selected: true });
+  requestAnimationFrame(() => {
+    if (isRegionSelected(region)) {
+      syncRegionVisual(region, { selected: true });
+    }
+  });
+  updateMultiSelectionInspector();
+}
+
+function toggleRegionInSelection(region) {
+  if (isTrimRegion(region) || isLinkOverlay(region)) return;
+  const idx = selectedRegions.indexOf(region);
+  if (idx >= 0) {
+    selectedRegions.splice(idx, 1);
+    syncRegionVisual(region, { selected: false });
+  } else {
+    selectedRegions.push(region);
+    syncRegionVisual(region, { selected: true });
+  }
+  syncPrimarySelection();
+  updateMultiSelectionInspector();
+}
+
+function setSelectedRegions(regions) {
+  const next = regions.filter((r) => r && !isTrimRegion(r) && !isLinkOverlay(r));
+  selectedRegions = next;
+  syncPrimarySelection();
+  refreshSelectionVisuals();
+  updateMultiSelectionInspector();
+}
+
 function resetSelectionInfo() {
   document.getElementById("selectionInfo").textContent =
-    "Drag on waveform to add a label. Double-click a region to edit it.";
+    "Drag on waveform to add a label. Double-click a region to edit it. Ctrl+drag to multi-select.";
+}
+
+function getScrollContainerWidth() {
+  const scroll = document.getElementById("waveformScroll");
+  if (scroll && scroll.clientWidth > 0) return scroll.clientWidth;
+  const wrap = document.querySelector(".waveform-wrap");
+  return wrap?.clientWidth || 800;
 }
 
 function computeFitPxPerSec(duration) {
-  const wrap = document.querySelector(".waveform-wrap");
-  if (!wrap || !duration || duration <= 0) return 1;
-  const width = wrap.clientWidth;
-  if (width <= 0) return 1;
-  return width / duration;
+  if (!duration || duration <= 0) return 1;
+  return getScrollContainerWidth() / duration;
+}
+
+function getCurrentPxPerSec() {
+  return fitPxPerSec * zoomFactor;
+}
+
+/** WaveSurfer does not shrink below fit; clamp overlays to the same scale. */
+function getEffectivePxPerSec() {
+  return Math.max(fitPxPerSec, getCurrentPxPerSec());
+}
+
+function contentXFromClientX(clientX) {
+  const scroll = document.getElementById("waveformScroll");
+  if (!scroll) return 0;
+  const rect = scroll.getBoundingClientRect();
+  return clientX - rect.left + scroll.scrollLeft;
+}
+
+function applyWaveformZoom(pxPerSec) {
+  if (!wavesurfer) return;
+  const scroll = document.getElementById("waveformScroll");
+  const prevPx = getEffectivePxPerSec();
+  const prevScrollLeft = scroll?.scrollLeft || 0;
+  const anchorTime = prevPx > 0 ? prevScrollLeft / prevPx : 0;
+
+  const effective = Math.max(fitPxPerSec, pxPerSec);
+  if (typeof wavesurfer.zoom === "function") {
+    wavesurfer.zoom(effective);
+  } else if (typeof wavesurfer.setOptions === "function") {
+    wavesurfer.setOptions({ minPxPerSec: effective });
+  }
+  syncAlignmentStackWidth(effective);
+  if (viewMode === "alignment" && noteAlignmentData) {
+    renderAlignmentOverlays();
+  }
+
+  if (scroll) {
+    const maxScroll = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
+    scroll.scrollLeft = Math.max(0, Math.min(anchorTime * effective, maxScroll));
+  }
+  updatePlayhead();
+}
+
+function syncAlignmentStackWidth(pxPerSec) {
+  const stack = document.getElementById("alignmentStack");
+  const duration = wavesurfer?.getDuration() || 0;
+  if (!stack || !duration) return;
+  const width = Math.max(getScrollContainerWidth(), duration * pxPerSec);
+  stack.style.width = `${width}px`;
+  stack.style.minWidth = `${width}px`;
+  const scrubber = document.getElementById("scrubber");
+  if (scrubber) scrubber.style.width = `${width}px`;
+  updateOverlayTop();
+}
+
+function updateOverlayTop() {
+  const stack = document.getElementById("alignmentStack");
+  const staffVisible = viewMode === "alignment" && !document.getElementById("staffStrip")?.classList.contains("hidden");
+  const top = (staffVisible ? staffStripHeight : 0) + SCRUBBER_HEIGHT;
+  if (stack) stack.style.setProperty("--overlay-top", `${top}px`);
+  const boundaries = document.getElementById("noteBoundaries");
+  if (boundaries) boundaries.style.top = `${top}px`;
+}
+
+function zoomFactorToSlider(factor) {
+  const logMin = Math.log(MIN_ZOOM_FACTOR);
+  const logMax = Math.log(MAX_ZOOM_FACTOR);
+  const logVal = Math.log(Math.max(MIN_ZOOM_FACTOR, factor));
+  return Math.round(100 * (logVal - logMin) / (logMax - logMin));
+}
+
+function sliderToZoomFactor(sliderVal) {
+  const t = sliderVal / 100;
+  const logMin = Math.log(MIN_ZOOM_FACTOR);
+  const logMax = Math.log(MAX_ZOOM_FACTOR);
+  return Math.exp(logMin + t * (logMax - logMin));
+}
+
+function syncZoomSlider() {
+  const slider = document.getElementById("zoomSlider");
+  if (slider) slider.value = String(zoomFactorToSlider(zoomFactor));
+}
+
+function fitWaveformToContainer() {
+  if (!wavesurfer) return;
+  const duration = wavesurfer.getDuration();
+  if (!duration || duration <= 0) return;
+  fitPxPerSec = computeFitPxPerSec(duration);
+  if (!userZoomed) {
+    zoomFactor = 1;
+  }
+  applyWaveformZoom(getCurrentPxPerSec());
+  syncZoomSlider();
+}
+
+function setZoomFactor(factor) {
+  zoomFactor = Math.max(MIN_ZOOM_FACTOR, Math.min(MAX_ZOOM_FACTOR, factor));
+  userZoomed = true;
+  applyWaveformZoom(getCurrentPxPerSec());
+  syncZoomSlider();
+}
+
+function zoomIn() {
+  setZoomFactor(zoomFactor * ZOOM_STEP);
+}
+
+function zoomOut() {
+  setZoomFactor(zoomFactor / ZOOM_STEP);
+}
+
+function zoomFit() {
+  userZoomed = false;
+  fitWaveformToContainer();
+}
+
+function setupWaveformWheel() {
+  const scroll = document.getElementById("waveformScroll");
+  if (!scroll) return;
+  scroll.addEventListener(
+    "wheel",
+    (e) => {
+      if (!wavesurfer) return;
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0) zoomIn();
+        else zoomOut();
+        return;
+      }
+      const delta = e.shiftKey ? e.deltaY : e.deltaY || e.deltaX;
+      if (delta !== 0) {
+        e.preventDefault();
+        scroll.scrollLeft += delta;
+      }
+    },
+    { passive: false },
+  );
+}
+
+function setupMarqueeSelect() {
+  const scroll = document.getElementById("waveformScroll");
+  const stack = document.getElementById("alignmentStack");
+  if (!scroll || !stack) return;
+
+  let startX = 0;
+  let clientStartX = 0;
+  let clientStartY = 0;
+  let box = null;
+
+  const stackXFromClient = (clientX) => contentXFromClientX(clientX);
+
+  const finishMarquee = (e) => {
+    if (!marqueeSelecting) return;
+    marqueeSelecting = false;
+    const endX = stackXFromClient(e.clientX);
+    const x0 = Math.min(startX, endX);
+    const x1 = Math.max(startX, endX);
+    if (box) {
+      box.remove();
+      box = null;
+    }
+    refreshDragSelection();
+
+    const moved = Math.hypot(e.clientX - clientStartX, e.clientY - clientStartY);
+    if (moved < 6) return;
+
+    const pxPerSec = getEffectivePxPerSec();
+    const t0 = x0 / pxPerSec;
+    const t1 = x1 / pxPerSec;
+    const hits = regionsPlugin.getRegions().filter((r) => {
+      if (isTrimRegion(r) || isLinkOverlay(r)) return false;
+      return r.end > t0 && r.start < t1;
+    });
+    setSelectedRegions(hits);
+  };
+
+  scroll.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0 || !(e.ctrlKey || e.metaKey)) return;
+    if (e.target.closest("#scrubber")) return;
+    if (isEditableKeyTarget(e.target)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    marqueeSelecting = true;
+    startX = stackXFromClient(e.clientX);
+    clientStartX = e.clientX;
+    clientStartY = e.clientY;
+    if (typeof regionsPlugin.disableDragSelection === "function") {
+      regionsPlugin.disableDragSelection();
+    }
+    box = document.createElement("div");
+    box.className = "marquee-select";
+    box.style.left = `${startX}px`;
+    box.style.width = "0px";
+    stack.appendChild(box);
+    scroll.setPointerCapture(e.pointerId);
+  });
+
+  scroll.addEventListener("pointermove", (e) => {
+    if (!marqueeSelecting || !box) return;
+    const x = stackXFromClient(e.clientX);
+    const left = Math.min(startX, x);
+    const width = Math.abs(x - startX);
+    box.style.left = `${left}px`;
+    box.style.width = `${width}px`;
+  });
+
+  scroll.addEventListener("pointerup", finishMarquee);
+  scroll.addEventListener("pointercancel", (e) => {
+    if (!marqueeSelecting) return;
+    marqueeSelecting = false;
+    if (box) {
+      box.remove();
+      box = null;
+    }
+    refreshDragSelection();
+  });
+}
+
+function setupViewControls() {
+  const slider = document.getElementById("zoomSlider");
+  slider.addEventListener("input", () => {
+    setZoomFactor(sliderToZoomFactor(parseInt(slider.value, 10)));
+  });
+  document.getElementById("zoomFitBtn").onclick = zoomFit;
+  document.getElementById("viewNormalBtn").onclick = () => setViewMode("normal");
+  document.getElementById("viewAlignmentBtn").onclick = () => setViewMode("alignment");
+  document.getElementById("toggleLabelsBtn").onclick = toggleLabelsVisibility;
+  document.getElementById("realignBtn").onclick = rerunAlignment;
+  syncZoomSlider();
+}
+
+async function setViewMode(mode) {
+  viewMode = mode;
+  document.getElementById("viewNormalBtn").classList.toggle("active", mode === "normal");
+  document.getElementById("viewAlignmentBtn").classList.toggle("active", mode === "alignment");
+  document.getElementById("scorePanel").classList.toggle("collapsed", mode === "alignment");
+  document.getElementById("staffStrip").classList.toggle("hidden", mode !== "alignment");
+  document.getElementById("noteBoundaries").classList.toggle("hidden", mode !== "alignment");
+  document.getElementById("alignmentInfo").classList.toggle("hidden", mode !== "alignment");
+  if (mode === "alignment") {
+    await loadNoteAlignment();
+    renderAlignmentOverlays();
+  } else {
+    clearAlignmentOverlays();
+  }
+  updateOverlayTop();
+  scheduleWaveformFit();
+}
+
+async function loadNoteAlignment() {
+  if (!currentSample) return;
+  try {
+    const res = await fetch(`/api/samples/${currentSample}/note-alignment`);
+    if (!res.ok) throw new Error(await res.text());
+    noteAlignmentData = await res.json();
+    renderAlignmentInfo(noteAlignmentData);
+  } catch (err) {
+    noteAlignmentData = null;
+    const info = document.getElementById("alignmentInfo");
+    info.classList.remove("hidden");
+    info.innerHTML = `<p class="summary">Could not load alignment: ${err.message}</p>`;
+  }
+}
+
+function clearAlignmentOverlays() {
+  document.getElementById("staffStrip").innerHTML = "";
+  document.getElementById("noteBoundaries").innerHTML = "";
+  staffStripHeight = 0;
+  updateOverlayTop();
+}
+
+function renderAlignmentOverlays() {
+  if (!noteAlignmentData?.events?.length) {
+    clearAlignmentOverlays();
+    return;
+  }
+  const pxPerSec = getEffectivePxPerSec();
+  renderStaffStrip(noteAlignmentData.events, pxPerSec);
+  renderNoteBoundaries(noteAlignmentData.events, pxPerSec);
+}
+
+function renderNoteBoundaries(events, pxPerSec) {
+  const container = document.getElementById("noteBoundaries");
+  container.innerHTML = "";
+  const seen = new Set();
+  events.forEach((ev) => {
+    [
+      { t: ev.perf_start, cls: "start" },
+      { t: ev.perf_end, cls: "end" },
+    ].forEach(({ t, cls }) => {
+      const key = `${cls}:${t.toFixed(4)}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      const line = document.createElement("div");
+      line.className = `note-boundary-line ${cls}`;
+      line.style.left = `${t * pxPerSec}px`;
+      container.appendChild(line);
+    });
+  });
+}
+
+const DIATONIC_STEPS_FROM_E = {
+  0: 2.5, 1: 2.5, 2: 3, 3: 3, 4: 0, 5: 0.5, 6: 0.5, 7: 1, 8: 1, 9: 1.5, 10: 1.5, 11: 2,
+};
+
+function midiToStaffSteps(midi) {
+  const octave = Math.floor(midi / 12) - 1;
+  const pc = midi % 12;
+  const octaveBase = pc < 4 ? octave - 1 : octave;
+  return (octaveBase - 4) * 3.5 + DIATONIC_STEPS_FROM_E[pc];
+}
+
+function midiToStaffY(midi, staffBottomY, lineGap) {
+  const steps = midiToStaffSteps(midi);
+  return staffBottomY - steps * lineGap;
+}
+
+function renderStaffStrip(events, pxPerSec) {
+  const container = document.getElementById("staffStrip");
+  const width = Math.max(
+    getScrollContainerWidth(),
+    (wavesurfer?.getDuration() || 0) * pxPerSec,
+  );
+  const lineGap = 9;
+  const padding = 10;
+  const ledgerHalfWidth = 14;
+
+  let minStep = 0;
+  let maxStep = 4;
+  const notes = [];
+  events.forEach((ev) => {
+    if (ev.is_rest) return;
+    const midi = pitchToMidi(ev.pitch);
+    if (midi == null) return;
+    const steps = midiToStaffSteps(midi);
+    notes.push({ ev, midi, steps });
+    minStep = Math.min(minStep, Math.floor(steps));
+    maxStep = Math.max(maxStep, Math.ceil(steps));
+  });
+  minStep = Math.min(minStep, -1);
+  maxStep = Math.max(maxStep, 5);
+
+  const staffBottomStep = 0;
+  const staffTopStep = 4;
+  // Anchor the highest step at the top padding so high notes stay in-bounds.
+  // (Previously anchored to minStep, which pushed maxStep to negative Y.)
+  const height = (maxStep - minStep) * lineGap + padding * 2;
+  const staffBottomY = padding + (maxStep - staffBottomStep) * lineGap;
+
+  const svgParts = [
+    `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`,
+    `<rect width="100%" height="100%" fill="#f8f8f8"/>`,
+  ];
+
+  for (let s = 0; s <= 4; s += 1) {
+    const y = staffBottomY - s * lineGap;
+    svgParts.push(
+      `<line x1="0" y1="${y}" x2="${width}" y2="${y}" stroke="#999" stroke-width="1"/>`,
+    );
+  }
+
+  const appendLedgerLines = (noteSteps, noteCx) => {
+    const x1 = noteCx - ledgerHalfWidth;
+    const x2 = noteCx + ledgerHalfWidth;
+    if (noteSteps < staffBottomStep) {
+      for (let s = -1; s >= Math.ceil(noteSteps); s -= 1) {
+        const ly = staffBottomY - s * lineGap;
+        svgParts.push(
+          `<line x1="${x1}" y1="${ly}" x2="${x2}" y2="${ly}" stroke="#999" stroke-width="1"/>`,
+        );
+      }
+    } else if (noteSteps > staffTopStep) {
+      for (let s = staffTopStep + 1; s <= Math.floor(noteSteps); s += 1) {
+        const ly = staffBottomY - s * lineGap;
+        svgParts.push(
+          `<line x1="${x1}" y1="${ly}" x2="${x2}" y2="${ly}" stroke="#999" stroke-width="1"/>`,
+        );
+      }
+    }
+  };
+
+  events.forEach((ev) => {
+    const x = ev.perf_start * pxPerSec;
+    const w = Math.max(4, (ev.perf_end - ev.perf_start) * pxPerSec);
+    if (ev.is_rest) {
+      const restY = staffBottomY - 2 * lineGap;
+      svgParts.push(
+        `<rect x="${x}" y="${restY - lineGap / 4}" width="${w}" height="${lineGap / 2}" fill="#bbb"/>`,
+      );
+    } else {
+      const midi = pitchToMidi(ev.pitch);
+      const cy = midi != null
+        ? midiToStaffY(midi, staffBottomY, lineGap)
+        : staffBottomY - 2 * lineGap;
+      const noteCx = x + 5;
+      const noteSteps = midi != null ? midiToStaffSteps(midi) : null;
+      if (noteSteps != null) {
+        appendLedgerLines(noteSteps, noteCx);
+      }
+      svgParts.push(
+        `<ellipse cx="${noteCx}" cy="${cy}" rx="5" ry="4" fill="#222"/>`,
+      );
+    }
+  });
+
+  svgParts.push("</svg>");
+  container.innerHTML = svgParts.join("");
+  container.style.height = `${height}px`;
+  staffStripHeight = height;
+  updateOverlayTop();
+}
+
+function pitchToMidi(pitch) {
+  if (!pitch || pitch === "rest") return null;
+  // Accept C5, Bb3, B-3 (music21 flat), F#4
+  const m = String(pitch).match(/^([A-Ga-g])([#b-]?)(\d+)$/);
+  if (!m) return null;
+  const names = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  let pc = names[m[1].toUpperCase()];
+  if (m[2] === "#") pc += 1;
+  if (m[2] === "b" || m[2] === "-") pc -= 1;
+  return (parseInt(m[3], 10) + 1) * 12 + pc;
+}
+
+function escapeXml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderAlignmentInfo(data) {
+  const el = document.getElementById("alignmentInfo");
+  const s = data.summary || {};
+  const rows = (data.events || [])
+    .map(
+      (ev) =>
+        `<tr>
+          <td>${ev.measure ?? "—"}</td>
+          <td>${ev.is_rest ? "rest" : escapeXml(ev.pitch || "?")}</td>
+          <td>${formatTime(ev.perf_start)}</td>
+          <td>${formatTime(ev.perf_end)}</td>
+          <td>${(ev.perf_end - ev.perf_start).toFixed(3)}s</td>
+          <td>${ev.residual_mean != null ? ev.residual_mean.toFixed(3) : "—"}</td>
+        </tr>`,
+    )
+    .join("");
+  el.innerHTML =
+    `<div class="summary">` +
+    `DTW path: ${s.warping_path_length ?? "?"} steps · ` +
+    `mean residual ${s.mean_residual ?? "?"} · ` +
+    `max ${s.max_residual ?? "?"} · ` +
+    `${s.event_count ?? 0} score events · ` +
+    `${s.candidate_count ?? 0} auto-candidates` +
+    `</div>` +
+    `<table><thead><tr>` +
+    `<th>m</th><th>note</th><th>perf start</th><th>perf end</th><th>dur</th><th>residual</th>` +
+    `</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function updateCandidateHint() {
+  const el = document.getElementById("candidateHint");
+  if (!el || !sampleData) return;
+  const count = sampleData.candidate_count ?? sampleData.candidates?.length ?? 0;
+  if (count > 0) {
+    el.textContent = `${count} auto-candidate(s) on waveform (dashed orange).`;
+  } else if (sampleData.has_alignment) {
+    el.textContent =
+      "No auto-candidates (alignment clean under thresholds). Click Re-run alignment to refresh.";
+  } else {
+    el.textContent = "No alignment data yet — run batch or apply segment.";
+  }
+}
+
+async function rerunAlignment() {
+  if (!currentSample) return;
+  if (!confirm("Re-run DTW alignment and regenerate auto-candidates?")) return;
+  const btn = document.getElementById("realignBtn");
+  btn.disabled = true;
+  btn.textContent = "Aligning…";
+  try {
+    const res = await fetch(`/api/samples/${currentSample}/re-align`, { method: "POST" });
+    if (!res.ok) throw new Error(await res.text());
+    const result = await res.json();
+    await loadSample(currentSample);
+    alert(`Alignment complete. ${result.candidate_count ?? 0} candidate(s) detected.`);
+  } catch (err) {
+    alert(err.message || String(err));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Re-run alignment";
+  }
 }
 
 function debounce(fn, ms) {
@@ -367,26 +986,18 @@ function debounce(fn, ms) {
 
 let layoutFitTimer = null;
 
-function fitWaveformToContainer() {
-  const wrap = document.querySelector(".waveform-wrap");
-  if (!wrap || !wavesurfer) return;
-  const duration = wavesurfer.getDuration();
-  if (!duration || duration <= 0) return;
-  const width = wrap.clientWidth;
-  if (width <= 0) return;
-  const fitPx = width / duration;
-  if (typeof wavesurfer.zoom === "function") {
-    wavesurfer.zoom(fitPx);
-  } else if (typeof wavesurfer.setOptions === "function") {
-    wavesurfer.setOptions({ minPxPerSec: fitPx });
-  }
-}
-
 function scheduleWaveformFit() {
   clearTimeout(layoutFitTimer);
   layoutFitTimer = setTimeout(() => {
     requestAnimationFrame(() => {
-      fitWaveformToContainer();
+      if (!userZoomed) {
+        fitWaveformToContainer();
+      } else {
+        syncAlignmentStackWidth(getEffectivePxPerSec());
+        if (viewMode === "alignment" && noteAlignmentData) {
+          renderAlignmentOverlays();
+        }
+      }
       updatePlayhead();
     });
   }, 50);
@@ -435,7 +1046,13 @@ async function init() {
   setupPrepControls();
   setupBatchControls();
   setupRepetitionControls();
-  window.addEventListener("resize", debounce(scheduleWaveformFit, 150));
+  setupViewControls();
+  setupWaveformWheel();
+  setupMarqueeSelect();
+  window.addEventListener("resize", debounce(() => {
+    if (!userZoomed) fitWaveformToContainer();
+    else syncAlignmentStackWidth(getEffectivePxPerSec());
+  }, 150));
 
   refreshDragSelection();
   regionsPlugin.on("region-created", (region) => {
@@ -468,6 +1085,12 @@ async function init() {
     }
     if (isLinkOverlay(region)) return;
 
+    if (e.ctrlKey || e.metaKey) {
+      toggleRegionInSelection(region);
+      lastRegionClick = { id: null, time: 0 };
+      return;
+    }
+
     const now = Date.now();
     const isDoubleClick =
       lastRegionClick.id === region.id &&
@@ -497,12 +1120,16 @@ async function init() {
       updateTrimInfo();
       return;
     }
-    if (selectedRegion === region) {
+    if (isRegionSelected(region)) {
       if (region.data) {
         region.data.start_time = region.start;
         region.data.end_time = region.end;
       }
-      updateSelectionInfo(region);
+      if (selectedRegions.length === 1) {
+        updateSelectionInfo(region);
+      } else {
+        updateMultiSelectionInspector();
+      }
       syncRegionVisual(region, { selected: true });
     }
   });
@@ -637,9 +1264,10 @@ function setupScrubber() {
   const seekFromPointer = (clientX) => {
     const duration = wavesurfer.getDuration();
     if (!duration) return;
-    const rect = scrubber.getBoundingClientRect();
-    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-    wavesurfer.setTime(ratio * duration);
+    const pxPerSec = getEffectivePxPerSec();
+    const x = contentXFromClientX(clientX);
+    const time = Math.max(0, Math.min(duration, x / pxPerSec));
+    wavesurfer.setTime(time);
     updatePlayhead();
   };
 
@@ -664,33 +1292,83 @@ function setupScrubber() {
     if (e && scrubber.hasPointerCapture(e.pointerId)) {
       scrubber.releasePointerCapture(e.pointerId);
     }
+    // Keep the playhead visible with minimal scroll — do not jump to left-quarter.
+    updatePlayhead({ ensureVisible: true, preferEnd: true });
   };
 
   scrubber.addEventListener("pointerup", stopScrub);
   scrubber.addEventListener("pointercancel", stopScrub);
 }
 
-let playheadRaf = null;
+function scrollPlayheadIntoView(playheadX, { preferEnd = false } = {}) {
+  const scroll = document.getElementById("waveformScroll");
+  if (!scroll) return;
+  const viewW = scroll.clientWidth;
+  const left = scroll.scrollLeft;
+  const right = left + viewW;
+  const margin = Math.min(48, viewW * 0.05);
+  const maxScroll = Math.max(0, scroll.scrollWidth - viewW);
 
-function updatePlayhead() {
+  let target = null;
+  if (playheadX < left + margin) {
+    // Off (or near) the left edge — bring to left quarter, or flush left near start.
+    target = preferEnd
+      ? playheadX - margin
+      : playheadX - viewW * 0.25;
+  } else if (playheadX > right - margin) {
+    // Off (or near) the right edge — keep near the right so end-of-track scrubbing stays put.
+    target = preferEnd
+      ? playheadX - viewW + margin
+      : playheadX - viewW * 0.25;
+  }
+  if (target == null) return;
+  scroll.scrollLeft = Math.max(0, Math.min(target, maxScroll));
+}
+
+let playheadRaf = null;
+let playheadPendingOpts = null;
+
+function updatePlayhead(opts = {}) {
+  playheadPendingOpts = {
+    ensureVisible: !!(playheadPendingOpts?.ensureVisible || opts.ensureVisible),
+    preferEnd: !!(playheadPendingOpts?.preferEnd || opts.preferEnd),
+  };
   if (playheadRaf) return;
   playheadRaf = requestAnimationFrame(() => {
     playheadRaf = null;
+    const pending = playheadPendingOpts || {};
+    playheadPendingOpts = null;
+    const ensureVisible = pending.ensureVisible === true;
+    const preferEnd = pending.preferEnd === true;
     const duration = wavesurfer.getDuration();
     const scrubber = document.getElementById("scrubber");
     const progress = document.getElementById("scrubberProgress");
     const playhead = document.getElementById("playhead");
     if (!duration || !scrubber) return;
 
-    const ratio = wavesurfer.getCurrentTime() / duration;
-    const x = ratio * scrubber.clientWidth;
+    const pxPerSec = getEffectivePxPerSec();
+    const currentTime = wavesurfer.getCurrentTime();
+    const contentWidth = Math.max(
+      getScrollContainerWidth(),
+      duration * pxPerSec,
+    );
+    // Keep the mark inside the scrubber when at/near the end.
+    const x = Math.min(currentTime * pxPerSec, Math.max(0, contentWidth - 1));
     playhead.style.left = `${x}px`;
-    progress.style.width = `${ratio * 100}%`;
-    document.getElementById("timeDisplay").textContent = formatTime(wavesurfer.getCurrentTime());
+    progress.style.width = `${x}px`;
+    document.getElementById("timeDisplay").textContent = formatTime(currentTime);
+
+    if (!scrubbing) {
+      const playing = typeof wavesurfer.isPlaying === "function" && wavesurfer.isPlaying();
+      if (playing || ensureVisible) {
+        scrollPlayheadIntoView(x, { preferEnd: preferEnd || !playing });
+      }
+    }
   });
 }
 
 function onWaveformReady() {
+  userZoomed = false;
   fitWaveformToContainer();
   withProgrammaticRegions(() => {
     pendingRegions.forEach(({ label, isCandidate }) => addRegion(label, isCandidate));
@@ -698,7 +1376,11 @@ function onWaveformReady() {
     ensureTrimRegion();
   });
   updatePlayhead();
-  scheduleWaveformFit();
+  updateCandidateHint();
+  applyAllLabelsVisibility();
+  if (viewMode === "alignment") {
+    loadNoteAlignment().then(() => renderAlignmentOverlays());
+  }
 }
 
 function ensureTrimRegion() {
@@ -800,6 +1482,7 @@ async function loadSample(sampleId) {
   updateMeasureControls(data.prep);
 
   trimRegion = null;
+  selectedRegions = [];
   selectedRegion = null;
   repetitionLinkMode = null;
   lastRegionClick = { id: null, time: 0 };
@@ -810,6 +1493,9 @@ async function loadSample(sampleId) {
     ...data.labels.map((l) => ({ label: normalizeLabelType(l), isCandidate: false })),
   ];
 
+  noteAlignmentData = null;
+  userZoomed = false;
+
   const duration = data.prep?.performance_duration || 0;
   if (typeof wavesurfer.setOptions === "function") {
     wavesurfer.setOptions({ minPxPerSec: computeFitPxPerSec(duration) });
@@ -817,7 +1503,7 @@ async function loadSample(sampleId) {
 
   const audioUrl = audioUrlWithCacheBust(data.audio_url, data.audio_mtime);
   await wavesurfer.load(audioUrl);
-  scheduleWaveformFit();
+  updateCandidateHint();
 
   const measures = data.prep?.total_measures || 0;
   const hasSegment = !!data.prep?.score_segment;
@@ -883,7 +1569,7 @@ function addRegion(label, isCandidate) {
     content: display.split(" (")[0],
     color,
   });
-  syncRegionVisual(region, { selected: selectedRegion === region });
+  syncRegionVisual(region, { selected: isRegionSelected(region) });
   if (label.type === "repetition" && label.repeats_label_range) {
     syncRepetitionLinkOverlay(region);
   }
@@ -895,24 +1581,6 @@ function updateSelectionInfo(region) {
   const typeLabel = TYPE_LABELS[d.type] || d.type || "unlabeled";
   document.getElementById("selectionInfo").textContent =
     `${formatTime(region.start)} – ${formatTime(region.end)} (${typeLabel})`;
-}
-
-function selectRegion(region) {
-  if (isTrimRegion(region)) return;
-  clearRegionSelection();
-  selectedRegion = region;
-  syncRegionVisual(region, { selected: true });
-  requestAnimationFrame(() => {
-    if (selectedRegion === region) {
-      syncRegionVisual(region, { selected: true });
-    }
-  });
-  const d = region.data || {};
-  updateSelectionInfo(region);
-  if (d.type) document.getElementById("labelType").value = d.type;
-  if (d.severity) document.getElementById("severity").value = d.severity;
-  document.getElementById("comment").value = d.comment || "";
-  updateRepetitionPanel(region);
 }
 
 function applyLabelToRegion(region, overrides = {}) {
@@ -927,7 +1595,7 @@ function applyLabelToRegion(region, overrides = {}) {
     parseInt(document.getElementById("severity").value, 10);
   const comment = "comment" in overrides
     ? overrides.comment
-    : (region.data?.comment ?? document.getElementById("comment").value || null);
+    : (region.data?.comment ?? document.getElementById("comment").value) || null;
   region.data = {
     ...(region.data || {}),
     id: (region.data && region.data.id) || generateLabelId(),
@@ -947,16 +1615,21 @@ function applyLabelToRegion(region, overrides = {}) {
     content: display,
     color: TYPE_COLORS[type] || region.color,
   });
-  if (selectedRegion === region) {
-    updateSelectionInfo(region);
-    updateRepetitionPanel(region);
+  if (isRegionSelected(region)) {
+    if (selectedRegions.length === 1) {
+      updateSelectionInfo(region);
+      updateRepetitionPanel(region);
+    } else {
+      updateMultiSelectionInspector();
+    }
   }
-  syncRegionVisual(region, { selected: selectedRegion === region });
+  syncRegionVisual(region, { selected: isRegionSelected(region) });
 }
 
 function applyLabelToSelection() {
-  if (!selectedRegion || isTrimRegion(selectedRegion)) return;
-  applyLabelToRegion(selectedRegion);
+  const targets = selectedRegions.filter((r) => !isTrimRegion(r) && !isLinkOverlay(r));
+  if (!targets.length) return;
+  targets.forEach((region) => applyLabelToRegion(region));
 }
 
 function promoteCandidate(source, overrideType) {
@@ -968,14 +1641,21 @@ function promoteCandidate(source, overrideType) {
 }
 
 function deleteSelectedRegion() {
-  if (selectedRegion && !isTrimRegion(selectedRegion)) {
-    findLinkOverlay(selectedRegion)?.remove();
-    selectedRegion.remove();
-    selectedRegion = null;
-    repetitionLinkMode = null;
-    resetSelectionInfo();
-    updateRepetitionPanel(null);
-  }
+  const targets = selectedRegions.filter((r) => !isTrimRegion(r) && !isLinkOverlay(r));
+  if (!targets.length) return;
+  targets.forEach((region) => {
+    findLinkOverlay(region)?.remove();
+    region.remove();
+  });
+  selectedRegions = [];
+  selectedRegion = null;
+  repetitionLinkMode = null;
+  resetSelectionInfo();
+  updateRepetitionPanel(null);
+  const confirmBtn = document.getElementById("confirmCandidateBtn");
+  const rejectBtn = document.getElementById("rejectCandidateBtn");
+  if (confirmBtn) confirmBtn.disabled = false;
+  if (rejectBtn) rejectBtn.disabled = false;
 }
 
 async function applyScoreSegment() {
@@ -1173,16 +1853,34 @@ function formatTime(sec) {
   return `${String(m).padStart(2, "0")}:${s.toFixed(3).padStart(6, "0")}`;
 }
 
+function isEditableKeyTarget(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el.isContentEditable;
+}
+
 function onKeyDown(e) {
+  if (isEditableKeyTarget(e.target)) return;
+
   if (e.code === "Space") {
     e.preventDefault();
     wavesurfer.playPause();
+    return;
   }
+
+  if (e.key === "Delete" || e.key === "Backspace") {
+    if (selectedRegions.length) {
+      e.preventDefault();
+      deleteSelectedRegion();
+    }
+    return;
+  }
+
   const idx = parseInt(e.key, 10);
   if (idx >= 1 && idx <= taxonomy.length) {
     document.getElementById("labelType").value = taxonomy[idx - 1];
     refreshDragSelection();
-    if (selectedRegion && !isTrimRegion(selectedRegion)) {
+    if (selectedRegions.length) {
       applyLabelToSelection();
     }
   }

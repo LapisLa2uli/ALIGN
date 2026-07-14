@@ -15,11 +15,13 @@ from pydantic import BaseModel
 from datacreate.batch_audio import list_available_audio_ids, run_batch_range
 from datacreate.config import PipelineConfig
 from datacreate.models import LabelsDocument
+from datacreate.note_alignment import build_note_alignment
 from datacreate.sample_prep import (
     apply_performance_trim,
     apply_score_segment,
     ensure_full_score,
     get_prep_state,
+    reprocess_alignment,
 )
 from datacreate.score_segment import extract_measure_range
 from datacreate.utils import read_json, setup_sample_logger, write_json
@@ -180,11 +182,15 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                 pass
         perf_path = sample_dir / "performance_audio.wav"
         audio_mtime = int(perf_path.stat().st_mtime * 1000) if perf_path.exists() else 0
+        align_path = sample_dir / "alignment.npz"
+        candidate_labels = candidates.get("labels", [])
         return {
             "sample_id": sample_id,
             "taxonomy": config.taxonomy,
             "schema_version": config.schema_version,
-            "candidates": candidates.get("labels", []),
+            "candidates": candidate_labels,
+            "candidate_count": len(candidate_labels),
+            "has_alignment": align_path.exists(),
             "labels": labels.get("labels", []),
             "self_reported": labels.get("self_reported", []),
             "annotator_id": labels.get("annotator_id"),
@@ -276,6 +282,31 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         except (ValueError, FileNotFoundError, RuntimeError) as exc:
             raise HTTPException(400, str(exc)) from exc
         return {"status": "ok", "score_segment": info}
+
+    @app.get("/api/samples/{sample_id}/note-alignment")
+    def get_note_alignment(sample_id: str) -> dict[str, Any]:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        logger = setup_sample_logger(sample_dir, name="prep")
+        try:
+            return build_note_alignment(sample_dir, logger)
+        except FileNotFoundError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except Exception as exc:
+            raise HTTPException(500, str(exc)) from exc
+
+    @app.post("/api/samples/{sample_id}/re-align")
+    def realign_sample(sample_id: str) -> dict[str, Any]:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        logger = setup_sample_logger(sample_dir, name="prep")
+        try:
+            info = reprocess_alignment(sample_dir, config, logger)
+        except (FileNotFoundError, RuntimeError) as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return {"status": "ok", **info}
 
     @app.post("/api/samples/{sample_id}/trim-performance")
     def trim_performance(sample_id: str, payload: PerformanceTrimPayload) -> dict[str, Any]:
