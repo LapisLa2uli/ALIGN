@@ -25,9 +25,14 @@ let noteAlignmentData = null;
 let labelsVisible = true;
 let staffStripHeight = 0;
 const SCRUBBER_HEIGHT = 28;
+const EWMA_STRIP_HEIGHT = 72;
+const EWMA_ALPHA = 0.3;
 const ZOOM_STEP = 1.25;
 const MIN_ZOOM_FACTOR = 1;
 const MAX_ZOOM_FACTOR = 32;
+let scoreLoadId = 0;
+let cachedScoreXml = null;
+let cachedScoreMeta = null;
 
 function withProgrammaticRegions(fn) {
   programmaticRegionDepth += 1;
@@ -500,12 +505,24 @@ function contentXFromClientX(clientX) {
   return clientX - rect.left + scroll.scrollLeft;
 }
 
-function applyWaveformZoom(pxPerSec) {
+function applyWaveformZoom(pxPerSec, anchorClientX = null) {
   if (!wavesurfer) return;
   const scroll = document.getElementById("waveformScroll");
   const prevPx = getEffectivePxPerSec();
   const prevScrollLeft = scroll?.scrollLeft || 0;
-  const anchorTime = prevPx > 0 ? prevScrollLeft / prevPx : 0;
+
+  let anchorTime = 0;
+  let viewOffset = 0;
+  if (scroll && prevPx > 0) {
+    if (anchorClientX != null) {
+      const rect = scroll.getBoundingClientRect();
+      viewOffset = Math.max(0, Math.min(scroll.clientWidth, anchorClientX - rect.left));
+      anchorTime = (prevScrollLeft + viewOffset) / prevPx;
+    } else {
+      anchorTime = prevScrollLeft / prevPx;
+      viewOffset = 0;
+    }
+  }
 
   const effective = Math.max(fitPxPerSec, pxPerSec);
   if (typeof wavesurfer.zoom === "function") {
@@ -520,7 +537,7 @@ function applyWaveformZoom(pxPerSec) {
 
   if (scroll) {
     const maxScroll = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
-    scroll.scrollLeft = Math.max(0, Math.min(anchorTime * effective, maxScroll));
+    scroll.scrollLeft = Math.max(0, Math.min(anchorTime * effective - viewOffset, maxScroll));
   }
   updatePlayhead();
 }
@@ -534,13 +551,15 @@ function syncAlignmentStackWidth(pxPerSec) {
   stack.style.minWidth = `${width}px`;
   const scrubber = document.getElementById("scrubber");
   if (scrubber) scrubber.style.width = `${width}px`;
+  const ewma = document.getElementById("ewmaStrip");
+  if (ewma) ewma.style.width = `${width}px`;
   updateOverlayTop();
 }
 
 function updateOverlayTop() {
   const stack = document.getElementById("alignmentStack");
-  const staffVisible = viewMode === "alignment" && !document.getElementById("staffStrip")?.classList.contains("hidden");
-  const top = (staffVisible ? staffStripHeight : 0) + SCRUBBER_HEIGHT;
+  // In alignment mode, boundaries span staff + scrubber + waveform + ewma.
+  const top = viewMode === "alignment" ? 0 : SCRUBBER_HEIGHT;
   if (stack) stack.style.setProperty("--overlay-top", `${top}px`);
   const boundaries = document.getElementById("noteBoundaries");
   if (boundaries) boundaries.style.top = `${top}px`;
@@ -577,19 +596,19 @@ function fitWaveformToContainer() {
   syncZoomSlider();
 }
 
-function setZoomFactor(factor) {
+function setZoomFactor(factor, anchorClientX = null) {
   zoomFactor = Math.max(MIN_ZOOM_FACTOR, Math.min(MAX_ZOOM_FACTOR, factor));
   userZoomed = true;
-  applyWaveformZoom(getCurrentPxPerSec());
+  applyWaveformZoom(getCurrentPxPerSec(), anchorClientX);
   syncZoomSlider();
 }
 
-function zoomIn() {
-  setZoomFactor(zoomFactor * ZOOM_STEP);
+function zoomIn(anchorClientX = null) {
+  setZoomFactor(zoomFactor * ZOOM_STEP, anchorClientX);
 }
 
-function zoomOut() {
-  setZoomFactor(zoomFactor / ZOOM_STEP);
+function zoomOut(anchorClientX = null) {
+  setZoomFactor(zoomFactor / ZOOM_STEP, anchorClientX);
 }
 
 function zoomFit() {
@@ -606,8 +625,8 @@ function setupWaveformWheel() {
       if (!wavesurfer) return;
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
-        if (e.deltaY < 0) zoomIn();
-        else zoomOut();
+        if (e.deltaY < 0) zoomIn(e.clientX);
+        else zoomOut(e.clientX);
         return;
       }
       const delta = e.shiftKey ? e.deltaY : e.deltaY || e.deltaX;
@@ -719,12 +738,19 @@ async function setViewMode(mode) {
   document.getElementById("scorePanel").classList.toggle("collapsed", mode === "alignment");
   document.getElementById("staffStrip").classList.toggle("hidden", mode !== "alignment");
   document.getElementById("noteBoundaries").classList.toggle("hidden", mode !== "alignment");
+  document.getElementById("ewmaStrip")?.classList.toggle("hidden", mode !== "alignment");
   document.getElementById("alignmentInfo").classList.toggle("hidden", mode !== "alignment");
   if (mode === "alignment") {
     await loadNoteAlignment();
     renderAlignmentOverlays();
   } else {
     clearAlignmentOverlays();
+    // Re-render score now that the panel is visible (OSMD needs real width).
+    if (cachedScoreXml) {
+      requestAnimationFrame(() => {
+        renderScoreXml(cachedScoreXml, cachedScoreMeta || {});
+      });
+    }
   }
   updateOverlayTop();
   scheduleWaveformFit();
@@ -748,6 +774,8 @@ async function loadNoteAlignment() {
 function clearAlignmentOverlays() {
   document.getElementById("staffStrip").innerHTML = "";
   document.getElementById("noteBoundaries").innerHTML = "";
+  const ewma = document.getElementById("ewmaStrip");
+  if (ewma) ewma.innerHTML = "";
   staffStripHeight = 0;
   updateOverlayTop();
 }
@@ -760,6 +788,7 @@ function renderAlignmentOverlays() {
   const pxPerSec = getEffectivePxPerSec();
   renderStaffStrip(noteAlignmentData.events, pxPerSec);
   renderNoteBoundaries(noteAlignmentData.events, pxPerSec);
+  renderEwmaStrip(noteAlignmentData.events, pxPerSec);
 }
 
 function renderNoteBoundaries(events, pxPerSec) {
@@ -798,6 +827,102 @@ function midiToStaffY(midi, staffBottomY, lineGap) {
   return staffBottomY - steps * lineGap;
 }
 
+function classifyDurationQl(ql) {
+  const bases = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625];
+  if (!(ql > 0)) return { base: 1, dots: 0 };
+  for (const b of bases) {
+    if (Math.abs(ql - b) < 0.04) return { base: b, dots: 0 };
+    if (Math.abs(ql - b * 1.5) < 0.04) return { base: b, dots: 1 };
+    if (Math.abs(ql - b * 1.75) < 0.05) return { base: b, dots: 2 };
+  }
+  let best = 1;
+  let bestDist = Infinity;
+  for (const b of bases) {
+    const d = Math.abs(ql - b);
+    if (d < bestDist) {
+      bestDist = d;
+      best = b;
+    }
+  }
+  return { base: best, dots: 0 };
+}
+
+function appendDurationDots(svgParts, cx, cy, dots) {
+  for (let i = 0; i < dots; i += 1) {
+    svgParts.push(
+      `<circle cx="${cx + 10 + i * 5}" cy="${cy}" r="1.6" fill="#222"/>`,
+    );
+  }
+}
+
+function appendNoteGlyph(svgParts, cx, cy, ql, stemUp) {
+  const { base, dots } = classifyDurationQl(ql);
+  const open = base >= 2;
+  const rx = base >= 4 ? 7 : 5;
+  const ry = base >= 4 ? 5 : 4;
+  svgParts.push(
+    `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" ` +
+      `fill="${open ? "none" : "#222"}" stroke="#222" stroke-width="1.5" ` +
+      `transform="rotate(-20 ${cx} ${cy})"/>`,
+  );
+  if (base <= 2) {
+    const stemH = 22;
+    const sx = stemUp ? cx + rx - 1 : cx - rx + 1;
+    const sy1 = cy;
+    const sy2 = stemUp ? cy - stemH : cy + stemH;
+    svgParts.push(
+      `<line x1="${sx}" y1="${sy1}" x2="${sx}" y2="${sy2}" stroke="#222" stroke-width="1.4"/>`,
+    );
+    let flags = 0;
+    if (base <= 0.5) flags = 1;
+    if (base <= 0.25) flags = 2;
+    if (base <= 0.125) flags = 3;
+    for (let f = 0; f < flags; f += 1) {
+      const fy = stemUp ? sy2 + f * 5 : sy2 - f * 5;
+      const tipY = stemUp ? fy + 8 : fy - 8;
+      const tipX = stemUp ? sx + 9 : sx - 9;
+      svgParts.push(
+        `<path d="M${sx} ${fy} Q${sx + (stemUp ? 6 : -6)} ${fy + (stemUp ? 3 : -3)} ${tipX} ${tipY}" ` +
+          `fill="none" stroke="#222" stroke-width="1.4"/>`,
+      );
+    }
+  }
+  appendDurationDots(svgParts, cx + (base >= 4 ? 4 : 0), cy, dots);
+}
+
+function appendRestGlyph(svgParts, cx, staffBottomY, lineGap, ql) {
+  const { base, dots } = classifyDurationQl(ql);
+  const mid = staffBottomY - 2 * lineGap;
+  if (base >= 4) {
+    // whole rest: hang from 2nd line from top
+    const y = staffBottomY - 3 * lineGap;
+    svgParts.push(`<rect x="${cx - 6}" y="${y}" width="12" height="4" fill="#333"/>`);
+  } else if (base >= 2) {
+    const y = staffBottomY - 2 * lineGap - 4;
+    svgParts.push(`<rect x="${cx - 6}" y="${y}" width="12" height="4" fill="#333"/>`);
+  } else if (base >= 1) {
+    // quarter rest (simplified zigzag)
+    svgParts.push(
+      `<path d="M${cx - 2} ${mid - 10} L${cx + 3} ${mid - 4} L${cx - 3} ${mid + 2} L${cx + 2} ${mid + 10}" ` +
+        `fill="none" stroke="#333" stroke-width="1.8" stroke-linejoin="round"/>`,
+    );
+  } else {
+    // eighth / shorter: flag rest
+    const flags = base <= 0.125 ? 3 : base <= 0.25 ? 2 : 1;
+    svgParts.push(
+      `<line x1="${cx}" y1="${mid - 10}" x2="${cx}" y2="${mid + 8}" stroke="#333" stroke-width="1.5"/>`,
+    );
+    for (let f = 0; f < flags; f += 1) {
+      const fy = mid - 10 + f * 6;
+      svgParts.push(
+        `<path d="M${cx} ${fy} q6 2 8 7" fill="none" stroke="#333" stroke-width="1.5"/>`,
+        `<circle cx="${cx + 8}" cy="${fy + 8}" r="2" fill="#333"/>`,
+      );
+    }
+  }
+  appendDurationDots(svgParts, cx + 4, mid, dots);
+}
+
 function renderStaffStrip(events, pxPerSec) {
   const container = document.getElementById("staffStrip");
   const width = Math.max(
@@ -810,13 +935,11 @@ function renderStaffStrip(events, pxPerSec) {
 
   let minStep = 0;
   let maxStep = 4;
-  const notes = [];
   events.forEach((ev) => {
     if (ev.is_rest) return;
     const midi = pitchToMidi(ev.pitch);
     if (midi == null) return;
     const steps = midiToStaffSteps(midi);
-    notes.push({ ev, midi, steps });
     minStep = Math.min(minStep, Math.floor(steps));
     maxStep = Math.max(maxStep, Math.ceil(steps));
   });
@@ -825,10 +948,9 @@ function renderStaffStrip(events, pxPerSec) {
 
   const staffBottomStep = 0;
   const staffTopStep = 4;
-  // Anchor the highest step at the top padding so high notes stay in-bounds.
-  // (Previously anchored to minStep, which pushed maxStep to negative Y.)
   const height = (maxStep - minStep) * lineGap + padding * 2;
   const staffBottomY = padding + (maxStep - staffBottomStep) * lineGap;
+  const staffMidY = staffBottomY - 2 * lineGap;
 
   const svgParts = [
     `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`,
@@ -864,25 +986,22 @@ function renderStaffStrip(events, pxPerSec) {
 
   events.forEach((ev) => {
     const x = ev.perf_start * pxPerSec;
-    const w = Math.max(4, (ev.perf_end - ev.perf_start) * pxPerSec);
+    const ql = Number(ev.duration_ql) || 1;
     if (ev.is_rest) {
-      const restY = staffBottomY - 2 * lineGap;
-      svgParts.push(
-        `<rect x="${x}" y="${restY - lineGap / 4}" width="${w}" height="${lineGap / 2}" fill="#bbb"/>`,
-      );
+      const cx = x + 8;
+      appendRestGlyph(svgParts, cx, staffBottomY, lineGap, ql);
     } else {
       const midi = pitchToMidi(ev.pitch);
       const cy = midi != null
         ? midiToStaffY(midi, staffBottomY, lineGap)
-        : staffBottomY - 2 * lineGap;
-      const noteCx = x + 5;
+        : staffMidY;
+      const noteCx = x + 6;
       const noteSteps = midi != null ? midiToStaffSteps(midi) : null;
       if (noteSteps != null) {
         appendLedgerLines(noteSteps, noteCx);
       }
-      svgParts.push(
-        `<ellipse cx="${noteCx}" cy="${cy}" rx="5" ry="4" fill="#222"/>`,
-      );
+      const stemUp = cy >= staffMidY;
+      appendNoteGlyph(svgParts, noteCx, cy, ql, stemUp);
     }
   });
 
@@ -891,6 +1010,100 @@ function renderStaffStrip(events, pxPerSec) {
   container.style.height = `${height}px`;
   staffStripHeight = height;
   updateOverlayTop();
+}
+
+function computeEwmaSeries(events, alpha = EWMA_ALPHA) {
+  const byPart = new Map();
+  events.forEach((ev) => {
+    const part = ev.part ?? 0;
+    if (!byPart.has(part)) byPart.set(part, []);
+    byPart.get(part).push(ev);
+  });
+  const points = [];
+  byPart.forEach((partEvents) => {
+    let ewma = null;
+    partEvents.forEach((ev) => {
+      const refDur = ev.ref_end - ev.ref_start;
+      const perfDur = ev.perf_end - ev.perf_start;
+      if (!(refDur > 1e-4) || !(perfDur > 1e-4)) return;
+      const ratio = perfDur / refDur;
+      if (ewma == null) {
+        ewma = ratio;
+      } else {
+        ewma = alpha * ratio + (1 - alpha) * ewma;
+      }
+      const t = (ev.perf_start + ev.perf_end) / 2;
+      points.push({ t, ratio, ewma, start: ev.perf_start, end: ev.perf_end });
+    });
+  });
+  points.sort((a, b) => a.t - b.t);
+  return points;
+}
+
+function renderEwmaStrip(events, pxPerSec) {
+  const container = document.getElementById("ewmaStrip");
+  if (!container) return;
+  const width = Math.max(
+    getScrollContainerWidth(),
+    (wavesurfer?.getDuration() || 0) * pxPerSec,
+  );
+  const height = EWMA_STRIP_HEIGHT;
+  const padTop = 14;
+  const padBot = 10;
+  const plotH = height - padTop - padBot;
+  const series = computeEwmaSeries(events);
+  if (!series.length) {
+    container.innerHTML =
+      `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">` +
+      `<rect width="100%" height="100%" fill="#141414"/>` +
+      `<text x="8" y="20" fill="#888" font-size="11">EWMA tempo ratio (no events)</text></svg>`;
+    container.style.width = `${width}px`;
+    return;
+  }
+
+  let minV = Infinity;
+  let maxV = -Infinity;
+  series.forEach((p) => {
+    minV = Math.min(minV, p.ewma, p.ratio);
+    maxV = Math.max(maxV, p.ewma, p.ratio);
+  });
+  // Always include 1.0 (score tempo match) in range.
+  minV = Math.min(minV, 0.7);
+  maxV = Math.max(maxV, 1.3);
+  if (maxV - minV < 0.05) {
+    minV -= 0.1;
+    maxV += 0.1;
+  }
+
+  const yAt = (v) => padTop + plotH * (1 - (v - minV) / (maxV - minV));
+  const xAt = (t) => t * pxPerSec;
+
+  const ewmaPath = series
+    .map((p, i) => `${i === 0 ? "M" : "L"}${xAt(p.t).toFixed(1)} ${yAt(p.ewma).toFixed(1)}`)
+    .join(" ");
+  const ratioPath = series
+    .map((p, i) => `${i === 0 ? "M" : "L"}${xAt(p.t).toFixed(1)} ${yAt(p.ratio).toFixed(1)}`)
+    .join(" ");
+  const yOne = yAt(1);
+
+  const svgParts = [
+    `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`,
+    `<rect width="100%" height="100%" fill="#141414"/>`,
+    `<text x="8" y="12" fill="#9ab" font-size="10">EWMA tempo ratio (perf/ref duration)</text>`,
+    `<line x1="0" y1="${yOne}" x2="${width}" y2="${yOne}" stroke="#355" stroke-width="1" stroke-dasharray="4 3"/>`,
+    `<text x="8" y="${yOne - 2}" fill="#466" font-size="9">1.0</text>`,
+    `<path d="${ratioPath}" fill="none" stroke="#666" stroke-width="1" opacity="0.7"/>`,
+    `<path d="${ewmaPath}" fill="none" stroke="#6af" stroke-width="2"/>`,
+  ];
+  series.forEach((p) => {
+    svgParts.push(
+      `<circle cx="${xAt(p.t)}" cy="${yAt(p.ewma)}" r="2" fill="#8cf"/>`,
+    );
+  });
+  svgParts.push("</svg>");
+  container.innerHTML = svgParts.join("");
+  container.style.width = `${width}px`;
+  container.style.height = `${height}px`;
 }
 
 function pitchToMidi(pitch) {
@@ -1004,6 +1217,8 @@ function scheduleWaveformFit() {
 }
 
 function showScorePlaceholder(measures) {
+  cachedScoreXml = null;
+  cachedScoreMeta = null;
   const container = document.getElementById("osmdContainer");
   container.innerHTML =
     `<p class="score-placeholder">Full score has ${measures} measures. ` +
@@ -1472,9 +1687,15 @@ async function loadSampleList() {
 }
 
 async function loadSample(sampleId) {
+  const loadId = ++scoreLoadId;
   currentSample = sampleId;
+  setScoreStatus("Loading score…");
+  cachedScoreXml = null;
+  cachedScoreMeta = null;
+
   const res = await fetch(`/api/samples/${sampleId}`);
   const data = await res.json();
+  if (loadId !== scoreLoadId) return;
   sampleData = data;
   taxonomy = data.taxonomy;
   populateTypeSelect();
@@ -1495,6 +1716,7 @@ async function loadSample(sampleId) {
 
   noteAlignmentData = null;
   userZoomed = false;
+  clearAlignmentOverlays();
 
   const duration = data.prep?.performance_duration || 0;
   if (typeof wavesurfer.setOptions === "function") {
@@ -1503,6 +1725,7 @@ async function loadSample(sampleId) {
 
   const audioUrl = audioUrlWithCacheBust(data.audio_url, data.audio_mtime);
   await wavesurfer.load(audioUrl);
+  if (loadId !== scoreLoadId) return;
   updateCandidateHint();
 
   const measures = data.prep?.total_measures || 0;
@@ -1514,11 +1737,12 @@ async function loadSample(sampleId) {
       seg.end_measure,
       seg.start_beat || 1,
       seg.end_beat ?? null,
+      loadId,
     );
   } else if (measures > LARGE_SCORE_MEASURES) {
-    showScorePlaceholder(measures);
+    if (loadId === scoreLoadId) showScorePlaceholder(measures);
   } else {
-    await renderScore(data.full_score_url || data.score_url, { mode: "full" });
+    await renderScore(data.full_score_url || data.score_url, { mode: "full", loadId });
   }
 }
 
@@ -1768,7 +1992,7 @@ async function saveLabels() {
   alert("Labels saved.");
 }
 
-async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat) {
+async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat, loadId = null) {
   const range =
     startMeasure != null && endMeasure != null
       ? {
@@ -1800,12 +2024,14 @@ async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat) {
   const url =
     `/api/samples/${currentSample}/score-preview?${buildScoreSegmentQuery(range)}`;
   const res = await fetch(url);
+  if (loadId != null && loadId !== scoreLoadId) return;
   if (!res.ok) {
     alert(await res.text());
     setScoreStatus("Could not load score segment.");
     return;
   }
   const xml = await res.text();
+  if (loadId != null && loadId !== scoreLoadId) return;
   await renderScoreXml(xml, {
     mode: "segment",
     start,
@@ -1813,30 +2039,51 @@ async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat) {
     startBeat: range.startBeat,
     endBeat: range.endBeat,
     xmlBytes: xml.length,
+    loadId,
   });
 }
 
 async function renderScore(url, meta = {}) {
   setScoreStatus("Loading score…");
   const res = await fetch(url);
+  if (meta.loadId != null && meta.loadId !== scoreLoadId) return;
   if (!res.ok) {
     alert(await res.text());
     setScoreStatus("Could not load score.");
     return;
   }
   const xml = await res.text();
+  if (meta.loadId != null && meta.loadId !== scoreLoadId) return;
   await renderScoreXml(xml, { ...meta, url, xmlBytes: xml.length });
 }
 
 async function renderScoreXml(xml, meta = {}) {
+  if (meta.loadId != null && meta.loadId !== scoreLoadId) return;
+  cachedScoreXml = xml;
+  cachedScoreMeta = { ...meta };
+  delete cachedScoreMeta.loadId;
+
   const container = document.getElementById("osmdContainer");
+  const panel = document.getElementById("scorePanel");
+  const timeline = document.getElementById("timelinePanel");
   container.innerHTML = "";
   osmdInstance = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, {
     autoResize: false,
     drawTitle: true,
   });
   await osmdInstance.load(xml);
-  const pageWidth = Math.max(400, container.clientWidth - 24);
+  if (meta.loadId != null && meta.loadId !== scoreLoadId) return;
+
+  // When score panel is collapsed (alignment mode), clientWidth is 0 — use fallbacks.
+  let pageWidth = container.clientWidth - 24;
+  if (pageWidth < 100) {
+    pageWidth = (panel?.clientWidth || 0) - 24;
+  }
+  if (pageWidth < 100) {
+    pageWidth = (timeline?.clientWidth || 0) - 48;
+  }
+  pageWidth = Math.max(400, pageWidth);
+
   if (osmdInstance.EngravingRules) {
     osmdInstance.EngravingRules.PageWidth = pageWidth;
   }

@@ -164,7 +164,7 @@ header {
   position: absolute;
   left: 0;
   right: 0;
-  top: var(--overlay-top, 28px);
+  top: var(--overlay-top, 0px);
   bottom: 0;
   pointer-events: none;
   z-index: 3;
@@ -177,10 +177,10 @@ header {
   background: rgba(255, 255, 255, 0.35);
 }
 .note-boundary-line.start {
-  background: rgba(120, 180, 255, 0.55);
+  background: rgba(80, 120, 200, 0.55);
 }
 .note-boundary-line.end {
-  background: rgba(255, 160, 80, 0.45);
+  background: rgba(200, 120, 60, 0.5);
 }
 .waveform-wrap {
   width: 100%;
@@ -188,6 +188,22 @@ header {
   flex-shrink: 0;
   min-height: 140px;
   position: relative;
+}
+.ewma-strip {
+  height: 72px;
+  background: #141414;
+  border-top: 1px solid #444;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.ewma-strip.hidden {
+  display: none;
+}
+.ewma-strip svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 #waveform {
   background: #222;
