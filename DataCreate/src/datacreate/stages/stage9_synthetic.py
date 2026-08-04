@@ -10,6 +10,7 @@ from music21 import converter, note, stream
 
 from datacreate.config import PipelineConfig
 from datacreate.models import Label
+from datacreate.note_alignment import _seconds_per_quarter
 from datacreate.stages.stage1_ingest import copy_verified_score
 from datacreate.stages.stage3_reference import synthesize_reference
 from datacreate.stages.stage4_performance import ingest_performance
@@ -36,6 +37,7 @@ def generate_synthetic_samples(
     count: int | None = None,
 ) -> list[Path]:
     count = count or int(config.synthetic.get("corruptions_per_score", 3))
+    errors_per_sample = int(config.synthetic.get("errors_per_sample", 3))
     sample_dirs: list[Path] = []
     score = converter.parse(str(score_path))
 
@@ -45,8 +47,13 @@ def generate_synthetic_samples(
         sample_dir.mkdir(parents=True, exist_ok=True)
 
         corrupted = copy.deepcopy(score)
-        corruption = CORRUPTIONS[i % len(CORRUPTIONS)]
-        label = _apply_corruption(corrupted, corruption, i, logger)
+        rng = random.Random(i)
+        n_errors = rng.randint(1, errors_per_sample)
+        chosen_corruptions = rng.choices(CORRUPTIONS, k=n_errors)
+        labels = []
+        for j, corruption in enumerate(chosen_corruptions):
+            label = _apply_corruption(corrupted, corruption, i * 100 + j, logger)
+            labels.append(label)
 
         verified_path = copy_verified_score(score_path, sample_dir / "verified_score.musicxml")
         ref_wav = synthesize_reference(verified_path, sample_dir, config, logger)
@@ -69,19 +76,19 @@ def generate_synthetic_samples(
         labels_doc = {
             "schema_version": config.schema_version,
             "audio_reference": "performance_audio.wav",
-            "labels": [label.model_dump(exclude_none=True)],
+            "labels": [l.model_dump(exclude_none=True) for l in labels],
             "self_reported": [],
         }
         write_json(sample_dir / "labels.json", labels_doc)
         write_metadata(
             sample_dir,
             config,
-            {"mode": "synthetic", "corruption": corruption},
+            {"mode": "synthetic", "corruptions": [c for c in chosen_corruptions]},
             logger,
         )
         sample_dirs.append(sample_dir)
         tmp_path.unlink(missing_ok=True)
-        logger.info("Synthetic sample %s created", sample_dir)
+        logger.info("Synthetic sample %s created (%d errors)", sample_dir, len(labels))
 
     return sample_dirs
 
@@ -94,19 +101,21 @@ def _apply_corruption(
     if not notes:
         raise RuntimeError("Score has no notes to corrupt")
 
+    sec_per_ql = _seconds_per_quarter(score)
+
     target = rng.choice(notes)
     offset = float(target.offset)
     duration = float(target.duration.quarterLength)
-    start_time = offset * 0.5
-    end_time = start_time + duration * 0.5
+    start_time = offset * sec_per_ql
+    end_time = start_time + duration * sec_per_ql
 
     if corruption == "shift_pitch":
-        semitones = rng.choice([-2, -1, 1, 2])
+        semitones = rng.choice([-3, -2, -1, 1, 2, 3])
         target.pitch.transpose(semitones, inPlace=True)
         label_type = "wrong_note"
         comment = f"shifted {semitones} semitones"
     elif corruption == "shift_timing":
-        shift = rng.choice([0.25, 0.5, -0.25])
+        shift = rng.choice([0.25, 0.5, -0.25, -0.5, 1.0])
         target.offset = offset + shift
         label_type = "rhythm_error"
         comment = f"onset shifted by {shift} quarters"
@@ -118,23 +127,25 @@ def _apply_corruption(
         comment = "deleted note"
     elif corruption == "insert_note":
         dup = copy.deepcopy(target)
-        dup.offset = offset + 0.25
+        dup.offset = offset + rng.choice([0.125, 0.25, 0.5])
         part = score.parts[0]
         part.insert(dup.offset, dup)
         label_type = "extra_note"
         comment = "inserted duplicate note"
     else:
-        target.duration.quarterLength = max(0.25, duration * 0.5)
+        factor = rng.choice([0.25, 0.5, 1.5, 2.0])
+        target.duration.quarterLength = max(0.25, duration * factor)
         label_type = "rhythm_error"
-        comment = "shortened note duration"
+        comment = f"duration scaled by {factor}x"
 
-    logger.info("Applied corruption %s: %s", corruption, comment)
+    severity = rng.randint(2, 5)
+    logger.info("Applied corruption %s: %s (severity=%d)", corruption, comment, severity)
     return Label(
-        id="syn_001",
+        id=f"syn_{seed:03d}",
         source="synthetic",
-        start_time=start_time,
-        end_time=end_time,
+        start_time=round(start_time, 4),
+        end_time=round(end_time, 4),
         type=label_type,
-        severity=5,
+        severity=severity,
         comment=comment,
     )
