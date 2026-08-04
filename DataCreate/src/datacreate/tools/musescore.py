@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import logging
+import os
 import platform
 import subprocess
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
@@ -52,8 +54,124 @@ def _musescore_cli_path(path: Path) -> str:
     return path.resolve().as_posix()
 
 
-def _powershell_quote(value: str) -> str:
-    return "'" + value.replace("'", "''") + "'"
+def _musescore_env() -> dict[str, str]:
+    """Environment for MuseScore subprocesses.
+
+    Do not force ``QT_QPA_PLATFORM=offscreen`` here: MuseScore 4's MIDI/MusicXML
+    export on Windows often needs a normal Qt platform and fails headless.
+    Version checks never launch the binary on Windows (see ``_windows_musescore_version``).
+    """
+    env = os.environ.copy()
+    env.setdefault("QT_LOGGING_RULES", "*.debug=false")
+    return env
+
+
+def _windows_pe_version(binary: Path) -> str | None:
+    """Read ProductVersion/FileVersion from the PE resource table if present."""
+    ps = (
+        "$p = Get-Item -LiteralPath "
+        + "'"
+        + str(binary.resolve()).replace("'", "''")
+        + "'; "
+        + "$v = $p.VersionInfo.ProductVersion; "
+        + "if (-not $v) { $v = $p.VersionInfo.FileVersion }; "
+        + "if ($v) { Write-Output $v }"
+    )
+    try:
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-Command", ps],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    text = (result.stdout or "").strip()
+    return text or None
+
+
+def _windows_registry_version(binary: Path) -> str | None:
+    """Read MuseScore DisplayVersion from Uninstall registry keys."""
+    binary_resolved = str(binary.resolve()).lower()
+    install_hint = str(binary.resolve().parent.parent).lower()
+    ps = r"""
+$paths = @(
+  'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+  'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
+  'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*'
+)
+Get-ItemProperty $paths -ErrorAction SilentlyContinue |
+  Where-Object { $_.DisplayName -match 'MuseScore' -and $_.DisplayVersion } |
+  ForEach-Object {
+    $loc = ''
+    if ($_.InstallLocation) { $loc = $_.InstallLocation }
+    Write-Output ($_.DisplayVersion + '|' + $loc)
+  }
+"""
+    try:
+        result = subprocess.run(
+            ["powershell", "-NoProfile", "-Command", ps],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=20,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+
+    fallback: str | None = None
+    for line in (result.stdout or "").splitlines():
+        line = line.strip()
+        if not line or "|" not in line:
+            continue
+        version, location = line.split("|", 1)
+        version = version.strip()
+        location = location.strip().lower().rstrip("\\/")
+        if not version:
+            continue
+        if location and (
+            install_hint.startswith(location)
+            or binary_resolved.startswith(location)
+        ):
+            return version
+        if fallback is None:
+            fallback = version
+    return fallback
+
+
+def _windows_musescore_version(binary: Path) -> str | None:
+    """Resolve MuseScore version on Windows without launching the GUI.
+
+    Official MuseScore docs: ``--version`` / ``-v`` do not work on Windows and
+    open a blocking About/version dialog instead — fatal for unattended batch.
+    MuseScore4.exe also often ships with empty PE VersionInfo, so fall back to
+    the Uninstall registry DisplayVersion.
+    """
+    return _windows_pe_version(binary) or _windows_registry_version(binary)
+
+
+@lru_cache(maxsize=8)
+def _cached_binary_version(binary_key: str) -> str | None:
+    binary = Path(binary_key)
+    if platform.system() == "Windows":
+        return _windows_musescore_version(binary)
+
+    # Non-Windows: CLI --version is usually safe and prints to stdout.
+    try:
+        result = subprocess.run(
+            [str(binary), "--version"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=20,
+            env=_musescore_env(),
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    return (result.stdout or result.stderr or "").strip() or None
 
 
 def _run_musescore(
@@ -61,22 +179,18 @@ def _run_musescore(
     args: list[str],
     logger: logging.Logger,
 ) -> subprocess.CompletedProcess[str]:
-    if platform.system() == "Windows":
-        parts = ["&", _powershell_quote(str(binary.resolve()))] + [
-            _powershell_quote(arg) for arg in args
-        ]
-        command = " ".join(parts)
-        logger.info("Running MuseScore via PowerShell: %s", command)
-        return subprocess.run(
-            ["powershell", "-NoProfile", "-Command", command],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-
-    cmd = [str(binary), *args]
+    cmd = [str(binary.resolve()), *args]
     logger.info("Running MuseScore: %s", " ".join(cmd))
-    return subprocess.run(cmd, capture_output=True, text=True, check=False)
+    kwargs: dict = {
+        "capture_output": True,
+        "text": True,
+        "check": False,
+        "env": _musescore_env(),
+    }
+    if platform.system() == "Windows":
+        # Avoid flashing a console window; still allows MuseScore's own process.
+        kwargs["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    return subprocess.run(cmd, **kwargs)
 
 
 def check_musescore_version(config: PipelineConfig, logger: logging.Logger) -> str | None:
@@ -84,9 +198,16 @@ def check_musescore_version(config: PipelineConfig, logger: logging.Logger) -> s
     if binary is None:
         logger.warning("MuseScore binary not found; configure paths.musescore in config")
         return None
-    result = _run_musescore(binary, ["--version"], logger)
-    version_text = (result.stdout or result.stderr or "").strip()
-    logger.info("MuseScore version output: %s", version_text)
+
+    version_text = _cached_binary_version(str(binary.resolve()))
+    if not version_text:
+        logger.warning(
+            "Could not determine MuseScore version from %s without launching GUI",
+            binary,
+        )
+        return None
+
+    logger.info("MuseScore version: %s", version_text)
     min_version = parse_version(str(config.musescore.get("min_version", "4.2.0")))
     current = parse_version(version_text)
     if current and current < min_version:
@@ -111,6 +232,8 @@ def export_score_to_midi(
         )
 
     output_midi.parent.mkdir(parents=True, exist_ok=True)
+    # MuseScore 4 CLI: MuseScore4.exe -o out.mid in.musicxml [-f] [-S soundfont]
+    # Do not pass --version/-v/--help — on Windows those open a blocking GUI dialog.
     args = [
         "-o",
         _musescore_cli_path(output_midi),

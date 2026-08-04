@@ -124,16 +124,125 @@ def _residual_for_ref_range(
     return round(float(np.mean(vals)), 4)
 
 
+def refine_event_onsets(
+    events: list[dict[str, Any]],
+    audio: np.ndarray,
+    sr: int,
+    *,
+    lookback_sec: float = 0.15,
+    max_shift_sec: float = 0.6,
+    frame_length: int = 1024,
+    hop_length: int = 256,
+    rise_db: float = 8.0,
+    min_note_sec: float = 0.04,
+) -> list[dict[str, Any]]:
+    """Snap non-rest perf_start to the first energy rise inside the DTW window.
+
+    DTW often maps score onsets into leading silence; this moves the boundary to
+    the acoustic attack so EWMA/staff spans match heard notes more closely.
+    Rests are left unchanged.
+    """
+    if audio is None or len(audio) == 0 or sr <= 0:
+        return events
+
+    # RMS envelope for the whole take (cheap, shared across events).
+    n = len(audio)
+    if n < frame_length:
+        return events
+    frames = 1 + (n - frame_length) // hop_length
+    rms = np.empty(frames, dtype=np.float64)
+    for i in range(frames):
+        start = i * hop_length
+        chunk = audio[start : start + frame_length]
+        rms[i] = float(np.sqrt(np.mean(np.square(chunk)) + 1e-12))
+    hop_sec = hop_length / float(sr)
+    eps = 1e-12
+
+    refined: list[dict[str, Any]] = []
+    prev_end = 0.0
+    for ev in events:
+        out = dict(ev)
+        if out.get("is_rest"):
+            refined.append(out)
+            prev_end = float(out["perf_end"])
+            continue
+
+        t0 = float(out["perf_start"])
+        t1 = float(out["perf_end"])
+        if t1 - t0 < min_note_sec:
+            refined.append(out)
+            prev_end = t1
+            continue
+
+        search_lo = max(0.0, t0 - lookback_sec)
+        # Prefer not to steal the previous event's body.
+        search_lo = max(search_lo, prev_end)
+        search_hi = min(t1 - min_note_sec, t0 + max_shift_sec)
+        if search_hi <= search_lo + hop_sec:
+            refined.append(out)
+            prev_end = t1
+            continue
+
+        i0 = max(0, int(search_lo / hop_sec))
+        i1 = min(frames, int(np.ceil(search_hi / hop_sec)) + 1)
+        if i1 - i0 < 3:
+            refined.append(out)
+            prev_end = t1
+            continue
+
+        window = rms[i0:i1]
+        # Silence floor from quieter end of the window (leading silence).
+        floor = float(np.percentile(window, 20))
+        floor = max(floor, eps)
+        thresh = floor * (10.0 ** (rise_db / 20.0))
+
+        onset_idx = None
+        for k, val in enumerate(window):
+            if val >= thresh:
+                # Require a short rising edge vs the previous frame when possible.
+                if k == 0 or window[k - 1] < thresh * 0.85:
+                    onset_idx = i0 + k
+                    break
+        if onset_idx is None:
+            # Fallback: strongest relative rise in the first half of the window.
+            half = max(2, len(window) // 2)
+            diffs = np.diff(window[:half], prepend=window[0])
+            k = int(np.argmax(diffs))
+            if diffs[k] > 0:
+                onset_idx = i0 + k
+
+        if onset_idx is not None:
+            new_start = onset_idx * hop_sec
+            # Only move start later into the note (or slightly earlier via lookback),
+            # and keep a usable duration.
+            new_start = min(max(new_start, search_lo), search_hi)
+            if t1 - new_start >= min_note_sec:
+                out["perf_start_dtw"] = round(t0, 4)
+                out["perf_start"] = round(new_start, 4)
+
+        refined.append(out)
+        prev_end = float(out["perf_end"])
+    return refined
+
+
 def align_score_events(
     score_path: Path,
     wp: np.ndarray,
     n_ref: int,
     frame_to_sec: float,
     residuals: np.ndarray | None = None,
+    perf_audio: np.ndarray | None = None,
+    sample_rate: int | None = None,
+    onset_refine: bool = True,
+    onset_lookback_sec: float = 0.15,
+    onset_max_shift_sec: float = 0.6,
+    onset_rise_db: float = 8.0,
 ) -> list[dict[str, Any]]:
     """Map MusicXML note/rest events onto performance time via the DTW path.
 
     Shared by the annotate UI (`build_note_alignment`) and Stage 5 rhythm detection.
+    When ``perf_audio`` is provided and ``onset_refine`` is True, non-rest
+    ``perf_start`` values are snapped to the first energy rise in the window.
     """
     score_events = _extract_score_events(score_path)
     ref_to_perf = _build_ref_to_perf(wp, n_ref)
@@ -157,10 +266,27 @@ def align_score_events(
                 "residual_mean": residual,
             }
         )
+
+    if (
+        onset_refine
+        and perf_audio is not None
+        and sample_rate is not None
+        and sample_rate > 0
+    ):
+        aligned_events = refine_event_onsets(
+            aligned_events,
+            perf_audio,
+            int(sample_rate),
+            lookback_sec=onset_lookback_sec,
+            max_shift_sec=onset_max_shift_sec,
+            rise_db=onset_rise_db,
+        )
     return aligned_events
 
 
 def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None) -> dict[str, Any]:
+    from datacreate.audio_utils import load_audio
+    from datacreate.config import PipelineConfig
     from datacreate.sample_prep import ensure_full_score
 
     logger = logger or logging.getLogger(__name__)
@@ -180,8 +306,28 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
     frame_to_sec = hop / sr
     n_ref = int(data["ref_features"].shape[1])
 
+    align_cfg = PipelineConfig.load().alignment or {}
+
+    perf_audio = None
+    perf_path = sample_dir / "performance_audio.wav"
+    if perf_path.exists():
+        try:
+            perf_audio, _ = load_audio(perf_path, sr, mono=True)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not load performance audio for onset refine: %s", exc)
+
     aligned_events = align_score_events(
-        score_path, wp, n_ref, frame_to_sec, residuals=residuals
+        score_path,
+        wp,
+        n_ref,
+        frame_to_sec,
+        residuals=residuals,
+        perf_audio=perf_audio,
+        sample_rate=sr,
+        onset_refine=bool(align_cfg.get("onset_refine", True)),
+        onset_lookback_sec=float(align_cfg.get("onset_lookback_sec", 0.15)),
+        onset_max_shift_sec=float(align_cfg.get("onset_max_shift_sec", 0.6)),
+        onset_rise_db=float(align_cfg.get("onset_rise_db", 8.0)),
     )
 
     candidate_count = 0
@@ -200,10 +346,12 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
         "max_residual": round(float(np.max(residuals)), 4),
         "candidate_count": candidate_count,
         "event_count": len(aligned_events),
+        "onset_refine": bool(align_cfg.get("onset_refine", True)),
     }
     logger.info(
-        "Built note alignment for %s: %d events",
+        "Built note alignment for %s: %d events (onset_refine=%s)",
         sample_dir.name,
         len(aligned_events),
+        summary["onset_refine"],
     )
     return {"events": aligned_events, "summary": summary}

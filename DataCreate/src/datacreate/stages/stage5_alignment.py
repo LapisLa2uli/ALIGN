@@ -154,6 +154,12 @@ def run_alignment(
         int(ref_feat.shape[1]),
         frame_to_sec,
         residuals=residuals,
+        perf_audio=perf,
+        sample_rate=sr,
+        onset_refine=bool(config.alignment.get("onset_refine", True)),
+        onset_lookback_sec=float(config.alignment.get("onset_lookback_sec", 0.15)),
+        onset_max_shift_sec=float(config.alignment.get("onset_max_shift_sec", 0.6)),
+        onset_rise_db=float(config.alignment.get("onset_rise_db", 8.0)),
     )
 
     candidates = _detect_candidates(
@@ -326,6 +332,48 @@ def _event_duration_ratio(ev: dict[str, Any], eps: float = 1e-4) -> float | None
     return perf_dur / ref_dur
 
 
+def _merge_consecutive_rests(
+    events: list[dict[str, Any]], eps: float = 1e-3
+) -> list[dict[str, Any]]:
+    """Coalesce adjacent rests on the same part into one span for EWMA.
+
+    DTW often mis-splits silence between consecutive rests; treating them as one
+    event avoids fake tempo jumps.
+    """
+    if not events:
+        return events
+
+    by_part: dict[int, list[dict[str, Any]]] = {}
+    for ev in events:
+        by_part.setdefault(int(ev.get("part", 0)), []).append(ev)
+
+    merged: list[dict[str, Any]] = []
+    for part in sorted(by_part.keys()):
+        part_events = by_part[part]
+        i = 0
+        while i < len(part_events):
+            cur = dict(part_events[i])
+            if cur.get("is_rest"):
+                j = i + 1
+                while j < len(part_events):
+                    nxt = part_events[j]
+                    if not nxt.get("is_rest"):
+                        break
+                    if abs(float(nxt["ref_start"]) - float(cur["ref_end"])) > eps:
+                        break
+                    cur["ref_end"] = float(nxt["ref_end"])
+                    cur["perf_end"] = float(nxt["perf_end"])
+                    if "duration_ql" in cur and "duration_ql" in nxt:
+                        cur["duration_ql"] = float(cur["duration_ql"]) + float(nxt["duration_ql"])
+                    j += 1
+                merged.append(cur)
+                i = j
+            else:
+                merged.append(cur)
+                i += 1
+    return merged
+
+
 def _detect_rhythm_errors(
     aligned_events: list[dict[str, Any]],
     config: PipelineConfig,
@@ -341,7 +389,7 @@ def _detect_rhythm_errors(
 
     candidates: list[Label] = []
     by_part: dict[int, list[dict[str, Any]]] = {}
-    for ev in aligned_events:
+    for ev in _merge_consecutive_rests(aligned_events or []):
         part = int(ev.get("part", 0))
         by_part.setdefault(part, []).append(ev)
 

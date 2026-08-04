@@ -124,7 +124,7 @@ datacreate serve
 All tunables live in `config/default.yaml`:
 
 - **taxonomy** — closed label enum (add types here, no code change needed)
-- **alignment** — DTW band, cents threshold, rhythm EWMA/far-window, feature type
+- **alignment** — DTW band, cents threshold, rhythm EWMA/far-window, onset refine, feature type
 - **mel** — spectrogram parameters stored in `metadata.json`
 - **paths** — binary locations, sample roots
 - **review.sampling_rate** — inter-annotator review fraction
@@ -137,7 +137,7 @@ Key fields per label: `id`, `source`, `start_time`, `end_time`, `type`, `severit
 
 `source` values: `auto`, `auto_confirmed`, `auto_edited`, `auto_rejected`, `manual`, `synthetic`.
 
-Stage 5 DTW auto-candidates can be any of: `wrong_note`, `intonation_error`, `rhythm_error`, `missed_note`, `extra_note` (not rhythm-only). Rhythm errors come from score note/rest duration ratios (`perf_dur/ref_dur`): sudden jumps vs an EWMA of recent ratios, plus gradual drift vs a lagged far-window median. Missed/extra are unmatched DTW frames. Soft onsets that distort mapped durations may flag as rhythm (acceptable for clarinet labeling); rubato/ornaments may FP and are cleaned in human review.
+Stage 5 DTW auto-candidates can be any of: `wrong_note`, `intonation_error`, `rhythm_error`, `missed_note`, `extra_note` (not rhythm-only). Rhythm errors come from score note/rest duration ratios (`perf_dur/ref_dur`) after DTW mapping and **onset refine** (snap `perf_start` to the first energy rise so leading silence is not counted as the note). Sudden jumps vs an EWMA of recent ratios, plus gradual drift vs a lagged far-window median, become `rhythm_error`. Missed/extra are unmatched DTW frames. Soft onsets may still flag as rhythm (acceptable for clarinet labeling); rubato/ornaments may FP and are cleaned in human review.
 
 ## Adding a new error type
 

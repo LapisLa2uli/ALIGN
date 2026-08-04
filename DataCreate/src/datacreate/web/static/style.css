@@ -121,7 +121,7 @@ header {
 .waveform-scroll {
   width: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   flex: 1 1 200px;
   min-height: 200px;
   border: 1px solid #444;
@@ -130,7 +130,9 @@ header {
 }
 .alignment-stack {
   position: relative;
-  min-height: 200px;
+  min-height: min-content;
+  width: max-content;
+  min-width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -188,14 +190,16 @@ header {
   flex-shrink: 0;
   min-height: 140px;
   position: relative;
+  /* width overridden in JS to match staff / scrubber time scale */
 }
 .ewma-strip {
-  height: 72px;
+  height: auto;
+  min-height: 140px;
   background: #141414;
   border-top: 1px solid #444;
   flex-shrink: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 .ewma-strip.hidden {
   display: none;
@@ -203,15 +207,20 @@ header {
 .ewma-strip svg {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 #waveform {
   background: #222;
   border: none;
   border-radius: 0;
   min-height: 140px;
+  width: 100%;
   max-width: none;
   margin-top: 0;
+}
+/* WaveSurfer keeps its own scrollport; we scroll the outer stack instead. */
+#waveform::part(scroll) {
+  overflow: hidden !important;
 }
 .view-toolbar {
   display: flex;

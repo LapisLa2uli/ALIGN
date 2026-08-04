@@ -36,6 +36,11 @@ alignment:
   rhythm_far_log_threshold: 0.35
   residual_tolerance: 1.2  # stored in alignment.npz; not emitted as rhythm_error
   min_candidate_duration_sec: 0.15
+  # Snap note perf_start to first energy rise (skip leading silence from DTW)
+  onset_refine: true
+  onset_lookback_sec: 0.15
+  onset_max_shift_sec: 0.6
+  onset_rise_db: 8.0
 
 taxonomy:
   - wrong_note          # different pitch than the score (e.g. played B instead of C)
