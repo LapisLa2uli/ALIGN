@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthpipeline"
+version = "0.1.0"
+description = "Generate MusicXML clarinet scores and ALIGN bundles with known performance errors"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "music21>=9.1",
+  "numpy>=1.24",
+  "pyyaml>=6.0",
+  "pydantic>=2.6",
+]
+
+[project.scripts]
+synth-pipeline = "synthpipeline.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

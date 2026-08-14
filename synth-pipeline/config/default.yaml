@@ -1,0 +1,52 @@
+schema_version: "1.1"
+
+paths:
+  musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
+  output_root: ./output
+  datacreate_config: ../DataCreate/config/default.yaml
+
+audio:
+  sample_rate: 22050
+  mono: true
+
+musescore:
+  min_version: "4.2.0"
+  synthesizer_gain_db: -6
+  tail_seconds: 2.0
+  clarinet_program: 71
+  render_chunk_size: 4096
+
+generation:
+  measures_min: 8
+  measures_max: 16
+  meters:
+    - [4, 4]
+    - [3, 4]
+    - [2, 4]
+    - [6, 8]
+  keys:
+    - {tonic: C, mode: major}
+    - {tonic: G, mode: major}
+    - {tonic: F, mode: major}
+    - {tonic: D, mode: major}
+    - {tonic: Bb, mode: major}
+    - {tonic: Eb, mode: major}
+    - {tonic: A, mode: minor}
+    - {tonic: E, mode: minor}
+    - {tonic: D, mode: minor}
+    - {tonic: G, mode: minor}
+  tempo_min: 72
+  tempo_max: 112
+  pitch_min: E3
+  pitch_max: C6
+  rest_probability: 0.08
+
+errors:
+  weights:
+    wrong_note: 1.0
+    missed_note: 1.0
+    extra_note: 1.0
+    rhythm_error: 1.0
+  repetition_prob: 0.35
+  repeat_window: measure
