@@ -14,8 +14,11 @@ musescore:
   min_version: "4.2.0"
   synthesizer_gain_db: -6
   tail_seconds: 2.0
-  clarinet_program: 71
   render_chunk_size: 4096
+
+render:
+  midi_backend: music21   # music21 only for the default path; musescore is optional
+  soundfont: freepats     # freepats | u220 | mcb | msbasic
 
 generation:
   measures_min: 8
@@ -41,6 +44,7 @@ generation:
   pitch_min: E3
   pitch_max: C6
   rest_probability: 0.08
+  syncopation_prob: 0.12   # chance a duration does not land the next onset on a beat
 
 errors:
   weights:

@@ -1,16 +1,24 @@
 from __future__ import annotations
 
 import logging
+import time
 from pathlib import Path
 
 import numpy as np
 
+from music21 import converter, stream
+
 from datacreate.audio_utils import audio_stats, is_silent, save_wav
 from datacreate.config import PipelineConfig
 from datacreate.tools.musescore import export_score_to_midi, find_soundfont
+from synthpipeline.scoregen import write_midi
 
 
 GM_CLARINET = 71
+MIDI_BACKENDS = ("music21", "musescore")
+
+# tinysoundfont.sfload of MS Basic.sf3 is ~20-30s; reuse one Synth per process.
+_synth_cache: dict[tuple, object] = {}
 
 
 def render_score_as_clarinet(
@@ -19,11 +27,19 @@ def render_score_as_clarinet(
     output_wav: Path,
     logger: logging.Logger,
     clarinet_program: int = GM_CLARINET,
+    midi_backend: str = "music21",
+    score: stream.Score | None = None,
 ) -> Path:
-    """Export MusicXML via MuseScore MIDI, then render with GM clarinet."""
+    """Export MIDI (music21 or MuseScore), then render with GM clarinet."""
     output_wav.parent.mkdir(parents=True, exist_ok=True)
     midi_path = output_wav.with_suffix(".mid")
-    export_score_to_midi(dc_config, score_path, midi_path, logger)
+    backend = (midi_backend or "music21").lower()
+    if backend == "music21":
+        export_score_to_midi_music21(score, score_path, midi_path, logger)
+    elif backend == "musescore":
+        export_score_to_midi(dc_config, score_path, midi_path, logger)
+    else:
+        raise ValueError(f"Unknown midi_backend {midi_backend!r}; use music21 or musescore")
     render_midi_clarinet(midi_path, output_wav, dc_config, logger, clarinet_program)
     audio, _ = _load_wav_mono(output_wav, dc_config.sample_rate())
     stats = audio_stats(audio)
@@ -34,6 +50,21 @@ def render_score_as_clarinet(
             "Check MuseScore version (>=4.2) and SoundFont."
         )
     return output_wav
+
+
+def export_score_to_midi_music21(
+    score: stream.Score | None,
+    score_path: Path,
+    output_midi: Path,
+    logger: logging.Logger,
+) -> Path:
+    if score is None:
+        score = converter.parse(str(score_path))
+    logger.info("Writing MIDI via music21: %s", output_midi)
+    write_midi(score, output_midi)
+    if not output_midi.exists() or output_midi.stat().st_size == 0:
+        raise RuntimeError(f"music21 did not produce {output_midi}")
+    return output_midi
 
 
 def render_midi_clarinet(
@@ -63,8 +94,12 @@ def render_midi_clarinet(
     tail_seconds = float(config.musescore.get("tail_seconds", 2.0))
     chunk_size = int(config.musescore.get("render_chunk_size", 4096))
 
-    synth = tinysoundfont.Synth(samplerate=sample_rate, gain=gain_db)
-    synth.sfload(str(soundfont))
+    synth = _cached_synth(tinysoundfont, soundfont, sample_rate, gain_db, logger)
+    try:
+        synth.sounds_off()
+        synth.notes_off()
+    except Exception:
+        pass
     for channel in range(16):
         if channel == 9:
             synth.program_change(channel, 0, True)
@@ -99,6 +134,20 @@ def render_midi_clarinet(
     mono = stereo.mean(axis=1)
     save_wav(output_wav, mono, sample_rate)
     logger.info("Wrote clarinet audio %s (%d samples)", output_wav, mono.size)
+
+
+def _cached_synth(tinysoundfont, soundfont: Path, sample_rate: int, gain_db: float, logger: logging.Logger):
+    key = (str(soundfont.resolve()), int(sample_rate), float(gain_db))
+    synth = _synth_cache.get(key)
+    if synth is not None:
+        return synth
+    logger.info("Loading SoundFont %s (once per process)...", soundfont)
+    started = time.perf_counter()
+    synth = tinysoundfont.Synth(samplerate=sample_rate, gain=gain_db)
+    synth.sfload(str(soundfont))
+    logger.info("SoundFont loaded in %.2fs", time.perf_counter() - started)
+    _synth_cache[key] = synth
+    return synth
 
 
 def _force_clarinet_program(events, clarinet_program: int) -> None:

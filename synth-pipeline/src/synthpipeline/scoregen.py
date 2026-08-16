@@ -33,9 +33,8 @@ DEFAULT_KEYS = [
 
 DEFAULT_METERS = [(4, 4), (3, 4), (2, 4), (6, 8)]
 
-# Duration in sixteenths, weighted toward quarters and eighths.
+# Duration in sixteenths. Onsets are biased onto the beat; see _pick_duration.
 DURATION_UNITS = [1, 2, 3, 4, 6, 8]
-DURATION_WEIGHTS = [1, 4, 1, 5, 2, 1]
 
 
 def clarinet_instrument() -> instrument.Instrument:
@@ -48,8 +47,16 @@ def clarinet_instrument() -> instrument.Instrument:
 
 
 def write_musicxml(score: stream.Score, path: Path) -> Path:
+    return _write_score(score, path, "musicxml")
+
+
+def write_midi(score: stream.Score, path: Path) -> Path:
+    return _write_score(score, path, "midi")
+
+
+def _write_score(score: stream.Score, path: Path, fmt: str) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
-    written = Path(str(score.write("musicxml", fp=str(path))))
+    written = Path(str(score.write(fmt, fp=str(path))))
     if written.resolve() != path.resolve():
         path.write_bytes(written.read_bytes())
         written.unlink(missing_ok=True)
@@ -70,6 +77,7 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
     lo = pitch.Pitch(str(gen.get("pitch_min", "E3")))
     hi = pitch.Pitch(str(gen.get("pitch_max", "C6")))
     rest_prob = float(gen.get("rest_probability", 0.08))
+    syncopation_prob = float(gen.get("syncopation_prob", 0.12))
 
     k = m21key.Key(tonic, mode)
     scale_pitches = _diatonic_pitches(k, lo, hi)
@@ -77,6 +85,7 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
         raise RuntimeError(f"No scale pitches between {lo} and {hi} for {tonic} {mode}")
 
     measure_ql = beats * (4.0 / beat_type)
+    beat_units = 6 if beat_type == 8 else max(1, int(round(4 * 4 / beat_type)))
     current_idx = _start_index(scale_pitches, k)
 
     score = stream.Score()
@@ -105,6 +114,8 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
             measure_ql,
             rest_prob,
             phrase_end=phrase_end,
+            beat_units=beat_units,
+            syncopation_prob=syncopation_prob,
         )
         part.append(measure)
 
@@ -225,17 +236,21 @@ def _fill_measure(
     measure_ql: float,
     rest_prob: float,
     phrase_end: bool,
+    beat_units: int = 4,
+    syncopation_prob: float = 0.12,
 ) -> int:
     units = int(round(measure_ql / 0.25))
     remaining = units
     offset_units = 0
     while remaining > 0:
-        fits = [u for u in DURATION_UNITS if u <= remaining]
-        if phrase_end and remaining in DURATION_UNITS and remaining >= 4:
-            dur_units = remaining
-        else:
-            weights = [DURATION_WEIGHTS[DURATION_UNITS.index(u)] for u in fits]
-            dur_units = rng.choices(fits, weights=weights, k=1)[0]
+        dur_units = _pick_duration(
+            rng,
+            remaining,
+            offset_units,
+            beat_units,
+            phrase_end=phrase_end,
+            syncopation_prob=syncopation_prob,
+        )
         ql = dur_units * 0.25
         offset = offset_units * 0.25
         if rng.random() < rest_prob and remaining != units:
@@ -248,3 +263,44 @@ def _fill_measure(
         remaining -= dur_units
         offset_units += dur_units
     return current_idx
+
+
+def _pick_duration(
+    rng: random.Random,
+    remaining: int,
+    offset_units: int,
+    beat_units: int,
+    phrase_end: bool,
+    syncopation_prob: float,
+) -> int:
+    fits = [u for u in DURATION_UNITS if u <= remaining]
+    if not fits:
+        return remaining
+    if phrase_end and remaining in fits and remaining >= beat_units:
+        return remaining
+
+    on_beat = beat_units > 0 and offset_units % beat_units == 0
+    aligned = [u for u in fits if beat_units and (offset_units + u) % beat_units == 0]
+    half = beat_units // 2 if beat_units >= 2 else 0
+    # Eighths (or compound-beat halves) starting on a beat are normal, not syncopation.
+    mild = list(aligned)
+    if on_beat and half in fits and half not in mild:
+        mild.append(half)
+
+    use_sync = rng.random() < syncopation_prob
+    pool = fits if (use_sync or not mild) else mild
+
+    weights: list[int] = []
+    for u in pool:
+        lands_on_beat = beat_units and (offset_units + u) % beat_units == 0
+        if lands_on_beat and u == beat_units:
+            weights.append(8)
+        elif lands_on_beat and u == 2 * beat_units:
+            weights.append(4)
+        elif lands_on_beat:
+            weights.append(6)
+        elif on_beat and u == half:
+            weights.append(3)
+        else:
+            weights.append(1)
+    return rng.choices(pool, weights=weights, k=1)[0]

@@ -17,6 +17,7 @@ class SynthConfig:
     paths: dict[str, Any] = field(default_factory=dict)
     audio: dict[str, Any] = field(default_factory=dict)
     musescore: dict[str, Any] = field(default_factory=dict)
+    render: dict[str, Any] = field(default_factory=dict)
     generation: dict[str, Any] = field(default_factory=dict)
     errors: dict[str, Any] = field(default_factory=dict)
     _config_path: Path | None = field(default=None, repr=False)
@@ -31,6 +32,7 @@ class SynthConfig:
             "paths",
             "audio",
             "musescore",
+            "render",
             "generation",
             "errors",
         }
@@ -58,7 +60,18 @@ class SynthConfig:
         return int(self.audio.get("sample_rate", 22050))
 
     def clarinet_program(self) -> int:
-        return int(self.musescore.get("clarinet_program", 71))
+        from synthpipeline.soundfonts import CATALOG, soundfont_id
+
+        if "clarinet_program" in self.musescore:
+            return int(self.musescore["clarinet_program"])
+        sid = soundfont_id(self)
+        return int(CATALOG[sid]["program"])
+
+    def midi_backend(self) -> str:
+        value = str(self.render.get("midi_backend") or "music21").lower()
+        if value not in {"music21", "musescore"}:
+            raise ValueError(f"render.midi_backend must be music21 or musescore, got {value!r}")
+        return value
 
     def output_root(self) -> Path:
         return self.resolved_path("output_root") or (PACKAGE_ROOT / "output")
@@ -72,15 +85,18 @@ class SynthConfig:
         else:
             cfg = PipelineConfig.load()
 
+        from synthpipeline.soundfonts import resolve_soundfont
+
         musescore = self.resolved_path("musescore")
-        soundfont = self.resolved_path("soundfont")
         if musescore is not None:
             cfg.paths["musescore"] = str(musescore)
-        if soundfont is not None:
-            cfg.paths["soundfont"] = str(soundfont)
+        if self.musescore:
+            cfg.musescore.update(self.musescore)
+        preset = resolve_soundfont(self)
+        cfg.paths["soundfont"] = str(preset.path)
+        if "clarinet_program" not in self.musescore:
+            cfg.musescore["clarinet_program"] = preset.program
         cfg.audio["sample_rate"] = self.sample_rate()
         cfg.audio["mono"] = bool(self.audio.get("mono", True))
         cfg.schema_version = self.schema_version
-        if self.musescore:
-            cfg.musescore.update(self.musescore)
         return cfg

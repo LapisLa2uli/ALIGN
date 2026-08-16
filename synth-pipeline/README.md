@@ -15,7 +15,7 @@ pip install -e ./DataCreate
 pip install -e ./synth-pipeline
 ```
 
-Configure MuseScore 4.2+ and a SoundFont in [`config/default.yaml`](config/default.yaml) (defaults match a standard Windows MuseScore 4 install). Synthesis is MIDI export via MuseScore, then tinysoundfont with **GM clarinet (program 71)**.
+MIDI is written with **music21**. Audio is rendered with tinysoundfont and a **clarinet SoundFont** you choose (`freepats` by default). See [`soundfonts/README.md`](soundfonts/README.md).
 
 ## Usage
 
@@ -23,7 +23,12 @@ Procedural original scores (default):
 
 ```powershell
 cd "D:\stuff\Audio Evaluation\ALIGN\synth-pipeline"
-synth-pipeline generate --count 10
+synth-pipeline fetch-soundfonts
+synth-pipeline list-soundfonts
+synth-pipeline generate --count 10 --soundfont freepats
+synth-pipeline generate --count 50 --workers 5 --soundfont freepats
+synth-pipeline generate --count 5 --soundfont u220
+synth-pipeline generate --count 5 --soundfont mcb
 synth-pipeline generate --count 20 --seed 42 --output ../DataCreate/samples/synthetic
 ```
 
