@@ -271,6 +271,8 @@ def _build_sample(
         clarinet_program,
         midi_backend=midi_backend,
         score=result.score,
+        pitch_bends=result.extra.get("pitch_bends"),
+        bpm=result.bpm,
     )
     ingest_performance(perf_wav, sample_dir, dc_config, logger)
 

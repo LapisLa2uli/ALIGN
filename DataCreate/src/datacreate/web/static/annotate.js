@@ -11,9 +11,14 @@ let trimRegion = null;
 let loopSelection = false;
 let scrubbing = false;
 let marqueeSelecting = false;
+let rectSelecting = false;
 let pendingRegions = [];
 let lastRegionClick = { id: null, time: 0 };
 const REGION_DOUBLE_CLICK_MS = 400;
+let lastRegionDragAt = 0;
+let ignorePickerHideUntil = 0;
+let suppressMoveLock = false;
+const regionPosByRef = new WeakMap();
 let repetitionLinkMode = null; // null | "pick" | "draw"
 /** >0 while addRegion is called from code (labels, trim, link overlays) — skip auto-label. */
 let programmaticRegionDepth = 0;
@@ -23,6 +28,7 @@ let fitPxPerSec = 1;
 let userZoomed = false;
 let noteAlignmentData = null;
 let labelsVisible = true;
+let candidatesVisible = false;
 let staffStripHeight = 0;
 const SCRUBBER_HEIGHT = 28;
 const EWMA_STRIP_HEIGHT = 140;
@@ -30,6 +36,13 @@ const EWMA_ALPHA = 0.3;
 const ZOOM_STEP = 1.25;
 const MIN_ZOOM_FACTOR = 1;
 const MAX_ZOOM_FACTOR = 32;
+const MAX_UNDO = 50;
+let undoStack = [];
+let idleSnapshot = null;
+let undoSuspended = false;
+let regionDragUndoArmed = false;
+let ignoreRegionUpdateUndo = false;
+let overlapPickerRegions = [];
 let scoreLoadId = 0;
 let cachedScoreXml = null;
 let cachedScoreMeta = null;
@@ -43,6 +56,101 @@ function withProgrammaticRegions(fn) {
   }
 }
 
+function cloneJson(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function snapshotRegions() {
+  if (!regionsPlugin) return [];
+  return regionsPlugin.getRegions()
+    .filter((r) => !isTrimRegion(r) && !isLinkOverlay(r))
+    .map((r) => ({
+      start: r.start,
+      end: r.end,
+      isCandidate: !!r.data?.isCandidate,
+      data: cloneJson({
+        id: r.data?.id,
+        source: r.data?.source,
+        type: r.data?.type,
+        severity: r.data?.severity ?? null,
+        comment: r.data?.comment ?? null,
+        deviation_cents: r.data?.deviation_cents ?? null,
+        deviation_ms: r.data?.deviation_ms ?? null,
+        measure_number: r.data?.measure_number ?? null,
+        note_id: r.data?.note_id ?? null,
+        repeats_label_range: r.data?.repeats_label_range || null,
+      }),
+    }));
+}
+
+function snapshotsEqual(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function captureIdleSnapshot() {
+  if (undoSuspended) return;
+  idleSnapshot = snapshotRegions();
+}
+
+function pushUndoFromIdle() {
+  if (undoSuspended || !idleSnapshot) return;
+  const top = undoStack[undoStack.length - 1];
+  if (top && snapshotsEqual(top, idleSnapshot)) return;
+  undoStack.push(cloneJson(idleSnapshot));
+  if (undoStack.length > MAX_UNDO) undoStack.shift();
+}
+
+function clearUndoHistory() {
+  undoStack = [];
+  idleSnapshot = null;
+  regionDragUndoArmed = false;
+  ignoreRegionUpdateUndo = false;
+}
+
+function restoreRegionSnapshot(snap) {
+  if (!regionsPlugin) return;
+  undoSuspended = true;
+  try {
+    withProgrammaticRegions(() => {
+      regionsPlugin.getRegions().slice().forEach((region) => {
+        if (isTrimRegion(region)) return;
+        try {
+          region.remove();
+        } catch {
+          /* WaveSurfer can throw when removing the last remaining region */
+        }
+      });
+      snap.forEach((item) => {
+        addRegion(
+          {
+            ...item.data,
+            start_time: item.start,
+            end_time: item.end,
+            repeats_label_range: item.data?.repeats_label_range || null,
+          },
+          item.isCandidate,
+        );
+      });
+    });
+  } finally {
+    undoSuspended = false;
+  }
+  selectedRegions = [];
+  selectedRegion = null;
+  repetitionLinkMode = null;
+  resetSelectionInfo();
+  updateRepetitionPanel(null);
+  applyAllLabelsVisibility();
+  hideOverlapPicker();
+  refreshAllCaptions();
+  captureIdleSnapshot();
+}
+
+function undoLastAction() {
+  if (!undoStack.length) return;
+  restoreRegionSnapshot(undoStack.pop());
+}
+
 const TYPE_COLORS = {
   wrong_note: "rgba(255,60,60,0.45)",
   wrong_pitch: "rgba(255,60,60,0.45)",
@@ -52,6 +160,9 @@ const TYPE_COLORS = {
   rhythm_error: "rgba(80,180,255,0.4)",
   repetition: "rgba(80,255,160,0.4)",
   stylistic_choice: "rgba(160,160,160,0.35)",
+  bad_start: "rgba(210,110,40,0.45)",
+  bad_timbre: "rgba(0,170,150,0.4)",
+  squeak: "rgba(255,50,170,0.45)",
 };
 
 const TYPE_LABELS = {
@@ -63,7 +174,158 @@ const TYPE_LABELS = {
   rhythm_error: "Rhythm / timing error",
   repetition: "Repetition",
   stylistic_choice: "Stylistic choice (not an error)",
+  bad_start: "Bad start (messy / failed attack)",
+  bad_timbre: "Bad timbre (poor tone quality)",
+  squeak: "Squeak",
 };
+
+function typeDisplayName(type) {
+  return (TYPE_LABELS[type] || type || "unlabeled").split(" (")[0];
+}
+
+function getRepetitionRegionsSorted() {
+  if (!regionsPlugin) return [];
+  return regionsPlugin.getRegions()
+    .filter((r) => !isTrimRegion(r) && !isLinkOverlay(r) && r.data?.type === "repetition")
+    .sort((a, b) => {
+      const dt = a.start - b.start;
+      if (Math.abs(dt) > 1e-4) return dt;
+      return String(a.data?.id || a.id || "").localeCompare(String(b.data?.id || b.id || ""));
+    });
+}
+
+function getRepetitionNumberMap() {
+  const map = new Map();
+  getRepetitionRegionsSorted().forEach((r, i) => {
+    const n = i + 1;
+    if (r.data?.id) map.set(r.data.id, n);
+    map.set(r, n);
+  });
+  return map;
+}
+
+function regionCaptionText(region, numbers = getRepetitionNumberMap()) {
+  if (isLinkOverlay(region)) {
+    const n = numbers.get(region.data?.parentId);
+    return n != null ? `Original ${n}` : "Original";
+  }
+  const type = region.data?.type;
+  const base = typeDisplayName(type);
+  if (type === "repetition") {
+    const n = numbers.get(region.data?.id) ?? numbers.get(region);
+    return n != null ? `${base} ${n}` : base;
+  }
+  return base;
+}
+
+function captionFontSize(region) {
+  const dur = Math.max(0, (region.end ?? 0) - (region.start ?? 0));
+  const px = dur * (getEffectivePxPerSec() || 1);
+  let size = 12;
+  if (dur < 0.12) size = 7;
+  else if (dur < 0.22) size = 8;
+  else if (dur < 0.4) size = 9;
+  else if (dur < 0.8) size = 10;
+  else if (dur < 1.6) size = 11;
+  if (px < 18) size = Math.min(size, 7);
+  else if (px < 32) size = Math.min(size, 8);
+  else if (px < 52) size = Math.min(size, 9);
+  return size;
+}
+
+function getRegionContentEl(region) {
+  if (region?.content instanceof HTMLElement) return region.content;
+  return region?.element?.querySelector?.('[part~="region-content"]') || null;
+}
+
+function styleRegionCaptionEl(el, region, text) {
+  if (!el) return;
+  if (el.textContent !== text) el.textContent = text;
+  el.setAttribute("part", "region-content");
+  const size = captionFontSize(region);
+  el.style.fontSize = `${size}px`;
+  el.style.lineHeight = "1.15";
+  el.style.padding = "0 3px";
+  el.style.whiteSpace = "nowrap";
+  el.style.overflow = "visible";
+  el.style.display = "inline-block";
+  el.style.width = "auto";
+  el.style.minWidth = "max-content";
+  el.style.maxWidth = "none";
+  el.style.pointerEvents = "none";
+  el.style.color = "#f4f4f4";
+  el.style.textShadow = "0 1px 2px rgba(0,0,0,0.9)";
+  el.style.fontWeight = "600";
+  el.style.position = "relative";
+  el.style.zIndex = "12";
+}
+
+function applyRegionCaption(region, numbers = getRepetitionNumberMap()) {
+  if (!region || isTrimRegion(region)) return;
+  const text = regionCaptionText(region, numbers);
+  let el = getRegionContentEl(region);
+  if (!el) {
+    if (typeof region.setOptions === "function") {
+      region.setOptions({ content: text });
+    }
+    el = getRegionContentEl(region);
+  }
+  styleRegionCaptionEl(el, region, text);
+  rememberRegionPos(region);
+}
+
+let captionLayoutTimer = null;
+
+function layoutCaptionRows() {
+  if (!regionsPlugin) return;
+  const items = [];
+  regionsPlugin.getRegions().forEach((r) => {
+    if (isTrimRegion(r)) return;
+    if (!isLinkOverlay(r) && !isRegionVisible(r)) return;
+    const el = getRegionContentEl(r);
+    if (!el) return;
+    items.push({ region: r, el });
+  });
+  items.sort((a, b) => {
+    const dt = a.region.start - b.region.start;
+    if (Math.abs(dt) > 1e-4) return dt;
+    return String(a.region.data?.type || "").localeCompare(String(b.region.data?.type || ""));
+  });
+  items.forEach(({ el }) => {
+    el.style.marginTop = "0px";
+  });
+  requestAnimationFrame(() => {
+    const rows = [];
+    const waveH = wavesurfer?.options?.height || 140;
+    items.forEach(({ el }) => {
+      if (!el.isConnected) return;
+      const box = el.getBoundingClientRect();
+      const left = box.left;
+      const right = Math.max(box.right, left + 8);
+      const h = Math.max(box.height || 0, 10);
+      let row = 0;
+      for (; row < rows.length; row += 1) {
+        if (!rows[row].some((o) => left < o.right && right > o.left)) break;
+      }
+      if (!rows[row]) rows[row] = [];
+      rows[row].push({ left, right });
+      const maxRow = Math.max(0, Math.floor((waveH - h - 2) / h));
+      el.style.marginTop = `${Math.min(row, maxRow) * h}px`;
+    });
+  });
+}
+
+function scheduleCaptionLayout() {
+  clearTimeout(captionLayoutTimer);
+  captionLayoutTimer = setTimeout(layoutCaptionRows, 30);
+}
+
+function refreshAllCaptions() {
+  if (!regionsPlugin) return;
+  const numbers = getRepetitionNumberMap();
+  regionsPlugin.getRegions().forEach((region) => applyRegionCaption(region, numbers));
+  scheduleCaptionLayout();
+}
 
 const LARGE_SCORE_MEASURES = 40;
 const MAX_SEGMENT_PREVIEW_MEASURES = 64;
@@ -140,7 +402,8 @@ function generateLabelId() {
 }
 
 function isLinkOverlay(region) {
-  return region?.data?.role === "repetition-link";
+  return region?.data?.role === "repetition-link"
+    || String(region?.id || "").startsWith("link-");
 }
 
 function getRegionKind(region) {
@@ -162,6 +425,7 @@ function syncRegionVisual(region, { selected = false } = {}) {
   else parts.push("region-label");
   if (selected) parts.push("region-selected");
   el.setAttribute("part", parts.join(" "));
+  el.style.overflow = "visible";
 
   if (kind === "trim") {
     el.style.border = "2px solid #3c3";
@@ -169,6 +433,10 @@ function syncRegionVisual(region, { selected = false } = {}) {
     el.style.boxShadow = selected ? "0 0 0 1px rgba(0, 0, 0, 0.45)" : "";
     el.style.zIndex = selected ? "10" : "1";
     el.style.boxSizing = "border-box";
+    el.style.pointerEvents = "none";
+    el.querySelectorAll('[part*="region-handle"]').forEach((handle) => {
+      handle.style.pointerEvents = "auto";
+    });
     return;
   }
 
@@ -194,9 +462,40 @@ function syncRegionVisual(region, { selected = false } = {}) {
   } else {
     el.style.border = "none";
     el.style.boxShadow = "";
-    el.style.zIndex = "";
+    el.style.zIndex = selected ? "10" : "6";
   }
   applyRegionLabelVisibility(region);
+  applyRegionMoveMode(region);
+}
+
+function isRegionVisible(region) {
+  const kind = getRegionKind(region);
+  if (kind === "trim" || kind === "link") return true;
+  if (kind === "candidate") return candidatesVisible;
+  return labelsVisible;
+}
+
+function applyRegionMoveMode(region) {
+  if (!region || isTrimRegion(region) || isLinkOverlay(region)) return;
+  const canMove = isRegionSelected(region) && isRegionVisible(region);
+  // WaveSurfer starts drag-create on pointerdown; don't lock until pointerup.
+  if (!canMove && suppressMoveLock) return;
+  try {
+    if (typeof region.setOptions === "function") {
+      region.setOptions({ drag: canMove, resize: canMove });
+    } else {
+      region.drag = canMove;
+      region.resize = canMove;
+    }
+  } catch {
+    /* plugin may ignore drag/resize after removal */
+  }
+  const el = region.element;
+  if (!el) return;
+  el.style.pointerEvents = canMove ? "auto" : "none";
+  el.querySelectorAll('[part*="region-handle"]').forEach((handle) => {
+    handle.style.pointerEvents = canMove ? "auto" : "none";
+  });
 }
 
 function applyRegionLabelVisibility(region) {
@@ -205,12 +504,15 @@ function applyRegionLabelVisibility(region) {
     region.element.style.visibility = "visible";
     return;
   }
-  region.element.style.visibility = labelsVisible ? "visible" : "hidden";
+  const visible = isRegionVisible(region);
+  region.element.style.visibility = visible ? "visible" : "hidden";
+  applyRegionMoveMode(region);
 }
 
 function applyAllLabelsVisibility() {
   if (!regionsPlugin) return;
   regionsPlugin.getRegions().forEach((region) => applyRegionLabelVisibility(region));
+  scheduleCaptionLayout();
 }
 
 function toggleLabelsVisibility() {
@@ -221,14 +523,69 @@ function toggleLabelsVisibility() {
     btn.textContent = labelsVisible ? "Labels" : "Labels (off)";
   }
   applyAllLabelsVisibility();
+  hideOverlapPicker();
+}
+
+function toggleCandidatesVisibility() {
+  candidatesVisible = !candidatesVisible;
+  const btn = document.getElementById("toggleCandidatesBtn");
+  if (btn) {
+    btn.classList.toggle("active", candidatesVisible);
+    btn.textContent = candidatesVisible ? "Candidates" : "Candidates (off)";
+  }
+  if (!candidatesVisible && selectedRegions.length) {
+    const remaining = selectedRegions.filter((r) => !r.data?.isCandidate);
+    if (remaining.length !== selectedRegions.length) {
+      setSelectedRegions(remaining);
+    }
+  }
+  applyAllLabelsVisibility();
+  updateCandidateHint();
+  hideOverlapPicker();
 }
 
 function findLinkOverlay(parentRegion) {
+  return findLinkOverlays(parentRegion)[0] || null;
+}
+
+function findLinkOverlays(parentRegion) {
   const parentId = parentRegion?.data?.id;
-  if (!parentId) return null;
-  return regionsPlugin.getRegions().find(
-    (region) => region.data?.role === "repetition-link" && region.data?.parentId === parentId,
+  if (!parentId || !regionsPlugin) return [];
+  return regionsPlugin.getRegions().filter((region) => {
+    if (!isLinkOverlay(region)) return false;
+    return region.data?.parentId === parentId || region.id === `link-${parentId}`;
+  });
+}
+
+function removeLinkedOriginals(parentRegion) {
+  if (!regionsPlugin) return;
+  findLinkOverlays(parentRegion).forEach((overlay) => {
+    try {
+      overlay.remove();
+    } catch {
+      /* overlay may already be gone */
+    }
+  });
+}
+
+function sweepOrphanLinkOverlays() {
+  if (!regionsPlugin) return;
+  const liveParentIds = new Set(
+    regionsPlugin.getRegions()
+      .filter((r) => r.data?.type === "repetition" && r.data?.id)
+      .map((r) => r.data.id),
   );
+  regionsPlugin.getRegions().slice().forEach((region) => {
+    if (!isLinkOverlay(region)) return;
+    const parentId = region.data?.parentId;
+    if (parentId && !liveParentIds.has(parentId)) {
+      try {
+        region.remove();
+      } catch {
+        /* overlay may already be gone */
+      }
+    }
+  });
 }
 
 function syncRepetitionLinkOverlay(parentRegion) {
@@ -245,7 +602,7 @@ function syncRepetitionLinkOverlay(parentRegion) {
       color: "rgba(200, 200, 210, 0.35)",
       drag: false,
       resize: false,
-      content: "original",
+      content: "Original",
       id: `link-${parentRegion.data.id}`,
       data: { role: "repetition-link", parentId: parentRegion.data.id },
     });
@@ -254,6 +611,8 @@ function syncRepetitionLinkOverlay(parentRegion) {
       ? createOverlay()
       : withProgrammaticRegions(createOverlay);
   syncRegionVisual(overlay);
+  applyRegionCaption(overlay);
+  scheduleCaptionLayout();
 }
 
 function setRepetitionLinkRange(parentRegion, start, end, existingRegion = null) {
@@ -265,6 +624,9 @@ function setRepetitionLinkRange(parentRegion, start, end, existingRegion = null)
     return;
   }
 
+  if (!undoSuspended) {
+    pushUndoFromIdle();
+  }
   parentRegion.data.repeats_label_range = { start_time: lo, end_time: hi };
   repetitionLinkMode = null;
   refreshDragSelection();
@@ -284,7 +646,7 @@ function setRepetitionLinkRange(parentRegion, start, end, existingRegion = null)
       color: "rgba(200, 200, 210, 0.35)",
       drag: false,
       resize: false,
-      content: "original",
+      content: "Original",
     });
     if (typeof existingRegion.setId === "function") {
       existingRegion.setId(`link-${parentRegion.data.id}`);
@@ -296,6 +658,8 @@ function setRepetitionLinkRange(parentRegion, start, end, existingRegion = null)
     syncRepetitionLinkOverlay(parentRegion);
   }
   updateRepetitionPanel(parentRegion);
+  refreshAllCaptions();
+  if (!undoSuspended) captureIdleSnapshot();
 }
 
 function updateRepetitionPanel(region) {
@@ -363,22 +727,21 @@ function setupRepetitionControls() {
   };
   document.getElementById("clearRepetitionLinkBtn").onclick = () => {
     if (!selectedRegion || selectedRegion.data?.type !== "repetition") return;
+    pushUndoFromIdle();
     delete selectedRegion.data.repeats_label_range;
     repetitionLinkMode = null;
     refreshDragSelection();
     syncRepetitionLinkOverlay(selectedRegion);
     updateRepetitionPanel(selectedRegion);
+    captureIdleSnapshot();
   };
   document.getElementById("labelType").addEventListener("change", () => {
     refreshDragSelection();
-    if (selectedRegion && !isTrimRegion(selectedRegion)) {
-      if (selectedRegion.data?.type === "repetition"
-        && document.getElementById("labelType").value !== "repetition") {
-        delete selectedRegion.data.repeats_label_range;
-        syncRepetitionLinkOverlay(selectedRegion);
-      }
-      updateRepetitionPanel(selectedRegion);
+    if (selectedRegions.length) {
+      applyLabelToSelection();
+      return;
     }
+    updateRepetitionPanel(selectedRegion);
   });
 }
 
@@ -438,6 +801,7 @@ function updateMultiSelectionInspector() {
 
 function selectRegion(region) {
   if (isTrimRegion(region) || isLinkOverlay(region)) return;
+  if (!isRegionVisible(region)) return;
   clearRegionSelection();
   selectedRegions = [region];
   syncPrimarySelection();
@@ -452,6 +816,7 @@ function selectRegion(region) {
 
 function toggleRegionInSelection(region) {
   if (isTrimRegion(region) || isLinkOverlay(region)) return;
+  if (!isRegionVisible(region)) return;
   const idx = selectedRegions.indexOf(region);
   if (idx >= 0) {
     selectedRegions.splice(idx, 1);
@@ -465,16 +830,27 @@ function toggleRegionInSelection(region) {
 }
 
 function setSelectedRegions(regions) {
-  const next = regions.filter((r) => r && !isTrimRegion(r) && !isLinkOverlay(r));
+  const next = regions.filter(
+    (r) => r && !isTrimRegion(r) && !isLinkOverlay(r) && isRegionVisible(r),
+  );
   selectedRegions = next;
   syncPrimarySelection();
   refreshSelectionVisuals();
   updateMultiSelectionInspector();
 }
 
+function selectAllRegions() {
+  if (!regionsPlugin) return;
+  const hits = regionsPlugin.getRegions().filter(
+    (r) => !isTrimRegion(r) && !isLinkOverlay(r) && isRegionVisible(r),
+  );
+  setSelectedRegions(hits);
+  hideOverlapPicker();
+}
+
 function resetSelectionInfo() {
   document.getElementById("selectionInfo").textContent =
-    "Drag on waveform to add a label. Double-click a region to edit it. Ctrl+drag to multi-select.";
+    "Drag on waveform to add a label (including over unselected labels). Double-click a region to select it before moving.";
 }
 
 function getScrollContainerWidth() {
@@ -556,6 +932,7 @@ function applyWaveformZoom(pxPerSec, anchorClientX = null) {
     scroll.scrollLeft = Math.max(0, Math.min(anchorTime * effective - viewOffset, maxScroll));
   }
   updatePlayhead();
+  refreshAllCaptions();
 }
 
 function syncAlignmentStackWidth(pxPerSec) {
@@ -705,6 +1082,7 @@ function setupMarqueeSelect() {
     const t1 = x1 / pxPerSec;
     const hits = regionsPlugin.getRegions().filter((r) => {
       if (isTrimRegion(r) || isLinkOverlay(r)) return false;
+      if (!isRegionVisible(r)) return false;
       return r.end > t0 && r.start < t1;
     });
     setSelectedRegions(hits);
@@ -752,6 +1130,280 @@ function setupMarqueeSelect() {
   });
 }
 
+function contentPointFromClient(clientX, clientY) {
+  const scroll = document.getElementById("waveformScroll");
+  if (!scroll) return { x: 0, y: 0 };
+  const rect = scroll.getBoundingClientRect();
+  return {
+    x: clientX - rect.left + scroll.scrollLeft,
+    y: clientY - rect.top + scroll.scrollTop,
+  };
+}
+
+function setupRectSelect() {
+  const scroll = document.getElementById("waveformScroll");
+  const stack = document.getElementById("alignmentStack");
+  if (!scroll || !stack) return;
+
+  let startX = 0;
+  let startY = 0;
+  let clientStartX = 0;
+  let clientStartY = 0;
+  let box = null;
+
+  const finishRect = (e) => {
+    if (!rectSelecting) return;
+    rectSelecting = false;
+    const end = contentPointFromClient(e.clientX, e.clientY);
+    const left = Math.min(startX, end.x);
+    const right = Math.max(startX, end.x);
+    const top = Math.min(startY, end.y);
+    const bottom = Math.max(startY, end.y);
+    if (box) {
+      box.remove();
+      box = null;
+    }
+    refreshDragSelection();
+
+    const moved = Math.hypot(e.clientX - clientStartX, e.clientY - clientStartY);
+    if (moved < 6) return;
+
+    const scrollRect = scroll.getBoundingClientRect();
+    const clientBox = {
+      left: scrollRect.left + (left - scroll.scrollLeft),
+      right: scrollRect.left + (right - scroll.scrollLeft),
+      top: scrollRect.top + (top - scroll.scrollTop),
+      bottom: scrollRect.top + (bottom - scroll.scrollTop),
+    };
+    const hits = regionsPlugin.getRegions().filter((r) => {
+      if (isTrimRegion(r) || isLinkOverlay(r) || !isRegionVisible(r)) return false;
+      const el = r.element;
+      if (!el) {
+        const px = getEffectivePxPerSec();
+        return r.end * px > left && r.start * px < right;
+      }
+      const b = el.getBoundingClientRect();
+      return (
+        b.left < clientBox.right
+        && b.right > clientBox.left
+        && b.top < clientBox.bottom
+        && b.bottom > clientBox.top
+      );
+    });
+    setSelectedRegions(hits);
+    hideOverlapPicker();
+  };
+
+  scroll.addEventListener("contextmenu", (e) => {
+    if (e.shiftKey || rectSelecting) e.preventDefault();
+  });
+
+  scroll.addEventListener("pointerdown", (e) => {
+    if (e.button !== 2 || !e.shiftKey) return;
+    if (e.target.closest("#scrubber")) return;
+    if (isTextEntryTarget(e.target)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    rectSelecting = true;
+    const p = contentPointFromClient(e.clientX, e.clientY);
+    startX = p.x;
+    startY = p.y;
+    clientStartX = e.clientX;
+    clientStartY = e.clientY;
+    if (typeof regionsPlugin.disableDragSelection === "function") {
+      regionsPlugin.disableDragSelection();
+    }
+    box = document.createElement("div");
+    box.className = "marquee-select rect";
+    box.style.left = `${startX}px`;
+    box.style.top = `${startY}px`;
+    box.style.width = "0px";
+    box.style.height = "0px";
+    stack.appendChild(box);
+    scroll.setPointerCapture(e.pointerId);
+  });
+
+  scroll.addEventListener("pointermove", (e) => {
+    if (!rectSelecting || !box) return;
+    const p = contentPointFromClient(e.clientX, e.clientY);
+    box.style.left = `${Math.min(startX, p.x)}px`;
+    box.style.top = `${Math.min(startY, p.y)}px`;
+    box.style.width = `${Math.abs(p.x - startX)}px`;
+    box.style.height = `${Math.abs(p.y - startY)}px`;
+  });
+
+  scroll.addEventListener("pointerup", finishRect);
+  scroll.addEventListener("pointercancel", () => {
+    if (!rectSelecting) return;
+    rectSelecting = false;
+    if (box) {
+      box.remove();
+      box = null;
+    }
+    refreshDragSelection();
+  });
+}
+
+function hideOverlapPicker() {
+  const el = document.getElementById("overlapPicker");
+  if (el) {
+    el.classList.add("hidden");
+    el.innerHTML = "";
+  }
+  overlapPickerRegions = [];
+}
+
+function rememberRegionPos(region) {
+  if (!region) return;
+  regionPosByRef.set(region, { start: region.start, end: region.end });
+}
+
+function regionPosChanged(region) {
+  const prev = regionPosByRef.get(region);
+  rememberRegionPos(region);
+  if (!prev) return false;
+  return Math.abs(prev.start - region.start) > 0.012
+    || Math.abs(prev.end - region.end) > 0.012;
+}
+
+function sortRegionsForPicker(regions) {
+  return regions.slice().sort((a, b) => {
+    const dt = a.start - b.start;
+    if (Math.abs(dt) > 1e-6) return dt;
+    return String(a.data?.type || "").localeCompare(String(b.data?.type || ""));
+  });
+}
+
+function regionsAtTime(t) {
+  if (!regionsPlugin) return [];
+  return sortRegionsForPicker(regionsPlugin.getRegions().filter((r) => {
+    if (isTrimRegion(r) || isLinkOverlay(r) || !isRegionVisible(r)) return false;
+    return r.start <= t && t <= r.end;
+  }));
+}
+
+function regionsOverlappingRegion(region) {
+  if (!regionsPlugin || !region) return [];
+  return sortRegionsForPicker(regionsPlugin.getRegions().filter((r) => {
+    if (isTrimRegion(r) || isLinkOverlay(r) || !isRegionVisible(r)) return false;
+    return r.end > region.start && r.start < region.end;
+  }));
+}
+
+function regionsAtClientPoint(clientX, clientY) {
+  const pxPerSec = getEffectivePxPerSec();
+  if (!(pxPerSec > 0) || !Number.isFinite(clientX)) return [];
+  return regionsAtTime(contentXFromClientX(clientX) / pxPerSec);
+}
+
+function clientPointForRegionEvent(region, e) {
+  if (Number.isFinite(e?.clientX) && Number.isFinite(e?.clientY)) {
+    return { x: e.clientX, y: e.clientY };
+  }
+  const box = region?.element?.getBoundingClientRect?.();
+  if (box) {
+    return { x: box.left + Math.min(48, Math.max(8, box.width / 2)), y: box.top + 10 };
+  }
+  return { x: 80, y: 80 };
+}
+
+function overlappingHitsForClick(region, e) {
+  const point = clientPointForRegionEvent(region, e);
+  const atPoint = regionsAtClientPoint(point.x, point.y);
+  if (atPoint.length > 1) return { hits: atPoint, ...point };
+  const overlapping = regionsOverlappingRegion(region);
+  if (overlapping.length > 1) return { hits: overlapping, ...point };
+  const atMid = regionsAtTime((region.start + region.end) / 2);
+  if (atMid.length > 1) return { hits: atMid, ...point };
+  return { hits: atPoint.length ? atPoint : [region], ...point };
+}
+
+function showOverlapPicker(regions, clientX, clientY) {
+  const el = document.getElementById("overlapPicker");
+  if (!el || regions.length < 2) {
+    hideOverlapPicker();
+    return;
+  }
+  overlapPickerRegions = regions;
+  ignorePickerHideUntil = Date.now() + REGION_DOUBLE_CLICK_MS + 80;
+  el.innerHTML = "";
+  const title = document.createElement("span");
+  title.className = "overlap-picker-title";
+  title.textContent = "Select label";
+  el.appendChild(title);
+  regions.forEach((region) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    const d = region.data || {};
+    const name = regionCaptionText(region);
+    btn.textContent = d.isCandidate ? `${name} · candidate` : name;
+    btn.title = `${formatTime(region.start)} – ${formatTime(region.end)}`;
+    btn.className = "overlap-picker-item";
+    if (isRegionSelected(region)) btn.classList.add("active");
+    btn.style.setProperty("--swatch", TYPE_COLORS[d.type] || "#2d6cdf");
+    btn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (ev.ctrlKey || ev.metaKey) toggleRegionInSelection(region);
+      else selectRegion(region);
+      el.querySelectorAll(".overlap-picker-item").forEach((item, i) => {
+        item.classList.toggle("active", isRegionSelected(regions[i]));
+      });
+    });
+    el.appendChild(btn);
+  });
+  el.classList.remove("hidden");
+  el.style.left = "0px";
+  el.style.top = "0px";
+  const rect = el.getBoundingClientRect();
+  const pad = 8;
+  let left = clientX + 12;
+  let top = clientY + 12;
+  if (left + rect.width + pad > window.innerWidth) {
+    left = Math.max(pad, window.innerWidth - rect.width - pad);
+  }
+  if (top + rect.height + pad > window.innerHeight) {
+    top = Math.max(pad, clientY - rect.height - 12);
+  }
+  el.style.left = `${left}px`;
+  el.style.top = `${top}px`;
+}
+
+function setupOverlapPicker() {
+  document.addEventListener("pointerdown", (e) => {
+    const el = document.getElementById("overlapPicker");
+    if (!el || el.classList.contains("hidden")) return;
+    if (el.contains(e.target)) return;
+    if (e.target.closest?.("#waveformScroll")) return;
+    hideOverlapPicker();
+  });
+  const scroll = document.getElementById("waveformScroll");
+  scroll?.addEventListener("click", (e) => {
+    if (Date.now() < ignorePickerHideUntil) return;
+    if (e.target.closest?.("#overlapPicker")) return;
+    hideOverlapPicker();
+    if (e.detail === 2 || marqueeSelecting || rectSelecting) return;
+    if (!selectedRegions.length) return;
+    const hits = regionsAtClientPoint(e.clientX, e.clientY);
+    if (hits.some((r) => isRegionSelected(r))) return;
+    clearRegionSelection();
+    updateMultiSelectionInspector();
+  });
+  scroll?.addEventListener("dblclick", (e) => {
+    if (e.target.closest?.("#scrubber")) return;
+    if (isTextEntryTarget(e.target)) return;
+    const hits = regionsAtClientPoint(e.clientX, e.clientY);
+    if (!hits.length) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (hits.length > 1) {
+      showOverlapPicker(hits, e.clientX, e.clientY);
+      return;
+    }
+    selectRegion(hits[0]);
+  });
+}
+
 function setupViewControls() {
   const slider = document.getElementById("zoomSlider");
   slider.addEventListener("input", () => {
@@ -761,6 +1413,7 @@ function setupViewControls() {
   document.getElementById("viewNormalBtn").onclick = () => setViewMode("normal");
   document.getElementById("viewAlignmentBtn").onclick = () => setViewMode("alignment");
   document.getElementById("toggleLabelsBtn").onclick = toggleLabelsVisibility;
+  document.getElementById("toggleCandidatesBtn").onclick = toggleCandidatesVisibility;
   document.getElementById("realignBtn").onclick = rerunAlignment;
   syncZoomSlider();
 }
@@ -1239,7 +1892,9 @@ function updateCandidateHint() {
   if (!el || !sampleData) return;
   const count = sampleData.candidate_count ?? sampleData.candidates?.length ?? 0;
   if (count > 0) {
-    el.textContent = `${count} auto-candidate(s) on waveform (dashed orange).`;
+    el.textContent = candidatesVisible
+      ? `${count} auto-candidate(s) on waveform (dashed orange). Not saved unless confirmed.`
+      : `${count} auto-candidate(s) hidden. Not saved unless confirmed.`;
   } else if (sampleData.has_alignment) {
     el.textContent =
       "No auto-candidates (alignment clean under thresholds). Click Re-run alignment to refresh.";
@@ -1348,10 +2003,24 @@ async function init() {
   setupViewControls();
   setupWaveformWheel();
   setupMarqueeSelect();
+  setupRectSelect();
+  setupOverlapPicker();
   window.addEventListener("resize", debounce(() => {
     if (!userZoomed) fitWaveformToContainer();
     else syncAlignmentStackWidth(getEffectivePxPerSec());
   }, 150));
+  document.addEventListener("pointerup", () => {
+    if (regionDragUndoArmed) {
+      regionDragUndoArmed = false;
+      refreshAllCaptions();
+      captureIdleSnapshot();
+    }
+    if (suppressMoveLock) {
+      suppressMoveLock = false;
+      refreshSelectionVisuals();
+    }
+    ignoreRegionUpdateUndo = false;
+  });
 
   refreshDragSelection();
   regionsPlugin.on("region-created", (region) => {
@@ -1363,6 +2032,7 @@ async function init() {
       repetitionLinkMode === "draw" &&
       selectedRegion?.data?.type === "repetition"
     ) {
+      ignoreRegionUpdateUndo = true;
       setRepetitionLinkRange(
         selectedRegion,
         region.start,
@@ -1374,26 +2044,48 @@ async function init() {
 
     // Loaded / already-typed regions must not be overwritten by the type dropdown.
     if (region.data?.type || region.data?.role) return;
+    pushUndoFromIdle();
+    ignoreRegionUpdateUndo = true;
+    suppressMoveLock = true;
     applyLabelToRegion(region, { comment: null });
+    selectRegion(region);
+    captureIdleSnapshot();
   });
-  regionsPlugin.on("region-clicked", (region, e) => {
-    e.stopPropagation();
+  const onRegionPointerPick = (region, e, { doubleClick = false } = {}) => {
+    e?.stopPropagation?.();
     if (isTrimRegion(region)) {
       updateTrimInfo();
       return;
     }
     if (isLinkOverlay(region)) return;
+    if (rectSelecting || marqueeSelecting) return;
+    if (e && typeof e.button === "number" && e.button !== 0) return;
 
-    if (e.ctrlKey || e.metaKey) {
+    const recentRealDrag = Date.now() - lastRegionDragAt < 250;
+    const { hits, x, y } = overlappingHitsForClick(region, e);
+
+    if (e?.ctrlKey || e?.metaKey) {
       toggleRegionInSelection(region);
       lastRegionClick = { id: null, time: 0 };
+      hideOverlapPicker();
       return;
     }
 
+    if (hits.length > 1) {
+      // A real drag-end click should not pop the menu, but a double-click must.
+      if (recentRealDrag && !doubleClick) return;
+      lastRegionClick = { id: null, time: 0 };
+      showOverlapPicker(hits, x, y);
+      return;
+    }
+
+    if (recentRealDrag) return;
+    hideOverlapPicker();
+
     const now = Date.now();
-    const isDoubleClick =
-      lastRegionClick.id === region.id &&
-      now - lastRegionClick.time <= REGION_DOUBLE_CLICK_MS;
+    const isDoubleClick = doubleClick
+      || (lastRegionClick.id === region.id
+        && now - lastRegionClick.time <= REGION_DOUBLE_CLICK_MS);
 
     if (
       isDoubleClick &&
@@ -1413,11 +2105,28 @@ async function init() {
     } else {
       lastRegionClick = { id: region.id, time: now };
     }
+  };
+
+  regionsPlugin.on("region-clicked", (region, e) => {
+    const doubleClick = !!(e && (e.detail === 2 || e.type === "dblclick"));
+    onRegionPointerPick(region, e, { doubleClick });
   });
+  if (typeof regionsPlugin.on === "function") {
+    regionsPlugin.on("region-double-clicked", (region, e) => {
+      onRegionPointerPick(region, e, { doubleClick: true });
+    });
+  }
   regionsPlugin.on("region-updated", (region) => {
     if (isTrimRegion(region)) {
       updateTrimInfo();
       return;
+    }
+    if (isLinkOverlay(region)) return;
+    const moved = regionPosChanged(region);
+    if (moved) lastRegionDragAt = Date.now();
+    if (moved && !ignoreRegionUpdateUndo && !regionDragUndoArmed && !undoSuspended) {
+      pushUndoFromIdle();
+      regionDragUndoArmed = true;
     }
     if (isRegionSelected(region)) {
       if (region.data) {
@@ -1431,6 +2140,8 @@ async function init() {
       }
       syncRegionVisual(region, { selected: true });
     }
+    applyRegionCaption(region);
+    scheduleCaptionLayout();
   });
 
   document.getElementById("playBtn").onclick = () => wavesurfer.playPause();
@@ -1447,7 +2158,8 @@ async function init() {
   document.getElementById("rejectCandidateBtn").onclick = () => promoteCandidate("auto_rejected", "stylistic_choice");
   document.getElementById("deleteRegionBtn").onclick = deleteSelectedRegion;
 
-  document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("keydown", onKeyDown, true);
+  document.addEventListener("keyup", onSpaceKeyUp, true);
 
   await loadSampleList();
 }
@@ -1674,6 +2386,8 @@ function onWaveformReady() {
   updatePlayhead();
   updateCandidateHint();
   applyAllLabelsVisibility();
+  refreshAllCaptions();
+  captureIdleSnapshot();
   if (viewMode === "alignment") {
     loadNoteAlignment().then(() => renderAlignmentOverlays());
   }
@@ -1796,6 +2510,8 @@ async function loadSample(sampleId) {
   selectedRegion = null;
   repetitionLinkMode = null;
   lastRegionClick = { id: null, time: 0 };
+  hideOverlapPicker();
+  clearUndoHistory();
   resetSelectionInfo();
   regionsPlugin.clearRegions();
   pendingRegions = [
@@ -1857,15 +2573,15 @@ function populateTypeSelect() {
 
 function addRegion(label, isCandidate) {
   const color = TYPE_COLORS[label.type] || "rgba(45,108,223,0.35)";
-  const display = TYPE_LABELS[label.type] || label.type;
+  const display = typeDisplayName(label.type);
   const create = () =>
     regionsPlugin.addRegion({
       start: label.start_time,
       end: label.end_time,
       color,
-      drag: true,
-      resize: true,
-      content: display.split(" (")[0],
+      drag: false,
+      resize: false,
+      content: display,
       data: {
         ...label,
         isCandidate,
@@ -1882,37 +2598,30 @@ function addRegion(label, isCandidate) {
     type: label.type,
     repeats_label_range: label.repeats_label_range || null,
   };
-  region.setOptions({
-    content: display.split(" (")[0],
-    color,
-  });
+  region.setOptions({ color });
   syncRegionVisual(region, { selected: isRegionSelected(region) });
   if (label.type === "repetition" && label.repeats_label_range) {
     syncRepetitionLinkOverlay(region);
   }
+  if (programmaticRegionDepth === 0) refreshAllCaptions();
+  else applyRegionCaption(region);
   return region;
 }
 
 function updateSelectionInfo(region) {
-  const d = region.data || {};
-  const typeLabel = TYPE_LABELS[d.type] || d.type || "unlabeled";
+  const typeLabel = regionCaptionText(region);
   document.getElementById("selectionInfo").textContent =
     `${formatTime(region.start)} – ${formatTime(region.end)} (${typeLabel})`;
 }
 
 function applyLabelToRegion(region, overrides = {}) {
   if (!region || isTrimRegion(region) || isLinkOverlay(region)) return;
-  const type =
-    overrides.type ||
-    region.data?.type ||
-    document.getElementById("labelType").value;
+  const type = overrides.type || document.getElementById("labelType").value;
   const severity =
-    overrides.severity ??
-    region.data?.severity ??
-    parseInt(document.getElementById("severity").value, 10);
+    overrides.severity ?? parseInt(document.getElementById("severity").value, 10);
   const comment = "comment" in overrides
     ? overrides.comment
-    : (region.data?.comment ?? document.getElementById("comment").value) || null;
+    : (document.getElementById("comment").value || null);
   region.data = {
     ...(region.data || {}),
     id: (region.data && region.data.id) || generateLabelId(),
@@ -1927,11 +2636,11 @@ function applyLabelToRegion(region, overrides = {}) {
     delete region.data.repeats_label_range;
     syncRepetitionLinkOverlay(region);
   }
-  const display = (TYPE_LABELS[type] || type).split(" (")[0];
-  region.setOptions({
-    content: display,
-    color: TYPE_COLORS[type] || region.color,
-  });
+  const color = TYPE_COLORS[type] || region.color;
+  region.setOptions({ color });
+  if (region.element) {
+    region.element.style.backgroundColor = color;
+  }
   if (isRegionSelected(region)) {
     if (selectedRegions.length === 1) {
       updateSelectionInfo(region);
@@ -1941,29 +2650,72 @@ function applyLabelToRegion(region, overrides = {}) {
     }
   }
   syncRegionVisual(region, { selected: isRegionSelected(region) });
+  refreshAllCaptions();
 }
 
-function applyLabelToSelection() {
+function applyLabelToSelection(overrides = {}) {
   const targets = selectedRegions.filter((r) => !isTrimRegion(r) && !isLinkOverlay(r));
   if (!targets.length) return;
-  targets.forEach((region) => applyLabelToRegion(region));
+  if (!overrides.skipUndo) pushUndoFromIdle();
+  const type = overrides.type || document.getElementById("labelType").value;
+  const severity =
+    overrides.severity ?? parseInt(document.getElementById("severity").value, 10);
+  const comment = "comment" in overrides
+    ? overrides.comment
+    : (document.getElementById("comment").value || null);
+  targets.forEach((region) => applyLabelToRegion(region, { type, severity, comment }));
+  captureIdleSnapshot();
 }
 
 function promoteCandidate(source, overrideType) {
   if (!selectedRegion || !selectedRegion.data?.isCandidate) return;
+  pushUndoFromIdle();
   selectedRegion.data.source = source;
   if (overrideType) selectedRegion.data.type = overrideType;
   selectedRegion.data.isCandidate = false;
-  applyLabelToSelection();
+  applyLabelToSelection({
+    skipUndo: true,
+    ...(overrideType ? { type: overrideType } : {}),
+  });
+}
+
+function safeRemoveRegion(region) {
+  if (!region) return;
+  removeLinkedOriginals(region);
+  try {
+    region.remove();
+  } catch {
+    /* WaveSurfer can throw when removing the last remaining region */
+  }
 }
 
 function deleteSelectedRegion() {
   const targets = selectedRegions.filter((r) => !isTrimRegion(r) && !isLinkOverlay(r));
   if (!targets.length) return;
-  targets.forEach((region) => {
-    findLinkOverlay(region)?.remove();
-    region.remove();
-  });
+  const ids = new Set(targets.map((r) => r.id).filter(Boolean));
+  const dataIds = new Set(targets.map((r) => r.data?.id).filter(Boolean));
+
+  pushUndoFromIdle();
+  hideOverlapPicker();
+
+  // Disable drag-create so a leftover pointerup cannot recreate the last label.
+  if (typeof regionsPlugin.disableDragSelection === "function") {
+    regionsPlugin.disableDragSelection();
+  }
+
+  targets.forEach((region) => safeRemoveRegion(region));
+
+  // Sweep leftovers (plugin sometimes keeps the last region in its list).
+  if (regionsPlugin) {
+    regionsPlugin.getRegions().slice().forEach((region) => {
+      if (isTrimRegion(region) || isLinkOverlay(region)) return;
+      if (ids.has(region.id) || dataIds.has(region.data?.id)) {
+        safeRemoveRegion(region);
+      }
+    });
+  }
+  sweepOrphanLinkOverlays();
+
   selectedRegions = [];
   selectedRegion = null;
   repetitionLinkMode = null;
@@ -1973,6 +2725,9 @@ function deleteSelectedRegion() {
   const rejectBtn = document.getElementById("rejectCandidateBtn");
   if (confirmBtn) confirmBtn.disabled = false;
   if (rejectBtn) rejectBtn.disabled = false;
+  refreshDragSelection();
+  refreshAllCaptions();
+  captureIdleSnapshot();
 }
 
 async function applyScoreSegment() {
@@ -2047,17 +2802,15 @@ async function applyPerformanceTrim() {
 
 async function saveLabels() {
   const labels = [];
-  const candidatesLeft = [];
+  let candidatesLeft = 0;
   regionsPlugin.getRegions().forEach((r) => {
     if (isTrimRegion(r) || isLinkOverlay(r)) return;
-    const label = regionDataToLabel(r);
-    if (r.data?.isCandidate) candidatesLeft.push(label);
-    else labels.push(label);
+    if (r.data?.isCandidate) {
+      candidatesLeft += 1;
+      return;
+    }
+    labels.push(regionDataToLabel(r));
   });
-  if (candidatesLeft.length) {
-    alert(`${candidatesLeft.length} candidates still unreviewed. Confirm or reject them before saving.`);
-    return;
-  }
   const missingRepetitionLink = labels.filter(
     (label) => label.type === "repetition" && !label.repeats_label_range,
   );
@@ -2082,7 +2835,11 @@ async function saveLabels() {
     alert(await res.text());
     return;
   }
-  alert("Labels saved.");
+  if (candidatesLeft) {
+    alert(`Labels saved. ${candidatesLeft} unreviewed candidate(s) were not applied.`);
+  } else {
+    alert("Labels saved.");
+  }
 }
 
 async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat, loadId = null) {
@@ -2221,14 +2978,67 @@ function isEditableKeyTarget(el) {
   return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el.isContentEditable;
 }
 
-function onKeyDown(e) {
-  if (isEditableKeyTarget(e.target)) return;
+function isTextEntryTarget(el) {
+  if (!el) return false;
+  if (el.isContentEditable) return true;
+  const tag = (el.tagName || "").toUpperCase();
+  if (tag === "TEXTAREA") return true;
+  if (tag !== "INPUT") return false;
+  const type = (el.type || "text").toLowerCase();
+  return [
+    "text", "search", "email", "password", "url", "tel", "number",
+    "date", "datetime-local", "month", "time", "week",
+  ].includes(type);
+}
 
-  if (e.code === "Space") {
+function isSpaceKey(e) {
+  return e.code === "Space" || e.key === " " || e.key === "Spacebar";
+}
+
+function onSpaceKeyUp(e) {
+  if (isTextEntryTarget(e.target)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (isSpaceKey(e)) {
     e.preventDefault();
-    wavesurfer.playPause();
+    e.stopPropagation();
+  }
+}
+
+function onKeyDown(e) {
+  const typing = isTextEntryTarget(e.target);
+
+  if (e.key === "Escape") {
+    hideOverlapPicker();
+  }
+
+  if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+    const key = e.key.toLowerCase();
+    if (key === "z" && !e.shiftKey) {
+      if (typing) return;
+      e.preventDefault();
+      e.stopPropagation();
+      undoLastAction();
+      return;
+    }
+    if (key === "a") {
+      if (typing) return;
+      e.preventDefault();
+      e.stopPropagation();
+      selectAllRegions();
+      return;
+    }
+  }
+
+  if (isSpaceKey(e)) {
+    if (typing) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (wavesurfer) wavesurfer.playPause();
     return;
   }
+
+  if (typing || isEditableKeyTarget(e.target)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
 
   if (e.key === "Delete" || e.key === "Backspace") {
     if (selectedRegions.length) {

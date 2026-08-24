@@ -16,6 +16,8 @@ from synthpipeline.scoregen import write_midi
 
 GM_CLARINET = 71
 MIDI_BACKENDS = ("music21", "musescore")
+PITCH_BEND_CENTER = 8192
+PITCH_BEND_RANGE_SEMITONES = 2.0
 
 # tinysoundfont.sfload of MS Basic.sf3 is ~20-30s; reuse one Synth per process.
 _synth_cache: dict[tuple, object] = {}
@@ -29,6 +31,8 @@ def render_score_as_clarinet(
     clarinet_program: int = GM_CLARINET,
     midi_backend: str = "music21",
     score: stream.Score | None = None,
+    pitch_bends: list[dict] | None = None,
+    bpm: float | None = None,
 ) -> Path:
     """Export MIDI (music21 or MuseScore), then render with GM clarinet."""
     output_wav.parent.mkdir(parents=True, exist_ok=True)
@@ -40,7 +44,15 @@ def render_score_as_clarinet(
         export_score_to_midi(dc_config, score_path, midi_path, logger)
     else:
         raise ValueError(f"Unknown midi_backend {midi_backend!r}; use music21 or musescore")
-    render_midi_clarinet(midi_path, output_wav, dc_config, logger, clarinet_program)
+    render_midi_clarinet(
+        midi_path,
+        output_wav,
+        dc_config,
+        logger,
+        clarinet_program,
+        pitch_bends=pitch_bends,
+        bpm=bpm,
+    )
     audio, _ = _load_wav_mono(output_wav, dc_config.sample_rate())
     stats = audio_stats(audio)
     logger.info("Rendered %s stats: %s", output_wav.name, stats)
@@ -73,6 +85,8 @@ def render_midi_clarinet(
     config: PipelineConfig,
     logger: logging.Logger,
     clarinet_program: int = GM_CLARINET,
+    pitch_bends: list[dict] | None = None,
+    bpm: float | None = None,
 ) -> None:
     try:
         import tinysoundfont
@@ -105,12 +119,20 @@ def render_midi_clarinet(
             synth.program_change(channel, 0, True)
         else:
             synth.program_change(channel, clarinet_program, 0)
+        try:
+            synth.pitchbend(channel, PITCH_BEND_CENTER)
+            synth.pitchbend_range(channel, PITCH_BEND_RANGE_SEMITONES)
+        except Exception:
+            pass
 
     sequencer = Sequencer(synth)
     events = load(str(midi_path), persistent=False)
     if not events:
         raise RuntimeError(f"No MIDI events found in {midi_path}")
     _force_clarinet_program(events, clarinet_program)
+    if pitch_bends:
+        n_added = _inject_pitch_bends(events, pitch_bends, bpm or 120.0)
+        logger.info("Injected %d pitch-bend events for intonation", n_added)
     sequencer.add(events)
     duration = max(event.t for event in events) + tail_seconds
     logger.info(
@@ -161,6 +183,90 @@ def _force_clarinet_program(events, clarinet_program: int) -> None:
                     setattr(ev, attr, clarinet_program)
                 except (AttributeError, TypeError):
                     pass
+
+
+def cents_to_pitch_bend(
+    cents: float, range_semitones: float = PITCH_BEND_RANGE_SEMITONES
+) -> int:
+    span = float(range_semitones) * 100.0
+    if span <= 0:
+        return PITCH_BEND_CENTER
+    value = int(round(PITCH_BEND_CENTER + (float(cents) / span) * PITCH_BEND_CENTER))
+    return max(0, min(16383, value))
+
+
+def _inject_pitch_bends(events: list, regions: list[dict], bpm: float) -> int:
+    """Insert channel pitch-bend events so selected notes sound off-tune."""
+    from tinysoundfont.midi import Event, NoteOff, NoteOn, PitchBend
+
+    from synthpipeline.timing import ql_to_seconds
+
+    extra = []
+    for region in regions:
+        cents = float(region["cents"])
+        t0 = ql_to_seconds(float(region["ql_start"]), bpm)
+        t1 = ql_to_seconds(float(region["ql_end"]), bpm)
+        t0, t1 = _snap_region_to_notes(events, t0, t1)
+        bend = cents_to_pitch_bend(cents)
+        channels = _note_channels_in_span(events, t0, t1)
+        for channel in channels:
+            extra.append(
+                Event(
+                    action=PitchBend(pitch_bend=bend),
+                    t=max(0.0, t0 - 0.003),
+                    channel=channel,
+                    persistent=False,
+                )
+            )
+            extra.append(
+                Event(
+                    action=PitchBend(pitch_bend=PITCH_BEND_CENTER),
+                    t=t1 + 0.003,
+                    channel=channel,
+                    persistent=False,
+                )
+            )
+    events.extend(extra)
+    events.sort(key=lambda ev: (float(ev.t), _pitch_bend_sort_key(ev)))
+    return len(extra)
+
+
+def _snap_region_to_notes(events: list, t0: float, t1: float) -> tuple[float, float]:
+    from tinysoundfont.midi import NoteOff, NoteOn
+
+    ons = [float(ev.t) for ev in events if isinstance(ev.action, NoteOn)]
+    offs = [float(ev.t) for ev in events if isinstance(ev.action, NoteOff)]
+    if ons:
+        t0 = min(ons, key=lambda t: abs(t - t0))
+    after = [t for t in offs if t >= t0 - 1e-4]
+    if after:
+        t1 = min(after, key=lambda t: abs(t - t1))
+    return t0, max(t1, t0 + 0.05)
+
+
+def _note_channels_in_span(events: list, t0: float, t1: float) -> list[int]:
+    from tinysoundfont.midi import NoteOn
+
+    channels = {
+        int(ev.channel)
+        for ev in events
+        if isinstance(ev.action, NoteOn) and t0 - 0.01 <= ev.t <= t1 + 0.01
+    }
+    channels.discard(9)
+    return sorted(channels) or [0]
+
+
+def _pitch_bend_sort_key(ev) -> int:
+    from tinysoundfont.midi import NoteOff, NoteOn, PitchBend
+
+    action = ev.action
+    if isinstance(action, PitchBend):
+        return 0 if action.pitch_bend != PITCH_BEND_CENTER else 3
+    if isinstance(action, NoteOn):
+        return 1
+    if isinstance(action, NoteOff):
+        return 2
+    return 1
 
 
 def _load_wav_mono(path: Path, sample_rate: int):

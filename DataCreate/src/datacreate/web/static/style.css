@@ -145,6 +145,54 @@ header {
   pointer-events: none;
   z-index: 20;
 }
+.marquee-select.rect {
+  bottom: auto;
+}
+.overlap-picker {
+  position: fixed;
+  z-index: 80;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: min(92vw, 720px);
+  padding: 6px 8px;
+  background: #1e1e1e;
+  border: 1px solid #666;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+.overlap-picker.hidden {
+  display: none;
+}
+.overlap-picker-title {
+  font-size: 11px;
+  color: #aaa;
+  margin-right: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.overlap-picker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 5px 10px 5px 8px;
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-left: 4px solid var(--swatch, #2d6cdf);
+  border-radius: 4px;
+  color: #eee;
+  font-size: 12px;
+  cursor: pointer;
+}
+.overlap-picker-item:hover {
+  background: #3a3a3a;
+}
+.overlap-picker-item.active {
+  box-shadow: inset 0 0 0 1px #fff;
+  background: #1a4a9e;
+}
 .staff-strip {
   min-height: 0;
   background: #f8f8f8;
@@ -381,24 +429,45 @@ button:hover { background: #1f57c3; }
 .region-trim { border: 2px solid #3c3 !important; background: rgba(60, 200, 60, 0.12) !important; z-index: 1; }
 .region-trim-handle { background: #3c3 !important; }
 .region-candidate { border: 2px dashed #f90 !important; background: rgba(255,153,0,0.15) !important; }
-.region-label { background: rgba(45,108,223,0.35) !important; }
 
 /* WaveSurfer v7 renders regions inside Shadow DOM — style via ::part() */
-#waveform::part(region-selected) {
-  border: 3px solid #fff !important;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45) !important;
-  z-index: 10 !important;
-  box-sizing: border-box !important;
+#waveform::part(region) {
+  overflow: visible !important;
+}
+#waveform::part(region-content) {
+  z-index: 12;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: visible;
+  max-width: none;
+  color: #f4f4f4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  font-weight: 600;
+}
+#waveform::part(region-label) {
+  z-index: 6 !important;
+  pointer-events: none !important;
 }
 #waveform::part(region-candidate) {
   border: 2px dashed #f90 !important;
   box-sizing: border-box !important;
   z-index: 5 !important;
+  pointer-events: none !important;
+}
+#waveform::part(region-selected) {
+  border: 3px solid #fff !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45) !important;
+  z-index: 10 !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
 }
 #waveform::part(region-trim) {
   border: 2px solid #3c3 !important;
   background-color: rgba(60, 200, 60, 0.12) !important;
   box-sizing: border-box !important;
+  z-index: 1 !important;
+  /* Body must not steal clicks from labels underneath; handles stay clickable. */
+  pointer-events: none !important;
 }
 #waveform::part(region-link) {
   border: 2px dashed #c8c8d0 !important;
@@ -409,6 +478,7 @@ button:hover { background: #1f57c3; }
 #waveform::part(region-handle-left),
 #waveform::part(region-handle-right) {
   background-color: #3c3 !important;
+  z-index: 16 !important;
 }
 .score-placeholder {
   margin: 0;

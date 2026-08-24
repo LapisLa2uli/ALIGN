@@ -69,6 +69,8 @@ def refine_labels(
         }
         if label.measure_number is not None:
             payload["measure_number"] = label.measure_number
+        if label.deviation_cents is not None:
+            payload["deviation_cents"] = round(float(label.deviation_cents), 2)
         if label.type == "repetition" and label.repeats_ql_start is not None:
             r_start = ql_to_seconds(label.repeats_ql_start, bpm)
             r_end = ql_to_seconds(label.repeats_ql_end or (label.repeats_ql_start + 0.25), bpm)
@@ -90,6 +92,11 @@ def _snap_to_midi(
         return start, end
     if label.note_index is not None and 0 <= label.note_index < len(midi_notes):
         pitch_i, s, e = midi_notes[label.note_index]
+        count = max(1, int(label.note_count or 1))
+        last_i = min(label.note_index + count - 1, len(midi_notes) - 1)
+        _, _, e_last = midi_notes[last_i]
+        if count > 1:
+            return s, e_last
         if label.midi_pitch is None or pitch_i == label.midi_pitch:
             return s, e
     matches = [n for n in midi_notes if label.midi_pitch is None or n[0] == label.midi_pitch]

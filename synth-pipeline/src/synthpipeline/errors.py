@@ -8,7 +8,13 @@ from music21 import note, pitch, stream
 
 from synthpipeline.config import SynthConfig
 
-ERROR_TYPES = ("wrong_note", "missed_note", "extra_note", "rhythm_error")
+ERROR_TYPES = (
+    "wrong_note",
+    "missed_note",
+    "extra_note",
+    "rhythm_error",
+    "intonation_error",
+)
 
 
 class InjectionError(RuntimeError):
@@ -23,7 +29,9 @@ class PlannedLabel:
     comment: str
     midi_pitch: int | None = None
     note_index: int | None = None
+    note_count: int | None = None
     measure_number: int | None = None
+    deviation_cents: float | None = None
     repeats_ql_start: float | None = None
     repeats_ql_end: float | None = None
 
@@ -81,6 +89,8 @@ def _apply_error(
         return _extra_note(score, rng, bpm, config)
     if error_type == "rhythm_error":
         return _rhythm_error(score, rng, bpm)
+    if error_type == "intonation_error":
+        return _intonation_error(score, rng, bpm, config)
     raise InjectionError(f"Unknown error type {error_type}")
 
 
@@ -182,6 +192,54 @@ def _extra_note(
         error_type="extra_note",
         repeated=False,
         bpm=bpm,
+    )
+
+
+def _intonation_error(
+    score: stream.Score, rng: random.Random, bpm: float, config: SynthConfig
+) -> ErrorResult:
+    """Keep written pitch class; detune audio via MIDI pitch bend (cents)."""
+    cfg = dict(config.errors.get("intonation") or {})
+    cents_min = float(cfg.get("cents_min", 40.0))
+    cents_max = float(cfg.get("cents_max", 80.0))
+    if cents_max < cents_min:
+        cents_min, cents_max = cents_max, cents_min
+    group_prob = float(cfg.get("group_prob", 0.45))
+    group_max = max(1, int(cfg.get("group_max", 4)))
+    n_notes = 1
+    if group_max > 1 and rng.random() < group_prob:
+        n_notes = rng.randint(2, group_max)
+    chosen = _pick_note_span(score, rng, n_notes)
+    sign = rng.choice((-1.0, 1.0))
+    cents = round(sign * rng.uniform(cents_min, cents_max), 1)
+    ql_start, _ = _element_ql_span(chosen[0], score)
+    _, ql_end = _element_ql_span(chosen[-1], score)
+    midis = [int(n.pitch.midi) for n in chosen]
+    label = PlannedLabel(
+        type="intonation_error",
+        ql_start=ql_start,
+        ql_end=ql_end,
+        midi_pitch=midis[0],
+        note_index=_sounding_index(score, chosen[0]),
+        note_count=len(chosen),
+        measure_number=_measure_number(chosen[0]),
+        deviation_cents=cents,
+        comment=(
+            f"detuned {cents:+.1f} cents across {len(chosen)} note(s) "
+            f"(MIDI {', '.join(str(m) for m in midis)})"
+        ),
+    )
+    return ErrorResult(
+        score=score,
+        labels=[label],
+        error_type="intonation_error",
+        repeated=False,
+        bpm=bpm,
+        extra={
+            "pitch_bends": [
+                {"ql_start": ql_start, "ql_end": ql_end, "cents": cents}
+            ]
+        },
     )
 
 
@@ -372,6 +430,21 @@ def _pick_note(score: stream.Score, rng: random.Random, min_ql: float) -> note.N
         if eligible:
             notes = eligible
     return rng.choice(notes)
+
+
+def _pick_note_span(score: stream.Score, rng: random.Random, n_notes: int) -> list[note.Note]:
+    notes = _candidate_notes(score)
+    n_notes = max(1, min(int(n_notes), len(notes)))
+    max_start = len(notes) - n_notes
+    starts = list(range(0, max_start + 1))
+    if len(notes) >= 3:
+        interior = [
+            i for i in starts if i > 0 and (i + n_notes) < len(notes)
+        ]
+        if interior:
+            starts = interior
+    start = rng.choice(starts)
+    return notes[start : start + n_notes]
 
 
 def _sounding_index(score: stream.Score, target: note.Note) -> int:

@@ -65,7 +65,8 @@
       <strong>View</strong>
       <button id="viewNormalBtn" type="button" class="mode-btn active">Normal</button>
       <button id="viewAlignmentBtn" type="button" class="mode-btn">Alignment</button>
-      <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide label regions">Labels</button>
+      <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide confirmed label regions">Labels</button>
+      <button id="toggleCandidatesBtn" type="button" class="mode-btn" title="Show/hide auto-candidate regions">Candidates (off)</button>
       <label class="zoom-control">Zoom
         <input id="zoomSlider" type="range" min="0" max="100" value="50" title="Zoom level" />
       </label>
@@ -93,6 +94,7 @@
       <span id="trimInfo" class="hint">Drag the green handles to discard silence at start/end.</span>
       <button id="applyTrimBtn" type="button">Apply trim &amp; re-align</button>
     </div>
+    <div id="overlapPicker" class="overlap-picker hidden" role="listbox" aria-label="Overlapping labels"></div>
     <div id="candidateTrack" class="track-label">Candidates (dashed)</div>
     <div id="labelTrack" class="track-label">Confirmed labels</div>
   </section>
@@ -124,14 +126,19 @@
     </div>
     <h3>Hotkeys</h3>
     <ul class="hotkeys">
-      <li>1-8: assign label type to selected region(s)</li>
-      <li>Space: play/pause</li>
+      <li>1-9: assign label type to selected region(s)</li>
+      <li>Space: play/pause (works unless typing in a text field)</li>
+      <li>Ctrl+Z: undo last label edit</li>
+      <li>Ctrl+A: select all visible labels</li>
       <li>Delete / Backspace: delete selected region(s)</li>
       <li>Drag scrubber to move playhead</li>
-      <li>Drag waveform to add a label (uses type above)</li>
-      <li>Double-click a region to select and edit</li>
+      <li>Drag waveform to add a label (works over unselected labels)</li>
+      <li>Double-click a region to select it; only selected labels can be moved</li>
+      <li>Click overlapping labels: choose which one to select</li>
+      <li>Click empty waveform to deselect</li>
       <li>Ctrl+click: toggle region in multi-select</li>
       <li>Ctrl+drag on waveform: select multiple regions</li>
+      <li>Shift+right-drag: rectangle-select labels</li>
       <li>Repetition labels: link the original passage before saving</li>
       <li>Ctrl+wheel on waveform: zoom; wheel: scroll horizontally</li>
     </ul>
