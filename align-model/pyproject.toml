@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "alignmodel"
 version = "0.1.0"
-description = "RUMAA-lite score-informed error detector for ALIGN clarinet bundles"
+description = "Four-stage score-informed error detector for ALIGN clarinet bundles"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -13,6 +13,7 @@ dependencies = [
   "numpy>=1.24",
   "music21>=9.1",
   "pyyaml>=6.0",
+  "librosa>=0.10",
 ]
 
 [project.scripts]

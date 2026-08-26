@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from music21 import note, pitch, stream
 
@@ -60,13 +60,12 @@ def inject_error(score: stream.Score, rng: random.Random, config: SynthConfig) -
         attempt = copy.deepcopy(score)
         try:
             result = _apply_error(attempt, error_type, rng, config)
-            if error_type == "wrong_note":
-                rep_prob = float(config.errors.get("repetition_prob", 0.35))
-                if rng.random() < rep_prob:
-                    try:
-                        result = _repeat_wrong_note_measure(result)
-                    except InjectionError:
-                        pass
+            rep_prob = float(config.errors.get("repetition_prob", 0.35))
+            if rng.random() < rep_prob:
+                try:
+                    result = _repeat_error_measures(result)
+                except InjectionError:
+                    pass
             return result
         except InjectionError as exc:
             last_error = exc
@@ -327,26 +326,31 @@ def _try_dotted_pair(
     )
 
 
-def _repeat_wrong_note_measure(result: ErrorResult) -> ErrorResult:
+def _repeat_error_measures(result: ErrorResult) -> ErrorResult:
+    """Replay the measure(s) that contain the injected error, then continue."""
     score = result.score
-    if not result.labels:
-        raise InjectionError("No wrong-note label to repeat")
-    first = result.labels[0]
+    error_labels = [lb for lb in result.labels if lb.type != "repetition"]
+    if not error_labels:
+        raise InjectionError("No error label to repeat")
     part = score.parts[0]
     measures = list(part.getElementsByClass(stream.Measure))
     if not measures:
         raise InjectionError("Score has no measures to repeat")
 
-    idx = _measure_index_for_ql(part, first.ql_start)
-    extra = result.extra
-    offset_in_m = float(extra.get("target_offset_in_measure", 0.0))
-    target_midi = extra.get("target_midi", first.midi_pitch)
+    indices = set()
+    for label in error_labels:
+        indices.add(_measure_index_for_ql(part, label.ql_start))
+        indices.add(_measure_index_for_ql(part, max(label.ql_start, label.ql_end - 1e-6)))
+    start_idx = min(indices)
+    end_idx = max(indices)
+    n_block = end_idx - start_idx + 1
 
     rebuilt: list[stream.Measure] = []
     for i, measure in enumerate(measures):
         rebuilt.append(copy.deepcopy(measure))
-        if i == idx:
-            rebuilt.append(copy.deepcopy(measure))
+        if i == end_idx:
+            for j in range(start_idx, end_idx + 1):
+                rebuilt.append(copy.deepcopy(measures[j]))
 
     for existing in list(part.getElementsByClass(stream.Measure)):
         part.remove(existing)
@@ -355,57 +359,75 @@ def _repeat_wrong_note_measure(result: ErrorResult) -> ErrorResult:
         part.append(measure)
 
     measures = list(part.getElementsByClass(stream.Measure))
-    orig = measures[idx]
-    dup = measures[idx + 1]
-    orig_start, orig_end = _element_ql_span(orig, score)
-    dup_start, dup_end = _element_ql_span(dup, score)
+    orig_first = measures[start_idx]
+    orig_last = measures[end_idx]
+    dup_first = measures[end_idx + 1]
+    dup_last = measures[end_idx + n_block]
+    orig_start, _ = _element_ql_span(orig_first, score)
+    _, orig_end = _element_ql_span(orig_last, score)
+    dup_start, _ = _element_ql_span(dup_first, score)
+    _, dup_end = _element_ql_span(dup_last, score)
+    shift = dup_start - orig_start
+    if shift <= 1e-9:
+        raise InjectionError("Repeated span has zero duration")
+    n_in_block = _sounding_count_in_span(score, orig_start, orig_end)
 
-    first_note = _find_note_in_measure(orig, offset_in_m, target_midi)
-    second_note = _find_note_in_measure(dup, offset_in_m, target_midi)
-    if first_note is None or second_note is None:
-        raise InjectionError("Could not relocate wrong note after measure repeat")
+    labels: list[PlannedLabel] = []
+    for label in error_labels:
+        labels.append(
+            replace(
+                label,
+                comment=_with_pass_suffix(label.comment, "first pass"),
+                measure_number=_measure_number_at_ql(part, label.ql_start),
+            )
+        )
+        second_index = label.note_index
+        if second_index is not None and second_index >= 0:
+            second_index = label.note_index + n_in_block
+        labels.append(
+            replace(
+                label,
+                ql_start=label.ql_start + shift,
+                ql_end=label.ql_end + shift,
+                note_index=second_index,
+                comment=_with_pass_suffix(label.comment, "repeated pass"),
+                measure_number=_measure_number_at_ql(part, label.ql_start + shift),
+            )
+        )
 
-    n1_start, n1_end = _element_ql_span(first_note, score)
-    n2_start, n2_end = _element_ql_span(second_note, score)
-    midi = first_note.pitch.midi
-    labels = [
-        PlannedLabel(
-            type="wrong_note",
-            ql_start=n1_start,
-            ql_end=n1_end,
-            midi_pitch=midi,
-            note_index=_sounding_index(score, first_note),
-            measure_number=orig.number,
-            comment=first.comment + " (first pass)",
-        ),
-        PlannedLabel(
-            type="wrong_note",
-            ql_start=n2_start,
-            ql_end=n2_end,
-            midi_pitch=midi,
-            note_index=_sounding_index(score, second_note),
-            measure_number=dup.number,
-            comment=first.comment + " (repeated pass)",
-        ),
+    window = "measure" if n_block == 1 else "measures"
+    labels.append(
         PlannedLabel(
             type="repetition",
             ql_start=dup_start,
             ql_end=max(dup_end, dup_start + 0.25),
             midi_pitch=None,
             note_index=None,
-            measure_number=dup.number,
-            comment="repeated measure containing wrong note",
+            measure_number=int(dup_first.number) if dup_first.number else None,
+            comment=f"repeated {window} containing {result.error_type}",
             repeats_ql_start=orig_start,
             repeats_ql_end=max(orig_end, orig_start + 0.25),
-        ),
-    ]
+        )
+    )
+
+    extra = dict(result.extra)
+    bends = list(extra.get("pitch_bends") or [])
+    if bends:
+        extra["pitch_bends"] = list(bends) + [
+            {
+                "ql_start": float(bend["ql_start"]) + shift,
+                "ql_end": float(bend["ql_end"]) + shift,
+                "cents": bend["cents"],
+            }
+            for bend in bends
+        ]
     return ErrorResult(
         score=score,
         labels=labels,
-        error_type="wrong_note",
+        error_type=result.error_type,
         repeated=True,
         bpm=result.bpm,
-        extra=result.extra,
+        extra=extra,
     )
 
 
@@ -445,6 +467,31 @@ def _pick_note_span(score: stream.Score, rng: random.Random, n_notes: int) -> li
             starts = interior
     start = rng.choice(starts)
     return notes[start : start + n_notes]
+
+
+def _sounding_count_in_span(score: stream.Score, ql_start: float, ql_end: float) -> int:
+    count = 0
+    for item in _candidate_notes(score):
+        start, _ = _element_ql_span(item, score)
+        if ql_start - 1e-6 <= start < ql_end - 1e-9:
+            count += 1
+    return count
+
+
+def _measure_number_at_ql(part: stream.Part, ql: float) -> int | None:
+    measures = list(part.getElementsByClass(stream.Measure))
+    if not measures:
+        return None
+    idx = _measure_index_for_ql(part, ql)
+    number = getattr(measures[idx], "number", None)
+    return int(number) if number else None
+
+
+def _with_pass_suffix(comment: str, suffix: str) -> str:
+    text = comment or ""
+    if f"({suffix})" in text:
+        return text
+    return f"{text} ({suffix})" if text else suffix
 
 
 def _sounding_index(score: stream.Score, target: note.Note) -> int:
@@ -489,21 +536,6 @@ def _measure_index_for_ql(part: stream.Part, ql: float) -> int:
     if not measures:
         raise InjectionError("No measures")
     return min(len(measures) - 1, max(0, 1))
-
-
-def _find_note_in_measure(
-    measure: stream.Measure, offset: float, midi_pitch: int | None
-) -> note.Note | None:
-    notes = list(measure.getElementsByClass(note.Note))
-    for n in notes:
-        if abs(float(n.offset) - offset) < 1e-5:
-            if midi_pitch is None or n.pitch.midi == midi_pitch:
-                return n
-    if midi_pitch is not None:
-        for n in notes:
-            if n.pitch.midi == midi_pitch:
-                return n
-    return None
 
 
 def _score_bpm(score: stream.Score) -> float:

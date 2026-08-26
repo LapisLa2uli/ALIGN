@@ -43,7 +43,7 @@ class TrainConfig:
     seed: int = 365
     num_workers: int = 0
     overfit: int = 0
-    device: str = "auto"
+    device: str = "cuda"
     grad_clip: float = 1.0
     log_every: int = 10
     model: ModelConfig = field(default_factory=ModelConfig)

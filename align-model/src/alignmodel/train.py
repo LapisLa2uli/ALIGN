@@ -8,19 +8,10 @@ import torch
 from torch import Tensor, nn
 from torch.utils.data import DataLoader, random_split
 
+from alignmodel.device import device_label, resolve_device
 from alignmodel.config import FRAME_HOP_SEC, SCORE_CLASSES, ModelConfig, TrainConfig
 from alignmodel.dataset import AlignBundleDataset, collate_bundles, list_sample_dirs
 from alignmodel.model import RumaLite
-
-
-def resolve_device(name: str) -> torch.device:
-    if name == "auto":
-        if torch.cuda.is_available():
-            return torch.device("cuda")
-        if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
-            return torch.device("mps")
-        return torch.device("cpu")
-    return torch.device(name)
 
 
 def downsample_extra(extra_y: Tensor, audio_mask: Tensor, stride: int) -> Tensor:
@@ -181,7 +172,7 @@ def train(cfg: TrainConfig) -> Path:
 
     model = RumaLite(cfg.model).to(device)
     n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"params={n_params / 1e6:.2f}M device={device} train={n_train} val={n_val}")
+    print(f"params={n_params / 1e6:.2f}M device={device_label(device)} train={n_train} val={n_val}")
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     cfg.output_dir.mkdir(parents=True, exist_ok=True)
     best_path = cfg.output_dir / "best.pt"

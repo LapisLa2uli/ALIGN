@@ -111,6 +111,7 @@ Use:
 | `missed_note` | Skipped obvious melody note only |
 | `intonation_error` | Right pitch class, clearly off (don’t use for noisy F0) |
 | `bad_start` / `bad_timbre` / `squeak` | Ear-only; **do not guess** from F0 |
+| `sliding` | Rolling over a note too fast (smear / incomplete articulation) |
 
 `source`: `manual`. `annotator_id`: `ai_f0_align`. `severity`: 3 unless extreme. Times are on **trimmed** `performance_audio.wav`.
 

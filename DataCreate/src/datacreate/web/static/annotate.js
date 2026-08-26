@@ -11,7 +11,7 @@ let trimRegion = null;
 let loopSelection = false;
 let scrubbing = false;
 let marqueeSelecting = false;
-let rectSelecting = false;
+let lastWaveformPointerClientX = null;
 let pendingRegions = [];
 let lastRegionClick = { id: null, time: 0 };
 const REGION_DOUBLE_CLICK_MS = 400;
@@ -163,6 +163,7 @@ const TYPE_COLORS = {
   bad_start: "rgba(210,110,40,0.45)",
   bad_timbre: "rgba(0,170,150,0.4)",
   squeak: "rgba(255,50,170,0.45)",
+  sliding: "rgba(255,130,70,0.45)",
 };
 
 const TYPE_LABELS = {
@@ -177,6 +178,7 @@ const TYPE_LABELS = {
   bad_start: "Bad start (messy / failed attack)",
   bad_timbre: "Bad timbre (poor tone quality)",
   squeak: "Squeak",
+  sliding: "Sliding (rolling over a note too fast)",
 };
 
 function typeDisplayName(type) {
@@ -897,17 +899,27 @@ function applyWaveformZoom(pxPerSec, anchorClientX = null) {
   const scroll = document.getElementById("waveformScroll");
   const prevPx = getEffectivePxPerSec();
   const prevScrollLeft = scroll?.scrollLeft || 0;
+  const clientX = Number.isFinite(anchorClientX)
+    ? anchorClientX
+    : lastWaveformPointerClientX;
 
   let anchorTime = 0;
   let viewOffset = 0;
   if (scroll && prevPx > 0) {
-    if (anchorClientX != null) {
+    if (Number.isFinite(clientX)) {
       const rect = scroll.getBoundingClientRect();
-      viewOffset = Math.max(0, Math.min(scroll.clientWidth, anchorClientX - rect.left));
+      viewOffset = Math.max(0, Math.min(scroll.clientWidth, clientX - rect.left));
       anchorTime = (prevScrollLeft + viewOffset) / prevPx;
     } else {
-      anchorTime = prevScrollLeft / prevPx;
-      viewOffset = 0;
+      const duration = wavesurfer.getDuration() || 0;
+      const currentTime = typeof wavesurfer.getCurrentTime === "function"
+        ? wavesurfer.getCurrentTime()
+        : 0;
+      const playheadTime = Math.max(0, Math.min(duration || currentTime, currentTime));
+      const playheadViewX = playheadTime * prevPx - prevScrollLeft;
+      const inView = playheadViewX >= 0 && playheadViewX <= scroll.clientWidth;
+      anchorTime = playheadTime;
+      viewOffset = inView ? playheadViewX : scroll.clientWidth / 2;
     }
   }
 
@@ -1030,10 +1042,14 @@ function zoomFit() {
 function setupWaveformWheel() {
   const scroll = document.getElementById("waveformScroll");
   if (!scroll) return;
+  scroll.addEventListener("pointermove", (e) => {
+    lastWaveformPointerClientX = e.clientX;
+  });
   scroll.addEventListener(
     "wheel",
     (e) => {
       if (!wavesurfer) return;
+      lastWaveformPointerClientX = e.clientX;
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
         if (e.deltaY < 0) zoomIn(e.clientX);

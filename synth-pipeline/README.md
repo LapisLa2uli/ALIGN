@@ -1,6 +1,6 @@
 # Synth pipeline
 
-Generate **MusicXML clarinet scores** and ALIGN sample bundles whose performance audio contains a known error (wrong, missing, or extra note, a rhythm error, or an intonation / tuning error). When the error is a wrong note, there is a configurable chance the audio **repeats the measure** that contains it.
+Generate **MusicXML clarinet scores** and ALIGN sample bundles whose performance audio contains a known error (wrong, missing, or extra note, a rhythm error, or an intonation / tuning error). After any of those errors, there is a configurable chance the audio **repeats the measure(s)** that contain it, then continues.
 
 This is separate from DataCreate Stage 9, which corrupts an existing score in place. Here the **clean score stays correct**; only the synthesized performance is wrong.
 
@@ -59,6 +59,6 @@ output/synth_gen_0010/
 └── metadata.json
 ```
 
-`labels.json` uses the DataCreate taxonomy: `wrong_note`, `missed_note`, `extra_note`, `rhythm_error`, `intonation_error` (same written pitch, audio detuned by cents via MIDI pitch bend; `deviation_cents` is stored), and `repetition` with `repeats_label_range` pointing at the first pass of the bad measure.
+`labels.json` uses the DataCreate taxonomy: `wrong_note`, `missed_note`, `extra_note`, `rhythm_error`, `intonation_error` (same written pitch, audio detuned by cents via MIDI pitch bend; `deviation_cents` is stored), and `repetition` with `repeats_label_range` pointing at the first pass of the bad measure(s). Any error type can trigger that restart (`repetition_prob`).
 
 Open the output root in the DataCreate annotator (`datacreate serve`) like any other sample directory if you copy or generate into `DataCreate/samples/`.
