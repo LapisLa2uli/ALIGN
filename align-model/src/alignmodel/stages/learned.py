@@ -7,9 +7,9 @@ import numpy as np
 import torch
 
 from alignmodel.device import resolve_device
-from alignmodel.stage_train import MEL_HOP, _cosine, _mel_crop, _pool_span
+from alignmodel.stage_train import CROP_FRAMES_RESTART, _mel_crop, _mel_span_resize, _rhythm_aux
 from alignmodel.stages.models import EDIT_CLASSES, EditCropNet, RestartScorer, RhythmNet
-from alignmodel.types import PairedEvent, PipelineLabel, PipelineState, RepeatRange, next_label_id
+from alignmodel.types import PipelineLabel, PipelineState, RepeatRange, next_label_id
 
 
 @dataclass
@@ -18,6 +18,8 @@ class StageModels:
     edits: EditCropNet | None = None
     rhythm: RhythmNet | None = None
     device: torch.device | None = None
+    restart_threshold: float = 0.0
+    rhythm_threshold: float = 0.0
 
 
 def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageModels:
@@ -30,10 +32,14 @@ def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageMo
     out = StageModels(device=torch_device)
     s1 = weights_dir / "stage1.pt"
     if s1.exists():
-        model = RestartScorer()
         blob = torch.load(s1, map_location=torch_device, weights_only=False)
-        model.load_state_dict(blob["model"])
-        out.restart = model.to(torch_device).eval()
+        model = RestartScorer()
+        try:
+            model.load_state_dict(blob["model"])
+            out.restart = model.to(torch_device).eval()
+            out.restart_threshold = float(blob.get("logit_threshold", 0.0))
+        except RuntimeError:
+            print(f"skip incompatible stage1 weights in {s1}")
     s2 = weights_dir / "stage2.pt"
     if s2.exists():
         model = EditCropNet()
@@ -42,34 +48,69 @@ def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageMo
         out.edits = model.to(torch_device).eval()
     s3 = weights_dir / "stage3.pt"
     if s3.exists():
-        model = RhythmNet()
         blob = torch.load(s3, map_location=torch_device, weights_only=False)
-        model.load_state_dict(blob["model"])
-        out.rhythm = model.to(torch_device).eval()
+        model = RhythmNet()
+        try:
+            model.load_state_dict(blob["model"])
+            out.rhythm = model.to(torch_device).eval()
+            out.rhythm_threshold = float(blob.get("logit_threshold", 0.0))
+        except RuntimeError:
+            print(f"skip incompatible stage3 weights in {s3}")
     return out
 
 
-def restart_feature(mel: np.ndarray, t0: float, t1: float, s0: float, s1: float) -> torch.Tensor:
-    cur = _pool_span(mel, t0, t1)
-    src = _pool_span(mel, s0, s1)
-    dur = max(t1 - t0, 1e-3)
-    sdur = max(s1 - s0, 1e-3)
-    feat = np.concatenate(
-        [
-            cur,
-            src,
-            np.array(
-                [
-                    np.log(dur),
-                    np.log(sdur),
-                    _cosine(cur, src),
-                    t0 / max(mel.shape[1] * MEL_HOP, 1e-3),
-                ],
-                dtype=np.float32,
-            ),
-        ]
-    ).astype(np.float32)
-    return torch.from_numpy(feat).unsqueeze(0)
+COPY_SCAN_LENGTHS = (1.25, 1.65, 2.1)
+COPY_SCAN_STEP = 0.35
+
+
+def propose_copy_cuts(
+    mel: np.ndarray, models: StageModels, duration: float
+) -> list[float]:
+    """Times t where [t, t+L] restates [t-L, t]; also return source/end edges."""
+    if models.restart is None or mel is None or duration < 1.5:
+        return []
+    device = models.device
+    model = models.restart
+    thr = models.restart_threshold
+    hits: list[tuple[float, float, float]] = []
+    with torch.no_grad():
+        for length in COPY_SCAN_LENGTHS:
+            times: list[float] = []
+            crops_a: list[np.ndarray] = []
+            crops_b: list[np.ndarray] = []
+            t = length
+            while t + length <= duration + 1e-6:
+                times.append(t)
+                crops_a.append(
+                    _mel_span_resize(mel, t, t + length, width=CROP_FRAMES_RESTART)
+                )
+                crops_b.append(
+                    _mel_span_resize(mel, t - length, t, width=CROP_FRAMES_RESTART)
+                )
+                t += COPY_SCAN_STEP
+            if not times:
+                continue
+            for i0 in range(0, len(times), 64):
+                a = torch.from_numpy(np.stack(crops_a[i0 : i0 + 64])).to(device)
+                b = torch.from_numpy(np.stack(crops_b[i0 : i0 + 64])).to(device)
+                logits = model(a, b).detach().cpu().numpy()
+                for t_cut, logit in zip(times[i0 : i0 + 64], logits):
+                    if float(logit) > thr:
+                        hits.append((float(logit), float(t_cut), float(length)))
+    if not hits:
+        return []
+    hits.sort(key=lambda h: -h[0])
+    kept: list[tuple[float, float, float]] = []
+    for logit, t_cut, length in hits:
+        if any(abs(t_cut - k[1]) < 0.35 for k in kept):
+            continue
+        kept.append((logit, t_cut, length))
+        if len(kept) >= 1:
+            break
+    cuts: list[float] = []
+    for _logit, t_cut, length in kept:
+        cuts.extend([t_cut - length, t_cut, t_cut + length])
+    return cuts
 
 
 def apply_learned_restarts(state: PipelineState, mel: np.ndarray, models: StageModels) -> None:
@@ -77,17 +118,36 @@ def apply_learned_restarts(state: PipelineState, mel: np.ndarray, models: StageM
         return
     device = models.device
     model = models.restart
-    for i in range(1, len(state.segments)):
-        prev = state.segments[i - 1]
-        cur = state.segments[i]
-        feat = restart_feature(
-            mel, cur.perf_start, cur.perf_end, prev.perf_start, prev.perf_end
-        ).to(device)
+    thr = models.restart_threshold
+
+    def _score(t0: float, t1: float, s0: float, s1: float) -> float:
+        a = torch.from_numpy(
+            _mel_span_resize(mel, t0, t1, width=CROP_FRAMES_RESTART)
+        ).unsqueeze(0).to(device)
+        b = torch.from_numpy(
+            _mel_span_resize(mel, s0, s1, width=CROP_FRAMES_RESTART)
+        ).unsqueeze(0).to(device)
         with torch.no_grad():
-            logit = float(model(feat).squeeze())
-        if logit > 0:
+            return float(model(a, b).squeeze())
+
+    for i, cur in enumerate(state.segments):
+        if i == 0 or (cur.perf_end - cur.perf_start) < 0.45:
+            continue
+        prev = state.segments[i - 1]
+        prev_len = prev.perf_end - prev.perf_start
+        cur_len = cur.perf_end - cur.perf_start
+        if prev_len < 0.45:
+            continue
+        ratio = cur_len / max(prev_len, 1e-3)
+        if ratio < 0.8 or ratio > 1.25:
+            continue
+        logit = _score(cur.perf_start, cur.perf_end, prev.perf_start, prev.perf_end)
+        if logit > thr:
             cur.is_repetition = True
             cur.repeats_label_range = RepeatRange(prev.perf_start, prev.perf_end)
+            if abs(ratio - 1.0) <= 0.25:
+                cur.score_i0 = prev.score_i0
+                cur.score_i1 = prev.score_i1
 
 
 def apply_learned_edits(state: PipelineState, mel: np.ndarray, models: StageModels) -> None:
@@ -115,66 +175,40 @@ def apply_learned_edits(state: PipelineState, mel: np.ndarray, models: StageMode
     state.labels = kept
 
 
-def rhythm_feature(pair: PairedEvent, idx: int, n: int, prev_ratio: float, ewma: float, far_med: float) -> np.ndarray:
-    ref = max(pair.ref_end - pair.ref_start, 1e-3)
-    perf = max(pair.perf_end - pair.perf_start, 1e-3)
-    ratio = perf / ref
-    log_jump = abs(float(np.log(ratio / max(ewma, 1e-6))))
-    log_far = abs(float(np.log(ratio / max(far_med, 1e-6)))) if far_med > 0 else 0.0
-    return np.array(
-        [
-            float(np.log(ratio)),
-            abs(float(np.log(ratio))),
-            float(np.log(ref)),
-            float(np.log(perf)),
-            log_jump,
-            log_far,
-            idx / max(n - 1, 1),
-            float(np.log(max(prev_ratio, 1e-4))),
-        ],
-        dtype=np.float32,
-    )
-
-
-def apply_learned_rhythm(state: PipelineState, models: StageModels) -> None:
-    if models.rhythm is None:
+def apply_learned_rhythm(state: PipelineState, mel: np.ndarray, models: StageModels) -> None:
+    if models.rhythm is None or mel is None:
         return
     pairs = [p for p in state.pairs if p.kind in {"match", "substitute"}]
-    if len(pairs) < 2:
+    if not pairs:
         return
     pairs = sorted(pairs, key=lambda p: p.perf_start)
+    windows: list[tuple[float, float]] = []
+    cur_s, cur_e = pairs[0].perf_start, pairs[0].perf_end
+    for pair in pairs[1:]:
+        if pair.perf_start - cur_e > 0.25 or pair.perf_end - cur_s > 1.35:
+            if cur_e - cur_s >= 0.28:
+                windows.append((cur_s, cur_e))
+            cur_s, cur_e = pair.perf_start, pair.perf_end
+        else:
+            cur_e = max(cur_e, pair.perf_end)
+    if cur_e - cur_s >= 0.28:
+        windows.append((cur_s, cur_e))
     device = models.device
     model = models.rhythm
-    ewma = None
-    ratios = []
-    for i, pair in enumerate(pairs):
-        ref = max(pair.ref_end - pair.ref_start, 1e-3)
-        perf = max(pair.perf_end - pair.perf_start, 1e-3)
-        ratio = perf / ref
-        ratios.append(ratio)
-        if ewma is None:
-            ewma = ratio
-            prev = ratio
-        else:
-            prev = ratios[i - 1]
-        far = [r for r in ratios[max(0, i - 12) : max(0, i - 6)] if r]
-        far_med = float(np.median(far)) if far else 0.0
-        feat = torch.from_numpy(
-            rhythm_feature(pair, i, len(pairs), prev, ewma, far_med)
-        ).unsqueeze(0).to(device)
+    thr = models.rhythm_threshold
+    for t0, t1 in windows:
+        crop = torch.from_numpy(_mel_span_resize(mel, t0, t1)).unsqueeze(0).to(device)
+        aux = torch.from_numpy(_rhythm_aux(mel, t0, t1)).unsqueeze(0).to(device)
         with torch.no_grad():
-            logit = float(model(feat).squeeze())
-        ewma = 0.3 * ratio + 0.7 * ewma
-        if logit > 0:
+            logit = float(model(crop, aux).squeeze())
+        if logit > thr:
             state.labels.append(
                 PipelineLabel(
                     id=next_label_id(state),
                     type="rhythm_error",
-                    start_time=pair.perf_start,
-                    end_time=pair.perf_end,
+                    start_time=t0,
+                    end_time=t1,
                     comment=f"stage3-net logit={logit:.2f}",
-                    deviation_ms=(pair.perf_end - pair.perf_start) * 1000.0,
-                    measure_number=pair.measure,
-                    note_id=f"note_{pair.score_index:04d}",
+                    deviation_ms=(t1 - t0) * 1000.0,
                 )
             )

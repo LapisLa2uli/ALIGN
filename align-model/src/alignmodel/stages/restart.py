@@ -5,7 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from alignmodel.audio import chroma_slice, dtw_normalized_cost, score_chroma_template
-from alignmodel.stages.boundaries import window_times
+from alignmodel.stages.boundaries import window_times, _merge_cuts
 from alignmodel.stages.score_graph import span_is_legal_continuation
 from alignmodel.types import (
     GraphNote,
@@ -45,8 +45,27 @@ def run_stage1(
         return
 
     windows = window_times(state.boundaries, state.duration_sec, cfg.min_window_sec)
+    copy_cuts: list[float] = []
+    if learned is not None and getattr(learned, "restart", None) is not None and mel is not None:
+        from alignmodel.stages.learned import propose_copy_cuts
+
+        copy_cuts = propose_copy_cuts(mel, learned, state.duration_sec)
+        if copy_cuts:
+            state.boundaries = _merge_cuts(
+                list(state.boundaries) + copy_cuts,
+                state.duration_sec,
+                min_gap=cfg.min_window_sec * 0.5,
+            )
+            windows = window_times(state.boundaries, state.duration_sec, cfg.min_window_sec)
     beam = _search_beam(
-        state.score, chroma, windows, state.hop_sec, cfg.beam_k, cfg, ref_chroma
+        state.score,
+        chroma,
+        windows,
+        state.hop_sec,
+        cfg.beam_k,
+        cfg,
+        ref_chroma,
+        copy_cuts=copy_cuts,
     )
     if not beam:
         beam = [
@@ -74,12 +93,35 @@ def run_stage1(
     state.beam = beam[: cfg.beam_k]
     chosen = state.beam[0]
     state.segments = chosen.segments
-    if learned is not None and mel is not None:
+    for seg in state.segments:
+        seg.is_repetition = False
+        seg.repeats_label_range = None
+    _mark_score_replays(state)
+    if learned is not None and getattr(learned, "restart", None) is not None and mel is not None:
         from alignmodel.stages.learned import apply_learned_restarts
 
         apply_learned_restarts(state, mel, learned)
     _emit_repetition_labels(state)
     state.stages_run.append(1)
+
+
+def _mark_score_replays(state: PipelineState) -> None:
+    """If two adjacent windows mapped onto the same score notes, the later is a restart."""
+    for i in range(1, len(state.segments)):
+        prev = state.segments[i - 1]
+        cur = state.segments[i]
+        prev_n = prev.score_i1 - prev.score_i0
+        cur_n = cur.score_i1 - cur.score_i0
+        short = min(prev_n, cur_n)
+        if short < 2:
+            continue
+        overlap = min(prev.score_i1, cur.score_i1) - max(prev.score_i0, cur.score_i0)
+        if overlap >= 0.6 * short:
+            cur.is_repetition = True
+            if cur.repeats_label_range is None:
+                cur.repeats_label_range = RepeatRange(prev.perf_start, prev.perf_end)
+            cur.score_i0 = prev.score_i0
+            cur.score_i1 = prev.score_i1
 
 
 def _search_beam(
@@ -90,20 +132,28 @@ def _search_beam(
     k: int,
     cfg,
     ref_chroma: np.ndarray | None,
+    copy_cuts: list[float] | None = None,
 ) -> list[RestartHypothesis]:
     notes = graph.notes
     n = len(notes)
+    copy_cuts = copy_cuts or []
     # Each beam item: cursor, visited list of (i0,i1,perf_start,perf_end), cost, unexplained, segments
     BeamItem = tuple[int, list[tuple[int, int, float, float]], float, float, list[UnfoldedSegment]]
     beam: list[BeamItem] = [(0, [], 0.0, 0.0, [])]
 
     for p0, p1 in windows:
         win = chroma_slice(chroma, p0, p1, hop_sec)
+        at_copy = any(abs(p0 - c) < 0.35 for c in copy_cuts)
         nxt: list[BeamItem] = []
         for cursor, visited, cost, unexplained, segs in beam:
             matches = _candidate_spans(
                 graph, notes, win, hop_sec, cursor, visited, cfg, ref_chroma
             )
+            if at_copy and segs:
+                prev = segs[-1]
+                replay = _replay_span(notes, win, hop_sec, prev, ref_chroma)
+                if replay is not None:
+                    matches = [replay] + [m for m in matches if not (m.i0 == replay.i0 and m.i1 == replay.i1)]
             if not matches:
                 matches = [
                     _SpanMatch(
@@ -132,8 +182,6 @@ def _search_beam(
                 new_vis = list(visited)
                 new_vis.append((match.i0, match.i1, p0, p1))
                 new_cursor = match.i1 if not restart else cursor
-                if not restart:
-                    new_cursor = match.i1
                 extra = 0.0 if match.cost < 0.35 else (p1 - p0) * 0.25
                 nxt.append(
                     (
@@ -160,6 +208,23 @@ def _search_beam(
             )
         )
     return out
+
+
+def _replay_span(
+    notes: list[GraphNote],
+    win: np.ndarray,
+    hop_sec: float,
+    prev: UnfoldedSegment,
+    ref_chroma: np.ndarray | None,
+) -> _SpanMatch | None:
+    if prev.score_i1 <= prev.score_i0:
+        return None
+    span = notes[prev.score_i0 : prev.score_i1]
+    if not span:
+        return None
+    tmpl = _span_template(span, hop_sec, ref_chroma)
+    cost, _wp = dtw_normalized_cost(tmpl, win)
+    return _SpanMatch(i0=prev.score_i0, i1=prev.score_i1, cost=cost * 0.82, is_restart=True)
 
 
 def _source_span(

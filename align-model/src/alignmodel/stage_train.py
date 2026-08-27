@@ -11,13 +11,23 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset, random_split
 
 from alignmodel.config import FRAME_HOP_SEC
-from alignmodel.dataset import _load_score_notes, list_sample_dirs
+from alignmodel.dataset import list_sample_dirs
 from alignmodel.device import device_label, resolve_device
-from alignmodel.stages.gold import load_labels, map_notes_to_perf, overlaps, repetition_labs
-from alignmodel.stages.models import EDIT_CLASSES, EditCropNet, RestartScorer, RhythmNet
+from alignmodel.stages.gold import load_labels, overlaps, repetition_labs
+from alignmodel.stages.models import (
+    EDIT_CLASSES,
+    EditCropNet,
+    RestartScorer,
+    RhythmNet,
+    cosine_pair_loss,
+)
 
 CROP_FRAMES = 64
+CROP_FRAMES_RESTART = 96
 MEL_HOP = FRAME_HOP_SEC
+NEG_PER_POS = 2
+COSINE_PAIR_WEIGHT = 0.08
+EARLY_STOP_PATIENCE = 8
 
 
 def _load_mel(sample_dir: Path) -> np.ndarray:
@@ -60,6 +70,45 @@ def _mel_crop(mel: np.ndarray, t0: float, t1: float, width: int = CROP_FRAMES) -
     return out
 
 
+def _span_indices(mel: np.ndarray, t0: float, t1: float) -> tuple[int, int]:
+    i0 = max(0, int(t0 / MEL_HOP))
+    i1 = min(mel.shape[1], max(i0 + 1, int(np.ceil(t1 / MEL_HOP))))
+    return i0, i1
+
+
+def _mel_span_resize(mel: np.ndarray, t0: float, t1: float, width: int = CROP_FRAMES) -> np.ndarray:
+    """Pack the actual labeled span into `width` frames so duration texture remains."""
+    i0, i1 = _span_indices(mel, t0, t1)
+    crop = mel[:, i0:i1]
+    if crop.shape[1] == 0:
+        return np.zeros((mel.shape[0], width), dtype=np.float32)
+    if crop.shape[1] == width:
+        return crop.astype(np.float32, copy=True)
+    tensor = torch.from_numpy(np.ascontiguousarray(crop)).unsqueeze(0)
+    out = torch.nn.functional.interpolate(
+        tensor, size=width, mode="linear", align_corners=False
+    )
+    return out.squeeze(0).numpy().astype(np.float32)
+
+
+def _rhythm_aux(mel: np.ndarray, t0: float, t1: float) -> np.ndarray:
+    i0, i1 = _span_indices(mel, t0, t1)
+    crop = mel[:, i0:i1]
+    dur = max(float(t1 - t0), 1e-3)
+    if crop.size == 0:
+        return np.array([np.log(dur), 0.0, 0.0, 0.0], dtype=np.float32)
+    rms = float(np.sqrt(np.mean(crop * crop)))
+    if crop.shape[1] > 2:
+        flux = float(np.mean(np.abs(np.diff(crop, axis=1))))
+        mid = crop.shape[1] // 2
+        e0 = float(np.sqrt(np.mean(crop[:, :mid] * crop[:, :mid])) + 1e-6)
+        e1 = float(np.sqrt(np.mean(crop[:, mid:] * crop[:, mid:])) + 1e-6)
+        split = float(np.log(e1 / e0))
+    else:
+        flux, split = 0.0, 0.0
+    return np.array([np.log(dur), rms, flux, split], dtype=np.float32)
+
+
 def _cosine(a: np.ndarray, b: np.ndarray) -> float:
     na = float(np.linalg.norm(a))
     nb = float(np.linalg.norm(b))
@@ -68,18 +117,38 @@ def _cosine(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.dot(a, b) / (na * nb))
 
 
+def _mel_duration(sample_dir: Path) -> float:
+    arr = np.load(sample_dir / "performance_mel.npy", mmap_mode="r")
+    if arr.shape[0] == 128:
+        t = int(arr.shape[1])
+    elif arr.shape[1] == 128:
+        t = int(arr.shape[0])
+    else:
+        t = int(max(arr.shape))
+    return float(t) * MEL_HOP
+
+
 def _clip_duration(sample_dir: Path, mel: np.ndarray | None = None) -> float:
-    if mel is None:
-        mel = _load_mel(sample_dir)
-    return mel.shape[1] * MEL_HOP
+    if mel is not None:
+        t = mel.shape[1] if mel.shape[0] == 128 else mel.shape[0]
+        return t * MEL_HOP
+    return _mel_duration(sample_dir)
 
 
 def _restart_items(dirs: list[Path], rng: random.Random) -> list[dict]:
+    """Balanced copy-detection pairs. Positives = gold repeat vs its source."""
     items = []
     for sample in dirs:
         labels = load_labels(sample)
         reps = repetition_labs(labels)
-        dur = None
+        if not reps:
+            continue
+        dur = _mel_duration(sample)
+        error_spans = [
+            (float(lab["start_time"]), float(lab["end_time"]))
+            for lab in labels
+            if lab.get("type") == "repetition"
+        ]
         for lab in reps:
             src = lab.get("repeats_label_range") or {}
             s0 = float(src.get("start_time", 0.0))
@@ -89,35 +158,66 @@ def _restart_items(dirs: list[Path], rng: random.Random) -> list[dict]:
             items.append(
                 {"dir": sample, "t0": t0, "t1": t1, "s0": s0, "s1": s1, "y": 1.0}
             )
-            if dur is None:
-                dur = _clip_duration(sample)
             length = max(0.35, t1 - t0)
-            for _ in range(2):
-                start = rng.uniform(0.0, max(0.05, dur - length))
-                if overlaps(start, start + length, t0, t1):
+            # Hard negative: continuation after the repeat (same length, not a copy).
+            after = t1
+            if after + length < dur - 0.05:
+                items.append(
+                    {
+                        "dir": sample,
+                        "t0": after,
+                        "t1": after + length,
+                        "s0": t0,
+                        "s1": t1,
+                        "y": 0.0,
+                    }
+                )
+            # Hard negative: the measure before the source vs the restated measure.
+            before = s0 - length
+            if before >= 0.0:
+                items.append(
+                    {
+                        "dir": sample,
+                        "t0": t0,
+                        "t1": t1,
+                        "s0": before,
+                        "s1": s0,
+                        "y": 0.0,
+                    }
+                )
+            # Random non-overlapping pair of the same length.
+            for _ in range(max(0, NEG_PER_POS - 1)):
+                start = rng.uniform(0.0, max(0.05, dur - 2 * length - 0.05))
+                other = start + length + rng.uniform(0.15, 0.6)
+                if other + length > dur:
+                    continue
+                if any(overlaps(start, start + length, a, b) for a, b in error_spans):
                     continue
                 items.append(
                     {
                         "dir": sample,
-                        "t0": start,
-                        "t1": start + length,
-                        "s0": max(0.0, start - length),
-                        "s1": start,
+                        "t0": other,
+                        "t1": other + length,
+                        "s0": start,
+                        "s1": start + length,
                         "y": 0.0,
                     }
                 )
-        if not reps:
-            if dur is None:
-                dur = _clip_duration(sample)
-            length = min(1.5, max(0.4, dur * 0.12))
-            start = rng.uniform(0.0, max(0.05, dur - length))
+    # Cross-clip negatives: two clarinet spans that are not copies of each other.
+    pos = [it for it in items if it["y"] > 0.5]
+    if len(pos) >= 2:
+        for it in pos:
+            other = rng.choice(pos)
+            if other["dir"] == it["dir"]:
+                continue
             items.append(
                 {
-                    "dir": sample,
-                    "t0": start,
-                    "t1": start + length,
-                    "s0": max(0.0, start - length),
-                    "s1": start,
+                    "dir": it["dir"],
+                    "dir_b": other["dir"],
+                    "t0": it["t0"],
+                    "t1": it["t1"],
+                    "s0": other["s0"],
+                    "s1": other["s1"],
                     "y": 0.0,
                 }
             )
@@ -154,96 +254,80 @@ def _edit_items(dirs: list[Path], rng: random.Random) -> list[dict]:
     return items
 
 
-def _rhythm_items(dirs: list[Path]) -> list[tuple[np.ndarray, float]]:
-    items: list[tuple[np.ndarray, float]] = []
+def _rhythm_items(dirs: list[Path], rng: random.Random) -> list[dict]:
+    """Span-level rhythm crops from gold labels, not linear-mapped score notes."""
+    items: list[dict] = []
     for sample in dirs:
         labels = load_labels(sample)
-        notes = _load_score_notes(sample)
-        if not notes:
-            continue
-        if not labels:
-            dur = max(notes[-1].end, 1.0)
-        else:
-            dur = max(float(lab["end_time"]) for lab in labels) + 0.5
-            dur = max(dur, notes[-1].end)
-        mapped = map_notes_to_perf(notes, labels, dur)
         rhythm_spans = [
             (float(lab["start_time"]), float(lab["end_time"]))
             for lab in labels
             if lab.get("type") == "rhythm_error"
         ]
-        ratios: list[float | None] = []
-        feats_y: list[tuple[np.ndarray, float]] = []
-        for note, (p0, p1) in zip(notes, mapped):
-            ref = max(note.duration, 1e-3)
-            perf = max(p1 - p0, 1e-3)
-            ratio = perf / ref
-            ratios.append(ratio)
-            y = 1.0 if any(overlaps(p0, p1, a, b) for a, b in rhythm_spans) else 0.0
-            feats_y.append((None, y, ratio, ref, perf, p0))  # type: ignore
-        ewma = None
-        for i, (_blank, y, ratio, ref, perf, _p0) in enumerate(feats_y):
-            if ewma is None:
-                ewma = ratio
-                log_jump = 0.0
-            else:
-                log_jump = abs(float(np.log(ratio / max(ewma, 1e-6))))
-                ewma = 0.3 * ratio + 0.7 * ewma
-            far = ratios[max(0, i - 12) : max(0, i - 6)]
-            far = [r for r in far if r is not None]
-            log_far = 0.0
-            if far:
-                med = float(np.median(far))
-                if med > 0:
-                    log_far = abs(float(np.log(ratio / med)))
-            prev = ratios[i - 1] if i else ratio
-            feat = np.array(
-                [
-                    float(np.log(max(ratio, 1e-4))),
-                    abs(float(np.log(max(ratio, 1e-4)))),
-                    float(np.log(max(ref, 1e-4))),
-                    float(np.log(max(perf, 1e-4))),
-                    log_jump,
-                    log_far,
-                    i / max(len(notes) - 1, 1),
-                    float(np.log(max(prev or ratio, 1e-4))),
-                ],
-                dtype=np.float32,
-            )
-            items.append((feat, y))
+        if not rhythm_spans:
+            continue
+        used = [
+            (float(lab["start_time"]), float(lab["end_time"]))
+            for lab in labels
+            if lab.get("type") not in {"stylistic_choice"}
+        ]
+        dur = _mel_duration(sample)
+        mel = None
+        for t0, t1 in rhythm_spans:
+            items.append({"dir": sample, "t0": t0, "t1": t1, "y": 1.0})
+            if mel is None:
+                mel = _load_mel(sample)
+            pos_rms = float(_rhythm_aux(mel, t0, t1)[1])
+            length = max(0.35, t1 - t0)
+            after = t1
+            if after + length < dur - 0.05 and not any(
+                overlaps(after, after + length, a, b) for a, b in used if (a, b) != (t0, t1)
+            ):
+                items.append({"dir": sample, "t0": after, "t1": after + length, "y": 0.0})
+            added = 0
+            tries = 0
+            while added < 2 and tries < 16:
+                tries += 1
+                nlen = rng.uniform(0.35, 1.4)
+                start = rng.uniform(0.0, max(0.05, dur - nlen))
+                end = start + nlen
+                if any(overlaps(start, end, a, b) for a, b in used):
+                    continue
+                if float(_rhythm_aux(mel, start, end)[1]) < 0.35 * max(pos_rms, 1e-4):
+                    continue
+                items.append({"dir": sample, "t0": start, "t1": end, "y": 0.0})
+                added += 1
     return items
 
 
 class RestartDataset(Dataset):
-    def __init__(self, items: list[dict]):
+    def __init__(self, items: list[dict], cache: _MelCache | None = None, augment: bool = False):
         self.items = items
+        self.cache = cache
+        self.augment = augment
 
     def __len__(self):
         return len(self.items)
 
     def __getitem__(self, idx):
         it = self.items[idx]
-        mel = _load_mel(it["dir"])
-        cur = _pool_span(mel, it["t0"], it["t1"])
-        src = _pool_span(mel, it["s0"], it["s1"])
-        dur = max(it["t1"] - it["t0"], 1e-3)
-        sdur = max(it["s1"] - it["s0"], 1e-3)
-        feat = np.concatenate(
-            [
-                cur,
-                src,
-                np.array(
-                    [
-                        np.log(dur),
-                        np.log(sdur),
-                        _cosine(cur, src),
-                        it["t0"] / max(mel.shape[1] * MEL_HOP, 1e-3),
-                    ],
-                    dtype=np.float32,
-                ),
-            ]
-        ).astype(np.float32)
-        return torch.from_numpy(feat), torch.tensor(it["y"], dtype=torch.float32)
+        mel_a = self.cache.get(it["dir"]) if self.cache is not None else _load_mel(it["dir"])
+        dir_b = it.get("dir_b", it["dir"])
+        mel_b = (
+            mel_a
+            if dir_b == it["dir"]
+            else (self.cache.get(dir_b) if self.cache is not None else _load_mel(dir_b))
+        )
+        j = random.uniform(-0.05, 0.05) if self.augment else 0.0
+        crop_a = _mel_span_resize(mel_a, it["t0"] + j, it["t1"] + j, width=CROP_FRAMES_RESTART)
+        crop_b = _mel_span_resize(mel_b, it["s0"] + j, it["s1"] + j, width=CROP_FRAMES_RESTART)
+        if self.augment and random.random() < 0.5:
+            crop_a, crop_b = crop_b, crop_a
+        return (
+            torch.from_numpy(crop_a),
+            torch.from_numpy(crop_b),
+            torch.tensor(it["y"], dtype=torch.float32),
+        )
 
 
 class EditDataset(Dataset):
@@ -261,15 +345,25 @@ class EditDataset(Dataset):
 
 
 class RhythmDataset(Dataset):
-    def __init__(self, items: list[tuple[np.ndarray, float]]):
+    def __init__(self, items: list[dict], cache: _MelCache | None = None, augment: bool = False):
         self.items = items
+        self.cache = cache
+        self.augment = augment
 
     def __len__(self):
         return len(self.items)
 
     def __getitem__(self, idx):
-        feat, y = self.items[idx]
-        return torch.from_numpy(feat), torch.tensor(y, dtype=torch.float32)
+        it = self.items[idx]
+        mel = self.cache.get(it["dir"]) if self.cache is not None else _load_mel(it["dir"])
+        j = random.uniform(-0.05, 0.05) if self.augment else 0.0
+        crop = _mel_span_resize(mel, it["t0"] + j, it["t1"] + j)
+        aux = _rhythm_aux(mel, it["t0"] + j, it["t1"] + j)
+        return (
+            torch.from_numpy(crop),
+            torch.from_numpy(aux),
+            torch.tensor(it["y"], dtype=torch.float32),
+        )
 
 
 @dataclass
@@ -286,6 +380,26 @@ class StageTrainConfig:
     max_samples: int = 0
 
 
+class _MelCache:
+    def __init__(self, maxsize: int = 512):
+        self.maxsize = maxsize
+        self._data: dict[str, np.ndarray] = {}
+        self._order: list[str] = []
+
+    def get(self, sample_dir: Path) -> np.ndarray:
+        key = str(sample_dir)
+        hit = self._data.get(key)
+        if hit is not None:
+            return hit
+        mel = _load_mel(sample_dir)
+        if len(self._order) >= self.maxsize:
+            old = self._order.pop(0)
+            self._data.pop(old, None)
+        self._data[key] = mel
+        self._order.append(key)
+        return mel
+
+
 def _split(ds: Dataset, frac: float, seed: int):
     n_val = max(1, int(len(ds) * frac))
     n_train = len(ds) - n_val
@@ -294,78 +408,206 @@ def _split(ds: Dataset, frac: float, seed: int):
     return random_split(ds, [n_train, n_val], generator=torch.Generator().manual_seed(seed))
 
 
+def _split_by_sample(items: list[dict], frac: float, seed: int) -> tuple[list[dict], list[dict]]:
+    dirs = sorted({it["dir"] for it in items}, key=str)
+    rng = random.Random(seed)
+    rng.shuffle(dirs)
+    n_val = max(1, int(round(len(dirs) * frac)))
+    if len(dirs) > 1:
+        n_val = min(n_val, len(dirs) - 1)
+    val_dirs = set(dirs[:n_val])
+    train = [it for it in items if it["dir"] not in val_dirs]
+    val = [it for it in items if it["dir"] in val_dirs]
+    if not train:
+        train = list(val)
+    if not val:
+        val = list(train)
+    return train, val
+
+
+def _time_freq_mask(x: torch.Tensor) -> torch.Tensor:
+    """Light SpecAugment on a (B, n_mels, T) crop batch."""
+    _b, n_mels, n_t = x.shape
+    x = x.clone()
+    f = int(torch.randint(0, 8, (1,)).item())
+    if f > 0:
+        f0 = int(torch.randint(0, max(1, n_mels - f + 1), (1,)).item())
+        x[:, f0 : f0 + f, :] = 0
+    w = int(torch.randint(0, 8, (1,)).item())
+    if w > 0:
+        t0 = int(torch.randint(0, max(1, n_t - w + 1), (1,)).item())
+        x[:, :, t0 : t0 + w] = 0
+    return x
+
+
+def _f1_from_logits(logits: np.ndarray, y: np.ndarray, thresh: float) -> tuple[float, float, float]:
+    pred = logits > thresh
+    tp = int(((pred == 1) & (y == 1)).sum())
+    fp = int(((pred == 1) & (y == 0)).sum())
+    fn = int(((pred == 0) & (y == 1)).sum())
+    prec = tp / max(tp + fp, 1)
+    rec = tp / max(tp + fn, 1)
+    f1 = 2 * prec * rec / max(prec + rec, 1e-8)
+    return f1, prec, rec
+
+
+def _average_precision(logits: np.ndarray, y: np.ndarray) -> float:
+    if y.size == 0 or float(y.sum()) < 1:
+        return 0.0
+    order = np.argsort(-logits)
+    ys = y[order]
+    tp = np.cumsum(ys)
+    fp = np.cumsum(1.0 - ys)
+    prec = tp / np.maximum(tp + fp, 1.0)
+    return float((prec * ys).sum() / ys.sum())
+
+
+def _best_logit_threshold(logits: np.ndarray, y: np.ndarray) -> tuple[float, float, float, float]:
+    """Prefer a threshold with usable precision and recall."""
+    candidates: list[tuple[float, float, float, float]] = []
+    for t in np.concatenate(([0.0], np.linspace(-1.5, 1.5, 31))):
+        f1, prec, rec = _f1_from_logits(logits, y, float(t))
+        candidates.append((f1, float(t), prec, rec))
+    usable = [c for c in candidates if c[2] >= 0.45 and c[3] >= 0.30]
+    if not usable:
+        usable = [c for c in candidates if c[2] >= 0.40]
+    pool = usable or candidates
+    best = max(pool, key=lambda c: (c[0], c[2], -abs(c[1])))
+    return best[1], best[0], best[2], best[3]
+
+
+def _forward_binary(model: nn.Module, batch) -> torch.Tensor:
+    if len(batch) == 3:
+        a, b, _y = batch
+        return model(a, b)
+    x, _y = batch
+    return model(x)
+
+
 def _run_binary(
     model: nn.Module,
     train_ds: Dataset,
     val_ds: Dataset,
     cfg: StageTrainConfig,
     out_path: Path,
-    pos_weight: float,
     name: str,
+    *,
+    siamese: bool = False,
 ) -> Path:
     device = resolve_device(cfg.device)
     model = model.to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=1e-2)
-    bce = nn.BCEWithLogitsLoss(pos_weight=torch.tensor(pos_weight, device=device))
-    train_loader = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True, num_workers=0)
-    val_loader = DataLoader(val_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=0)
-    best = float("inf")
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(cfg.epochs, 1))
+    bce = nn.BCEWithLogitsLoss()
+    pin = device.type == "cuda"
+    train_loader = DataLoader(
+        train_ds, batch_size=cfg.batch_size, shuffle=True, num_workers=0, pin_memory=pin
+    )
+    val_loader = DataLoader(
+        val_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=0, pin_memory=pin
+    )
+    best_f1 = -1.0
+    best_ap = -1.0
+    stale = 0
     out_path.parent.mkdir(parents=True, exist_ok=True)
     history = []
     for epoch in range(1, cfg.epochs + 1):
         model.train()
         running = 0.0
         n = 0
-        for x, y in train_loader:
-            x, y = x.to(device), y.to(device)
+        for batch in train_loader:
+            batch = [x.to(device) for x in batch]
+            y = batch[-1]
             opt.zero_grad(set_to_none=True)
-            loss = bce(model(x), y)
+            if siamese:
+                a, b = _time_freq_mask(batch[0]), _time_freq_mask(batch[1])
+                ha = model.encode(a)
+                hb = model.encode(b)
+                feat = torch.cat([ha, hb, (ha - hb).abs(), ha * hb], dim=-1)
+                logits = model.head(feat).squeeze(-1)
+                loss = bce(logits, y) + COSINE_PAIR_WEIGHT * cosine_pair_loss(ha, hb, y)
+            elif len(batch) == 3:
+                x = _time_freq_mask(batch[0])
+                logits = model(x, batch[1])
+                loss = bce(logits, y)
+            else:
+                x = _time_freq_mask(batch[0])
+                logits = model(x)
+                loss = bce(logits, y)
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
             running += float(loss.detach())
             n += 1
+        sched.step()
         model.eval()
         val_loss = 0.0
-        correct = 0
-        total = 0
-        tp = fp = fn = 0
+        all_logits = []
+        all_y = []
         with torch.no_grad():
-            for x, y in val_loader:
-                x, y = x.to(device), y.to(device)
-                logits = model(x)
+            for batch in val_loader:
+                batch_d = [x.to(device) for x in batch]
+                y = batch_d[-1]
+                if siamese:
+                    logits = model(batch_d[0], batch_d[1])
+                elif len(batch_d) == 3:
+                    logits = model(batch_d[0], batch_d[1])
+                else:
+                    logits = model(batch_d[0])
                 val_loss += float(bce(logits, y).detach())
-                pred = (logits > 0).float()
-                correct += int((pred == y).sum())
-                total += int(y.numel())
-                tp += int(((pred == 1) & (y == 1)).sum())
-                fp += int(((pred == 1) & (y == 0)).sum())
-                fn += int(((pred == 0) & (y == 1)).sum())
+                all_logits.append(logits.detach().cpu().numpy())
+                all_y.append(y.detach().cpu().numpy())
         val_loss /= max(len(val_loader), 1)
-        prec = tp / max(tp + fp, 1)
-        rec = tp / max(tp + fn, 1)
-        f1 = 2 * prec * rec / max(prec + rec, 1e-8)
-        acc = correct / max(total, 1)
+        logits_np = np.concatenate(all_logits) if all_logits else np.zeros(1)
+        y_np = np.concatenate(all_y) if all_y else np.zeros(1)
+        thresh, f1, prec, rec = _best_logit_threshold(logits_np, y_np)
+        f1_at_0, p0, r0 = _f1_from_logits(logits_np, y_np, 0.0)
+        ap = _average_precision(logits_np, y_np)
+        pred = logits_np > thresh
+        acc = float((pred == y_np).mean()) if y_np.size else 0.0
         row = {
             "epoch": epoch,
             "train_loss": running / max(n, 1),
             "val_loss": val_loss,
             "acc": acc,
             "f1": f1,
+            "f1_at_0": f1_at_0,
+            "ap": ap,
+            "precision": prec,
+            "recall": rec,
+            "logit_threshold": thresh,
         }
         history.append(row)
         print(
             f"{name} epoch {epoch} train={row['train_loss']:.4f} val={val_loss:.4f} "
-            f"acc={acc:.3f} f1={f1:.3f} device={device_label(device)}"
+            f"acc={acc:.3f} f1={f1:.3f} f1@0={f1_at_0:.3f} ap={ap:.3f} "
+            f"p={prec:.3f} r={rec:.3f} thr={thresh:.2f} device={device_label(device)}"
         )
-        ckpt = {"model": model.state_dict(), "epoch": epoch, "metrics": row}
+        ckpt = {
+            "model": model.state_dict(),
+            "epoch": epoch,
+            "metrics": row,
+            "logit_threshold": thresh,
+            "arch": "siamese" if siamese else "crop_aux",
+        }
         torch.save(ckpt, out_path.parent / f"{out_path.stem}_last.pt")
-        if val_loss <= best:
-            best = val_loss
+        improved = ap > best_ap + 1e-4 or (abs(ap - best_ap) <= 1e-4 and f1 >= best_f1)
+        if improved:
+            best_ap = max(best_ap, ap)
+            best_f1 = max(best_f1, f1)
+            stale = 0
             torch.save(ckpt, out_path)
+        else:
+            stale += 1
+            if stale >= EARLY_STOP_PATIENCE:
+                print(
+                    f"{name} early stop at epoch {epoch} best_f1={best_f1:.3f} best_ap={best_ap:.3f}"
+                )
+                break
     (out_path.parent / f"{out_path.stem}_history.json").write_text(
         json.dumps(history, indent=2), encoding="utf-8"
     )
-    print(f"Wrote {out_path}")
+    print(f"Wrote {out_path} best_f1={best_f1:.3f}")
     return out_path
 
 
@@ -457,19 +699,21 @@ def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
 
     if 1 in cfg.stages:
         items = _restart_items(dirs, rng)
-        print(f"stage1 examples={len(items)} pos={sum(1 for i in items if i['y']>0.5)}")
-        ds = RestartDataset(items)
-        train_ds, val_ds = _split(ds, cfg.val_fraction, cfg.seed)
         n_pos = sum(1 for i in items if i["y"] > 0.5)
-        n_neg = max(len(items) - n_pos, 1)
+        train_items, val_items = _split_by_sample(items, cfg.val_fraction, cfg.seed)
+        print(
+            f"stage1 examples={len(items)} pos={n_pos} "
+            f"train={len(train_items)} val={len(val_items)}"
+        )
+        cache = _MelCache(maxsize=768)
         written["stage1"] = _run_binary(
             RestartScorer(),
-            train_ds,
-            val_ds,
+            RestartDataset(train_items, cache=cache, augment=True),
+            RestartDataset(val_items, cache=cache, augment=False),
             cfg,
             cfg.output_dir / "stage1.pt",
-            pos_weight=n_neg / max(n_pos, 1),
             name="stage1",
+            siamese=True,
         )
 
     if 2 in cfg.stages:
@@ -496,19 +740,21 @@ def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
         )
 
     if 3 in cfg.stages:
-        items = _rhythm_items(dirs)
-        n_pos = sum(1 for _f, y in items if y > 0.5)
-        print(f"stage3 examples={len(items)} pos={n_pos}")
-        ds = RhythmDataset(items)
-        train_ds, val_ds = _split(ds, cfg.val_fraction, cfg.seed)
-        n_neg = max(len(items) - n_pos, 1)
+        items = _rhythm_items(dirs, rng)
+        n_pos = sum(1 for i in items if i["y"] > 0.5)
+        train_items, val_items = _split_by_sample(items, cfg.val_fraction, cfg.seed)
+        print(
+            f"stage3 examples={len(items)} pos={n_pos} "
+            f"train={len(train_items)} val={len(val_items)}"
+        )
+        cache = _MelCache(maxsize=768)
         written["stage3"] = _run_binary(
             RhythmNet(),
-            train_ds,
-            val_ds,
+            RhythmDataset(train_items, cache=cache, augment=True),
+            RhythmDataset(val_items, cache=cache, augment=False),
             cfg,
             cfg.output_dir / "stage3.pt",
-            pos_weight=n_neg / max(n_pos, 1),
             name="stage3",
+            siamese=False,
         )
     return written

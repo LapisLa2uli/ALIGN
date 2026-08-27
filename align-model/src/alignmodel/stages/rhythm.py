@@ -5,11 +5,15 @@ import numpy as np
 from alignmodel.types import PairedEvent, PipelineLabel, PipelineState, next_label_id
 
 
-def run_stage3(state: PipelineState, *, learned=None) -> None:
-    if learned is not None and getattr(learned, "rhythm", None) is not None:
+def run_stage3(state: PipelineState, *, learned=None, mel=None) -> None:
+    if (
+        learned is not None
+        and getattr(learned, "rhythm", None) is not None
+        and mel is not None
+    ):
         from alignmodel.stages.learned import apply_learned_rhythm
 
-        apply_learned_rhythm(state, learned)
+        apply_learned_rhythm(state, mel, learned)
         state.stages_run.append(3)
         return
     cfg = state.config

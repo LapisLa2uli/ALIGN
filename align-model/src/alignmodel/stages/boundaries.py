@@ -82,34 +82,42 @@ def _copy_cuts(
     chroma: np.ndarray, hop_sec: float, duration: float, cfg: PipelineConfig
 ) -> list[float]:
     """Boundaries where the window after t copies the window before t."""
-    win = max(4, int(round(cfg.copy_window_sec / hop_sec)))
-    t_frames = chroma.shape[1]
-    if t_frames < win * 2 + 2:
-        return []
-    col = chroma / (np.linalg.norm(chroma, axis=0, keepdims=True) + 1e-8)
-    step = max(1, win // 4)
-    sims: list[tuple[float, float]] = []
-    t = win
-    while t + win < t_frames:
-        a = col[:, t - win : t]
-        b = col[:, t : t + win]
-        sim = float(np.mean(np.sum(a * b, axis=0)))
-        sims.append((t * hop_sec, sim))
-        t += step
-    if not sims:
-        return []
-    values = np.array([s for _, s in sims])
-    peaks: list[tuple[float, float]] = []
-    for i, (time, sim) in enumerate(sims):
-        if sim < cfg.copy_sim_threshold:
+    peaks: list[tuple[float, float, float]] = []
+    for win_sec in (cfg.copy_window_sec, 1.0, 2.2):
+        win = max(4, int(round(win_sec / hop_sec)))
+        t_frames = chroma.shape[1]
+        if t_frames < win * 2 + 2:
             continue
-        left = values[i - 1] if i > 0 else sim - 1
-        right = values[i + 1] if i + 1 < len(values) else sim - 1
-        if sim >= left and sim >= right:
-            if cfg.min_window_sec < time < duration - cfg.min_window_sec:
-                peaks.append((sim, float(time)))
+        col = chroma / (np.linalg.norm(chroma, axis=0, keepdims=True) + 1e-8)
+        step = max(1, win // 4)
+        sims: list[tuple[float, float]] = []
+        t = win
+        while t + win < t_frames:
+            a = col[:, t - win : t]
+            b = col[:, t : t + win]
+            sim = float(np.mean(np.sum(a * b, axis=0)))
+            sims.append((t * hop_sec, sim))
+            t += step
+        if not sims:
+            continue
+        values = np.array([s for _, s in sims])
+        for i, (time, sim) in enumerate(sims):
+            if sim < cfg.copy_sim_threshold:
+                continue
+            left = values[i - 1] if i > 0 else sim - 1
+            right = values[i + 1] if i + 1 < len(values) else sim - 1
+            if sim >= left and sim >= right:
+                if cfg.min_window_sec < time < duration - cfg.min_window_sec:
+                    peaks.append((sim, float(time), float(win_sec)))
     peaks.sort(reverse=True)
-    return [t for _sim, t in peaks[:4]]
+    seen: list[float] = []
+    for _sim, t, _win_sec in peaks:
+        if any(abs(t - u) < cfg.min_window_sec * 0.5 for u in seen):
+            continue
+        seen.append(t)
+        if len(seen) >= 4:
+            break
+    return seen
 
 
 def _merge_cuts(cuts: list[float], duration: float, min_gap: float) -> list[float]:

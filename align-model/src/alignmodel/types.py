@@ -93,10 +93,10 @@ class PipelineConfig:
     silence_db: float = -40.0
     min_silence_sec: float = 0.15
     min_hold_sec: float = 0.8
-    copy_window_sec: float = 1.0
-    copy_sim_threshold: float = 0.8
-    min_window_sec: float = 0.6
-    beam_k: int = 3
+    copy_window_sec: float = 1.6
+    copy_sim_threshold: float = 0.72
+    min_window_sec: float = 0.55
+    beam_k: int = 5
     span_dur_lo: float = 0.5
     span_dur_hi: float = 1.8
     cents_tolerance: float = 20.0

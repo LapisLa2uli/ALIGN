@@ -99,7 +99,7 @@ def run_pipeline(
     if 2 in wanted:
         run_stage2(state, audio, chroma, ref_chroma, mel=mel, learned=learned)
     if 3 in wanted:
-        run_stage3(state, learned=learned)
+        run_stage3(state, learned=learned, mel=mel)
     if 4 in wanted:
         run_stage4(state, audio)
     return state
