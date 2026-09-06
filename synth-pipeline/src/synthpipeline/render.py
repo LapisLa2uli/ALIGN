@@ -33,13 +33,20 @@ def render_score_as_clarinet(
     score: stream.Score | None = None,
     pitch_bends: list[dict] | None = None,
     bpm: float | None = None,
+    sounding_transpose: int = -2,
 ) -> Path:
-    """Export MIDI (music21 or MuseScore), then render with GM clarinet."""
+    """Export MIDI (music21 or MuseScore), then render with GM clarinet.
+
+    ``sounding_transpose`` is applied only to the MIDI sent to the SoundFont
+    (Bb clarinet: written C sounds Bb). MusicXML on disk stays written pitch.
+    """
     output_wav.parent.mkdir(parents=True, exist_ok=True)
     midi_path = output_wav.with_suffix(".mid")
     backend = (midi_backend or "music21").lower()
     if backend == "music21":
-        export_score_to_midi_music21(score, score_path, midi_path, logger)
+        export_score_to_midi_music21(
+            score, score_path, midi_path, logger, sounding_transpose=sounding_transpose
+        )
     elif backend == "musescore":
         export_score_to_midi(dc_config, score_path, midi_path, logger)
     else:
@@ -69,10 +76,19 @@ def export_score_to_midi_music21(
     score_path: Path,
     output_midi: Path,
     logger: logging.Logger,
+    sounding_transpose: int = -2,
 ) -> Path:
     if score is None:
         score = converter.parse(str(score_path))
-    logger.info("Writing MIDI via music21: %s", output_midi)
+    if sounding_transpose:
+        score = score.transpose(int(sounding_transpose))
+        logger.info(
+            "Writing MIDI via music21 at sounding pitch (%+d semitones): %s",
+            int(sounding_transpose),
+            output_midi,
+        )
+    else:
+        logger.info("Writing MIDI via music21: %s", output_midi)
     write_midi(score, output_midi)
     if not output_midi.exists() or output_midi.stat().st_size == 0:
         raise RuntimeError(f"music21 did not produce {output_midi}")
@@ -87,6 +103,7 @@ def render_midi_clarinet(
     clarinet_program: int = GM_CLARINET,
     pitch_bends: list[dict] | None = None,
     bpm: float | None = None,
+    note_transpose: int = 0,
 ) -> None:
     try:
         import tinysoundfont
@@ -130,6 +147,8 @@ def render_midi_clarinet(
     if not events:
         raise RuntimeError(f"No MIDI events found in {midi_path}")
     _force_clarinet_program(events, clarinet_program)
+    if note_transpose:
+        _transpose_note_events(events, int(note_transpose))
     if pitch_bends:
         n_added = _inject_pitch_bends(events, pitch_bends, bpm or 120.0)
         logger.info("Injected %d pitch-bend events for intonation", n_added)
@@ -170,6 +189,18 @@ def _cached_synth(tinysoundfont, soundfont: Path, sample_rate: int, gain_db: flo
     logger.info("SoundFont loaded in %.2fs", time.perf_counter() - started)
     _synth_cache[key] = synth
     return synth
+
+
+def _transpose_note_events(events, semitones: int) -> None:
+    from tinysoundfont.midi import NoteOff, NoteOn
+
+    shift = int(semitones)
+    if not shift:
+        return
+    for ev in events:
+        action = ev.action
+        if isinstance(action, (NoteOn, NoteOff)) and getattr(action, "key", None) is not None:
+            action.key = max(0, min(127, int(action.key) + shift))
 
 
 def _force_clarinet_program(events, clarinet_program: int) -> None:

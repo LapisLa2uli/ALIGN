@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import random
 from pathlib import Path
 
@@ -38,7 +39,7 @@ DURATION_UNITS = [1, 2, 3, 4, 6, 8]
 
 
 def clarinet_instrument() -> instrument.Instrument:
-    """Concert-pitch clarinet timbre (GM program 71), no Bb transposition."""
+    """Clarinet timbre (GM 71). Written MusicXML stays as written; audio MIDI is transposed separately."""
     inst = instrument.Clarinet()
     inst.instrumentName = "Clarinet"
     inst.midiProgram = 71
@@ -136,6 +137,7 @@ def load_score(path: Path, config: SynthConfig) -> stream.Score:
             part.append(el)
         score = stream.Score()
         score.insert(0, part)
+    _keep_melody_part(score)
     _ensure_clarinet(score)
     _chords_to_top_notes(score)
     _ensure_measures(score)
@@ -147,19 +149,180 @@ def load_score(path: Path, config: SynthConfig) -> stream.Score:
     return score
 
 
-def resolve_score_inputs(score_arg: Path | None) -> list[Path] | None:
+def resolve_score_inputs(
+    score_arg: Path | None, config: SynthConfig | None = None
+) -> list[Path] | None:
     """None means generate procedurally. Otherwise a list of MusicXML paths."""
+    if score_arg is None and config is not None:
+        score_arg = config.resolved_path("score_root")
     if score_arg is None:
         return None
+    score_arg = Path(score_arg)
     if score_arg.is_dir():
-        files = sorted(score_arg.glob("*.musicxml")) + sorted(score_arg.glob("*.xml"))
-        files += sorted(score_arg.glob("*.mxl"))
+        files: list[Path] = []
+        for pattern in ("*.musicxml", "*.xml", "*.mxl"):
+            files.extend(sorted(score_arg.rglob(pattern)))
+        files = sorted({p.resolve() for p in files})
         if not files:
             raise FileNotFoundError(f"No MusicXML files in {score_arg}")
         return files
     if not score_arg.exists():
         raise FileNotFoundError(score_arg)
     return [score_arg]
+
+
+def snippet_score(
+    score: stream.Score, rng: random.Random, config: SynthConfig
+) -> tuple[stream.Score, dict]:
+    """Cut a contiguous measure window that actually contains notes. Renumber from 1."""
+    if not score.parts:
+        raise ValueError("Score has no parts")
+    part = score.parts[0]
+    measures = list(part.getElementsByClass(stream.Measure))
+    if not measures:
+        raise ValueError("Score has no measures")
+    gen = config.generation
+    lo = max(1, int(gen.get("snippet_measures_min", gen.get("measures_min", 8))))
+    hi = max(lo, int(gen.get("snippet_measures_max", gen.get("measures_max", 16))))
+    min_notes = max(1, int(gen.get("snippet_min_notes", 12)))
+    start, length = _pick_note_window(measures, rng, lo, hi, min_notes)
+    chosen = [copy.deepcopy(m) for m in measures[start : start + length]]
+    _stamp_context(part, measures, start, chosen[0])
+    new_part = stream.Part(id=part.id)
+    new_part.partName = part.partName or "Clarinet"
+    for inst in part.recurse().getElementsByClass(instrument.Instrument):
+        new_part.insert(0, copy.deepcopy(inst))
+        break
+    orig_start = getattr(measures[start], "number", None)
+    orig_end = getattr(measures[start + length - 1], "number", None)
+    for i, measure in enumerate(chosen, start=1):
+        measure.number = i
+        new_part.append(measure)
+    out = stream.Score()
+    out.insert(0, new_part)
+    if score.metadata is not None:
+        out.insert(0, copy.deepcopy(score.metadata))
+    _ensure_clarinet(out)
+    _ensure_tempo(out, config)
+    return out, {
+        "snippet_start_measure": int(orig_start) if orig_start else start + 1,
+        "snippet_end_measure": int(orig_end) if orig_end else start + length,
+        "snippet_length": length,
+        "snippet_notes": sounding_note_count(out),
+    }
+
+
+def sounding_note_count(score_or_part) -> int:
+    return sum(
+        1
+        for n in score_or_part.recurse().getElementsByClass(note.Note)
+        if not n.duration.isGrace
+    )
+
+
+def _measure_sounding_notes(measure: stream.Measure) -> int:
+    return sum(
+        1
+        for n in measure.recurse().getElementsByClass(note.Note)
+        if not n.duration.isGrace
+    )
+
+
+def _pick_note_window(
+    measures: list[stream.Measure],
+    rng: random.Random,
+    lo: int,
+    hi: int,
+    min_notes: int,
+) -> tuple[int, int]:
+    n = len(measures)
+    length = min(n, rng.randint(lo, hi))
+    counts = [_measure_sounding_notes(m) for m in measures]
+    starts = list(range(0, max(1, n - length + 1)))
+    rng.shuffle(starts)
+    for start in starts:
+        if sum(counts[start : start + length]) >= min_notes:
+            return start, length
+    for alt_len in range(hi, lo - 1, -1):
+        alt_len = min(n, alt_len)
+        best = None
+        best_notes = -1
+        for start in range(0, n - alt_len + 1):
+            total = sum(counts[start : start + alt_len])
+            if total > best_notes:
+                best_notes = total
+                best = start
+        if best is not None and best_notes >= min_notes:
+            return best, alt_len
+    if max(counts, default=0) <= 0:
+        raise ValueError("Selected part has no sounding notes")
+    peak = max(range(n), key=lambda i: counts[i])
+    length = min(length, n)
+    start = max(0, min(n - length, peak - length // 2))
+    return start, length
+
+
+def _keep_melody_part(score: stream.Score) -> None:
+    parts = list(score.parts)
+    if len(parts) <= 1:
+        return
+    clarinet: list = []
+    for part in parts:
+        blob = " ".join(
+            str(x)
+            for x in (
+                part.partName,
+                part.id,
+                getattr(part, "partAbbreviation", None),
+            )
+            if x
+        ).lower()
+        inst_names = " ".join(
+            str(getattr(inst, "instrumentName", "") or "")
+            for inst in part.recurse().getElementsByClass(instrument.Instrument)
+        ).lower()
+        if "clar" in blob or "clar" in inst_names:
+            clarinet.append(part)
+    if clarinet:
+        best = max(clarinet, key=sounding_note_count)
+    else:
+        best = max(parts, key=sounding_note_count)
+    for part in parts:
+        if part is not best:
+            score.remove(part)
+
+
+def _stamp_context(
+    src_part: stream.Part,
+    measures: list[stream.Measure],
+    start: int,
+    dest: stream.Measure,
+) -> None:
+    ts = None
+    key_sig = None
+    clef_el = None
+    mark = None
+    for measure in measures[: start + 1]:
+        for el in measure:
+            if isinstance(el, meter.TimeSignature):
+                ts = el
+            elif isinstance(el, m21key.KeySignature) or isinstance(el, m21key.Key):
+                key_sig = el
+            elif isinstance(el, clef.Clef):
+                clef_el = el
+            elif isinstance(el, tempo.MetronomeMark) and el.number:
+                mark = el
+    for src, cls in (
+        (ts, meter.TimeSignature),
+        (key_sig, (m21key.KeySignature, m21key.Key)),
+        (clef_el, clef.Clef),
+        (mark, tempo.MetronomeMark),
+    ):
+        if src is None:
+            continue
+        if dest.getElementsByClass(cls):
+            continue
+        dest.insert(0, copy.deepcopy(src))
 
 
 def _ensure_clarinet(score: stream.Score) -> None:

@@ -67,6 +67,8 @@ LABELS_SCHEMA: dict[str, Any] = {
                             "end_measure": {"type": ["integer", "null"]},
                             "end_note_index": {"type": "integer"},
                             "pad_notes": {"type": "integer"},
+                            "core_start_note_index": {"type": ["integer", "null"]},
+                            "core_end_note_index": {"type": ["integer", "null"]},
                         },
                     },
                     "pitches": {
@@ -74,6 +76,10 @@ LABELS_SCHEMA: dict[str, Any] = {
                         "items": {"type": "integer"},
                     },
                     "note_ids": {
+                        "type": ["array", "null"],
+                        "items": {"type": "string"},
+                    },
+                    "core_note_ids": {
                         "type": ["array", "null"],
                         "items": {"type": "string"},
                     },

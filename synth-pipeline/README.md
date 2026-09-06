@@ -47,6 +47,22 @@ pip install -e ./synth-pipeline
 
 MIDI is written with **music21**. Audio is rendered with tinysoundfont and a **clarinet SoundFont** (`freepats` by default). See [`soundfonts/README.md`](soundfonts/README.md).
 
+Bb clarinet audio is **sounding pitch** (`render.sounding_transpose: -2`): written C sounds Bb. MusicXML and `labels.json` `pitches` stay **written**. New renders transpose only the MIDI sent to the SoundFont. Existing bundles can be shifted in place (duration preserved; `performance_audio_original` is left alone):
+
+```powershell
+synth-pipeline transpose-audio --root ./output --root ./1000dataexport --root ./output_2k_rawdata --semitones -2 --workers 8
+```
+
+Resume-safe: skips a bundle when `metadata.json` already has `sounding_transpose: -2` unless you pass `--force`.
+
+Prefer a SoundFont re-render (same MIDI and pitch-bends, no muffled time-stretch) when replacing existing WAVs:
+
+```powershell
+synth-pipeline regenerate-audio --root ./output --root ./1000dataexport --root ./output_2k_rawdata --semitones -2 --workers 8
+```
+
+That writes `audio_render: soundfont_rerender` and skips those bundles on the next run unless `--force`.
+
 ## Usage
 
 Procedural original scores (default):
@@ -66,8 +82,17 @@ synth-pipeline generate --count 20 --seed 42 --output ../DataCreate/samples/synt
 
 ```powershell
 cd "D:\stuff\Audio Evaluation\ALIGN\synth-pipeline"
-synth-pipeline generate --config config/multi_error_10k.yaml --count 10000 --workers 8 --soundfont freepats --seed 42 --output ./output_10k_multi
+synth-pipeline --config config/multi_error_10k.yaml generate --count 10000 --workers 8 --soundfont freepats --seed 42 --output ./output_10k_multi
 ```
+
+**2,000 clips from uploaded `RawData/Score` snippets** (same error settings; each sample is a random 8–16 measure window of a real score):
+
+```powershell
+cd "D:\stuff\Audio Evaluation\ALIGN\synth-pipeline"
+synth-pipeline --config config/rawdata_snippets_2k.yaml generate --count 2000 --workers 8 --soundfont freepats --seed 42 --output ./output_2k_rawdata
+```
+
+`--config` can also sit after `generate`. Omit `--score`: `paths.score_root` is `../RawData/Score`. Override with `--score` if the MusicXML live elsewhere.
 
 Corrupt existing MusicXML (still rendered as clarinet):
 

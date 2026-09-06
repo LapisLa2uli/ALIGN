@@ -3,8 +3,9 @@ schema_version: "1.2"
 paths:
   musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
   soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
-  output_root: ./output_10k_multi
+  output_root: ./output_2k_rawdata
   datacreate_config: ../DataCreate/config/default.yaml
+  score_root: ../RawData/Score
 
 audio:
   sample_rate: 22050
@@ -22,6 +23,10 @@ render:
   sounding_transpose: -2
 
 generation:
+  use_snippets: true
+  snippet_measures_min: 8
+  snippet_measures_max: 16
+  snippet_min_notes: 12
   measures_min: 8
   measures_max: 16
   meters:
@@ -48,9 +53,6 @@ generation:
   syncopation_prob: 0.12
 
 errors:
-  # Five planted types are equally likely. A clip has 1-8 of them.
-  # Repetition is usually attached after those errors; otherwise it can appear alone.
-  # That keeps the six types in roughly the same overall counts.
   weights:
     wrong_note: 1.0
     missed_note: 1.0

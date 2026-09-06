@@ -69,6 +69,24 @@ def main(argv: list[str] | None = None) -> None:
     conv.add_argument("--seed", type=int, default=365)
     conv.add_argument("--workers", type=int, default=8)
 
+    trans = sub.add_parser(
+        "transpose-audio",
+        help="Shift existing synth WAVs to sounding pitch (Bb clarinet: -2 semitones)",
+    )
+    trans.add_argument("--root", type=Path, action="append", default=None)
+    trans.add_argument("--semitones", type=int, default=-2)
+    trans.add_argument("--force", action="store_true")
+    trans.add_argument("--workers", type=int, default=8)
+
+    regen = sub.add_parser(
+        "regenerate-audio",
+        help="Re-render bundle WAVs from MIDI at sounding pitch (keeps pitch-bends)",
+    )
+    regen.add_argument("--root", type=Path, action="append", default=None)
+    regen.add_argument("--semitones", type=int, default=-2)
+    regen.add_argument("--force", action="store_true")
+    regen.add_argument("--workers", type=int, default=8)
+
     fonts = sub.add_parser("list-soundfonts", help="Show available clarinet SoundFonts")
     fetch = sub.add_parser("fetch-soundfonts", help="Download bundled clarinet SoundFonts")
     fetch.add_argument("--soundfont", choices=SOUNDFONT_IDS, action="append")
@@ -138,6 +156,44 @@ def main(argv: list[str] | None = None) -> None:
                 f"root={root} bundles={counts.get('n_bundles', 0)} "
                 f"converted={counts['converted']} skip_done={counts['skip_done']} "
                 f"skip_missing={counts['skip_missing']} empty={counts['empty']} "
+                f"failed={counts['failed']}"
+            )
+            failed += counts["failed"]
+        return 0 if failed == 0 else 2
+    if args.command == "transpose-audio":
+        from synthpipeline.transpose_audio import transpose_root
+
+        roots = args.root or [config.output_root()]
+        failed = 0
+        for root in roots:
+            counts = transpose_root(
+                Path(root),
+                semitones=int(args.semitones),
+                force=bool(args.force),
+                workers=int(args.workers),
+            )
+            print(
+                f"root={root} bundles={counts['n_bundles']} converted={counts['converted']} "
+                f"skip_done={counts['skip_done']} skip_missing={counts['skip_missing']} "
+                f"failed={counts['failed']} failed_mel={counts.get('failed_mel', 0)}"
+            )
+            failed += counts["failed"] + counts.get("failed_mel", 0)
+        return 0 if failed == 0 else 2
+    if args.command == "regenerate-audio":
+        from synthpipeline.regenerate_audio import regenerate_root
+
+        roots = args.root or [config.output_root()]
+        failed = 0
+        for root in roots:
+            counts = regenerate_root(
+                Path(root),
+                semitones=int(args.semitones),
+                force=bool(args.force),
+                workers=int(args.workers),
+            )
+            print(
+                f"root={root} bundles={counts['n_bundles']} converted={counts['converted']} "
+                f"skip_done={counts['skip_done']} skip_missing={counts['skip_missing']} "
                 f"failed={counts['failed']}"
             )
             failed += counts["failed"]

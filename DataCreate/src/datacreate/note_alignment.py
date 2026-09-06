@@ -29,6 +29,16 @@ def _pitch_label(el) -> str | None:
     return None
 
 
+def _midi_value(el) -> int | None:
+    if isinstance(el, note.Rest):
+        return None
+    if isinstance(el, note.Note):
+        return int(el.pitch.midi)
+    if isinstance(el, chord.Chord) and el.pitches:
+        return int(el.pitches[0].midi)
+    return None
+
+
 def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
     score = converter.parse(str(score_path))
     if not score.parts:
@@ -58,6 +68,7 @@ def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
                     "duration_ql": round(duration_ql, 4),
                     "is_rest": isinstance(el, note.Rest),
                     "pitch": _pitch_label(el),
+                    "midi": _midi_value(el),
                     "ref_start": round(ref_start, 4),
                     "ref_end": round(ref_end, 4),
                 }
@@ -355,3 +366,117 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
         summary["onset_refine"],
     )
     return {"events": aligned_events, "summary": summary}
+
+
+def _wav_duration_sec(path: Path) -> float:
+    import wave
+
+    with wave.open(str(path), "rb") as fh:
+        frames = fh.getnframes()
+        rate = fh.getframerate()
+    if rate <= 0:
+        return 0.0
+    return frames / float(rate)
+
+
+def _annotate_sounding_indices(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    sounding = 0
+    for ev in events:
+        if ev.get("is_rest"):
+            ev["sounding_index"] = None
+            ev["note_id"] = None
+        else:
+            ev["sounding_index"] = sounding
+            ev["note_id"] = f"note_{sounding:04d}"
+            sounding += 1
+    return events
+
+
+def _map_events_from_alignment(score_path: Path, align_path: Path) -> list[dict[str, Any]]:
+    data = np.load(align_path)
+    wp = data["warping_path"]
+    residuals = data["frame_residuals"]
+    hop = int(data["hop_length"])
+    sr = int(data["sample_rate"])
+    frame_to_sec = hop / sr
+    n_ref = int(data["ref_features"].shape[1])
+    return align_score_events(
+        score_path,
+        wp,
+        n_ref,
+        frame_to_sec,
+        residuals=residuals,
+        onset_refine=False,
+    )
+
+
+def _attach_performance_times(
+    events: list[dict[str, Any]],
+    sample_dir: Path,
+    score_path: Path,
+    logger: logging.Logger,
+) -> bool:
+    """Keep reference layout; add performance times for waveform labels when possible."""
+    align_path = sample_dir / "alignment.npz"
+    if align_path.exists():
+        try:
+            mapped = {
+                ev["id"]: ev for ev in _map_events_from_alignment(score_path, align_path)
+            }
+            for ev in events:
+                src = mapped.get(ev["id"])
+                if not src:
+                    continue
+                ev["perf_start"] = src.get("perf_start")
+                ev["perf_end"] = src.get("perf_end")
+            return True
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not map reference notes onto performance time: %s", exc)
+
+    perf_dur = 0.0
+    perf_path = sample_dir / "performance_audio.wav"
+    if perf_path.exists():
+        try:
+            perf_dur = _wav_duration_sec(perf_path)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Could not read performance duration: %s", exc)
+    ref_end = max((float(ev["ref_end"]) for ev in events), default=0.0)
+    scale = (perf_dur / ref_end) if ref_end > 1e-6 and perf_dur > 0 else 1.0
+    for ev in events:
+        start = float(ev["ref_start"]) * scale
+        end = float(ev["ref_end"]) * scale
+        ev["perf_start"] = round(start, 4)
+        ev["perf_end"] = round(max(end, start + 0.001), 4)
+    return False
+
+
+def build_score_events(
+    sample_dir: Path, logger: logging.Logger | None = None
+) -> dict[str, Any]:
+    """Reference-score notes/rests for the annotator highlight staff.
+
+    Layout times stay on the clean score (``ref_start`` / ``ref_end``).
+    Performance times are attached only so a staff selection can place a
+    waveform label.
+    """
+    from datacreate.sample_prep import ensure_full_score
+
+    logger = logger or logging.getLogger(__name__)
+    score_path = sample_dir / "verified_score.musicxml"
+    if not score_path.exists():
+        score_path = ensure_full_score(sample_dir)
+
+    events = _annotate_sounding_indices(_extract_score_events(score_path))
+    aligned = _attach_performance_times(events, sample_dir, score_path, logger)
+    logger.info(
+        "Built reference score events for %s: %d events (aligned=%s)",
+        sample_dir.name,
+        len(events),
+        aligned,
+    )
+    return {
+        "events": events,
+        "aligned": aligned,
+        "layout": "reference",
+        "summary": {"event_count": len(events), "aligned": aligned},
+    }

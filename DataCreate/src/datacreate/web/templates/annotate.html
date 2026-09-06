@@ -82,6 +82,7 @@
         <div class="waveform-wrap">
           <div id="waveform"></div>
         </div>
+        <div id="melodyStrip" class="melody-strip" title="Drag on the reference score to mark erred notes/rests"></div>
         <div id="ewmaStrip" class="ewma-strip hidden" aria-hidden="true" title="EWMA of performance/score duration ratio"></div>
       </div>
     </div>
@@ -97,14 +98,26 @@
 
   <aside id="inspector">
     <h2>Selected region</h2>
-    <p id="selectionInfo">Drag on waveform to add a label. Double-click a region to edit it.</p>
-    <label>Type
+    <p id="selectionInfo">Drag on the reference-score staff under the waveform to add a label. Double-click a region to edit it.</p>
+    <label>Error type
       <select id="labelType"></select>
     </label>
+    <p class="hint">Choose the error type before marking the score, or change it on a selected label. Use <strong>misc</strong> when none of the others fit.</p>
     <label>Severity (1-5)
       <input id="severity" type="range" min="1" max="5" value="3" />
     </label>
     <label>Comment <textarea id="comment" rows="3"></textarea></label>
+    <div id="melodyPanel" class="melody-panel">
+      <h3>Score melody</h3>
+      <p class="melody-legend">
+        <span class="swatch core"></span> erred notes/rests
+        <span class="swatch pad"></span> auto pad (2 notes/side)
+      </p>
+      <p id="melodyInfo" class="hint">Drag on the reference-score staff under the waveform to mark the erred notes/rests. That creates a label; two notes of padding are added automatically on each side.</p>
+      <div class="actions">
+        <button id="clearMelodyBtn" type="button">Clear score highlight</button>
+      </div>
+    </div>
     <div id="repetitionPanel" class="repetition-panel hidden">
       <h3>Original passage</h3>
       <p id="repetitionLinkInfo" class="hint">Required: link the earlier range this repetition restates.</p>
@@ -120,19 +133,20 @@
     </div>
     <h3>Hotkeys</h3>
     <ul class="hotkeys">
-      <li>1-9: assign label type to selected region(s)</li>
+      <li>1-9: assign label type to selected region(s); 0: misc</li>
       <li>Space: play/pause (works unless typing in a text field)</li>
       <li>Ctrl+Z: undo last label edit</li>
       <li>Ctrl+A: select all visible labels</li>
       <li>Delete / Backspace: delete selected region(s)</li>
       <li>Drag scrubber to move playhead</li>
-      <li>Drag waveform to add a label (works over unselected labels)</li>
+      <li>Drag on the reference-score staff under the waveform to add a label</li>
       <li>Double-click a region to select it; only selected labels can be moved</li>
       <li>Click overlapping labels: choose which one to select</li>
       <li>Click empty waveform to deselect</li>
       <li>Ctrl+click: toggle region in multi-select</li>
       <li>Ctrl+drag on waveform: select multiple regions</li>
       <li>Shift+right-drag: rectangle-select labels</li>
+      <li>Staff highlight: blue = erred core, green = auto pad (2 notes per side)</li>
       <li>Repetition labels: link the original passage before saving</li>
       <li>Ctrl+wheel on waveform: zoom; wheel: scroll horizontally</li>
     </ul>

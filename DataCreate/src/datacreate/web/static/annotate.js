@@ -27,6 +27,9 @@ let zoomFactor = 1;
 let fitPxPerSec = 1;
 let userZoomed = false;
 let noteAlignmentData = null;
+let scoreEventData = null;
+const MELODY_PAD_NOTES = 2;
+let melodyDrag = null;
 let labelsVisible = true;
 let staffStripHeight = 0;
 const SCRUBBER_HEIGHT = 28;
@@ -78,6 +81,10 @@ function snapshotRegions() {
         measure_number: r.data?.measure_number ?? null,
         note_id: r.data?.note_id ?? null,
         repeats_label_range: r.data?.repeats_label_range || null,
+        score_part: r.data?.score_part || null,
+        pitches: r.data?.pitches || null,
+        note_ids: r.data?.note_ids || null,
+        core_note_ids: r.data?.core_note_ids || null,
       }),
     }));
 }
@@ -142,6 +149,7 @@ function restoreRegionSnapshot(snap) {
   applyAllLabelsVisibility();
   hideOverlapPicker();
   refreshAllCaptions();
+  refreshMelodyUi();
   captureIdleSnapshot();
 }
 
@@ -163,6 +171,7 @@ const TYPE_COLORS = {
   bad_timbre: "rgba(0,170,150,0.4)",
   squeak: "rgba(255,50,170,0.45)",
   sliding: "rgba(255,130,70,0.45)",
+  misc: "rgba(140,140,160,0.45)",
 };
 
 const TYPE_LABELS = {
@@ -178,10 +187,23 @@ const TYPE_LABELS = {
   bad_timbre: "Bad timbre (poor tone quality)",
   squeak: "Squeak",
   sliding: "Sliding (rolling over a note too fast)",
+  misc: "Misc (other error)",
 };
 
 function typeDisplayName(type) {
   return (TYPE_LABELS[type] || type || "unlabeled").split(" (")[0];
+}
+
+function labelOverrides(value) {
+  if (!value || typeof value !== "object") return {};
+  if (typeof Event !== "undefined" && value instanceof Event) return {};
+  return value;
+}
+
+function currentLabelType() {
+  const raw = document.getElementById("labelType")?.value;
+  if (raw && (!taxonomy.length || taxonomy.includes(raw))) return raw;
+  return taxonomy[0] || "misc";
 }
 
 function getRepetitionRegionsSorted() {
@@ -386,16 +408,19 @@ function getDragSelectionColor() {
   if (repetitionLinkMode === "draw") {
     return "rgba(200, 200, 210, 0.35)";
   }
-  const type = document.getElementById("labelType")?.value;
+  const type = currentLabelType();
   return TYPE_COLORS[type] || "rgba(45,108,223,0.35)";
 }
 
 function refreshDragSelection() {
-  if (!regionsPlugin?.enableDragSelection) return;
+  if (!regionsPlugin) return;
   if (typeof regionsPlugin.disableDragSelection === "function") {
     regionsPlugin.disableDragSelection();
   }
-  regionsPlugin.enableDragSelection({ color: getDragSelectionColor() });
+  // Labels are drawn on the staff. Waveform drag is only for a repetition's original range.
+  if (repetitionLinkMode === "draw" && regionsPlugin.enableDragSelection) {
+    regionsPlugin.enableDragSelection({ color: getDragSelectionColor() });
+  }
 }
 
 function generateLabelId() {
@@ -691,6 +716,11 @@ function regionDataToLabel(region) {
       end_time: d.repeats_label_range.end_time,
     };
   }
+  if (d.score_part) label.score_part = d.score_part;
+  if (d.pitches?.length) label.pitches = d.pitches;
+  if (d.note_ids?.length) label.note_ids = d.note_ids;
+  if (d.core_note_ids?.length) label.core_note_ids = d.core_note_ids;
+  if (d.extra_copies != null) label.extra_copies = d.extra_copies;
   return label;
 }
 
@@ -756,12 +786,14 @@ function updateMultiSelectionInspector() {
   if (n === 0) {
     resetSelectionInfo();
     updateRepetitionPanel(null);
+    refreshMelodyUi();
     return;
   }
   if (n > 1) {
     document.getElementById("selectionInfo").textContent =
       `${n} regions selected. Delete or assign type (1–8) applies to all.`;
     updateRepetitionPanel(null);
+    refreshMelodyUi();
     return;
   }
   const region = selectedRegions[0];
@@ -771,6 +803,7 @@ function updateMultiSelectionInspector() {
   if (d.severity) document.getElementById("severity").value = d.severity;
   document.getElementById("comment").value = d.comment || "";
   updateRepetitionPanel(region);
+  refreshMelodyUi();
 }
 
 function selectRegion(region) {
@@ -824,7 +857,7 @@ function selectAllRegions() {
 
 function resetSelectionInfo() {
   document.getElementById("selectionInfo").textContent =
-    "Drag on waveform to add a label (including over unselected labels). Double-click a region to select it before moving.";
+    "Drag on the reference-score staff under the waveform to add a label. Double-click a region to select it before moving.";
 }
 
 function getScrollContainerWidth() {
@@ -948,7 +981,13 @@ function syncAlignmentStackWidth(pxPerSec) {
     staff.style.width = `${width}px`;
     staff.style.minWidth = `${width}px`;
   }
+  const melody = document.getElementById("melodyStrip");
+  if (melody) {
+    melody.style.width = `${width}px`;
+    melody.style.minWidth = `${width}px`;
+  }
   updateOverlayTop();
+  renderMelodyStrip();
 }
 
 function updateOverlayTop() {
@@ -1600,18 +1639,59 @@ function appendRestGlyph(svgParts, cx, staffBottomY, lineGap, ql) {
   appendDurationDots(svgParts, cx + 4, mid, dots);
 }
 
-function renderStaffStrip(events, pxPerSec) {
-  const container = document.getElementById("staffStrip");
-  const width = getAlignmentContentWidth(pxPerSec);
+function eventMidi(ev) {
+  if (ev?.midi != null) return ev.midi;
+  return pitchToMidi(ev?.pitch);
+}
+
+function soundingNoteId(ev) {
+  if (ev?.note_id) return ev.note_id;
+  if (ev?.sounding_index == null) return ev?.id;
+  return `note_${String(ev.sounding_index).padStart(4, "0")}`;
+}
+
+function eventRefStart(ev) {
+  return Number(ev?.ref_start ?? ev?.perf_start) || 0;
+}
+
+function eventRefEnd(ev) {
+  if (ev?.ref_end != null) return Number(ev.ref_end);
+  if (ev?.perf_end != null) return Number(ev.perf_end);
+  return eventRefStart(ev) + 0.05;
+}
+
+function eventPerfStart(ev) {
+  if (ev?.perf_start != null) return Number(ev.perf_start);
+  return eventRefStart(ev);
+}
+
+function eventPerfEnd(ev) {
+  if (ev?.perf_end != null) return Number(ev.perf_end);
+  return eventRefEnd(ev);
+}
+
+function referenceScoreDuration(events = getScoreEvents()) {
+  return events.reduce((max, ev) => Math.max(max, eventRefEnd(ev)), 0);
+}
+
+function melodyPxPerSec(width = getAlignmentContentWidth()) {
+  const dur = referenceScoreDuration();
+  return dur > 1e-6 ? width / dur : getEffectivePxPerSec();
+}
+
+function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf } = {}) {
+  const startAt = startOf || ((ev) => ev.perf_start || 0);
   const lineGap = 9;
   const padding = 10;
   const ledgerHalfWidth = 14;
+  const staffBottomStep = 0;
+  const staffTopStep = 4;
 
   let minStep = 0;
   let maxStep = 4;
   events.forEach((ev) => {
     if (ev.is_rest) return;
-    const midi = pitchToMidi(ev.pitch);
+    const midi = eventMidi(ev);
     if (midi == null) return;
     const steps = midiToStaffSteps(midi);
     minStep = Math.min(minStep, Math.floor(steps));
@@ -1620,17 +1700,13 @@ function renderStaffStrip(events, pxPerSec) {
   minStep = Math.min(minStep, -1);
   maxStep = Math.max(maxStep, 5);
 
-  const staffBottomStep = 0;
-  const staffTopStep = 4;
   const height = (maxStep - minStep) * lineGap + padding * 2;
   const staffBottomY = padding + (maxStep - staffBottomStep) * lineGap;
   const staffMidY = staffBottomY - 2 * lineGap;
-
   const svgParts = [
     `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`,
-    `<rect width="100%" height="100%" fill="#f8f8f8"/>`,
+    `<rect width="100%" height="100%" fill="${fill}"/>`,
   ];
-
   for (let s = 0; s <= 4; s += 1) {
     const y = staffBottomY - s * lineGap;
     svgParts.push(
@@ -1659,32 +1735,409 @@ function renderStaffStrip(events, pxPerSec) {
   };
 
   events.forEach((ev) => {
-    // Place glyphs on the onset so staff lines match waveform / boundary x.
-    const x = ev.perf_start * pxPerSec;
+    const x = startAt(ev) * pxPerSec;
     const ql = Number(ev.duration_ql) || 1;
     if (ev.is_rest) {
       appendRestGlyph(svgParts, x, staffBottomY, lineGap, ql);
     } else {
-      const midi = pitchToMidi(ev.pitch);
-      const cy = midi != null
-        ? midiToStaffY(midi, staffBottomY, lineGap)
-        : staffMidY;
+      const midi = eventMidi(ev);
+      const cy = midi != null ? midiToStaffY(midi, staffBottomY, lineGap) : staffMidY;
       const noteSteps = midi != null ? midiToStaffSteps(midi) : null;
-      if (noteSteps != null) {
-        appendLedgerLines(noteSteps, x);
-      }
-      const stemUp = cy >= staffMidY;
-      appendNoteGlyph(svgParts, x, cy, ql, stemUp);
+      if (noteSteps != null) appendLedgerLines(noteSteps, x);
+      appendNoteGlyph(svgParts, x, cy, ql, cy >= staffMidY);
     }
   });
-
   svgParts.push("</svg>");
-  container.innerHTML = svgParts.join("");
+  return { html: svgParts.join(""), height };
+}
+
+function renderStaffStrip(events, pxPerSec) {
+  const container = document.getElementById("staffStrip");
+  const width = getAlignmentContentWidth(pxPerSec);
+  const staff = buildStaffSvg(events, pxPerSec, width, { fill: "#f8f8f8" });
+  container.innerHTML = staff.html;
   container.style.width = `${width}px`;
   container.style.minWidth = `${width}px`;
-  container.style.height = `${height}px`;
-  staffStripHeight = height;
+  container.style.height = `${staff.height}px`;
+  staffStripHeight = staff.height;
   updateOverlayTop();
+}
+
+function getScoreEvents() {
+  return scoreEventData?.events || [];
+}
+
+function melodyCoreRange(events, coreIds) {
+  if (!events.length || !coreIds?.length) return null;
+  const wanted = new Set(coreIds);
+  const idxs = [];
+  events.forEach((ev, i) => {
+    if (wanted.has(ev.id)) idxs.push(i);
+  });
+  if (!idxs.length) return null;
+  return { lo: Math.min(...idxs), hi: Math.max(...idxs) };
+}
+
+function expandMelodyPad(events, coreLo, coreHi, padNotes = MELODY_PAD_NOTES) {
+  let lo = coreLo;
+  let notes = 0;
+  for (let i = coreLo - 1; i >= 0 && notes < padNotes; i -= 1) {
+    lo = i;
+    if (!events[i].is_rest) notes += 1;
+  }
+  let hi = coreHi;
+  notes = 0;
+  for (let i = coreHi + 1; i < events.length && notes < padNotes; i += 1) {
+    hi = i;
+    if (!events[i].is_rest) notes += 1;
+  }
+  return { lo, hi };
+}
+
+function melodyFieldsFromCore(events, coreIds) {
+  const core = melodyCoreRange(events, coreIds);
+  if (!core) return null;
+  const pad = expandMelodyPad(events, core.lo, core.hi);
+  const span = events.slice(pad.lo, pad.hi + 1);
+  const sounding = span.filter((ev) => !ev.is_rest && ev.sounding_index != null);
+  const coreSounding = events
+    .slice(core.lo, core.hi + 1)
+    .filter((ev) => !ev.is_rest && ev.sounding_index != null);
+  const fields = {
+    core_note_ids: events.slice(core.lo, core.hi + 1).map((ev) => ev.id),
+    score_part: {
+      start_note_index: sounding.length ? sounding[0].sounding_index : pad.lo,
+      end_note_index: sounding.length
+        ? sounding[sounding.length - 1].sounding_index
+        : pad.hi,
+      pad_notes: MELODY_PAD_NOTES,
+      start_measure: span[0]?.measure ?? null,
+      end_measure: span[span.length - 1]?.measure ?? null,
+      core_start_note_index: coreSounding.length
+        ? coreSounding[0].sounding_index
+        : null,
+      core_end_note_index: coreSounding.length
+        ? coreSounding[coreSounding.length - 1].sounding_index
+        : null,
+    },
+    pitches: sounding.map((ev) => eventMidi(ev)).filter((p) => p != null),
+    note_ids: sounding.map((ev) => soundingNoteId(ev)),
+    measure_number: events[core.lo]?.measure ?? null,
+  };
+  return fields;
+}
+
+function applyMelodyToRegion(region, coreIds, { undo = true } = {}) {
+  if (!region || isTrimRegion(region) || isLinkOverlay(region)) return;
+  const events = getScoreEvents();
+  const fields = melodyFieldsFromCore(events, coreIds);
+  if (undo) pushUndoFromIdle();
+  if (!fields) {
+    delete region.data.score_part;
+    delete region.data.pitches;
+    delete region.data.note_ids;
+    delete region.data.core_note_ids;
+  } else {
+    region.data = { ...(region.data || {}), ...fields };
+  }
+  if (!undoSuspended) captureIdleSnapshot();
+  const container = document.getElementById("melodyStrip");
+  if (container?.querySelector("svg") && events.length) {
+    paintMelodyHits(container, events);
+    updateMelodyPanel();
+  } else {
+    refreshMelodyUi();
+  }
+}
+
+function coreIdsFromStoredLabel(label, events = getScoreEvents()) {
+  if (label?.core_note_ids?.length) return label.core_note_ids;
+  const part = label?.score_part;
+  if (!part || !events.length) return [];
+  if (part.core_start_note_index != null && part.core_end_note_index != null) {
+    return events
+      .filter((ev) => (
+        ev.sounding_index != null
+        && ev.sounding_index >= part.core_start_note_index
+        && ev.sounding_index <= part.core_end_note_index
+      ))
+      .map((ev) => ev.id);
+  }
+  if (part.start_note_index == null || part.end_note_index == null) return [];
+  const pad = part.pad_notes ?? MELODY_PAD_NOTES;
+  const sounding = events.filter((ev) => ev.sounding_index != null);
+  const i0 = sounding.findIndex((ev) => ev.sounding_index === part.start_note_index);
+  const i1 = sounding.findIndex((ev) => ev.sounding_index === part.end_note_index);
+  if (i0 < 0 || i1 < 0) return [];
+  const core0 = Math.min(i1, i0 + pad);
+  const core1 = Math.max(i0, i1 - pad);
+  if (core1 < core0) return sounding.slice(i0, i1 + 1).map((ev) => ev.id);
+  return sounding.slice(core0, core1 + 1).map((ev) => ev.id);
+}
+
+function selectedMelodyCoreIds() {
+  if (!selectedRegion) return [];
+  const stored = selectedRegion.data?.core_note_ids;
+  if (stored?.length) return stored;
+  return coreIdsFromStoredLabel(selectedRegion.data);
+}
+
+function updateMelodyPanel(region = selectedRegion) {
+  const info = document.getElementById("melodyInfo");
+  const clearBtn = document.getElementById("clearMelodyBtn");
+  if (!info) return;
+  const editable = !!(region && !isTrimRegion(region) && !isLinkOverlay(region));
+  if (clearBtn) clearBtn.disabled = !editable || !(region.data?.core_note_ids?.length);
+  if (!editable) {
+    info.textContent =
+      "Drag on the reference-score staff under the waveform to mark the erred notes/rests. That creates a label; two notes of padding are added automatically on each side.";
+    return;
+  }
+  const events = getScoreEvents();
+  const core = melodyCoreRange(events, region.data?.core_note_ids || []);
+  if (!core) {
+    info.textContent =
+      "Drag on the reference score to mark the erred notes/rests. Padding (2 notes each side) is added automatically.";
+    return;
+  }
+  const pad = expandMelodyPad(events, core.lo, core.hi);
+  const coreLabel = events
+    .slice(core.lo, core.hi + 1)
+    .map((ev) => (ev.is_rest ? "rest" : (ev.pitch || "?")))
+    .join(" · ");
+  const startM = events[pad.lo]?.measure;
+  const endM = events[pad.hi]?.measure;
+  const meas = startM != null && endM != null
+    ? `m${startM}${endM !== startM ? `–${endM}` : ""}`
+    : "";
+  info.textContent =
+    `Core: ${coreLabel}. Saved melody ${meas} with ${MELODY_PAD_NOTES} notes of pad on each side.`;
+}
+
+function refreshMelodyUi() {
+  renderMelodyStrip();
+  updateMelodyPanel();
+}
+
+function paintMelodyHits(container, events) {
+  const coreIds = new Set(selectedMelodyCoreIds());
+  const core = melodyCoreRange(events, [...coreIds]);
+  const pad = core ? expandMelodyPad(events, core.lo, core.hi) : null;
+  container.querySelectorAll(".melody-hit").forEach((hit) => {
+    const i = parseInt(hit.dataset.index, 10);
+    if (Number.isNaN(i) || !events[i]) return;
+    const inCore = !!(core && i >= core.lo && i <= core.hi);
+    const inPad = !!(pad && i >= pad.lo && i <= pad.hi && !inCore);
+    hit.classList.toggle("core", inCore);
+    hit.classList.toggle("pad", inPad);
+  });
+}
+
+function renderMelodyStrip() {
+  const container = document.getElementById("melodyStrip");
+  if (!container) return;
+  const events = getScoreEvents();
+  const width = getAlignmentContentWidth();
+  const pxPerSec = melodyPxPerSec(width);
+  const canDrag = events.length > 0;
+  container.style.width = `${width}px`;
+  container.style.minWidth = `${width}px`;
+  container.classList.toggle("armed", canDrag);
+  container.classList.toggle("idle", !canDrag);
+  if (!events.length) {
+    container.dataset.renderKey = "";
+    container.innerHTML =
+      `<p class="melody-empty">No reference score snippet loaded for this sample.</p>`;
+    return;
+  }
+
+  const lastRef = events.length ? eventRefEnd(events[events.length - 1]) : 0;
+  const renderKey = `ref:${events.length}:${width}:${pxPerSec}:${events[0]?.id}:${lastRef}`;
+  if (container.dataset.renderKey === renderKey && container.querySelector("svg")) {
+    paintMelodyHits(container, events);
+    return;
+  }
+
+  const staff = buildStaffSvg(events, pxPerSec, width, {
+    fill: "#f4f1ea",
+    startOf: eventRefStart,
+  });
+  container.innerHTML = staff.html;
+  container.style.height = `${staff.height}px`;
+  container.dataset.renderKey = renderKey;
+  events.forEach((ev, i) => {
+    const hit = document.createElement("button");
+    hit.type = "button";
+    hit.className = "melody-hit";
+    hit.dataset.index = String(i);
+    const x0 = eventRefStart(ev) * pxPerSec;
+    const x1 = Math.max(x0 + 18, eventRefEnd(ev) * pxPerSec);
+    hit.style.left = `${x0 - 4}px`;
+    hit.style.width = `${Math.max(18, x1 - x0 + 8)}px`;
+    hit.title = `${ev.is_rest ? "Rest" : (ev.pitch || "note")}${ev.measure != null ? ` · m${ev.measure}` : ""}`;
+    container.appendChild(hit);
+  });
+  paintMelodyHits(container, events);
+}
+
+function melodyIndexFromTarget(target) {
+  const hit = target?.closest?.(".melody-hit");
+  if (!hit) return null;
+  const idx = parseInt(hit.dataset.index, 10);
+  return Number.isNaN(idx) ? null : idx;
+}
+
+function melodyIndexFromClientX(clientX) {
+  const events = getScoreEvents();
+  if (!events.length) return null;
+  const px = melodyPxPerSec();
+  if (!(px > 0)) return null;
+  const t = contentXFromClientX(clientX) / px;
+  let best = 0;
+  let bestDist = Infinity;
+  events.forEach((ev, i) => {
+    const t0 = eventRefStart(ev);
+    const t1 = eventRefEnd(ev);
+    if (t >= t0 && t <= t1) {
+      best = i;
+      bestDist = 0;
+      return;
+    }
+    const dist = Math.min(Math.abs(t - t0), Math.abs(t - t1));
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = i;
+    }
+  });
+  return best;
+}
+
+function timesFromEventRange(events, lo, hi) {
+  const slice = events.slice(lo, hi + 1);
+  let start = Infinity;
+  let end = -Infinity;
+  slice.forEach((ev) => {
+    const t0 = eventPerfStart(ev);
+    const t1 = eventPerfEnd(ev);
+    start = Math.min(start, t0);
+    end = Math.max(end, t1);
+  });
+  if (!Number.isFinite(start)) start = 0;
+  if (!Number.isFinite(end) || end <= start) end = start + 0.05;
+  const duration = wavesurfer?.getDuration?.() || end;
+  return {
+    start: Math.max(0, start),
+    end: Math.min(duration, Math.max(end, start + 0.05)),
+  };
+}
+
+function setRegionTimes(region, start, end) {
+  if (!region) return;
+  ignoreRegionUpdateUndo = true;
+  if (typeof region.setOptions === "function") {
+    region.setOptions({ start, end });
+  }
+  region.start = start;
+  region.end = end;
+  if (region.data) {
+    region.data.start_time = start;
+    region.data.end_time = end;
+  }
+}
+
+function createMelodyLabelRegion(times) {
+  const type = currentLabelType();
+  const region = addRegion(
+    {
+      id: generateLabelId(),
+      source: "manual",
+      start_time: times.start,
+      end_time: times.end,
+      type,
+      severity: parseInt(document.getElementById("severity")?.value, 10) || 3,
+      comment: null,
+    },
+    false,
+  );
+  selectRegion(region);
+  return region;
+}
+
+function commitMelodyCoreRange(lo, hi, { undo = false } = {}) {
+  const events = getScoreEvents();
+  if (!events.length) return;
+  const a = Math.max(0, Math.min(lo, hi));
+  const b = Math.min(events.length - 1, Math.max(lo, hi));
+  const ids = events.slice(a, b + 1).map((ev) => ev.id);
+  const times = timesFromEventRange(events, a, b);
+  if (undo) pushUndoFromIdle();
+  let region = melodyDrag?.region || null;
+  if (!region) {
+    region = createMelodyLabelRegion(times);
+    if (melodyDrag) melodyDrag.region = region;
+  }
+  if (!region) return;
+  setRegionTimes(region, times.start, times.end);
+  applyMelodyToRegion(region, ids, { undo: false });
+  if (isRegionSelected(region) && selectedRegions.length === 1) {
+    updateSelectionInfo(region);
+    applyRegionCaption(region);
+  }
+}
+
+function setupMelodyStrip() {
+  const container = document.getElementById("melodyStrip");
+  const clearBtn = document.getElementById("clearMelodyBtn");
+  if (clearBtn) {
+    clearBtn.onclick = () => {
+      if (!selectedRegion || isTrimRegion(selectedRegion) || isLinkOverlay(selectedRegion)) return;
+      applyMelodyToRegion(selectedRegion, []);
+    };
+  }
+  if (!container) return;
+  container.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    if (!getScoreEvents().length) return;
+    const idx = melodyIndexFromClientX(e.clientX) ?? melodyIndexFromTarget(e.target);
+    if (idx == null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    melodyDrag = { start: idx, end: idx, region: null };
+    container.setPointerCapture?.(e.pointerId);
+    commitMelodyCoreRange(idx, idx, { undo: true });
+  });
+  container.addEventListener("pointermove", (e) => {
+    if (!melodyDrag) return;
+    const idx = melodyIndexFromClientX(e.clientX);
+    if (idx == null || idx === melodyDrag.end) return;
+    melodyDrag.end = idx;
+    commitMelodyCoreRange(melodyDrag.start, melodyDrag.end, { undo: false });
+  });
+  const endDrag = () => {
+    melodyDrag = null;
+  };
+  container.addEventListener("pointerup", endDrag);
+  container.addEventListener("pointercancel", endDrag);
+}
+
+async function loadScoreEvents() {
+  if (!currentSample) return;
+  try {
+    const res = await fetch(`/api/samples/${currentSample}/score-events`);
+    if (!res.ok) throw new Error(await res.text());
+    scoreEventData = await res.json();
+  } catch {
+    scoreEventData = null;
+  }
+  if (regionsPlugin && scoreEventData?.events?.length) {
+    regionsPlugin.getRegions().forEach((region) => {
+      if (isTrimRegion(region) || isLinkOverlay(region)) return;
+      if (region.data?.core_note_ids?.length) return;
+      const inferred = coreIdsFromStoredLabel(region.data);
+      if (inferred.length) region.data.core_note_ids = inferred;
+    });
+  }
+  refreshMelodyUi();
 }
 
 function mergeConsecutiveRests(events, eps = 1e-3) {
@@ -1949,6 +2402,7 @@ async function init() {
   setupPrepControls();
   setupBatchControls();
   setupRepetitionControls();
+  setupMelodyStrip();
   setupViewControls();
   setupWaveformWheel();
   setupMarqueeSelect();
@@ -2102,7 +2556,7 @@ async function init() {
     wavesurfer.setPlaybackRate(parseFloat(e.target.value));
   };
   document.getElementById("saveBtn").onclick = saveLabels;
-  document.getElementById("applyLabelBtn").onclick = applyLabelToSelection;
+  document.getElementById("applyLabelBtn").onclick = () => applyLabelToSelection();
   document.getElementById("deleteRegionBtn").onclick = deleteSelectedRegion;
 
   document.addEventListener("keydown", onKeyDown, true);
@@ -2334,6 +2788,7 @@ function onWaveformReady() {
   applyAllLabelsVisibility();
   refreshAllCaptions();
   captureIdleSnapshot();
+  loadScoreEvents();
   if (viewMode === "alignment") {
     loadNoteAlignment().then(() => renderAlignmentOverlays());
   }
@@ -2465,6 +2920,7 @@ async function loadSample(sampleId) {
   }));
 
   noteAlignmentData = null;
+  scoreEventData = null;
   userZoomed = false;
   clearAlignmentOverlays();
 
@@ -2544,6 +3000,10 @@ function addRegion(label, isCandidate) {
   };
   region.setOptions({ color });
   syncRegionVisual(region, { selected: isRegionSelected(region) });
+  if (!region.data.core_note_ids?.length) {
+    const inferred = coreIdsFromStoredLabel(region.data);
+    if (inferred.length) region.data.core_note_ids = inferred;
+  }
   if (label.type === "repetition" && label.repeats_label_range) {
     syncRepetitionLinkOverlay(region);
   }
@@ -2560,7 +3020,10 @@ function updateSelectionInfo(region) {
 
 function applyLabelToRegion(region, overrides = {}) {
   if (!region || isTrimRegion(region) || isLinkOverlay(region)) return;
-  const type = overrides.type || document.getElementById("labelType").value;
+  overrides = labelOverrides(overrides);
+  const type = (overrides.type && (!taxonomy.length || taxonomy.includes(overrides.type)))
+    ? overrides.type
+    : currentLabelType();
   const severity =
     overrides.severity ?? parseInt(document.getElementById("severity").value, 10);
   const comment = "comment" in overrides
@@ -2598,10 +3061,13 @@ function applyLabelToRegion(region, overrides = {}) {
 }
 
 function applyLabelToSelection(overrides = {}) {
+  overrides = labelOverrides(overrides);
   const targets = selectedRegions.filter((r) => !isTrimRegion(r) && !isLinkOverlay(r));
   if (!targets.length) return;
   if (!overrides.skipUndo) pushUndoFromIdle();
-  const type = overrides.type || document.getElementById("labelType").value;
+  const type = (overrides.type && (!taxonomy.length || taxonomy.includes(overrides.type)))
+    ? overrides.type
+    : currentLabelType();
   const severity =
     overrides.severity ?? parseInt(document.getElementById("severity").value, 10);
   const comment = "comment" in overrides
@@ -2738,6 +3204,15 @@ async function saveLabels() {
     alert(
       `${missingRepetitionLink.length} repetition label(s) need an original passage link. ` +
       "Select each repetition, then use Link to region or Draw original range.",
+    );
+    return;
+  }
+  const allowedTypes = new Set([...taxonomy, "wrong_pitch"]);
+  const invalidType = labels.filter((label) => label.type && !allowedTypes.has(label.type));
+  if (invalidType.length) {
+    alert(
+      `${invalidType.length} label(s) have an unknown type. ` +
+      "Select each one and choose an error type in the inspector.",
     );
     return;
   }
@@ -2964,12 +3439,21 @@ function onKeyDown(e) {
     return;
   }
 
+  if (e.key === "0") {
+    const misc = taxonomy.includes("misc") ? "misc" : null;
+    if (misc) {
+      document.getElementById("labelType").value = misc;
+      refreshDragSelection();
+      if (selectedRegions.length) applyLabelToSelection({ type: misc });
+    }
+    return;
+  }
   const idx = parseInt(e.key, 10);
   if (idx >= 1 && idx <= taxonomy.length) {
     document.getElementById("labelType").value = taxonomy[idx - 1];
     refreshDragSelection();
     if (selectedRegions.length) {
-      applyLabelToSelection();
+      applyLabelToSelection({ type: taxonomy[idx - 1] });
     }
   }
   if (!selectedRegion || isTrimRegion(selectedRegion)) return;

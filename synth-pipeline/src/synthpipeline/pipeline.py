@@ -13,9 +13,16 @@ from pathlib import Path
 from music21 import stream
 
 from synthpipeline.config import SynthConfig
-from synthpipeline.errors import inject_error
+from synthpipeline.errors import InjectionError, inject_error
 from synthpipeline.render import render_score_as_clarinet
-from synthpipeline.scoregen import generate_score, load_score, resolve_score_inputs, write_musicxml
+from synthpipeline.scoregen import (
+    generate_score,
+    load_score,
+    resolve_score_inputs,
+    snippet_score,
+    sounding_note_count,
+    write_musicxml,
+)
 from synthpipeline.timing import refine_labels
 
 
@@ -49,17 +56,41 @@ def generate_samples(
     root.mkdir(parents=True, exist_ok=True)
     backend = (midi_backend or config.midi_backend()).lower()
 
-    score_paths = resolve_score_inputs(score_arg)
+    score_paths = resolve_score_inputs(score_arg, config)
     results: list[SampleResult] = []
     for i in range(count):
         rng = random.Random(seed + i)
-        if score_paths is None:
-            source = "gen"
-            clean = generate_score(rng, config)
-        else:
-            path = score_paths[i % len(score_paths)]
-            source = path.stem
-            clean = load_score(path, config)
+        snippet_meta: dict = {}
+        source = "gen"
+        clean = None
+        last_prep_error: Exception | None = None
+        for extra in range(24):
+            try:
+                if score_paths is None:
+                    source = "gen"
+                    clean = generate_score(rng, config)
+                else:
+                    path = score_paths[(i + extra) % len(score_paths)]
+                    source = path.stem
+                    clean = load_score(path, config)
+                    if bool(config.generation.get("use_snippets", False)):
+                        clean, snippet_meta = snippet_score(clean, rng, config)
+                        snippet_meta["source_score"] = str(path)
+                if sounding_note_count(clean) > 0:
+                    break
+                last_prep_error = InjectionError("Score has no notes")
+                clean = None
+            except Exception as exc:
+                last_prep_error = exc
+                clean = None
+            rng = random.Random(seed + i + 1009 * (extra + 1))
+        if clean is None:
+            log.warning(
+                "Skipping sample %s: could not find a note-bearing snippet (%s)",
+                f"synth_{source}_{seed + i:04d}",
+                last_prep_error,
+            )
+            continue
         sample_id = f"synth_{source}_{seed + i:04d}"
         sample_dir = root / sample_id
         sample_dir.mkdir(parents=True, exist_ok=True)
@@ -81,6 +112,7 @@ def generate_samples(
                     "soundfont": preset.id,
                     "soundfont_path": str(preset.path),
                     "clarinet_program": preset.program,
+                    **snippet_meta,
                 },
                 midi_backend=backend,
             )
@@ -93,6 +125,10 @@ def generate_samples(
             )
             results.append(result)
             log.info("Created %s in %.2fs", sample_dir, elapsed)
+        except InjectionError as exc:
+            sample_log.exception("Failed to build sample %s", sample_id)
+            log.warning("Skipping sample %s: %s", sample_id, exc)
+            continue
         except Exception:
             sample_log.exception("Failed to build sample %s", sample_id)
             log.exception("Failed to build sample %s", sample_id)
@@ -252,6 +288,7 @@ def _build_sample(
 
         check_musescore_version(dc_config, logger)
     clarinet_program = config.clarinet_program()
+    sounding = int(config.render.get("sounding_transpose", -2))
     ref_wav = sample_dir / "reference_audio.wav"
     perf_wav = sample_dir / "performance_audio.wav"
     render_score_as_clarinet(
@@ -262,6 +299,7 @@ def _build_sample(
         clarinet_program,
         midi_backend=midi_backend,
         score=clean,
+        sounding_transpose=sounding,
     )
     render_score_as_clarinet(
         dc_config,
@@ -273,6 +311,7 @@ def _build_sample(
         score=result.score,
         pitch_bends=result.extra.get("pitch_bends"),
         bpm=result.bpm,
+        sounding_transpose=sounding,
     )
     ingest_performance(perf_wav, sample_dir, dc_config, logger)
 
@@ -311,6 +350,7 @@ def _build_sample(
             "repeated": result.repeated,
             "extra_copies": int((result.extra or {}).get("extra_copies") or 0),
             "melody_pad_notes": pad_notes,
+            "sounding_transpose": sounding,
             **extra_meta,
         },
         logger,

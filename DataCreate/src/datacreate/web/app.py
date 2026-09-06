@@ -15,7 +15,7 @@ from pydantic import BaseModel
 from datacreate.batch_audio import list_available_audio_ids, run_batch_range
 from datacreate.config import PipelineConfig
 from datacreate.models import LabelsDocument
-from datacreate.note_alignment import build_note_alignment
+from datacreate.note_alignment import build_note_alignment, build_score_events
 from datacreate.sample_prep import (
     apply_performance_trim,
     apply_score_segment,
@@ -277,6 +277,19 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         except (ValueError, FileNotFoundError, RuntimeError) as exc:
             raise HTTPException(400, str(exc)) from exc
         return {"status": "ok", "score_segment": info}
+
+    @app.get("/api/samples/{sample_id}/score-events")
+    def get_score_events(sample_id: str) -> dict[str, Any]:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        logger = setup_sample_logger(sample_dir, name="prep")
+        try:
+            return build_score_events(sample_dir, logger)
+        except FileNotFoundError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except Exception as exc:
+            raise HTTPException(500, str(exc)) from exc
 
     @app.get("/api/samples/{sample_id}/note-alignment")
     def get_note_alignment(sample_id: str) -> dict[str, Any]:

@@ -1297,5 +1297,5 @@ def ensure_expressible_durations(score: stream.Score) -> None:
             typ = m21dur.Duration(quarterLength=ql).type
         except Exception:
             typ = "inexpressible"
-        if typ in (None, "inexpressible", "complex"):
+        if typ in (None, "inexpressible"):
             el.duration.quarterLength = snap_musicxml_ql(ql)

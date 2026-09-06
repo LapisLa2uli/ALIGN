@@ -16,6 +16,8 @@ class ScorePart(BaseModel):
     pad_notes: int = 0
     start_measure: int | None = None
     end_measure: int | None = None
+    core_start_note_index: int | None = None
+    core_end_note_index: int | None = None
 
 
 class Label(BaseModel):
@@ -41,6 +43,7 @@ class Label(BaseModel):
     score_part: ScorePart | None = None
     pitches: list[int] | None = None
     note_ids: list[str] | None = None
+    core_note_ids: list[str] | None = None
     extra_copies: int | None = None
 
 
