@@ -66,13 +66,10 @@
       <button id="viewNormalBtn" type="button" class="mode-btn active">Normal</button>
       <button id="viewAlignmentBtn" type="button" class="mode-btn">Alignment</button>
       <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide confirmed label regions">Labels</button>
-      <button id="toggleCandidatesBtn" type="button" class="mode-btn" title="Show/hide auto-candidate regions">Candidates (off)</button>
       <label class="zoom-control">Zoom
         <input id="zoomSlider" type="range" min="0" max="100" value="50" title="Zoom level" />
       </label>
       <button id="zoomFitBtn" type="button" title="Fit to width">Fit</button>
-      <button id="realignBtn" type="button">Re-run alignment</button>
-      <span id="candidateHint" class="hint"></span>
     </div>
     <div id="waveformScroll" class="waveform-scroll">
       <div id="alignmentStack" class="alignment-stack">
@@ -92,11 +89,10 @@
     <div class="trim-toolbar">
       <strong>Performance trim</strong>
       <span id="trimInfo" class="hint">Drag the green handles to discard silence at start/end.</span>
-      <button id="applyTrimBtn" type="button">Apply trim &amp; re-align</button>
+      <button id="applyTrimBtn" type="button">Apply trim</button>
     </div>
     <div id="overlapPicker" class="overlap-picker hidden" role="listbox" aria-label="Overlapping labels"></div>
-    <div id="candidateTrack" class="track-label">Candidates (dashed)</div>
-    <div id="labelTrack" class="track-label">Confirmed labels</div>
+    <div id="labelTrack" class="track-label">Labels</div>
   </section>
 
   <aside id="inspector">
@@ -120,8 +116,6 @@
     </div>
     <div class="actions">
       <button id="applyLabelBtn">Apply label</button>
-      <button id="confirmCandidateBtn">Confirm candidate</button>
-      <button id="rejectCandidateBtn">Reject (stylistic)</button>
       <button id="deleteRegionBtn">Delete region</button>
     </div>
     <h3>Hotkeys</h3>

@@ -4,6 +4,7 @@ from pathlib import Path
 
 from music21 import converter, note
 
+from datacreate.melody import extra_neighbor_core, padded_melody
 from synthpipeline.errors import PlannedLabel
 
 MIN_DURATION = 0.05
@@ -50,6 +51,8 @@ def refine_labels(
     planned: list[PlannedLabel],
     bpm: float,
     midi_path: Path | None,
+    clean_notes=None,
+    pad_notes: int = 2,
 ) -> list[dict]:
     midi_notes = midi_note_times(midi_path) if midi_path and midi_path.exists() else []
     out: list[dict] = []
@@ -78,8 +81,28 @@ def refine_labels(
                 "start_time": _fmt(r_start),
                 "end_time": _fmt(max(r_end, r_start + MIN_DURATION)),
             }
+        if label.extra_copies is not None:
+            payload["extra_copies"] = int(label.extra_copies)
+        if clean_notes and label.clean_note_index is not None and _emit_score_part(label):
+            i0 = int(label.clean_note_index)
+            if label.type == "extra_note":
+                i0, i1 = extra_neighbor_core(clean_notes, i0)
+            else:
+                count = max(1, int(label.clean_note_count or 1))
+                i1 = i0 + count
+            span = padded_melody(clean_notes, i0, i1, pad_notes)
+            payload.update(span.as_fields())
         out.append(payload)
     return out
+
+
+def _emit_score_part(label: PlannedLabel) -> bool:
+    comment = label.comment or ""
+    if "repeated pass" in comment:
+        return False
+    if "first pass" in comment or label.type == "repetition":
+        return True
+    return "(pass " not in comment
 
 
 def _snap_to_midi(

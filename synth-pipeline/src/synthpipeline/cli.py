@@ -45,6 +45,29 @@ def main(argv: list[str] | None = None) -> None:
         default=1,
         help="Number of parallel processes (default: 1)",
     )
+    gen.add_argument(
+        "--config",
+        type=str,
+        dest="generate_config",
+        help="Path to synth-pipeline YAML config",
+    )
+
+    conv = sub.add_parser(
+        "convert-labels",
+        help="Add score-part melody fields to existing synth labels.json files",
+    )
+    conv.add_argument(
+        "--root",
+        type=Path,
+        action="append",
+        default=None,
+        help="Bundle root (repeatable; default: output_root)",
+    )
+    conv.add_argument("--pad", type=int, default=2)
+    conv.add_argument("--pad-random", action="store_true")
+    conv.add_argument("--force", action="store_true")
+    conv.add_argument("--seed", type=int, default=365)
+    conv.add_argument("--workers", type=int, default=8)
 
     fonts = sub.add_parser("list-soundfonts", help="Show available clarinet SoundFonts")
     fetch = sub.add_parser("fetch-soundfonts", help="Download bundled clarinet SoundFonts")
@@ -55,7 +78,8 @@ def main(argv: list[str] | None = None) -> None:
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
-    config = SynthConfig.load(Path(args.config) if args.config else None)
+    config_path = getattr(args, "generate_config", None) or args.config
+    config = SynthConfig.load(Path(config_path) if config_path else None)
 
     if args.command == "generate":
         workers = max(1, int(args.workers))
@@ -96,6 +120,28 @@ def main(argv: list[str] | None = None) -> None:
                 f"workers {workers}"
             )
         return
+    if args.command == "convert-labels":
+        from synthpipeline.convert_labels import convert_root
+
+        roots = args.root or [config.output_root()]
+        failed = 0
+        for root in roots:
+            counts = convert_root(
+                Path(root),
+                pad=args.pad,
+                force=bool(args.force),
+                pad_random=bool(args.pad_random),
+                seed=args.seed,
+                workers=args.workers,
+            )
+            print(
+                f"root={root} bundles={counts.get('n_bundles', 0)} "
+                f"converted={counts['converted']} skip_done={counts['skip_done']} "
+                f"skip_missing={counts['skip_missing']} empty={counts['empty']} "
+                f"failed={counts['failed']}"
+            )
+            failed += counts["failed"]
+        return 0 if failed == 0 else 2
     if args.command == "list-soundfonts":
         for row in list_soundfonts(config):
             status = "ready" if row["installed"] else "MISSING"

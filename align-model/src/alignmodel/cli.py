@@ -69,6 +69,32 @@ def main() -> None:
     p_st.add_argument("--stages", default="1,2,3")
     p_st.add_argument("--max-samples", type=int, default=0)
 
+    p_eval = sub.add_parser(
+        "eval-melodies",
+        help="Score predicted weak melodies against gold score-part pitches",
+    )
+    p_eval.add_argument(
+        "--data",
+        type=Path,
+        default=Path("synth-pipeline/output"),
+        help="Root of synth sample folders",
+    )
+    p_eval.add_argument(
+        "--pred",
+        type=str,
+        default="pipeline_pred.json",
+        help="Prediction filename inside each sample (default pipeline_pred.json)",
+    )
+    p_eval.add_argument(
+        "--infer",
+        action="store_true",
+        help="Run the pipeline when a prediction file is missing",
+    )
+    p_eval.add_argument("--max-samples", type=int, default=0)
+    p_eval.add_argument("--pad", type=int, default=2)
+    p_eval.add_argument("--device", default="cuda")
+    p_eval.add_argument("--out", type=Path, default=None)
+
     p_run.add_argument(
         "--weights",
         type=Path,
@@ -127,6 +153,40 @@ def main() -> None:
             device=args.device,
         )
         train(cfg)
+        return
+
+    if args.cmd == "eval-melodies":
+        from alignmodel.eval_melodies import eval_root
+
+        report = eval_root(
+            args.data,
+            pred_name=args.pred,
+            run_infer=bool(args.infer),
+            max_samples=args.max_samples,
+            pad_notes=args.pad,
+            device=args.device,
+        )
+        text = json.dumps(
+            {
+                "root": report["root"],
+                "n_samples": report["n_samples"],
+                "mean_melody_f1": report["mean_melody_f1"],
+                "mean_melody_precision": report["mean_melody_precision"],
+                "mean_melody_recall": report["mean_melody_recall"],
+            },
+            indent=2,
+        )
+        print(text)
+        print(
+            f"melody_f1={report['mean_melody_f1']:.3f} "
+            f"precision={report['mean_melody_precision']:.3f} "
+            f"recall={report['mean_melody_recall']:.3f} "
+            f"n={report['n_samples']}"
+        )
+        if args.out:
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            print(f"Wrote {args.out}")
         return
 
     if args.cmd == "train-stages":

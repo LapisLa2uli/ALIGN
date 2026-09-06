@@ -58,6 +58,26 @@ LABELS_SCHEMA: dict[str, Any] = {
                             "end_time": {"type": "number"},
                         },
                     },
+                    "score_part": {
+                        "type": ["object", "null"],
+                        "required": ["start_note_index", "end_note_index"],
+                        "properties": {
+                            "start_measure": {"type": ["integer", "null"]},
+                            "start_note_index": {"type": "integer"},
+                            "end_measure": {"type": ["integer", "null"]},
+                            "end_note_index": {"type": "integer"},
+                            "pad_notes": {"type": "integer"},
+                        },
+                    },
+                    "pitches": {
+                        "type": ["array", "null"],
+                        "items": {"type": "integer"},
+                    },
+                    "note_ids": {
+                        "type": ["array", "null"],
+                        "items": {"type": "string"},
+                    },
+                    "extra_copies": {"type": ["integer", "null"]},
                 },
             },
         },
@@ -90,9 +110,10 @@ def validate_labels_file(path: Path, config: PipelineConfig | None = None) -> li
         if label.type == "repetition" and label.repeats_label_range is None:
             errors.append(f"{path}: repetition label {label.id} missing repeats_label_range")
 
-    if doc.schema_version != config.schema_version:
+    allowed_schemas = {config.schema_version, "1.1", "1.2"}
+    if doc.schema_version not in allowed_schemas:
         errors.append(
-            f"{path}: schema_version {doc.schema_version} != config {config.schema_version}"
+            f"{path}: schema_version {doc.schema_version} not in {sorted(allowed_schemas)}"
         )
     return errors
 

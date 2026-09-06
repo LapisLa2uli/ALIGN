@@ -10,6 +10,14 @@ class RepeatRange(BaseModel):
     end_time: float
 
 
+class ScorePart(BaseModel):
+    start_note_index: int
+    end_note_index: int
+    pad_notes: int = 0
+    start_measure: int | None = None
+    end_measure: int | None = None
+
+
 class Label(BaseModel):
     id: str
     source: Literal[
@@ -30,6 +38,10 @@ class Label(BaseModel):
     note_id: str | None = None
     comment: str | None = None
     repeats_label_range: RepeatRange | None = None
+    score_part: ScorePart | None = None
+    pitches: list[int] | None = None
+    note_ids: list[str] | None = None
+    extra_copies: int | None = None
 
 
 class SelfReportedMark(BaseModel):

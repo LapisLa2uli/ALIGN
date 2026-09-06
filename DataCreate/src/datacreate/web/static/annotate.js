@@ -28,7 +28,6 @@ let fitPxPerSec = 1;
 let userZoomed = false;
 let noteAlignmentData = null;
 let labelsVisible = true;
-let candidatesVisible = false;
 let staffStripHeight = 0;
 const SCRUBBER_HEIGHT = 28;
 const EWMA_STRIP_HEIGHT = 140;
@@ -473,7 +472,6 @@ function syncRegionVisual(region, { selected = false } = {}) {
 function isRegionVisible(region) {
   const kind = getRegionKind(region);
   if (kind === "trim" || kind === "link") return true;
-  if (kind === "candidate") return candidatesVisible;
   return labelsVisible;
 }
 
@@ -525,24 +523,6 @@ function toggleLabelsVisibility() {
     btn.textContent = labelsVisible ? "Labels" : "Labels (off)";
   }
   applyAllLabelsVisibility();
-  hideOverlapPicker();
-}
-
-function toggleCandidatesVisibility() {
-  candidatesVisible = !candidatesVisible;
-  const btn = document.getElementById("toggleCandidatesBtn");
-  if (btn) {
-    btn.classList.toggle("active", candidatesVisible);
-    btn.textContent = candidatesVisible ? "Candidates" : "Candidates (off)";
-  }
-  if (!candidatesVisible && selectedRegions.length) {
-    const remaining = selectedRegions.filter((r) => !r.data?.isCandidate);
-    if (remaining.length !== selectedRegions.length) {
-      setSelectedRegions(remaining);
-    }
-  }
-  applyAllLabelsVisibility();
-  updateCandidateHint();
   hideOverlapPicker();
 }
 
@@ -772,26 +752,18 @@ function refreshSelectionVisuals() {
 }
 
 function updateMultiSelectionInspector() {
-  const confirmBtn = document.getElementById("confirmCandidateBtn");
-  const rejectBtn = document.getElementById("rejectCandidateBtn");
   const n = selectedRegions.length;
   if (n === 0) {
     resetSelectionInfo();
     updateRepetitionPanel(null);
-    if (confirmBtn) confirmBtn.disabled = false;
-    if (rejectBtn) rejectBtn.disabled = false;
     return;
   }
   if (n > 1) {
     document.getElementById("selectionInfo").textContent =
       `${n} regions selected. Delete or assign type (1–8) applies to all.`;
     updateRepetitionPanel(null);
-    if (confirmBtn) confirmBtn.disabled = true;
-    if (rejectBtn) rejectBtn.disabled = true;
     return;
   }
-  if (confirmBtn) confirmBtn.disabled = false;
-  if (rejectBtn) rejectBtn.disabled = false;
   const region = selectedRegions[0];
   const d = region.data || {};
   updateSelectionInfo(region);
@@ -1352,7 +1324,7 @@ function showOverlapPicker(regions, clientX, clientY) {
     btn.type = "button";
     const d = region.data || {};
     const name = regionCaptionText(region);
-    btn.textContent = d.isCandidate ? `${name} · candidate` : name;
+    btn.textContent = name;
     btn.title = `${formatTime(region.start)} – ${formatTime(region.end)}`;
     btn.className = "overlap-picker-item";
     if (isRegionSelected(region)) btn.classList.add("active");
@@ -1429,8 +1401,6 @@ function setupViewControls() {
   document.getElementById("viewNormalBtn").onclick = () => setViewMode("normal");
   document.getElementById("viewAlignmentBtn").onclick = () => setViewMode("alignment");
   document.getElementById("toggleLabelsBtn").onclick = toggleLabelsVisibility;
-  document.getElementById("toggleCandidatesBtn").onclick = toggleCandidatesVisibility;
-  document.getElementById("realignBtn").onclick = rerunAlignment;
   syncZoomSlider();
 }
 
@@ -1895,48 +1865,11 @@ function renderAlignmentInfo(data) {
     `DTW path: ${s.warping_path_length ?? "?"} steps · ` +
     `mean residual ${s.mean_residual ?? "?"} · ` +
     `max ${s.max_residual ?? "?"} · ` +
-    `${s.event_count ?? 0} score events · ` +
-    `${s.candidate_count ?? 0} auto-candidates` +
+    `${s.event_count ?? 0} score events` +
     `</div>` +
     `<table><thead><tr>` +
     `<th>m</th><th>note</th><th>perf start</th><th>perf end</th><th>dur</th><th>residual</th>` +
     `</tr></thead><tbody>${rows}</tbody></table>`;
-}
-
-function updateCandidateHint() {
-  const el = document.getElementById("candidateHint");
-  if (!el || !sampleData) return;
-  const count = sampleData.candidate_count ?? sampleData.candidates?.length ?? 0;
-  if (count > 0) {
-    el.textContent = candidatesVisible
-      ? `${count} auto-candidate(s) on waveform (dashed orange). Not saved unless confirmed.`
-      : `${count} auto-candidate(s) hidden. Not saved unless confirmed.`;
-  } else if (sampleData.has_alignment) {
-    el.textContent =
-      "No auto-candidates (alignment clean under thresholds). Click Re-run alignment to refresh.";
-  } else {
-    el.textContent = "No alignment data yet — run batch or apply segment.";
-  }
-}
-
-async function rerunAlignment() {
-  if (!currentSample) return;
-  if (!confirm("Re-run DTW alignment and regenerate auto-candidates?")) return;
-  const btn = document.getElementById("realignBtn");
-  btn.disabled = true;
-  btn.textContent = "Aligning…";
-  try {
-    const res = await fetch(`/api/samples/${currentSample}/re-align`, { method: "POST" });
-    if (!res.ok) throw new Error(await res.text());
-    const result = await res.json();
-    await loadSample(currentSample);
-    alert(`Alignment complete. ${result.candidate_count ?? 0} candidate(s) detected.`);
-  } catch (err) {
-    alert(err.message || String(err));
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Re-run alignment";
-  }
 }
 
 function debounce(fn, ms) {
@@ -2170,8 +2103,6 @@ async function init() {
   };
   document.getElementById("saveBtn").onclick = saveLabels;
   document.getElementById("applyLabelBtn").onclick = applyLabelToSelection;
-  document.getElementById("confirmCandidateBtn").onclick = () => promoteCandidate("auto_confirmed");
-  document.getElementById("rejectCandidateBtn").onclick = () => promoteCandidate("auto_rejected", "stylistic_choice");
   document.getElementById("deleteRegionBtn").onclick = deleteSelectedRegion;
 
   document.addEventListener("keydown", onKeyDown, true);
@@ -2400,7 +2331,6 @@ function onWaveformReady() {
     ensureTrimRegion();
   });
   updatePlayhead();
-  updateCandidateHint();
   applyAllLabelsVisibility();
   refreshAllCaptions();
   captureIdleSnapshot();
@@ -2482,7 +2412,6 @@ async function loadSampleList() {
     .map((s) => {
       const tags = [];
       if (s.label_count) tags.push(`${s.label_count} labels`);
-      else if (s.has_candidates) tags.push("needs review");
       const suffix = tags.length ? ` (${tags.join(", ")})` : "";
       return `<option value="${s.id}">${s.id}${suffix}</option>`;
     })
@@ -2530,10 +2459,10 @@ async function loadSample(sampleId) {
   clearUndoHistory();
   resetSelectionInfo();
   regionsPlugin.clearRegions();
-  pendingRegions = [
-    ...data.candidates.map((c) => ({ label: normalizeLabelType(c), isCandidate: true })),
-    ...data.labels.map((l) => ({ label: normalizeLabelType(l), isCandidate: false })),
-  ];
+  pendingRegions = data.labels.map((l) => ({
+    label: normalizeLabelType(l),
+    isCandidate: false,
+  }));
 
   noteAlignmentData = null;
   userZoomed = false;
@@ -2551,7 +2480,6 @@ async function loadSample(sampleId) {
   const audioUrl = audioUrlWithCacheBust(data.audio_url, data.audio_mtime);
   await wavesurfer.load(audioUrl);
   if (loadId !== scoreLoadId) return;
-  updateCandidateHint();
 
   const measures = data.prep?.total_measures || 0;
   const hasSegment = !!data.prep?.score_segment;
@@ -2683,18 +2611,6 @@ function applyLabelToSelection(overrides = {}) {
   captureIdleSnapshot();
 }
 
-function promoteCandidate(source, overrideType) {
-  if (!selectedRegion || !selectedRegion.data?.isCandidate) return;
-  pushUndoFromIdle();
-  selectedRegion.data.source = source;
-  if (overrideType) selectedRegion.data.type = overrideType;
-  selectedRegion.data.isCandidate = false;
-  applyLabelToSelection({
-    skipUndo: true,
-    ...(overrideType ? { type: overrideType } : {}),
-  });
-}
-
 function safeRemoveRegion(region) {
   if (!region) return;
   removeLinkedOriginals(region);
@@ -2737,10 +2653,6 @@ function deleteSelectedRegion() {
   repetitionLinkMode = null;
   resetSelectionInfo();
   updateRepetitionPanel(null);
-  const confirmBtn = document.getElementById("confirmCandidateBtn");
-  const rejectBtn = document.getElementById("rejectCandidateBtn");
-  if (confirmBtn) confirmBtn.disabled = false;
-  if (rejectBtn) rejectBtn.disabled = false;
   refreshDragSelection();
   refreshAllCaptions();
   captureIdleSnapshot();
@@ -2750,8 +2662,7 @@ async function applyScoreSegment() {
   const { start, end, startBeat, endBeat } = getMeasureRange();
   const rangeLabel = formatSegmentLabel(start, end, startBeat, endBeat);
   if (!confirm(
-    `Extract ${rangeLabel} and regenerate reference audio + alignment? ` +
-    "Existing auto-candidates will be replaced."
+    `Extract ${rangeLabel} and regenerate reference audio?`
   )) return;
 
   const btn = document.getElementById("applySegmentBtn");
@@ -2773,7 +2684,7 @@ async function applyScoreSegment() {
     });
     if (!res.ok) throw new Error(await res.text());
     await loadSample(currentSample);
-    alert("Score segment applied. Reference audio and candidates updated.");
+    alert("Score segment applied. Reference audio updated.");
   } catch (err) {
     alert(err.message || String(err));
   } finally {
@@ -2785,8 +2696,7 @@ async function applyScoreSegment() {
 async function applyPerformanceTrim() {
   if (!trimRegion) return;
   if (!confirm(
-    `Trim performance to ${formatTime(trimRegion.start)} – ${formatTime(trimRegion.end)} ` +
-    "and re-run alignment? This may take up to a minute for long scores. Existing auto-candidates will be replaced."
+    `Trim performance to ${formatTime(trimRegion.start)} – ${formatTime(trimRegion.end)}?`
   )) return;
 
   const btn = document.getElementById("applyTrimBtn");
@@ -2805,26 +2715,20 @@ async function applyPerformanceTrim() {
     const result = await res.json();
     await loadSample(currentSample);
     alert(
-      `Performance trimmed to ${result.performance_trim?.trimmed_duration?.toFixed?.(1) ?? "?"}s. ` +
-      "Waveform and alignment updated."
+      `Performance trimmed to ${result.performance_trim?.trimmed_duration?.toFixed?.(1) ?? "?"}s.`
     );
   } catch (err) {
     alert(err.message || String(err));
   } finally {
     btn.disabled = false;
-    btn.textContent = "Apply trim & re-align";
+    btn.textContent = "Apply trim";
   }
 }
 
 async function saveLabels() {
   const labels = [];
-  let candidatesLeft = 0;
   regionsPlugin.getRegions().forEach((r) => {
     if (isTrimRegion(r) || isLinkOverlay(r)) return;
-    if (r.data?.isCandidate) {
-      candidatesLeft += 1;
-      return;
-    }
     labels.push(regionDataToLabel(r));
   });
   const missingRepetitionLink = labels.filter(
@@ -2851,11 +2755,7 @@ async function saveLabels() {
     alert(await res.text());
     return;
   }
-  if (candidatesLeft) {
-    alert(`Labels saved. ${candidatesLeft} unreviewed candidate(s) were not applied.`);
-  } else {
-    alert("Labels saved.");
-  }
+  alert("Labels saved.");
 }
 
 async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat, loadId = null) {

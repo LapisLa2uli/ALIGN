@@ -30,7 +30,16 @@ pip install -e ./align-model
 align-model run --sample ".\synth-pipeline\output\synth_gen_0010"
 align-model run --sample ".\synth-pipeline\output\synth_gen_0010" --timbre
 align-model smoke --data ".\synth-pipeline\output"
+align-model eval-melodies --data ".\synth-pipeline\output"
 ```
+
+`eval-melodies` is the official synth metric. Gold is the schema **1.2** `pitches` list on each first-pass label (repeated-pass copies are skipped). A predicted melody is correct if its MIDI pitch list is a **contiguous slice** of a gold melody, equals one, or contains a gold melody as a contiguous slice. A subsequence that skips notes does not count. Type match is not required. Matching is not exclusive.
+
+- Precision = predictions that match any gold / all predictions
+- Recall = golds hit by any prediction / all golds
+- Headline = F1 (`melody_f1`)
+
+`smoke` prints that score first; timestamp `repetition_iou` is still included. Predictions that only have times are mapped onto the clean score with the same core-plus-pad rules (extras use the notes before and after the insert).
 
 Writes `pipeline_pred.json` in the sample folder (labels schema `1.1`, `source: pipeline`). Stage 4 is opt-in via `--timbre`.
 

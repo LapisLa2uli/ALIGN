@@ -83,7 +83,7 @@ def apply_score_segment(
         end_beat=end_beat,
     )
     synthesize_reference(verified, sample_dir, config, logger)
-    _reprocess_alignment_and_features(sample_dir, config, logger)
+    _ensure_labels_template(sample_dir, config)
 
     segment_info: dict[str, Any] = {
         "start_measure": start_measure,
@@ -134,7 +134,7 @@ def apply_performance_trim(
         len(trimmed),
     )
 
-    _reprocess_alignment_and_features(sample_dir, config, logger)
+    _ensure_labels_template(sample_dir, config)
 
     trim_info = {
         "trim_start": round(trim_start, 4),
@@ -162,6 +162,11 @@ def reprocess_alignment(
         "candidate_count": len(result.candidates),
         "alignment_path": str(result.alignment_path),
     }
+
+
+def _ensure_labels_template(sample_dir: Path, config: PipelineConfig) -> None:
+    if not (sample_dir / "labels.json").exists():
+        write_labels_template(sample_dir, config)
 
 
 def _reprocess_alignment_and_features(

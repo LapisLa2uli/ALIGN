@@ -1,6 +1,6 @@
 # MusicEval / ALIGN — Methodology
 
-This document describes the methodology of the **MusicEval Data Creation** pipeline (`DataCreate`): how score + performance audio become labeled training bundles for music performance error detection. The current focus is **clarinet** practice takes against notated MusicXML (or PDF→OMR), with human review as the source of ground truth.
+This document describes the ALIGN / MusicEval methodology: how score + performance audio become labeled training bundles, how **synthetic** gold is planted, and how model output is scored. The current focus is **clarinet** practice against notated MusicXML (or PDF→OMR). Real takes use human review as ground truth. Synth volume comes from `synth-pipeline` (schema **1.2** score-part melodies). Official synth eval is contiguous pitch-list **containment F1**, not timestamp IoU.
 
 ---
 
@@ -8,20 +8,22 @@ This document describes the methodology of the **MusicEval Data Creation** pipel
 
 **Goal.** Produce per-sample training bundles containing:
 
-1. Time-stamped error labels on the *performer’s* audio timeline
-2. Log-mel spectrograms of performance and score-derived reference audio
-3. Verified MusicXML used as the musical ground truth for synthesis and note mapping
-4. Alignment artifacts used for auto-candidates and UI visualization
+1. Time-stamped error labels on the *performer’s* audio timeline (annotator, crop trainers)
+2. A **score-part melody** on the clean MusicXML for each first-pass fault (`score_part`, `pitches`)
+3. Log-mel spectrograms of performance and score-derived reference audio
+4. Verified MusicXML used as the musical ground truth for synthesis and note mapping
+5. Alignment artifacts used for auto-candidates and UI visualization
 
 **Principles.**
 
 | Principle | Implication |
 |-----------|-------------|
 | Alignment is an aid, not labels | Stage 5 writes `candidates.json` with `source: "auto"`. Humans confirm, edit, reclassify, or reject in the annotator UI. |
-| Closed taxonomy | Error types live in `config/default.yaml`; schema versioned (`1.1`). |
+| Closed taxonomy | Error types live in `config/default.yaml`; schemas **1.1** (times only) and **1.2** (times plus a score-part melody) both validate. |
 | Reference vs performance | Alignment compares real performance to a **synthesized** rendering of the verified score—not another human recording. |
 | Pitch features for DTW | Chroma/CQT for alignment (timbre-robust); log-mel for the training features bundle. |
 | Partial takes supported | Measure-range score segmentation + waveform trim + re-align for incomplete recordings. |
+| Train/eval on score entities, not clocks | Official synth gold is a **contiguous run of clean-score notes** (`score_part` + `pitches`), not the wall-clock interval of the fault. Times stay on the file for the annotator and for crop trainers. |
 
 ---
 
@@ -250,36 +252,117 @@ Validation: `datacreate-validate` against Pydantic models (`schema_version`, non
 
 ---
 
-## 10. Label schema (summary)
+## 10. Label schema
 
-Per label (schema `1.1`):
+`labels.json` accepts **1.1** and **1.2**. Times are always required and are always on `performance_audio.wav`. Schema **1.2** adds an optional score-part melody compiled from the clean `verified_score.musicxml`.
+
+### 10.1 Fields
 
 | Field | Role |
 |-------|------|
-| `id` | Stable id (`cand_###` or UI-assigned) |
-| `source` | `auto` / `auto_confirmed` / `auto_edited` / `auto_rejected` / `manual` / `synthetic` |
+| `id` | Stable id (`cand_###`, `syn_###`, or UI-assigned) |
+| `source` | `auto` / `auto_confirmed` / `auto_edited` / `auto_rejected` / `manual` / `synthetic` / `pipeline` |
 | `start_time`, `end_time` | Seconds on performance audio |
 | `type` | Taxonomy string |
 | `severity` | Optional ordinal (human) |
 | `deviation_cents`, `deviation_ms` | Optional numeric aids |
 | `measure_number`, `note_id`, `comment` | Optional provenance |
-| `repeats_label_range` | For `repetition` |
+| `repeats_label_range` | Required for `repetition`: the first-pass span that was replayed |
+| `score_part` | Inclusive clean-score note indices (`start_note_index` … `end_note_index`), measures, and `pad_notes` |
+| `pitches` | MIDI pitch list of that span, in written order |
+| `note_ids` | Matching `note_0000`-style ids on the clean score |
+| `extra_copies` | On `repetition` only: `1` = played twice, `2` = three plays |
 
 Document-level: `schema_version`, `audio_reference`, `annotator_id`, `self_reported[]`, `labels[]`.
 
-**Taxonomy (default):** `wrong_note`, `intonation_error`, `missed_note`, `extra_note`, `rhythm_error`, `repetition`, `stylistic_choice`.
+**Taxonomy (default):** `wrong_note`, `intonation_error`, `missed_note`, `extra_note`, `rhythm_error`, `repetition`, `stylistic_choice`. Synth generation also plants clarinet **squeaks** as `wrong_note` or `extra_note` (MIDI C6–A7), not as a separate gold type.
+
+### 10.2 Gold melody (schema 1.2)
+
+The labelled melody is a **contiguous slice of the clean score**, then 1–2 notes of padding on each side. Padding **clamps** at the first and last sounding notes; it does not wrap.
+
+| Planted fault | Core (before padding) |
+|---------------|------------------------|
+| `wrong_note`, `missed_note`, `intonation_error`, `rhythm_error` | The written note(s) that were altered |
+| `repetition` | The written notes in the replayed measure(s) |
+| `extra_note` | The clean notes **immediately before and after** the insert. The extra itself is not on the clean score. If the insert is after the last written note, only that last note is the core. |
+
+Then expand `[core_i0, core_i1)` by `pad_notes` ∈ `{1, 2}` on each side and store `score_part`, `pitches`, and `note_ids`.
+
+**Repeated-pass copies are not gold.** Labels whose comment contains `repeated pass` or `(pass N)` for N > 1 are skipped at eval. The first pass and the single `repetition` label are kept.
+
+### 10.3 Melody evaluation
+
+Official synth metric: `align-model eval-melodies` (also the headline of `align-model smoke`).
+
+A **predicted** pitch list is correct if it is a **contiguous slice** of some gold melody, **equals** one, or **contains** a gold melody as a contiguous slice. A subsequence that skips notes does not count. Type is not required to match. Matching is **not exclusive**: one gold can validate several predictions and the reverse.
+
+- Precision = fraction of predictions that match any gold this way
+- Recall = fraction of golds hit by any prediction
+- Headline = F1 of those two
+
+Empty gold and empty prediction scores 1. Mapping a timestamp-only prediction onto the clean score uses the same core-plus-pad rules (extras still expand to the neighbors).
 
 ---
 
-## 11. Synthetic data (Stage 9)
+## 11. Synthetic data
 
-Programmatic MusicXML corruptions (pitch shift, timing, delete/insert note, duration change) → corrupted score rendered as “performance,” clean score as reference → full alignment + known `labels.json` with `source: "synthetic"`. Used to stress detectors and bootstrap volume; not a substitute for real annotated takes.
+There are two generators. Neither replaces human-reviewed real takes.
+
+### 11.1 DataCreate Stage 9
+
+Programmatic corruptions of an **existing** MusicXML in place, then render and align. Labels are `source: "synthetic"`. Useful for a few fixtures; not the volume path.
+
+### 11.2 synth-pipeline (volume path)
+
+A **separate package**. The clean `verified_score.musicxml` stays correct. Errors are written only into `performance_score.musicxml`, which is rendered as clarinet `performance_audio.wav`. Labels are known at plant time (`source: "synthetic"`, schema **1.2**).
+
+Default single-error config: `synth-pipeline/config/default.yaml`. Multi-error 10k config: `synth-pipeline/config/multi_error_10k.yaml`.
+
+#### Score generation
+
+Procedural clarinet etudes (or `--score` to corrupt existing MusicXML): 8–16 measures; meters 4/4, 3/4, 2/4, 6/8; major/minor keys; tempo 72–112 BPM; written range E3–C6; occasional rests and syncopation.
+
+#### Planted errors (1–8 per clip)
+
+`per_clip_min` / `per_clip_max` draw how many **content** errors to plant. The five types below have **equal weight**. They do not overlap in time on the same clip.
+
+| Type | What is planted |
+|------|-----------------|
+| `wrong_note` | Shift ±1 or ±2 semitones inside the written range, **or** (with `squeak.prob`, default 0.22 in the 10k config) replace the pitch with a high squeak MIDI **C6–A7**. |
+| `extra_note` | Split a note and insert a neighbor (±1–2 semitones) **or** a C6–A7 squeak in the second half. Gold core is the clean notes before and after that insert. |
+| `missed_note` | Replace a written note with a rest of the same duration. |
+| `intonation_error` | Keep the written pitch class; detune the render with MIDI pitch bend, 40–80 cents, sometimes a run of up to 4 notes. |
+| `rhythm_error` | One of: **late start** (rest inserted before the note, offset unchanged), **early start** (onset steals a preceding rest), **late end** (offset steals a following rest), **early end** (note shortened, rest fills the tail), **sudden tempo change** (MetronomeMark 0.68–0.82× or 1.2–1.4× for 1–2 measures, then restore), **uneven rhythm** (3–4 note durations in a measure reweighted so the bar still sums). |
+
+#### Repetition
+
+Repetition is **not** one of the 1–8 planted draws. After the content errors:
+
+1. With `repetition_prob` (0.80 in the 10k config) replay the measure(s) that contain those errors. This is the common case.
+2. If that did not fire, with `standalone_repetition_prob` (0.20) replay a random measure that has notes, even if the error is elsewhere.
+
+`repeat_extra_copies_weights`: `1` → two plays (70%), `2` → three plays (30%).
+
+**Adjustment rest.** Immediately before the replayed copy, insert a silent gap of **0.2–1.0 s** (`repeat_gap_seconds`). The gap is not part of the gold melody. `repeats_label_range` stays the first-pass span; the `repetition` label covers the restart after the rest.
+
+First-pass content labels keep a score part. Repeated-pass copies of those labels do not.
+
+#### Backfill
+
+Existing 1.1 bundles (times only) are converted in place:
+
+```powershell
+synth-pipeline convert-labels --root ./output --force --pad-random --workers 8
+```
+
+`--force` is required after the extra-neighbor rule changed. `--pad-random` picks pad ∈ {1, 2} per bundle unless the file already stored `score_part.pad_notes`. Extra-note conversion maps the extra’s **performance time** onto the clean score (it does not use the inserted MIDI from the comment) and then expands to the neighbors.
 
 ---
 
 ## 12. Configuration surface
 
-Central file: `DataCreate/config/default.yaml`.
+Real-data pipeline: `DataCreate/config/default.yaml`.
 
 | Block | Controls |
 |-------|----------|
@@ -288,6 +371,8 @@ Central file: `DataCreate/config/default.yaml`.
 | `alignment` | Feature, DTW band, cents, EWMA/far-window, onset refine |
 | `taxonomy` | Closed label enum |
 | `musescore` / `omr` / `review` / `synthetic` | Tooling and secondary modes |
+
+Synth volume path: `synth-pipeline/config/default.yaml` (one error) and `synth-pipeline/config/multi_error_10k.yaml` (1–8 errors, squeaks, rhythm kinds, standalone repetition, 0.2–1 s restart gap).
 
 ---
 
@@ -306,13 +391,15 @@ Current design accepts these tradeoffs (see also `SHORTPLANS.md`):
 
 ## 14. Intended use of outputs
 
-Downstream error-detection models consume each bundle’s performance (and optionally reference) log-mel plus time-stamped labels. Alignment NPZ and candidates are intermediate; **reviewed `labels.json`** is the supervision signal.
+- **Annotator / crop trainers:** `start_time` / `end_time` on `performance_audio.wav`.
+- **Melody eval and score-informed training:** `pitches` / `score_part` on the clean `verified_score.musicxml`. Official synth score is containment F1 (`align-model eval-melodies`), not timestamp IoU and not LCS subsequence similarity.
+- Alignment NPZ and `candidates.json` are intermediate. Real takes should still be human-reviewed; synth labels are known by construction.
 
 ---
 
 ## References in repo
 
 - Spec / original requirements: `DataCollectionPipelinePrompt.md`
-- Operator docs: `DataCreate/README.md`
+- Operator docs: `DataCreate/README.md`, `synth-pipeline/README.md`, `align-model/README.md`
 - Deferred ideas: `SHORTPLANS.md`
-- Core code: `stages/stage5_alignment.py`, `note_alignment.py`, `pipeline.py`, `models.py`, `config/default.yaml`
+- Core code: `DataCreate/src/datacreate/melody.py`, `DataCreate/src/datacreate/models.py`, `synth-pipeline/src/synthpipeline/errors.py`, `align-model/src/alignmodel/eval_melodies.py`

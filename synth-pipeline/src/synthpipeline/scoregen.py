@@ -56,6 +56,10 @@ def write_midi(score: stream.Score, path: Path) -> Path:
 
 def _write_score(score: stream.Score, path: Path, fmt: str) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
+    if fmt == "musicxml":
+        from synthpipeline.errors import ensure_expressible_durations
+
+        ensure_expressible_durations(score)
     written = Path(str(score.write(fmt, fp=str(path))))
     if written.resolve() != path.resolve():
         path.write_bytes(written.read_bytes())

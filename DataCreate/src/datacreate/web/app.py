@@ -117,7 +117,6 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                 {
                     "id": d.name,
                     "label_count": label_count,
-                    "has_candidates": (d / "candidates.json").exists(),
                 }
             )
         items.sort(key=lambda x: _sample_sort_key(x["id"]))
@@ -171,7 +170,6 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         sample_dir = samples_root / sample_id
         if not sample_dir.exists():
             raise HTTPException(404, "Sample not found")
-        candidates = read_json(sample_dir / "candidates.json") if (sample_dir / "candidates.json").exists() else {"labels": []}
         labels = read_json(sample_dir / "labels.json") if (sample_dir / "labels.json").exists() else {"labels": [], "self_reported": []}
         prep = get_prep_state(sample_dir, config)
         full_score = sample_dir / "full_score.musicxml"
@@ -183,13 +181,10 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         perf_path = sample_dir / "performance_audio.wav"
         audio_mtime = int(perf_path.stat().st_mtime * 1000) if perf_path.exists() else 0
         align_path = sample_dir / "alignment.npz"
-        candidate_labels = candidates.get("labels", [])
         return {
             "sample_id": sample_id,
             "taxonomy": config.taxonomy,
             "schema_version": config.schema_version,
-            "candidates": candidate_labels,
-            "candidate_count": len(candidate_labels),
             "has_alignment": align_path.exists(),
             "labels": labels.get("labels", []),
             "self_reported": labels.get("self_reported", []),

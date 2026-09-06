@@ -3,7 +3,7 @@ schema_version: "1.2"
 paths:
   musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
   soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
-  output_root: ./output
+  output_root: ./output_10k_multi
   datacreate_config: ../DataCreate/config/default.yaml
 
 audio:
@@ -17,8 +17,8 @@ musescore:
   render_chunk_size: 4096
 
 render:
-  midi_backend: music21   # music21 only for the default path; musescore is optional
-  soundfont: freepats     # freepats | u220 | mcb | msbasic
+  midi_backend: music21
+  soundfont: freepats
 
 generation:
   measures_min: 8
@@ -43,28 +43,31 @@ generation:
   tempo_max: 112
   pitch_min: E3
   pitch_max: C6
-  rest_probability: 0.08
-  syncopation_prob: 0.12   # chance a duration does not land the next onset on a beat
+  rest_probability: 0.12
+  syncopation_prob: 0.12
 
 errors:
+  # Five planted types are equally likely. A clip has 1-8 of them.
+  # Repetition is usually attached after those errors; otherwise it can appear alone.
+  # That keeps the six types in roughly the same overall counts.
   weights:
     wrong_note: 1.0
     missed_note: 1.0
     extra_note: 1.0
     rhythm_error: 1.0
     intonation_error: 1.0
-  per_clip_min: 1          # errors planted per clip
-  per_clip_max: 1
-  repetition_prob: 0.35    # after errors, chance to replay the measure(s) that contain them
-  standalone_repetition_prob: 0.0  # repeat a measure with no prior error
-  repeat_gap_seconds: [0.0, 0.0]   # silence before a restart; use [0.2, 1.0] to simulate adjusting
+  per_clip_min: 1
+  per_clip_max: 8
+  repetition_prob: 0.80
+  standalone_repetition_prob: 0.20
+  repeat_gap_seconds: [0.2, 1.0]
   repeat_extra_copies_weights:
-    1: 0.7                 # one extra play (two total)
-    2: 0.3                 # two extra plays (three total)
-  melody_pad_notes: [1, 2] # notes of padding on each side of the gold melody
+    1: 0.7
+    2: 0.3
+  melody_pad_notes: [1, 2]
   repeat_window: measure
   squeak:
-    prob: 0.0              # chance a wrong/extra note is a high squeak
+    prob: 0.22
     pitch_min: C6
     pitch_max: A7
   rhythm_kinds:
@@ -75,7 +78,7 @@ errors:
     - tempo_change
     - uneven
   intonation:
-    cents_min: 40          # clearly off, still the same pitch class (< 100)
+    cents_min: 40
     cents_max: 80
-    group_prob: 0.45       # chance to detune a consecutive run instead of one note
+    group_prob: 0.45
     group_max: 4

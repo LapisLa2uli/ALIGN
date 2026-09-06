@@ -4,6 +4,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
+from alignmodel.eval_melodies import eval_sample
 from alignmodel.pipeline import run_pipeline, write_prediction
 
 
@@ -77,6 +78,25 @@ def smoke_pipeline(
     ]
     gold_rep = gold_spans(sample, "repetition")
     counts = Counter(lab.type for lab in state.labels)
+    pred_labels = [
+        {
+            "type": lab.type,
+            "start_time": lab.start_time,
+            "end_time": lab.end_time,
+            "comment": lab.comment,
+            "measure_number": lab.measure_number,
+            "repeats_label_range": (
+                {
+                    "start_time": lab.repeats_label_range.start_time,
+                    "end_time": lab.repeats_label_range.end_time,
+                }
+                if lab.repeats_label_range is not None
+                else None
+            ),
+        }
+        for lab in state.labels
+    ]
+    melody = eval_sample(sample, pred_labels=pred_labels)
     report = {
         "sample": str(sample),
         "pred_path": str(pred_path),
@@ -86,6 +106,13 @@ def smoke_pipeline(
         "n_segments": len(state.segments),
         "n_pairs": len(state.pairs),
         "pred_counts": dict(counts),
+        "melody_f1": melody["melody_f1"],
+        "melody_precision": melody["melody_precision"],
+        "melody_recall": melody["melody_recall"],
+        "melody_similarity": melody["melody_f1"],
+        "note_set_iou": melody["melody_precision"],
+        "n_gold_melodies": melody["n_gold"],
+        "n_pred_melodies": melody["n_pred"],
         "gold_repetition_spans": gold_rep,
         "pred_repetition_spans": [(round(a, 4), round(b, 4)) for a, b in pred_rep],
         "repetition_iou": round(best_mean_iou(pred_rep, gold_rep), 3),

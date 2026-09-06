@@ -277,7 +277,19 @@ def _build_sample(
     ingest_performance(perf_wav, sample_dir, dc_config, logger)
 
     midi_path = perf_wav.with_suffix(".mid")
-    label_dicts = refine_labels(result.labels, result.bpm, midi_path)
+    from datacreate.melody import parse_sounding_notes
+
+    pad_choices = [int(x) for x in (config.errors.get("melody_pad_notes") or [1, 2])]
+    if not pad_choices:
+        pad_choices = [2]
+    pad_notes = rng.choice(pad_choices)
+    label_dicts = refine_labels(
+        result.labels,
+        result.bpm,
+        midi_path,
+        clean_notes=parse_sounding_notes(verified_path),
+        pad_notes=pad_notes,
+    )
     labels_doc = LabelsDocument(
         schema_version=config.schema_version,
         audio_reference="performance_audio.wav",
@@ -295,7 +307,10 @@ def _build_sample(
         {
             "mode": "synth-pipeline",
             "error_type": result.error_type,
+            "error_types": list((result.extra or {}).get("error_types") or [result.error_type]),
             "repeated": result.repeated,
+            "extra_copies": int((result.extra or {}).get("extra_copies") or 0),
+            "melody_pad_notes": pad_notes,
             **extra_meta,
         },
         logger,
