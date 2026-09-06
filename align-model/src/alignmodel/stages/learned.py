@@ -8,7 +8,13 @@ import torch
 
 from alignmodel.device import resolve_device
 from alignmodel.stage_train import CROP_FRAMES_RESTART, _mel_crop, _mel_span_resize, _rhythm_aux
-from alignmodel.stages.models import EDIT_CLASSES, EditCropNet, RestartScorer, RhythmNet
+from alignmodel.stages.models import (
+    EDIT_CLASSES,
+    MIN_EDIT_CROP_SEC,
+    EditCropNet,
+    RestartScorer,
+    RhythmNet,
+)
 from alignmodel.types import PipelineLabel, PipelineState, RepeatRange, next_label_id
 
 
@@ -20,6 +26,7 @@ class StageModels:
     device: torch.device | None = None
     restart_threshold: float = 0.0
     rhythm_threshold: float = 0.0
+    edits_threshold: float = 0.0
 
 
 def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageModels:
@@ -46,6 +53,9 @@ def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageMo
         blob = torch.load(s2, map_location=torch_device, weights_only=False)
         model.load_state_dict(blob["model"])
         out.edits = model.to(torch_device).eval()
+        out.edits_threshold = float(
+            blob.get("softmax_threshold", blob.get("logit_threshold", 0.0))
+        )
     s3 = weights_dir / "stage3.pt"
     if s3.exists():
         blob = torch.load(s3, map_location=torch_device, weights_only=False)
@@ -150,26 +160,52 @@ def apply_learned_restarts(state: PipelineState, mel: np.ndarray, models: StageM
                 cur.score_i1 = prev.score_i1
 
 
+def gate_edit_prediction(logits: torch.Tensor, threshold: float) -> int:
+    """Return an EDIT_CLASSES index. Match is the default unless an error is confident."""
+    if logits.ndim == 2:
+        logits = logits[0]
+    probs = torch.softmax(logits, dim=-1)
+    pred = int(torch.argmax(probs).item())
+    if pred == 0:
+        return 0
+    if float(probs[pred].item()) < float(threshold):
+        return 0
+    return pred
+
+
 def apply_learned_edits(state: PipelineState, mel: np.ndarray, models: StageModels) -> None:
     if models.edits is None or mel is None:
         return
     device = models.device
     model = models.edits
+    thr = models.edits_threshold
     editable = {"missed_note", "extra_note", "wrong_note", "intonation_error"}
     kept: list[PipelineLabel] = []
+    pending: list[PipelineLabel] = []
     for lab in state.labels:
         if lab.type not in editable:
             kept.append(lab)
             continue
-        crop = torch.from_numpy(_mel_crop(mel, lab.start_time, lab.end_time)).unsqueeze(0).to(
-            device
-        )
-        with torch.no_grad():
-            pred = int(model(crop).argmax(-1).item())
-        name = EDIT_CLASSES[pred]
-        if name == "match":
+        if float(lab.end_time) - float(lab.start_time) < MIN_EDIT_CROP_SEC:
             continue
-        lab.type = name
+        pending.append(lab)
+    if not pending:
+        state.labels = kept
+        return
+    crops = np.stack(
+        [_mel_crop(mel, float(lab.start_time), float(lab.end_time)) for lab in pending]
+    )
+    preds: list[int] = []
+    with torch.no_grad():
+        for i0 in range(0, len(crops), 64):
+            batch = torch.from_numpy(crops[i0 : i0 + 64]).to(device)
+            logits = model(batch)
+            for row in logits:
+                preds.append(gate_edit_prediction(row, thr))
+    for lab, pred in zip(pending, preds):
+        if EDIT_CLASSES[pred] == "match":
+            continue
+        # Keep the heuristic type; the net only gates emit vs match.
         lab.comment = (lab.comment or "") + " | stage2-net"
         kept.append(lab)
     state.labels = kept

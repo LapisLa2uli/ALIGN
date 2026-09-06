@@ -41,6 +41,21 @@ alignment:
   onset_lookback_sec: 0.15
   onset_max_shift_sec: 0.6
   onset_rise_db: 8.0
+  # DTW only the sounding region so start/end padding or an unmatched
+  # opening rest cannot pin the path and shift the rest of the take.
+  trim_silence: true
+  silence_top_db: 35
+  silence_pad_sec: 0.08
+  # Interior rests: energy row + compress long silent runs before DTW
+  energy_weight: 1.5
+  compress_silence: true
+  silence_energy_thresh: 0.08
+  keep_silence_sec: 0.16
+  # Rest-separated figures: match each phrase in score order so a later
+  # similar arpeggio cannot steal earlier notes (lag then cascades).
+  phrase_dtw: true
+  phrase_min_rest_ql: 0.25
+  phrase_slack: 1.12
 
 taxonomy:
   - wrong_note          # different pitch than the score (e.g. played B instead of C)

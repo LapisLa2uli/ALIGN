@@ -79,13 +79,13 @@ def test_contiguous_part_is_a_slice_not_a_subsequence():
     assert not is_contiguous_part([60, 62, 64, 65], [60, 62, 64])
 
 
-def test_match_melodies_containment_both_ways():
+def test_match_melodies_set_equal_and_near():
     gold = [
         WeakMelody(pitches=[60, 62, 64], type="wrong_note"),
-        WeakMelody(pitches=[67, 69], type="repetition"),
+        WeakMelody(pitches=[67, 69, 71], type="repetition"),
     ]
     pred = [
-        WeakMelody(pitches=[67, 69, 71], type="repetition"),
+        WeakMelody(pitches=[67, 69, 71], type="extra_note"),
         WeakMelody(pitches=[60, 62, 64], type="wrong_note"),
     ]
     f1, precision = match_melodies(gold, pred)
@@ -93,20 +93,20 @@ def test_match_melodies_containment_both_ways():
     assert precision == 1.0
 
 
-def test_pred_inside_gold_is_correct():
+def test_pred_inside_gold_is_not_a_match():
     gold = [WeakMelody(pitches=[60, 62, 64, 65, 67])]
     pred = [WeakMelody(pitches=[62, 64, 65])]
     f1, precision = match_melodies(gold, pred)
-    assert f1 == 1.0
-    assert precision == 1.0
+    assert f1 == 0.0
+    assert precision == 0.0
 
 
-def test_gold_inside_pred_is_correct():
+def test_gold_inside_pred_is_not_a_match():
     gold = [WeakMelody(pitches=[62, 64])]
     pred = [WeakMelody(pitches=[60, 62, 64, 65])]
     f1, precision = match_melodies(gold, pred)
-    assert f1 == 1.0
-    assert precision == 1.0
+    assert f1 == 0.0
+    assert precision == 0.0
 
 
 def test_unmatched_pred_lowers_precision():
@@ -120,12 +120,12 @@ def test_unmatched_pred_lowers_precision():
     assert abs(f1 - (2 * 0.5 * 1.0) / 1.5) < 1e-9
 
 
-def test_one_gold_can_validate_several_preds():
+def test_exclusive_one_gold_one_pred():
     gold = [WeakMelody(pitches=[60, 62, 64, 65])]
     pred = [
-        WeakMelody(pitches=[60, 62]),
-        WeakMelody(pitches=[62, 64, 65]),
+        WeakMelody(pitches=[60, 62, 64, 65]),
+        WeakMelody(pitches=[60, 62, 64, 65]),
     ]
     f1, precision = match_melodies(gold, pred)
-    assert precision == 1.0
-    assert f1 == 1.0
+    assert precision == 0.5
+    assert abs(f1 - (2 * 0.5 * 1.0) / 1.5) < 1e-9

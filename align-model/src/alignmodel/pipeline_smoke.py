@@ -6,6 +6,8 @@ from pathlib import Path
 
 from alignmodel.eval_melodies import eval_sample
 from alignmodel.pipeline import run_pipeline, write_prediction
+from alignmodel.stages.gold import first_pass_labels
+from alignmodel.types import pipeline_label_to_dict
 
 
 def find_repetition_sample(root: Path) -> Path:
@@ -32,8 +34,10 @@ def find_repetition_sample(root: Path) -> Path:
 
 
 def gold_spans(sample_dir: Path, kind: str) -> list[tuple[float, float]]:
-    labels = json.loads((sample_dir / "labels.json").read_text(encoding="utf-8")).get(
-        "labels", []
+    labels = first_pass_labels(
+        json.loads((sample_dir / "labels.json").read_text(encoding="utf-8")).get(
+            "labels", []
+        )
     )
     return [
         (float(lab["start_time"]), float(lab["end_time"]))
@@ -78,24 +82,7 @@ def smoke_pipeline(
     ]
     gold_rep = gold_spans(sample, "repetition")
     counts = Counter(lab.type for lab in state.labels)
-    pred_labels = [
-        {
-            "type": lab.type,
-            "start_time": lab.start_time,
-            "end_time": lab.end_time,
-            "comment": lab.comment,
-            "measure_number": lab.measure_number,
-            "repeats_label_range": (
-                {
-                    "start_time": lab.repeats_label_range.start_time,
-                    "end_time": lab.repeats_label_range.end_time,
-                }
-                if lab.repeats_label_range is not None
-                else None
-            ),
-        }
-        for lab in state.labels
-    ]
+    pred_labels = [pipeline_label_to_dict(lab) for lab in state.labels]
     melody = eval_sample(sample, pred_labels=pred_labels)
     report = {
         "sample": str(sample),

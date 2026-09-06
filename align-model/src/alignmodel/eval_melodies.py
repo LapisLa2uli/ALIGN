@@ -11,27 +11,11 @@ from alignmodel.melody import (
     pred_melodies_from_labels,
 )
 from alignmodel.pipeline import run_pipeline
+from alignmodel.types import pipeline_label_to_dict
 
 
 def _label_dicts_from_pipeline(state) -> list[dict[str, Any]]:
-    return [
-        {
-            "type": lab.type,
-            "start_time": lab.start_time,
-            "end_time": lab.end_time,
-            "comment": lab.comment,
-            "measure_number": lab.measure_number,
-            "repeats_label_range": (
-                {
-                    "start_time": lab.repeats_label_range.start_time,
-                    "end_time": lab.repeats_label_range.end_time,
-                }
-                if lab.repeats_label_range is not None
-                else None
-            ),
-        }
-        for lab in state.labels
-    ]
+    return [pipeline_label_to_dict(lab) for lab in state.labels]
 
 
 def eval_sample(
@@ -62,6 +46,7 @@ def eval_sample(
         "sample": sample_dir.name,
         "n_gold": len(gold),
         "n_pred": len(pred),
+        "n_matched": int(detail.get("n_matched", detail["n_pred_correct"])),
         "melody_f1": f1,
         "melody_precision": precision,
         "melody_recall": recall,
@@ -115,5 +100,7 @@ def eval_root(
         "mean_melody_recall": round(mean_rec, 4),
         "mean_melody_similarity": round(mean_f1, 4),
         "mean_note_set_iou": round(mean_prec, 4),
+        "mean_n_gold": round(sum(r["n_gold"] for r in rows) / n, 3) if rows else 0.0,
+        "mean_n_pred": round(sum(r["n_pred"] for r in rows) / n, 3) if rows else 0.0,
         "samples": rows,
     }

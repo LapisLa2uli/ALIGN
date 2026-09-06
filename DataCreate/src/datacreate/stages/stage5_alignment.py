@@ -1,60 +1,50 @@
 from __future__ import annotations
 
-import json
 import logging
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from datacreate.audio_utils import load_audio
+from datacreate.audio_utils import load_audio, sounding_span
 import librosa
 import numpy as np
 from librosa.sequence import dtw
 
 from datacreate.config import PipelineConfig
 from datacreate.models import Label
-from datacreate.note_alignment import align_score_events
-
-_DEBUG_LOG = Path(__file__).resolve().parents[4] / "debug-e01e0d.log"
-
-
-def _debug_log(
-    location: str,
-    message: str,
-    data: dict[str, Any],
-    hypothesis_id: str,
-    run_id: str = "pre-fix",
-) -> None:
-    # region agent log
-    try:
-        payload = {
-            "sessionId": "e01e0d",
-            "runId": run_id,
-            "hypothesisId": hypothesis_id,
-            "location": location,
-            "message": message,
-            "data": data,
-            "timestamp": int(time.time() * 1000),
-        }
-        with _DEBUG_LOG.open("a", encoding="utf-8") as fh:
-            fh.write(json.dumps(payload) + "\n")
-    except OSError:
-        pass
-    # endregion
+from datacreate.note_alignment import (
+    _audio_time_for_ql,
+    _build_ref_to_perf,
+    _extract_score_events,
+    _interp_ref_to_perf,
+    align_score_events,
+)
 
 
 def _zero_norm_columns(feat: np.ndarray, eps: float = 1e-8) -> int:
     return int(np.sum(np.linalg.norm(feat, axis=0) < eps))
 
 
+_CHROMA_BINS = 12
+
+
+def _chroma(feat: np.ndarray) -> np.ndarray:
+    if feat.shape[0] > _CHROMA_BINS:
+        return feat[:_CHROMA_BINS]
+    return feat
+
+
 def _sanitize_features(feat: np.ndarray, eps: float = 1e-8) -> np.ndarray:
-    """Replace silent chroma frames so cosine DTW stays finite."""
+    """Replace silent chroma frames so cosine DTW stays finite.
+
+    Energy (extra rows) is left alone so silence stays distinct from notes.
+    """
     out = feat.copy()
-    norms = np.linalg.norm(out, axis=0)
+    chroma = _chroma(out)
+    norms = np.linalg.norm(chroma, axis=0)
     silent = norms < eps
     if np.any(silent):
-        out[:, silent] = 1.0 / np.sqrt(out.shape[0])
+        chroma[:, silent] = 1.0 / np.sqrt(chroma.shape[0])
     return out
 
 
@@ -67,11 +57,692 @@ class AlignmentResult:
 
 
 def extract_features(audio: np.ndarray, sr: int, config: PipelineConfig) -> np.ndarray:
+    hop = int(config.mel.get("hop_length", 512))
     feature = str(config.alignment.get("feature", "chroma")).lower()
     if feature == "cqt":
         bins = int(config.alignment.get("cqt_bins", 84))
-        return librosa.feature.chroma_cqt(y=audio, sr=sr, n_bins=bins)
-    return librosa.feature.chroma_cqt(y=audio, sr=sr)
+        chroma = librosa.feature.chroma_cqt(y=audio, sr=sr, n_bins=bins, hop_length=hop)
+    else:
+        chroma = librosa.feature.chroma_cqt(y=audio, sr=sr, hop_length=hop)
+    return _with_energy(chroma, audio, sr, hop, config)
+
+
+def _with_energy(
+    chroma: np.ndarray,
+    audio: np.ndarray,
+    sr: int,
+    hop: int,
+    config: PipelineConfig,
+) -> np.ndarray:
+    """Append a loudness row so interior rests do not match sounding notes."""
+    weight = float(config.alignment.get("energy_weight", 1.5))
+    if weight <= 0 or chroma.size == 0:
+        return chroma
+    frame_length = min(len(audio), max(hop * 2, 1024))
+    rms = librosa.feature.rms(y=audio, hop_length=hop, frame_length=frame_length)[0]
+    n = chroma.shape[1]
+    if rms.size != n:
+        if rms.size == 0:
+            energy = np.zeros(n, dtype=np.float64)
+        else:
+            energy = np.interp(np.linspace(0, 1, n), np.linspace(0, 1, rms.size), rms)
+    else:
+        energy = rms.astype(np.float64, copy=True)
+    peak = float(np.percentile(energy, 95)) if energy.size else 0.0
+    if peak < 1e-8:
+        normed = np.zeros_like(energy)
+    else:
+        normed = np.clip(energy / peak, 0.0, 1.0)
+    return np.vstack([chroma, weight * normed])
+
+
+def _voiced_from_energy(
+    energy: np.ndarray,
+    *,
+    silence_thresh: float = 0.08,
+    rise_db: float = 12.0,
+) -> np.ndarray:
+    """Voiced frames from max-normalized energy, with a noise-floor fallback.
+
+    A fixed 0.08-of-peak cut drops *pp* clarinet notes and can keep noisy rests.
+    Anything clearly above the quiet-frame floor is treated as sounding.
+    """
+    n = int(energy.size)
+    if n == 0:
+        return np.zeros(0, dtype=bool)
+    peak = float(np.max(energy))
+    if peak < 1e-12:
+        return np.zeros(n, dtype=bool)
+    normed = energy / peak
+    db = 20.0 * np.log10(np.clip(normed, 1e-8, 1.0))
+    floor = float(np.percentile(db, 20))
+    return (normed >= silence_thresh) | (db >= floor + rise_db)
+
+
+def silence_keep_mask(
+    energy: np.ndarray,
+    hop_sec: float,
+    *,
+    silence_thresh: float = 0.08,
+    keep_silence_sec: float = 0.16,
+) -> np.ndarray:
+    """Keep voiced frames plus a short collar on each rest; drop rest interiors.
+
+    Long score rests vs a player who barely waits would otherwise consume the
+    Sakoe–Chiba band and shift every later note.
+    """
+    n = int(energy.size)
+    if n == 0:
+        return np.zeros(0, dtype=bool)
+    voiced = _voiced_from_energy(energy, silence_thresh=silence_thresh)
+    keep = voiced.copy()
+    keep_n = max(2, int(round(keep_silence_sec / max(hop_sec, 1e-6))))
+    i = 0
+    while i < n:
+        if voiced[i]:
+            i += 1
+            continue
+        j = i
+        while j < n and not voiced[j]:
+            j += 1
+        if (j - i) <= 2 * keep_n:
+            keep[i:j] = True
+        else:
+            keep[i : i + keep_n] = True
+            keep[j - keep_n : j] = True
+        i = j
+    keep[0] = True
+    keep[-1] = True
+    return keep
+
+
+def _compress_for_dtw(
+    feat: np.ndarray,
+    hop: int,
+    sr: int,
+    config: PipelineConfig,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return (compressed features, original frame index per compressed frame)."""
+    n = feat.shape[1]
+    idx = np.arange(n, dtype=np.int32)
+    if n < 16 or not config.alignment.get("compress_silence", True):
+        return feat, idx
+    energy = np.abs(feat[-1]) if feat.shape[0] > _CHROMA_BINS else np.zeros(n)
+    if float(np.max(energy)) < 1e-8:
+        return feat, idx
+    hop_sec = hop / float(sr)
+    keep = silence_keep_mask(
+        energy,
+        hop_sec,
+        silence_thresh=float(config.alignment.get("silence_energy_thresh", 0.08)),
+        keep_silence_sec=float(config.alignment.get("keep_silence_sec", 0.16)),
+    )
+    kept = np.flatnonzero(keep)
+    # Always compress when a real rest run was removed; do not bail at 85%.
+    if kept.size < 8 or kept.size >= n:
+        return feat, idx
+    return feat[:, kept], kept.astype(np.int32)
+
+
+def _dtw_cost(ref_feat: np.ndarray, perf_feat: np.ndarray, energy_weight: float) -> np.ndarray:
+    """Cosine chroma distance plus |energy| so rests do not match notes."""
+    ref_c = _chroma(ref_feat).astype(np.float64, copy=False)
+    perf_c = _chroma(perf_feat).astype(np.float64, copy=False)
+    ref_n = np.linalg.norm(ref_c, axis=0, keepdims=True)
+    perf_n = np.linalg.norm(perf_c, axis=0, keepdims=True)
+    ref_u = ref_c / np.clip(ref_n, 1e-8, None)
+    perf_u = perf_c / np.clip(perf_n, 1e-8, None)
+    cost = np.clip(1.0 - ref_u.T @ perf_u, 0.0, 2.0)
+    if energy_weight > 0 and ref_feat.shape[0] > _CHROMA_BINS and perf_feat.shape[0] > _CHROMA_BINS:
+        ref_e = np.abs(ref_feat[-1].astype(np.float64))
+        perf_e = np.abs(perf_feat[-1].astype(np.float64))
+        ref_e = ref_e / max(float(np.max(ref_e)), 1e-8)
+        perf_e = perf_e / max(float(np.max(perf_e)), 1e-8)
+        cost = cost + float(energy_weight) * np.abs(ref_e[:, None] - perf_e[None, :])
+    return cost
+
+
+def _sample_to_frame(sample: int, hop: int, n_frames: int) -> int:
+    if n_frames <= 0:
+        return 0
+    return int(max(0, min(n_frames - 1, sample // max(1, hop))))
+
+
+def _sounding_feature_span(
+    n_samples: int,
+    n_frames: int,
+    hop: int,
+    start_sample: int,
+    end_sample: int,
+) -> tuple[int, int]:
+    """Convert a sounding sample span to a half-open feature-frame slice."""
+    if n_frames <= 1:
+        return 0, n_frames
+    i0 = _sample_to_frame(start_sample, hop, n_frames)
+    i1 = _sample_to_frame(max(start_sample, end_sample - 1), hop, n_frames) + 1
+    i1 = max(i0 + 1, min(n_frames, i1))
+    # Keep the full take when the slice would be a handful of frames.
+    if i1 - i0 < min(8, n_frames):
+        return 0, n_frames
+    if start_sample <= hop and end_sample >= n_samples - hop:
+        return 0, n_frames
+    return i0, i1
+
+
+def _dtw_band_ratio(n_ref: int, n_perf: int, configured: float) -> float:
+    """Widen the Sakoe–Chiba band enough to cover remaining length mismatch."""
+    longer = max(n_ref, n_perf, 1)
+    mismatch = abs(n_ref - n_perf) / longer
+    return float(min(0.5, max(configured, mismatch + 0.05)))
+
+
+def _score_phrase_spans(
+    score_path: Path,
+    audio_dur: float,
+    min_rest_ql: float = 0.25,
+) -> list[tuple[float, float]]:
+    """Sounding-phrase spans on the reference-audio timeline, split at long rests."""
+    if not score_path.exists() or audio_dur <= 0:
+        return []
+    events = _extract_score_events(score_path)
+    if not events:
+        return []
+    ql_end = max(float(ev["offset_ql"]) + float(ev["duration_ql"]) for ev in events)
+    phrases: list[tuple[float, float]] = []
+    start = end = None
+    for ev in events:
+        long_rest = bool(ev.get("is_rest")) and float(ev["duration_ql"]) >= min_rest_ql
+        if long_rest:
+            if start is not None and end is not None:
+                phrases.append((start, end))
+            start = end = None
+            continue
+        if ev.get("is_rest"):
+            continue
+        a0 = _audio_time_for_ql(float(ev["offset_ql"]), ql_end, audio_dur)
+        a1 = _audio_time_for_ql(
+            float(ev["offset_ql"]) + float(ev["duration_ql"]), ql_end, audio_dur
+        )
+        if start is None:
+            start = a0
+        end = a1
+    if start is not None and end is not None:
+        phrases.append((start, end))
+    return phrases
+
+
+def _densify_warping_path(wp: np.ndarray) -> np.ndarray:
+    """Fill jumps so compressed/phrase gaps stay matched (no fake missed notes)."""
+    if wp is None or len(wp) == 0:
+        return np.zeros((0, 2), dtype=np.int32)
+    order = np.lexsort((wp[:, 1], wp[:, 0]))
+    src = wp[order].astype(np.int32, copy=False)
+    out = [src[0].tolist()]
+    for i in range(1, len(src)):
+        r0, p0 = out[-1]
+        r1, p1 = int(src[i, 0]), int(src[i, 1])
+        if r1 == r0 and p1 == p0:
+            continue
+        dr = r1 - r0
+        dp = p1 - p0
+        steps = max(abs(dr), abs(dp), 1)
+        for t in range(1, steps + 1):
+            out.append(
+                [r0 + int(round(dr * t / steps)), p0 + int(round(dp * t / steps))]
+            )
+    return np.asarray(out, dtype=np.int32)
+
+
+def _voiced_bounds(feat: np.ndarray, thresh: float = 0.08) -> tuple[int, int]:
+    n = int(feat.shape[1])
+    if n == 0 or feat.shape[0] <= _CHROMA_BINS:
+        return 0, n
+    energy = np.abs(feat[-1])
+    peak = float(np.max(energy))
+    if peak < 1e-12:
+        return 0, n
+    voiced = np.flatnonzero(energy / peak >= thresh)
+    if voiced.size == 0:
+        return 0, n
+    return int(voiced[0]), int(voiced[-1]) + 1
+
+
+def _run_subseq_dtw(
+    query: np.ndarray,
+    target: np.ndarray,
+    energy_weight: float,
+) -> np.ndarray:
+    cost = _dtw_cost(query, target, energy_weight)
+    _, wp = dtw(C=cost, metric="euclidean", subseq=True)
+    return np.asarray(wp, dtype=np.int32)
+
+
+def _map_times_through_path(
+    times: list[float], wp: np.ndarray, n_ref: int, fts: float
+) -> list[float]:
+    ref_to_perf = _build_ref_to_perf(wp, n_ref)
+    out: list[float] = []
+    for t in times:
+        frame = max(0.0, float(t) / max(fts, 1e-9))
+        out.append(_interp_ref_to_perf(frame, ref_to_perf) * fts)
+    return out
+
+
+def _splice_path(
+    wp: np.ndarray, segment: np.ndarray, clear_from_ref: int | None = None
+) -> np.ndarray:
+    if segment.size == 0:
+        return wp
+    r0 = int(segment[:, 0].min())
+    r1 = int(segment[:, 0].max())
+    lo = r0 if clear_from_ref is None else min(int(clear_from_ref), r0)
+    keep = (wp[:, 0] < lo) | (wp[:, 0] > r1)
+    return np.vstack([wp[keep], segment])
+
+
+def _voiced_length(feat: np.ndarray, thresh: float = 0.08) -> int:
+    if feat.size == 0 or feat.shape[0] <= _CHROMA_BINS:
+        return int(feat.shape[1]) if feat.size else 0
+    energy = np.abs(feat[-1])
+    peak = float(np.max(energy))
+    if peak < 1e-12:
+        return 0
+    return int(np.count_nonzero(energy / peak >= thresh))
+
+
+def _global_pace(ref_feat: np.ndarray, perf_feat: np.ndarray) -> float:
+    ref_n = max(8, _voiced_length(ref_feat))
+    perf_n = max(8, _voiced_length(perf_feat))
+    return float(np.clip(perf_n / ref_n, 0.85, 1.55))
+
+
+def _first_voiced_island(
+    feat: np.ndarray,
+    start: int,
+    end: int,
+    hop: int,
+    sr: int,
+    merge_gap_sec: float = 0.16,
+    expected_sec: float | None = None,
+    pace: float = 1.0,
+) -> tuple[int, int]:
+    """First voiced run in [start, end), merging brief articulation gaps.
+
+    When ``expected_sec`` is set, short dips cannot end the island before
+    ~75% of the written phrase, and a long slur is capped near the phrase.
+    """
+    if feat.size == 0 or feat.shape[0] <= _CHROMA_BINS:
+        return start, end
+    energy = np.abs(feat[-1])
+    peak = float(np.max(energy)) if energy.size else 0.0
+    if peak < 1e-12:
+        return start, end
+    voiced = energy / peak >= 0.08
+    n = int(voiced.size)
+    i0 = max(0, min(start, n))
+    i1 = max(i0, min(end, n))
+    i = i0
+    while i < i1 and not voiced[i]:
+        i += 1
+    if i >= i1:
+        return start, end
+    fts = hop / float(sr)
+    merge_n = max(2, int(round(merge_gap_sec / max(fts, 1e-6))))
+    long_merge = max(merge_n, int(round(0.30 / max(fts, 1e-6))))
+    min_keep = 0
+    max_keep = i1 - i
+    if expected_sec is not None and expected_sec > 0:
+        # min_keep follows written duration, not global pace (extras inflate pace).
+        min_keep = int(round(0.88 * expected_sec / max(fts, 1e-6)))
+        max_keep = int(round(1.15 * expected_sec * max(pace, 0.85) / max(fts, 1e-6))) + 4
+    j = i
+    while j < i1 and (j - i) < max_keep:
+        if voiced[j]:
+            j += 1
+            continue
+        gap = 0
+        k = j
+        while k < i1 and not voiced[k] and gap < long_merge:
+            k += 1
+            gap += 1
+        if k < i1 and voiced[k] and (
+            gap < merge_n or ((j - i) < min_keep and gap < long_merge)
+        ):
+            j = k
+            continue
+        break
+    return i, max(j, i + 1)
+
+
+def _match_phrase_in_window(
+    ref_feat: np.ndarray,
+    perf_feat: np.ndarray,
+    t0: float,
+    t1: float,
+    window_lo: float,
+    window_hi: float,
+    hop: int,
+    sr: int,
+    config: PipelineConfig,
+    expected_sec: float | None = None,
+    pace: float = 1.0,
+) -> np.ndarray | None:
+    """Bounded DTW of one score phrase into a performance window (global frames)."""
+    fts = hop / float(sr)
+    n_ref = int(ref_feat.shape[1])
+    n_perf = int(perf_feat.shape[1])
+    energy_weight = float(config.alignment.get("energy_weight", 1.5))
+    r0 = int(max(0, min(n_ref - 1, np.floor(t0 / fts))))
+    r1 = int(max(r0 + 8, min(n_ref, np.ceil(t1 / fts) + 1)))
+    q_lo, q_hi = _voiced_bounds(ref_feat[:, r0:r1])
+    rq0, rq1 = r0 + q_lo, r0 + q_hi
+    if rq1 - rq0 < 8:
+        rq0, rq1 = r0, r1
+    y0 = int(max(0, min(n_perf - 1, np.floor(window_lo / fts))))
+    y1 = int(max(y0 + 8, min(n_perf, np.ceil(window_hi / fts))))
+    qlen = rq1 - rq0
+    # Stay on the first voiced island after the previous phrase. Using
+    # first-to-last voiced would include the next figure and end-pin into it.
+    i0, i1 = _first_voiced_island(
+        perf_feat, y0, y1, hop, sr, expected_sec=expected_sec, pace=pace
+    )
+    min_island = max(8, int(0.85 * (expected_sec or (qlen * hop / float(sr))) / max(hop / float(sr), 1e-6)))
+    if i1 - i0 >= min_island:
+        y0, y1 = i0, i1
+    elif i0 > y0:
+        y0 = i0
+    if y1 - y0 < 8 or qlen < 8:
+        return None
+    query = ref_feat[:, rq0:rq1]
+    target = perf_feat[:, y0:y1]
+    q_comp, q_idx = _compress_for_dtw(query, hop, sr, config)
+    t_comp, t_idx = _compress_for_dtw(target, hop, sr, config)
+    # Bounded DTW pins the phrase to the *start* of the remaining audio.
+    # Subseq matching is avoided here: a later repeat of the same figure
+    # would otherwise steal the path and lag every later phrase.
+    try:
+        if min(q_comp.shape[1], t_comp.shape[1]) >= 8:
+            band = _dtw_band_ratio(int(q_comp.shape[1]), int(t_comp.shape[1]), 0.25)
+            _, seg = dtw(
+                C=_dtw_cost(q_comp, t_comp, energy_weight),
+                metric="euclidean",
+                subseq=False,
+                band_rad=band,
+            )
+            seg = np.asarray(seg, dtype=np.int32)
+            seg[:, 0] = q_idx[np.clip(seg[:, 0], 0, len(q_idx) - 1)]
+            seg[:, 1] = t_idx[np.clip(seg[:, 1], 0, len(t_idx) - 1)]
+        else:
+            return None
+    except Exception:
+        return None
+    if seg is None or seg.size == 0:
+        return None
+    seg = seg.copy()
+    seg[:, 0] += rq0
+    seg[:, 1] += y0
+    m0 = int(seg[:, 1].min())
+    m1 = int(seg[:, 1].max()) + 1
+    ylen = m1 - m0
+    if ylen < max(8, int(0.55 * qlen)) or ylen > int(2.4 * qlen) + 8:
+        return None
+    if rq0 > r0:
+        lead = np.column_stack(
+            [np.arange(r0, rq0, dtype=np.int32), np.full(rq0 - r0, m0, dtype=np.int32)]
+        )
+        seg = np.vstack([lead, seg])
+    if r1 > int(seg[:, 0].max()) + 1:
+        last_p = int(np.clip(m1 - 1, 0, n_perf - 1))
+        tail_r0 = int(seg[:, 0].max()) + 1
+        tail = np.column_stack(
+            [
+                np.arange(tail_r0, r1, dtype=np.int32),
+                np.full(max(0, r1 - tail_r0), last_p, dtype=np.int32),
+            ]
+        )
+        if len(tail):
+            seg = np.vstack([seg, tail])
+    return seg
+
+
+def _silence_gaps(
+    feat: np.ndarray,
+    start_sec: float,
+    end_sec: float,
+    hop: int,
+    sr: int,
+    min_gap_sec: float = 0.35,
+) -> list[tuple[float, float]]:
+    """Voiced-energy gaps of at least ``min_gap_sec`` in [start_sec, end_sec]."""
+    if feat.size == 0 or feat.shape[0] <= _CHROMA_BINS or end_sec <= start_sec:
+        return []
+    fts = hop / float(sr)
+    energy = np.abs(feat[-1])
+    peak = float(np.max(energy)) if energy.size else 0.0
+    if peak < 1e-12:
+        return []
+    voiced = energy / peak >= 0.08
+    i0 = int(max(0, min(len(voiced), np.floor(start_sec / fts))))
+    i1 = int(max(i0, min(len(voiced), np.ceil(end_sec / fts))))
+    min_n = max(3, int(round(min_gap_sec / max(fts, 1e-6))))
+    gaps: list[tuple[float, float]] = []
+    i = i0
+    while i < i1:
+        if voiced[i]:
+            i += 1
+            continue
+        j = i
+        while j < i1 and not voiced[j]:
+            j += 1
+        if j - i >= min_n:
+            gaps.append((i * fts, j * fts))
+        i = j
+    return gaps
+
+
+def _skip_restart_extra(
+    cursor: float,
+    remain_ref: float,
+    pace: float,
+    perf_feat: np.ndarray,
+    hop: int,
+    sr: int,
+    n_perf: int,
+    logger: logging.Logger | None = None,
+) -> float:
+    """Skip a practice restart so leftover score sits on the continuation.
+
+    After a stop, players often replay earlier figures and then continue.
+    If leftover audio is much longer than leftover score, jump past the extra
+    prefix (after the last clear gap when there is one).
+    """
+    fts = hop / float(sr)
+    perf_end = n_perf * fts
+    leftover = perf_end - cursor
+    need = max(0.4, remain_ref * pace * 1.15)
+    if leftover <= need * 1.40:
+        return cursor
+    # Only jump when the player actually stopped. A long continuous tail is
+    # extras after the written ending — do not steal the last figure.
+    gaps = _silence_gaps(perf_feat, cursor, perf_end, hop, sr, min_gap_sec=0.35)
+    if not gaps:
+        return cursor
+    after = gaps[-1][1]
+    leftover_after = perf_end - after
+    if leftover_after < remain_ref * pace * 0.70:
+        return cursor
+    new_cursor = after
+    leftover = leftover_after
+    if leftover > need * 1.40:
+        new_cursor = max(new_cursor, perf_end - need)
+    if logger is not None and new_cursor > cursor + 0.2:
+        logger.info(
+            "Skipped %.2fs of restart extra (cursor %.2f -> %.2f, leftover score %.2fs)",
+            new_cursor - cursor,
+            cursor,
+            new_cursor,
+            remain_ref,
+        )
+    return new_cursor
+
+
+def _align_phrases_sequential(
+    wp: np.ndarray,
+    phrases: list[tuple[float, float]],
+    ref_feat: np.ndarray,
+    perf_feat: np.ndarray,
+    hop: int,
+    sr: int,
+    config: PipelineConfig,
+    logger: logging.Logger,
+) -> np.ndarray:
+    """Match each rest-separated phrase in score order.
+
+    Global chroma DTW on repeating arpeggios often maps an early figure onto a
+    later one. Pinning each phrase to the audio after the previous phrase stops
+    that lag from cascading.
+    """
+    if len(phrases) < 2:
+        return wp
+    fts = hop / float(sr)
+    n_perf = int(perf_feat.shape[1])
+    slack = float(config.alignment.get("phrase_slack", 1.12))
+    pace = _global_pace(ref_feat, perf_feat)
+    cursor = 0.0
+    logger.info(
+        "Sequential phrase DTW: %d rest-separated figures (pace=%.2f)",
+        len(phrases),
+        pace,
+    )
+    for idx, (t0, t1) in enumerate(phrases):
+        ref_dur = max(t1 - t0, 1e-3)
+        remain = sum(max(p[1] - p[0], 0.0) for p in phrases[idx + 1 :])
+        leftover_score = ref_dur + remain
+        perf_end = n_perf * fts
+        if idx >= 1:
+            cursor = _skip_restart_extra(
+                cursor, leftover_score, pace, perf_feat, hop, sr, n_perf, logger
+            )
+        window_lo = cursor
+        expected = ref_dur * pace * slack
+        if idx + 1 < len(phrases):
+            reserve = remain * pace * 0.35
+            window_hi = min(perf_end - reserve, window_lo + expected + 0.20)
+            window_hi = max(window_hi, window_lo + ref_dur * 0.80)
+        else:
+            # Do not end-pin the last figure across a restart / extra tail.
+            window_hi = min(perf_end, window_lo + expected + 0.35)
+        window_hi = min(perf_end, max(window_hi, window_lo + 0.3))
+        expected_perf = ref_dur * pace
+        seg = _match_phrase_in_window(
+            ref_feat,
+            perf_feat,
+            t0,
+            t1,
+            window_lo,
+            window_hi,
+            hop,
+            sr,
+            config,
+            expected_sec=ref_dur,
+            pace=pace,
+        )
+        if seg is None and idx + 1 < len(phrases):
+            wider = min(perf_end - remain * pace * 0.20, window_lo + expected * 1.25 + 0.45)
+            if wider > window_hi + 0.12:
+                seg = _match_phrase_in_window(
+                    ref_feat,
+                    perf_feat,
+                    t0,
+                    t1,
+                    window_lo,
+                    wider,
+                    hop,
+                    sr,
+                    config,
+                    expected_sec=ref_dur,
+                    pace=pace,
+                )
+        if seg is None:
+            nxt0, nxt1 = _first_voiced_island(
+                perf_feat,
+                min(n_perf - 1, int(cursor / fts) + 2),
+                n_perf,
+                hop,
+                sr,
+                expected_sec=ref_dur,
+                pace=pace,
+            )
+            if nxt1 - nxt0 >= 8:
+                seg = _match_phrase_in_window(
+                    ref_feat,
+                    perf_feat,
+                    t0,
+                    t1,
+                    nxt0 * fts,
+                    min(perf_end, nxt1 * fts + 0.25),
+                    hop,
+                    sr,
+                    config,
+                    expected_sec=ref_dur,
+                    pace=pace,
+                )
+        if seg is None and idx == len(phrases) - 1:
+            n_ref = int(ref_feat.shape[1])
+            r0 = int(max(0, min(n_ref - 1, np.floor(t0 / fts))))
+            r1 = int(max(r0 + 8, min(n_ref, np.ceil(t1 / fts) + 1)))
+            y0 = int(max(0, min(n_perf - 1, np.floor(cursor / fts))))
+            span = min(n_perf - y0, max(8, int(round(expected / fts)) + 4))
+            y1 = y0 + span
+            if r1 - r0 >= 8 and y1 - y0 >= 8 and (y1 - y0) * fts <= expected * 1.55 + 0.4:
+                rs = np.arange(r0, r1, dtype=np.int32)
+                ps = np.linspace(y0, y1 - 1, r1 - r0)
+                seg = np.column_stack([rs, np.clip(ps, 0, n_perf - 1).astype(np.int32)])
+                logger.info(
+                    "Phrase %d linear leftover %.2f–%.2fs -> perf %.2f–%.2fs",
+                    idx, t0, t1, y0 * fts, y1 * fts,
+                )
+        if seg is None:
+            # Do not inherit a lagged global end; keep walking at score tempo.
+            cursor = min(perf_end, cursor + ref_dur)
+            logger.info(
+                "Phrase %d kept walking cursor at %.2fs (no local match)",
+                idx,
+                cursor,
+            )
+            continue
+        m0 = int(seg[:, 1].min())
+        m1 = int(seg[:, 1].max()) + 1
+        clear_from = 0 if idx == 0 else int(np.floor(phrases[idx - 1][1] / fts))
+        wp = _splice_path(wp, seg, clear_from_ref=clear_from)
+        _, island_end = _first_voiced_island(
+            perf_feat, m0, n_perf, hop, sr, expected_sec=ref_dur, pace=pace
+        )
+        cursor = max(m1, island_end) * fts
+        logger.info(
+            "Phrase %d ref %.2f–%.2fs -> perf %.2f–%.2fs",
+            idx,
+            t0,
+            t1,
+            m0 * fts,
+            m1 * fts,
+        )
+    return wp
+
+
+def _repair_crushed_phrases(
+    wp: np.ndarray,
+    phrases: list[tuple[float, float]],
+    ref_feat: np.ndarray,
+    perf_feat: np.ndarray,
+    hop: int,
+    sr: int,
+    config: PipelineConfig,
+    logger: logging.Logger,
+) -> np.ndarray:
+    return _align_phrases_sequential(
+        wp, phrases, ref_feat, perf_feat, hop, sr, config, logger
+    )
 
 
 def run_alignment(
@@ -80,74 +751,87 @@ def run_alignment(
     sample_dir: Path,
     config: PipelineConfig,
     logger: logging.Logger,
+    *,
+    detect_candidates: bool = True,
 ) -> AlignmentResult:
     sr = config.sample_rate()
+    hop = int(config.mel.get("hop_length", 512))
     perf, _ = load_audio(performance_wav, sr, mono=True)
     ref, _ = load_audio(reference_wav, sr, mono=True)
 
-    # region agent log
-    _debug_log(
-        "stage5_alignment.py:run_alignment",
-        "loaded audio",
-        {
-            "perf_samples": int(len(perf)),
-            "ref_samples": int(len(ref)),
-            "perf_nan": int(np.isnan(perf).sum()),
-            "ref_nan": int(np.isnan(ref).sum()),
-            "perf_rms": float(np.sqrt(np.mean(np.square(perf)))),
-            "ref_rms": float(np.sqrt(np.mean(np.square(ref)))),
-        },
-        "A,B",
-    )
-    # endregion
+    perf_feat = _sanitize_features(extract_features(perf, sr, config))
+    ref_feat = _sanitize_features(extract_features(ref, sr, config))
 
-    perf_feat = extract_features(perf, sr, config)
-    ref_feat = extract_features(ref, sr, config)
-
-    # region agent log
-    _debug_log(
-        "stage5_alignment.py:run_alignment",
-        "raw features before sanitize",
-        {
-            "perf_shape": list(perf_feat.shape),
-            "ref_shape": list(ref_feat.shape),
-            "perf_zero_norm_cols": _zero_norm_columns(perf_feat),
-            "ref_zero_norm_cols": _zero_norm_columns(ref_feat),
-            "perf_feat_nan": int(np.isnan(perf_feat).sum()),
-            "ref_feat_nan": int(np.isnan(ref_feat).sum()),
-        },
-        "C,D",
-    )
-    # endregion
-
-    perf_feat = _sanitize_features(perf_feat)
-    ref_feat = _sanitize_features(ref_feat)
-
-    # region agent log
-    _debug_log(
-        "stage5_alignment.py:run_alignment",
-        "features after sanitize",
-        {
-            "perf_zero_norm_cols": _zero_norm_columns(perf_feat),
-            "ref_zero_norm_cols": _zero_norm_columns(ref_feat),
-        },
-        "D",
-        run_id="post-fix",
-    )
-    # endregion
-
-    band_ratio = float(config.alignment.get("dtw_band_ratio", 0.1))
-    cost_matrix, wp = _run_dtw(ref_feat, perf_feat, band_ratio, config, logger)
-
-    hop = int(config.mel.get("hop_length", 512))
-    frame_to_sec = hop / sr
-    residuals = _frame_residuals(ref_feat, perf_feat, wp)
+    ref_i0, ref_i1 = 0, int(ref_feat.shape[1])
+    perf_i0, perf_i1 = 0, int(perf_feat.shape[1])
+    if config.alignment.get("trim_silence", True):
+        top_db = float(config.alignment.get("silence_top_db", 35.0))
+        pad_sec = float(config.alignment.get("silence_pad_sec", 0.08))
+        ref_s0, ref_s1 = sounding_span(ref, sr, top_db=top_db, pad_sec=pad_sec, hop_length=hop)
+        perf_s0, perf_s1 = sounding_span(perf, sr, top_db=top_db, pad_sec=pad_sec, hop_length=hop)
+        ref_i0, ref_i1 = _sounding_feature_span(len(ref), ref_feat.shape[1], hop, ref_s0, ref_s1)
+        perf_i0, perf_i1 = _sounding_feature_span(
+            len(perf), perf_feat.shape[1], hop, perf_s0, perf_s1
+        )
+        logger.info(
+            "DTW sounding windows ref[%d:%d]/%d  perf[%d:%d]/%d  "
+            "(ref silence %.2f–%.2fs, perf silence %.2f–%.2fs)",
+            ref_i0,
+            ref_i1,
+            ref_feat.shape[1],
+            perf_i0,
+            perf_i1,
+            perf_feat.shape[1],
+            ref_s0 / sr,
+            (len(ref) - ref_s1) / sr,
+            perf_s0 / sr,
+            (len(perf) - perf_s1) / sr,
+        )
 
     score_path = sample_dir / "verified_score.musicxml"
     if not score_path.exists():
         from datacreate.sample_prep import ensure_full_score
 
         score_path = ensure_full_score(sample_dir)
+
+    ref_slice = ref_feat[:, ref_i0:ref_i1]
+    perf_slice = perf_feat[:, perf_i0:perf_i1]
+    ref_comp, ref_idx = _compress_for_dtw(ref_slice, hop, sr, config)
+    perf_comp, perf_idx = _compress_for_dtw(perf_slice, hop, sr, config)
+    if ref_comp.shape[1] < ref_slice.shape[1] or perf_comp.shape[1] < perf_slice.shape[1]:
+        logger.info(
+            "Compressed rest frames for DTW ref %d→%d  perf %d→%d",
+            ref_slice.shape[1],
+            ref_comp.shape[1],
+            perf_slice.shape[1],
+            perf_comp.shape[1],
+        )
+    band_ratio = _dtw_band_ratio(
+        int(ref_comp.shape[1]),
+        int(perf_comp.shape[1]),
+        float(config.alignment.get("dtw_band_ratio", 0.1)),
+    )
+    cost_matrix, wp_comp = _run_dtw(ref_comp, perf_comp, band_ratio, config, logger)
+    wp = np.empty_like(wp_comp)
+    wp[:, 0] = ref_idx[np.clip(wp_comp[:, 0].astype(int), 0, len(ref_idx) - 1)] + ref_i0
+    wp[:, 1] = perf_idx[np.clip(wp_comp[:, 1].astype(int), 0, len(perf_idx) - 1)] + perf_i0
+
+    if config.alignment.get("phrase_dtw", True):
+        phrases = _score_phrase_spans(
+            score_path,
+            len(ref) / float(sr),
+            float(config.alignment.get("phrase_min_rest_ql", 0.25)),
+        )
+        if len(phrases) >= 2:
+            wp = _align_phrases_sequential(
+                wp, phrases, ref_feat, perf_feat, hop, sr, config, logger
+            )
+
+    wp = _densify_warping_path(wp)
+    wp[:, 0] = np.clip(wp[:, 0], 0, int(ref_feat.shape[1]) - 1)
+    wp[:, 1] = np.clip(wp[:, 1], 0, int(perf_feat.shape[1]) - 1)
+    frame_to_sec = hop / sr
+    residuals = _frame_residuals(ref_feat, perf_feat, wp)
     aligned_events = align_score_events(
         score_path,
         wp,
@@ -160,18 +844,21 @@ def run_alignment(
         onset_lookback_sec=float(config.alignment.get("onset_lookback_sec", 0.15)),
         onset_max_shift_sec=float(config.alignment.get("onset_max_shift_sec", 0.6)),
         onset_rise_db=float(config.alignment.get("onset_rise_db", 8.0)),
+        phrase_min_rest_ql=float(config.alignment.get("phrase_min_rest_ql", 0.25)),
     )
 
-    candidates = _detect_candidates(
-        ref_feat,
-        perf_feat,
-        wp,
-        frame_to_sec,
-        config,
-        logger,
-        residuals,
-        aligned_events,
-    )
+    candidates: list[Label] = []
+    if detect_candidates:
+        candidates = _detect_candidates(
+            ref_feat,
+            perf_feat,
+            wp,
+            frame_to_sec,
+            config,
+            logger,
+            residuals,
+            aligned_events,
+        )
 
     alignment_path = sample_dir / "alignment.npz"
     np.savez(
@@ -183,8 +870,12 @@ def run_alignment(
         frame_residuals=residuals,
         hop_length=hop,
         sample_rate=sr,
+        silence_frames=np.asarray([ref_i0, ref_i1, perf_i0, perf_i1], dtype=np.int32),
     )
-    logger.info("Alignment saved to %s; %d candidates", alignment_path, len(candidates))
+    if detect_candidates:
+        logger.info("Alignment saved to %s; %d candidates", alignment_path, len(candidates))
+    else:
+        logger.info("Alignment saved to %s (DTW only)", alignment_path)
     return AlignmentResult(candidates, alignment_path, wp, wp)
 
 
@@ -198,39 +889,22 @@ def _run_dtw(
     if config.alignment.get("jump_dtw", True):
         logger.info("Running bounded DTW (band_rad=%.3f)", band_ratio)
     try:
+        energy_weight = float(config.alignment.get("energy_weight", 1.5))
+        cost = _dtw_cost(ref_feat, perf_feat, energy_weight)
         cost_matrix, wp = dtw(
-            X=ref_feat,
-            Y=perf_feat,
-            metric="cosine",
+            C=cost,
+            metric="euclidean",
             subseq=False,
             band_rad=band_ratio,
         )
-    except Exception as exc:
-        # region agent log
-        _debug_log(
-            "stage5_alignment.py:_run_dtw",
-            "dtw failed",
-            {
-                "error": str(exc),
-                "ref_zero_norm_cols": _zero_norm_columns(ref_feat),
-                "perf_zero_norm_cols": _zero_norm_columns(perf_feat),
-            },
-            "D",
+    except Exception:
+        logger.exception(
+            "dtw failed (ref_zero_norm=%d perf_zero_norm=%d band=%.3f)",
+            _zero_norm_columns(ref_feat),
+            _zero_norm_columns(perf_feat),
+            band_ratio,
         )
-        # endregion
         raise
-    # region agent log
-    _debug_log(
-        "stage5_alignment.py:_run_dtw",
-        "dtw succeeded",
-        {
-            "cost_nan": int(np.isnan(cost_matrix).sum()),
-            "wp_shape": list(wp.shape),
-        },
-        "D",
-        run_id="post-fix",
-    )
-    # endregion
     return cost_matrix, wp
 
 
@@ -295,8 +969,18 @@ def _detect_candidates(
     )
     candidates.extend(rhythm_cands)
 
+    ref_silent = _voiced_from_energy(
+        np.abs(ref_feat[-1]) if ref_feat.shape[0] > _CHROMA_BINS else np.ones(ref_feat.shape[1])
+    )
+    perf_silent = _voiced_from_energy(
+        np.abs(perf_feat[-1]) if perf_feat.shape[0] > _CHROMA_BINS else np.ones(perf_feat.shape[1])
+    )
+    # `_voiced_from_energy` is True for notes; invert for rest frames.
+    ref_silent = ~ref_silent
+    perf_silent = ~perf_silent
+
     for ref_i in range(ref_feat.shape[1]):
-        if ref_i not in matched_ref:
+        if ref_i not in matched_ref and not bool(ref_silent[ref_i]):
             t = ref_i * frame_to_sec
             candidates.append(
                 _make_candidate(
@@ -306,7 +990,7 @@ def _detect_candidates(
             idx += 1
 
     for perf_i in range(perf_feat.shape[1]):
-        if perf_i not in matched_perf:
+        if perf_i not in matched_perf and not bool(perf_silent[perf_i]):
             t = perf_i * frame_to_sec
             candidates.append(
                 _make_candidate(
@@ -508,10 +1192,12 @@ def _expand_to_min_duration(start: float, end: float, min_dur: float) -> tuple[f
 def _pitch_class_mismatch(
     ref_feat: np.ndarray, perf_feat: np.ndarray, ref_i: int, perf_i: int
 ) -> bool:
-    ref_peak = int(np.argmax(ref_feat[:, ref_i]))
-    perf_peak = int(np.argmax(perf_feat[:, perf_i]))
-    ref_strength = float(ref_feat[ref_peak, ref_i])
-    perf_strength = float(perf_feat[perf_peak, perf_i])
+    ref_ch = _chroma(ref_feat)[:, ref_i]
+    perf_ch = _chroma(perf_feat)[:, perf_i]
+    ref_peak = int(np.argmax(ref_ch))
+    perf_peak = int(np.argmax(perf_ch))
+    ref_strength = float(ref_ch[ref_peak])
+    perf_strength = float(perf_ch[perf_peak])
     if ref_strength < 0.2 or perf_strength < 0.2:
         return False
     return ref_peak != perf_peak
@@ -520,8 +1206,8 @@ def _pitch_class_mismatch(
 def _cents_off(
     ref_feat: np.ndarray, perf_feat: np.ndarray, ref_i: int, perf_i: int
 ) -> float | None:
-    ref_vec = ref_feat[:, ref_i]
-    perf_vec = perf_feat[:, perf_i]
+    ref_vec = _chroma(ref_feat)[:, ref_i]
+    perf_vec = _chroma(perf_feat)[:, perf_i]
     if float(np.max(ref_vec)) < 0.15:
         return None
     dot = float(np.dot(ref_vec, perf_vec))

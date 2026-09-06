@@ -19,6 +19,55 @@ def _seconds_per_quarter(score) -> float:
     return 0.5  # 120 BPM default
 
 
+def _tempo_map(score) -> list[tuple[float, float]]:
+    """(offset_ql, seconds_per_quarter) marks, sorted, covering offset 0."""
+    marks: list[tuple[float, float]] = []
+    for el in score.flatten().getElementsByClass(tempo.MetronomeMark):
+        if not el.number:
+            continue
+        try:
+            off = float(el.getOffsetInHierarchy(score))
+        except Exception:  # noqa: BLE001
+            off = float(getattr(el, "offset", 0.0))
+        marks.append((off, 60.0 / float(el.number)))
+    marks.sort(key=lambda item: item[0])
+    if not marks:
+        return [(0.0, 0.5)]
+    if marks[0][0] > 1e-9:
+        marks.insert(0, (0.0, marks[0][1]))
+    # Last mark at a given offset wins.
+    collapsed: list[tuple[float, float]] = []
+    for off, spq in marks:
+        if collapsed and abs(off - collapsed[-1][0]) < 1e-6:
+            collapsed[-1] = (off, spq)
+        else:
+            collapsed.append((off, spq))
+    return collapsed
+
+
+def _ql_to_sec(offset_ql: float, tempo_map: list[tuple[float, float]]) -> float:
+    sec = 0.0
+    offset_ql = max(0.0, float(offset_ql))
+    for i, (off, spq) in enumerate(tempo_map):
+        next_off = tempo_map[i + 1][0] if i + 1 < len(tempo_map) else offset_ql
+        end = min(offset_ql, next_off) if i + 1 < len(tempo_map) else offset_ql
+        if end > off:
+            sec += (end - off) * spq
+        if i + 1 < len(tempo_map) and offset_ql <= next_off + 1e-12:
+            break
+    return sec
+
+
+def _element_offset_ql(el, score, part) -> float:
+    try:
+        return float(el.getOffsetInHierarchy(score))
+    except Exception:  # noqa: BLE001
+        try:
+            return float(el.getOffsetInHierarchy(part))
+        except Exception:  # noqa: BLE001
+            return float(getattr(el, "offset", 0.0))
+
+
 def _pitch_label(el) -> str | None:
     if isinstance(el, note.Rest):
         return "rest"
@@ -44,7 +93,7 @@ def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
     if not score.parts:
         return []
 
-    sec_per_ql = _seconds_per_quarter(score)
+    tempo_map = _tempo_map(score)
     events: list[dict[str, Any]] = []
     event_idx = 0
 
@@ -53,12 +102,14 @@ def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
         for el in flat.notesAndRests:
             if not isinstance(el, _PITCH_TYPES):
                 continue
+            # Hierarchy offset before getContextByClass: that call can change
+            # activeSite so el.offset becomes measure-relative.
+            offset_ql = _element_offset_ql(el, score, part)
+            duration_ql = float(el.duration.quarterLength)
             measure = el.getContextByClass(stream.Measure)
             measure_num = int(measure.number) if measure and measure.number is not None else None
-            offset_ql = float(el.offset)
-            duration_ql = float(el.duration.quarterLength)
-            ref_start = offset_ql * sec_per_ql
-            ref_end = (offset_ql + duration_ql) * sec_per_ql
+            ref_start = _ql_to_sec(offset_ql, tempo_map)
+            ref_end = _ql_to_sec(offset_ql + duration_ql, tempo_map)
             events.append(
                 {
                     "id": f"note_{event_idx:04d}",
@@ -70,12 +121,44 @@ def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
                     "pitch": _pitch_label(el),
                     "midi": _midi_value(el),
                     "ref_start": round(ref_start, 4),
-                    "ref_end": round(ref_end, 4),
+                    "ref_end": round(max(ref_end, ref_start + 0.001), 4),
                 }
             )
             event_idx += 1
 
+    events.sort(key=lambda ev: (int(ev["part"]), float(ev["offset_ql"]), float(ev["duration_ql"])))
+    for i, ev in enumerate(events):
+        ev["id"] = f"note_{i:04d}"
     return events
+
+
+def _fill_ref_to_perf(mapping: np.ndarray) -> np.ndarray:
+    """Hold edges and interpolate interior gaps; keep the map non-decreasing.
+
+    Unmapped leading/trailing frames (trimmed silence, band edges) must not
+    fall back to an identity frame index — that jumps the path and can invert
+    later score events.
+    """
+    out = np.asarray(mapping, dtype=np.float64).copy()
+    n = len(out)
+    if n == 0:
+        return out
+    valid = np.flatnonzero(~np.isnan(out))
+    if valid.size == 0:
+        return np.arange(n, dtype=np.float64)
+    first_perf = float(out[valid[0]])
+    if valid[0] > 0:
+        # Opening rests / trimmed ref silence occupy [0, first sounding].
+        out[: valid[0]] = np.linspace(0.0, first_perf, valid[0], endpoint=False)
+    out[valid[-1] + 1 :] = out[valid[-1]]
+    still_nan = np.isnan(out)
+    if np.any(still_nan):
+        known = np.flatnonzero(~still_nan)
+        out[still_nan] = np.interp(np.flatnonzero(still_nan), known, out[known])
+    for i in range(1, n):
+        if out[i] < out[i - 1]:
+            out[i] = out[i - 1]
+    return out
 
 
 def _build_ref_to_perf(wp: np.ndarray, n_ref: int) -> np.ndarray:
@@ -88,7 +171,7 @@ def _build_ref_to_perf(wp: np.ndarray, n_ref: int) -> np.ndarray:
     for ref_i, perf_list in buckets.items():
         if 0 <= ref_i < n_ref:
             mapping[ref_i] = float(np.median(perf_list))
-    return mapping
+    return _fill_ref_to_perf(mapping)
 
 
 def _interp_ref_to_perf(ref_frame: float, ref_to_perf: np.ndarray) -> float:
@@ -102,12 +185,24 @@ def _interp_ref_to_perf(ref_frame: float, ref_to_perf: np.ndarray) -> float:
     v_lo = ref_to_perf[lo]
     v_hi = ref_to_perf[hi]
     if np.isnan(v_lo) and np.isnan(v_hi):
-        return ref_frame
+        return float(ref_to_perf[0]) if n and not np.isnan(ref_to_perf[0]) else 0.0
     if np.isnan(v_lo):
         return float(v_hi)
     if np.isnan(v_hi):
         return float(v_lo)
     return float(v_lo * (1 - frac) + v_hi * frac)
+
+
+def _audio_time_for_ql(offset_ql: float, ql_end: float, audio_dur: float) -> float:
+    """Place a score offset on the rendered reference-audio timeline.
+
+    MusicXML tempo and MuseScore/MIDI tempo often disagree on excerpts (a late
+    Andante mark back-filled, MIDI defaulting to 120). Quarter-length is the
+    shared axis of the score and the render, so we map ql → audio seconds.
+    """
+    if ql_end <= 1e-9 or audio_dur <= 0:
+        return 0.0
+    return float(max(0.0, offset_ql) / ql_end) * audio_dur
 
 
 def _ref_sec_to_perf_sec(ref_sec: float, frame_to_sec: float, ref_to_perf: np.ndarray) -> float:
@@ -248,6 +343,7 @@ def align_score_events(
     onset_lookback_sec: float = 0.15,
     onset_max_shift_sec: float = 0.6,
     onset_rise_db: float = 8.0,
+    phrase_min_rest_ql: float = 0.25,
 ) -> list[dict[str, Any]]:
     """Map MusicXML note/rest events onto performance time via the DTW path.
 
@@ -257,17 +353,25 @@ def align_score_events(
     """
     score_events = _extract_score_events(score_path)
     ref_to_perf = _build_ref_to_perf(wp, n_ref)
+    ql_end = max(
+        (float(ev["offset_ql"]) + float(ev["duration_ql"])) for ev in score_events
+    ) if score_events else 1.0
+    audio_dur = max(frame_to_sec, (max(n_ref, 1) - 1) * frame_to_sec)
 
     aligned_events: list[dict[str, Any]] = []
     for ev in score_events:
-        perf_start = _ref_sec_to_perf_sec(ev["ref_start"], frame_to_sec, ref_to_perf)
-        perf_end = _ref_sec_to_perf_sec(ev["ref_end"], frame_to_sec, ref_to_perf)
+        audio_start = _audio_time_for_ql(float(ev["offset_ql"]), ql_end, audio_dur)
+        audio_end = _audio_time_for_ql(
+            float(ev["offset_ql"]) + float(ev["duration_ql"]), ql_end, audio_dur
+        )
+        perf_start = _ref_sec_to_perf_sec(audio_start, frame_to_sec, ref_to_perf)
+        perf_end = _ref_sec_to_perf_sec(audio_end, frame_to_sec, ref_to_perf)
         if perf_end < perf_start:
             perf_start, perf_end = perf_end, perf_start
         residual = None
         if residuals is not None:
             residual = _residual_for_ref_range(
-                ev["ref_start"], ev["ref_end"], frame_to_sec, wp, residuals
+                audio_start, audio_end, frame_to_sec, wp, residuals
             )
         aligned_events.append(
             {
@@ -276,6 +380,17 @@ def align_score_events(
                 "perf_end": round(max(perf_end, perf_start + 0.001), 4),
                 "residual_mean": residual,
             }
+        )
+
+    _enforce_monotonic_perf_times(aligned_events)
+    _redistribute_crushed_phrases(aligned_events, min_rest_ql=phrase_min_rest_ql)
+    if perf_audio is not None and sample_rate is not None and sample_rate > 0:
+        _snap_phrases_to_voiced(
+            aligned_events,
+            perf_audio,
+            int(sample_rate),
+            frame_to_sec,
+            min_rest_ql=phrase_min_rest_ql,
         )
 
     if (
@@ -293,6 +408,310 @@ def align_score_events(
             rise_db=onset_rise_db,
         )
     return aligned_events
+
+
+def _phrase_groups(
+    events: list[dict[str, Any]], min_rest_ql: float = 0.25
+) -> list[list[dict[str, Any]]]:
+    groups: list[list[dict[str, Any]]] = []
+    cur: list[dict[str, Any]] = []
+    for ev in events:
+        if ev.get("is_rest") and float(ev.get("duration_ql", 0.0)) >= min_rest_ql:
+            if cur:
+                groups.append(cur)
+                cur = []
+            continue
+        cur.append(ev)
+    if cur:
+        groups.append(cur)
+    return groups
+
+
+def _redistribute_crushed_phrases(
+    events: list[dict[str, Any]],
+    min_rest_ql: float = 0.25,
+    crush_ratio: float = 0.3,
+) -> list[dict[str, Any]]:
+    """Spread notes inside a phrase when DTW piled them onto one frame.
+
+    Phrase start/end stay on the DTW envelope; interior times follow score ql
+    so a late arpeggio after a rest is not swallowed by the previous figure.
+    """
+    for group in _phrase_groups(events, min_rest_ql=min_rest_ql):
+        sounding = [ev for ev in group if not ev.get("is_rest")]
+        if len(sounding) < 3:
+            continue
+        n_crushed = 0
+        for ev in sounding:
+            ref_d = max(1e-4, float(ev["ref_end"]) - float(ev["ref_start"]))
+            perf_d = float(ev["perf_end"]) - float(ev["perf_start"])
+            if perf_d / ref_d < crush_ratio:
+                n_crushed += 1
+        if n_crushed < 3 and n_crushed / len(sounding) < 0.25:
+            continue
+        p0 = min(float(ev["perf_start"]) for ev in group)
+        p1 = max(float(ev["perf_end"]) for ev in group)
+        total_ql = sum(max(1e-4, float(ev["duration_ql"])) for ev in group)
+        if p1 <= p0 + 0.05 or total_ql <= 1e-6:
+            continue
+        cursor = p0
+        for ev in group:
+            span = (float(ev["duration_ql"]) / total_ql) * (p1 - p0)
+            ev["perf_start"] = round(cursor, 4)
+            ev["perf_end"] = round(max(cursor + span, cursor + 0.001), 4)
+            cursor = float(ev["perf_end"])
+    return events
+
+
+def _frame_rms(audio: np.ndarray, sr: int, hop_sec: float, frame_sec: float = 0.05) -> np.ndarray:
+    hop = max(1, int(round(hop_sec * sr)))
+    frame = max(hop * 2, int(round(frame_sec * sr)))
+    n = 1 + max(0, (len(audio) - frame) // hop)
+    if n <= 0:
+        return np.zeros(0, dtype=np.float64)
+    rms = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        chunk = audio[i * hop : i * hop + frame]
+        rms[i] = float(np.sqrt(np.mean(np.square(chunk)) + 1e-12))
+    return rms
+
+
+def _voiced_islands(
+    rms: np.ndarray,
+    hop_sec: float,
+    thresh: float = 0.08,
+    min_sec: float = 0.18,
+    merge_gap: float = 0.32,
+) -> list[tuple[float, float]]:
+    if rms.size == 0:
+        return []
+    peak = float(np.percentile(rms, 95))
+    if peak < 1e-10:
+        return []
+    voiced = rms / peak >= thresh
+    raw: list[tuple[float, float]] = []
+    i = 0
+    while i < len(voiced):
+        if not voiced[i]:
+            i += 1
+            continue
+        j = i
+        while j < len(voiced) and voiced[j]:
+            j += 1
+        t0, t1 = i * hop_sec, j * hop_sec
+        if t1 - t0 >= min_sec:
+            raw.append((t0, t1))
+        i = j
+    merged: list[tuple[float, float]] = []
+    for t0, t1 in raw:
+        if merged and t0 - merged[-1][1] <= merge_gap:
+            merged[-1] = (merged[-1][0], t1)
+        else:
+            merged.append((t0, t1))
+    return merged
+
+
+def _voiced_span_inside(
+    p0: float, p1: float, rms: np.ndarray, hop_sec: float, thresh: float
+) -> tuple[float, float] | None:
+    if rms.size == 0 or p1 <= p0:
+        return None
+    peak = float(np.percentile(rms, 95))
+    if peak < 1e-10:
+        return None
+    i0 = max(0, int(np.floor(p0 / hop_sec)))
+    i1 = min(len(rms), max(i0 + 1, int(np.ceil(p1 / hop_sec))))
+    voiced = np.flatnonzero(rms[i0:i1] / peak >= thresh)
+    if voiced.size == 0:
+        return None
+    return (i0 + int(voiced[0])) * hop_sec, (i0 + int(voiced[-1]) + 1) * hop_sec
+
+
+def _fit_phrase_envelope(
+    p0: float,
+    p1: float,
+    rms: np.ndarray,
+    hop_sec: float,
+    islands: list[tuple[float, float]],
+    thresh: float = 0.08,
+) -> tuple[float, float]:
+    """Trim a DTW phrase envelope to sounding audio; snap if it sat on a rest."""
+    orig = max(p1 - p0, 1e-3)
+    overlapping = []
+    for a, b in islands:
+        ov = min(p1, b) - max(p0, a)
+        if ov < 0.12:
+            continue
+        # Drop an island that mostly belongs to the next phrase.
+        if b > p1 and (b - p1) > max(0.4, p1 - a):
+            continue
+        overlapping.append((a, b))
+    if overlapping:
+        t0 = max(overlapping[0][0], p0 - 0.12)
+        t1 = min(overlapping[-1][1], p1)
+        if t1 - t0 >= max(0.28, 0.35 * orig):
+            return t0, max(t1, t0 + hop_sec)
+        return overlapping[0][0], min(overlapping[0][1], p1 + 0.2)
+
+    inner = _voiced_span_inside(p0, p1, rms, hop_sec, thresh)
+    if inner is not None and (inner[1] - inner[0]) >= 0.2:
+        return inner
+
+    prev = None
+    nxt = None
+    for a, b in islands:
+        if b <= p1 + 0.25:
+            prev = (a, b)
+        if nxt is None and a >= p0 - 0.25:
+            nxt = (a, b)
+    if prev and (p0 - prev[1]) <= (nxt[0] - p1 if nxt else 1e9):
+        return prev
+    if nxt:
+        return nxt
+    return p0, p1
+
+
+def _longest_voiced_run(times: list[float], hop_sec: float, gap: float = 0.35) -> tuple[float, float]:
+    if not times:
+        return 0.0, hop_sec
+    best_a = best_b = times[0]
+    run_a = prev = times[0]
+    for t in times[1:]:
+        if t - prev > gap:
+            if prev - run_a >= best_b - best_a:
+                best_a, best_b = run_a, prev
+            run_a = t
+        prev = t
+    if prev - run_a >= best_b - best_a:
+        best_a, best_b = run_a, prev
+    return float(best_a), float(best_b + hop_sec)
+
+
+def _pack_group_on_voiced(
+    group: list[dict[str, Any]],
+    t0: float,
+    t1: float,
+    rms: np.ndarray,
+    hop_sec: float,
+    thresh: float = 0.08,
+) -> None:
+    peak = float(np.percentile(rms, 95)) if rms.size else 0.0
+    i0 = max(0, int(np.floor(t0 / hop_sec)))
+    i1 = min(len(rms), max(i0 + 2, int(np.ceil(t1 / hop_sec))))
+    times = [
+        k * hop_sec
+        for k in range(i0, i1)
+        if peak >= 1e-10 and rms[k] / peak >= thresh
+    ]
+    if len(times) < 4:
+        n = max(8, int(round((t1 - t0) / max(hop_sec, 1e-3))))
+        times = list(np.linspace(t0, max(t1, t0 + hop_sec), n))
+    sounding = [ev for ev in group if not ev.get("is_rest")]
+    total_ql = sum(max(1e-4, float(ev["duration_ql"])) for ev in sounding) or 1.0
+    cursor_ql = 0.0
+    last = t0
+    assigned: dict[int, tuple[float, float]] = {}
+    n_t = len(times)
+    for ev in sounding:
+        frac0 = cursor_ql / total_ql
+        cursor_ql += max(1e-4, float(ev["duration_ql"]))
+        frac1 = min(1.0, cursor_ql / total_ql)
+        i_a = int(frac0 * (n_t - 1))
+        i_b = int(frac1 * (n_t - 1))
+        a, b = _longest_voiced_run(times[i_a : i_b + 1], hop_sec)
+        if b <= a:
+            b = a + hop_sec
+        assigned[id(ev)] = (a, b)
+        last = b
+    for ev in group:
+        if ev.get("is_rest"):
+            ev["perf_start"] = round(last, 4)
+            ev["perf_end"] = round(last + 0.001, 4)
+            continue
+        a, b = assigned[id(ev)]
+        ev["perf_start"] = round(a, 4)
+        ev["perf_end"] = round(max(b, a + 0.001), 4)
+        last = float(ev["perf_end"])
+
+
+def _group_is_crushed(
+    group: list[dict[str, Any]], crush_ratio: float = 0.3
+) -> bool:
+    sounding = [ev for ev in group if not ev.get("is_rest")]
+    if len(sounding) < 3:
+        return False
+    n_crushed = 0
+    for ev in sounding:
+        ref_d = max(1e-4, float(ev["ref_end"]) - float(ev["ref_start"]))
+        perf_d = float(ev["perf_end"]) - float(ev["perf_start"])
+        if perf_d / ref_d < crush_ratio:
+            n_crushed += 1
+    return n_crushed >= 3 or n_crushed / len(sounding) >= 0.25
+
+
+def _rescale_group_times(
+    group: list[dict[str, Any]], p0: float, p1: float, t0: float, t1: float
+) -> None:
+    """Keep DTW-relative spacing while clipping a phrase onto a shorter island."""
+    span = max(p1 - p0, 1e-6)
+    scale = (t1 - t0) / span
+    for ev in group:
+        a = t0 + (float(ev["perf_start"]) - p0) * scale
+        b = t0 + (float(ev["perf_end"]) - p0) * scale
+        ev["perf_start"] = round(a, 4)
+        ev["perf_end"] = round(max(b, a + 0.001), 4)
+
+
+def _snap_phrases_to_voiced(
+    events: list[dict[str, Any]],
+    audio: np.ndarray,
+    sr: int,
+    hop_sec: float,
+    thresh: float = 0.08,
+    min_rest_ql: float = 0.25,
+) -> list[dict[str, Any]]:
+    """Keep phrase notes on sounding audio so tails cannot spill into rests.
+
+    Healthy DTW timing is left alone. Uniform ql-packing is only used when a
+    phrase sat on silence or was crushed onto a few frames.
+    """
+    if audio is None or len(audio) == 0 or sr <= 0 or not events:
+        return events
+    hop_sec = max(float(hop_sec), 1e-4)
+    rms = _frame_rms(audio, sr, hop_sec)
+    islands = _voiced_islands(rms, hop_sec, thresh=thresh)
+    if not islands:
+        return events
+    for group in _phrase_groups(events, min_rest_ql=min_rest_ql):
+        if not group:
+            continue
+        p0 = min(float(ev["perf_start"]) for ev in group)
+        p1 = max(float(ev["perf_end"]) for ev in group)
+        t0, t1 = _fit_phrase_envelope(p0, p1, rms, hop_sec, islands, thresh=thresh)
+        if t1 <= t0 + 0.05:
+            continue
+        jumped = t0 > p1 + 0.12 or t1 < p0 - 0.12
+        if _group_is_crushed(group) or jumped:
+            _pack_group_on_voiced(group, t0, t1, rms, hop_sec, thresh=thresh)
+        elif t0 > p0 + 0.10 or t1 < p1 - 0.10:
+            _rescale_group_times(group, p0, p1, t0, t1)
+    return events
+
+
+def _enforce_monotonic_perf_times(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep mapped spans in score order so later bars cannot precede earlier ones."""
+    last_end = 0.0
+    for ev in events:
+        start = float(ev["perf_start"])
+        end = float(ev["perf_end"])
+        if start < last_end:
+            start = last_end
+        if end < start + 0.001:
+            end = start + 0.001
+        ev["perf_start"] = round(start, 4)
+        ev["perf_end"] = round(end, 4)
+        last_end = end
+    return events
 
 
 def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None) -> dict[str, Any]:
@@ -339,12 +758,27 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
         onset_lookback_sec=float(align_cfg.get("onset_lookback_sec", 0.15)),
         onset_max_shift_sec=float(align_cfg.get("onset_max_shift_sec", 0.6)),
         onset_rise_db=float(align_cfg.get("onset_rise_db", 8.0)),
+        phrase_min_rest_ql=float(align_cfg.get("phrase_min_rest_ql", 0.25)),
     )
 
     candidate_count = 0
     cand_path = sample_dir / "candidates.json"
     if cand_path.exists():
         candidate_count = len(read_json(cand_path).get("labels", []))
+
+    from datacreate.score_segment import measures_in_written_order
+
+    score_order_ok = True
+    try:
+        score_order_ok = measures_in_written_order(converter.parse(str(score_path)))
+    except Exception:  # noqa: BLE001
+        pass
+    if not score_order_ok:
+        logger.warning(
+            "Score measures are out of written order in %s; re-apply the "
+            "score segment so reference audio matches the excerpt.",
+            score_path.name,
+        )
 
     summary = {
         "warping_path_length": int(wp.shape[0]),
@@ -358,6 +792,7 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
         "candidate_count": candidate_count,
         "event_count": len(aligned_events),
         "onset_refine": bool(align_cfg.get("onset_refine", True)),
+        "score_order_ok": score_order_ok,
     }
     logger.info(
         "Built note alignment for %s: %d events (onset_refine=%s)",
@@ -392,7 +827,11 @@ def _annotate_sounding_indices(events: list[dict[str, Any]]) -> list[dict[str, A
     return events
 
 
-def _map_events_from_alignment(score_path: Path, align_path: Path) -> list[dict[str, Any]]:
+def _map_events_from_alignment(
+    score_path: Path, align_path: Path, sample_dir: Path | None = None
+) -> list[dict[str, Any]]:
+    from datacreate.audio_utils import load_audio
+
     data = np.load(align_path)
     wp = data["warping_path"]
     residuals = data["frame_residuals"]
@@ -400,13 +839,27 @@ def _map_events_from_alignment(score_path: Path, align_path: Path) -> list[dict[
     sr = int(data["sample_rate"])
     frame_to_sec = hop / sr
     n_ref = int(data["ref_features"].shape[1])
+    perf_audio = None
+    if sample_dir is not None:
+        perf_path = sample_dir / "performance_audio.wav"
+        if perf_path.exists():
+            try:
+                perf_audio, _ = load_audio(perf_path, sr, mono=True)
+            except Exception:  # noqa: BLE001
+                perf_audio = None
+    from datacreate.config import PipelineConfig
+
+    min_rest = float((PipelineConfig.load().alignment or {}).get("phrase_min_rest_ql", 0.25))
     return align_score_events(
         score_path,
         wp,
         n_ref,
         frame_to_sec,
         residuals=residuals,
+        perf_audio=perf_audio,
+        sample_rate=sr if perf_audio is not None else None,
         onset_refine=False,
+        phrase_min_rest_ql=min_rest,
     )
 
 
@@ -421,7 +874,9 @@ def _attach_performance_times(
     if align_path.exists():
         try:
             mapped = {
-                ev["id"]: ev for ev in _map_events_from_alignment(score_path, align_path)
+                ev["id"]: ev for ev in _map_events_from_alignment(
+                    score_path, align_path, sample_dir
+                )
             }
             for ev in events:
                 src = mapped.get(ev["id"])

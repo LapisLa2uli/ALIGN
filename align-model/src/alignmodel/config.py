@@ -5,6 +5,24 @@ from pathlib import Path
 
 
 SCORE_CLASSES = ("match", "miss", "wrong", "rhythm", "intonation")
+MELODY_NOTE_CLASSES = (
+    "match",
+    "miss",
+    "wrong",
+    "extra",
+    "rhythm",
+    "intonation",
+    "repetition",
+)
+MELODY_ALIGN_TYPES = {
+    "miss": "missed_note",
+    "wrong": "wrong_note",
+    "extra": "extra_note",
+    "rhythm": "rhythm_error",
+    "intonation": "intonation_error",
+    "repetition": "repetition",
+}
+ALIGN_TO_MELODY = {v: k for k, v in MELODY_ALIGN_TYPES.items()}
 
 HOP_LENGTH = 512
 SAMPLE_RATE = 22050

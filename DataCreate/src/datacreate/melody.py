@@ -241,8 +241,15 @@ class WeakMelody:
     note_ids: list[str] = field(default_factory=list)
 
 
+MATCH_SIMILARITY_THRESHOLD = 0.80
+MATCH_LENGTH_RATIO = 0.60
+
+
 def is_contiguous_part(inner: list[int], outer: list[int]) -> bool:
-    """True if `inner` is empty-false and appears as a consecutive slice of `outer`."""
+    """True if `inner` is empty-false and appears as a consecutive slice of `outer`.
+
+    Kept as a helper. Official melody eval no longer uses slice/containment matching.
+    """
     if not inner or not outer:
         return False
     n, m = len(inner), len(outer)
@@ -255,23 +262,81 @@ def is_contiguous_part(inner: list[int], outer: list[int]) -> bool:
 
 
 def melodies_containment_match(a: list[int], b: list[int]) -> bool:
-    """Pred is correct if it is part/whole of gold, or gold is part of pred."""
+    """Retired default. Slice/containment match; not used by ``match_melodies``."""
     if not a and not b:
         return True
     return is_contiguous_part(a, b) or is_contiguous_part(b, a)
 
 
+def melody_pair_score(a: list[int], b: list[int]) -> float:
+    """Same-event similarity in ``[0, 1]``.
+
+    LCS Dice (``melody_similarity``) if the lists have similar length, else 0.
+    Equal lists score 1. A short slice of a long list, or a whole-score dump
+    that contains a gold melody, scores 0 because ``min/max`` length <
+    ``MATCH_LENGTH_RATIO``. Type is not part of the score.
+    """
+    if not a and not b:
+        return 1.0
+    if not a or not b:
+        return 0.0
+    if a == b:
+        return 1.0
+    la, lb = len(a), len(b)
+    if min(la, lb) / max(la, lb) < MATCH_LENGTH_RATIO:
+        return 0.0
+    return melody_similarity(a, b)
+
+
+def melodies_set_match(a: list[int], b: list[int]) -> bool:
+    return melody_pair_score(a, b) >= MATCH_SIMILARITY_THRESHOLD
+
+
+def _exclusive_pairs(scores: list[list[float]]) -> list[tuple[int, int, float]]:
+    """1-1 assignment maximizing score. Hungarian, greedy fallback."""
+    n_pred = len(scores)
+    n_gold = len(scores[0]) if scores else 0
+    if n_pred == 0 or n_gold == 0:
+        return []
+    try:
+        import numpy as np
+        from scipy.optimize import linear_sum_assignment
+
+        mat = np.asarray(scores, dtype=np.float64)
+        rows, cols = linear_sum_assignment(-mat)
+        return [(int(i), int(j), float(mat[i, j])) for i, j in zip(rows, cols)]
+    except Exception:
+        cells = [
+            (scores[i][j], i, j)
+            for i in range(n_pred)
+            for j in range(n_gold)
+        ]
+        cells.sort(reverse=True)
+        used_p: set[int] = set()
+        used_g: set[int] = set()
+        out: list[tuple[int, int, float]] = []
+        for score, i, j in cells:
+            if i in used_p or j in used_g:
+                continue
+            used_p.add(i)
+            used_g.add(j)
+            out.append((i, j, score))
+        return out
+
+
 def match_melodies(
     gold: list[WeakMelody], pred: list[WeakMelody]
 ) -> tuple[float, float]:
-    """Containment F1 and precision.
+    """Exclusive set-F1 and precision.
 
-    A predicted melody is correct if its pitch list is a contiguous part of
-    a gold melody, equals one, or contains a gold melody as a contiguous part.
-    One gold can validate several preds and the reverse. Returns
-    (F1, precision) so existing callers keep a two-tuple; recall is
-    recoverable as ``2*F1*prec / max(F1+prec, eps)`` but callers that need
-    it should use ``match_melodies_detail``.
+    Each prediction matches at most one gold and vice versa (Hungarian 1-1).
+    A pair matches only when the pitch lists are the same event: equal, or
+    LCS-Dice ≥ ``MATCH_SIMILARITY_THRESHOLD`` with length ratio ≥
+    ``MATCH_LENGTH_RATIO``. Slice/containment ("pred is part of gold" or
+    "pred contains gold") does not match. Type is ignored: the official
+    task is recovering the set of fault pitch-lists, not type labels.
+
+    Returns ``(F1, precision)``. Use ``match_melodies_detail`` for recall.
     """
     detail = match_melodies_detail(gold, pred)
     return detail["f1"], detail["precision"]
@@ -281,36 +346,49 @@ def match_melodies_detail(
     gold: list[WeakMelody], pred: list[WeakMelody]
 ) -> dict[str, float]:
     if not gold and not pred:
-        return {"f1": 1.0, "precision": 1.0, "recall": 1.0, "n_pred_correct": 0, "n_gold_covered": 0}
+        return {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "n_pred_correct": 0,
+            "n_gold_covered": 0,
+            "n_matched": 0,
+        }
     if not gold:
         return {
             "f1": 0.0,
             "precision": 0.0,
-            "recall": 1.0 if not pred else 0.0,
+            "recall": 0.0,
             "n_pred_correct": 0,
             "n_gold_covered": 0,
+            "n_matched": 0,
         }
     if not pred:
         return {
             "f1": 0.0,
-            "precision": 1.0 if not gold else 0.0,
+            "precision": 0.0,
             "recall": 0.0,
             "n_pred_correct": 0,
             "n_gold_covered": 0,
+            "n_matched": 0,
         }
-    pred_ok = [
-        any(melodies_containment_match(p.pitches, g.pitches) for g in gold) for p in pred
+    scores = [
+        [melody_pair_score(p.pitches, g.pitches) for g in gold] for p in pred
     ]
-    gold_ok = [
-        any(melodies_containment_match(p.pitches, g.pitches) for p in pred) for g in gold
+    matched = [
+        (i, j, score)
+        for i, j, score in _exclusive_pairs(scores)
+        if score >= MATCH_SIMILARITY_THRESHOLD
     ]
-    precision = sum(pred_ok) / len(pred_ok)
-    recall = sum(gold_ok) / len(gold_ok)
+    n_matched = len(matched)
+    precision = n_matched / len(pred)
+    recall = n_matched / len(gold)
     f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
     return {
         "f1": f1,
         "precision": precision,
         "recall": recall,
-        "n_pred_correct": int(sum(pred_ok)),
-        "n_gold_covered": int(sum(gold_ok)),
+        "n_pred_correct": n_matched,
+        "n_gold_covered": n_matched,
+        "n_matched": n_matched,
     }

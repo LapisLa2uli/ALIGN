@@ -9,8 +9,7 @@ from datacreate.audio_utils import load_audio, save_wav
 from datacreate.config import PipelineConfig
 from datacreate.score_segment import extract_measure_range, get_score_info
 from datacreate.stages.stage3_reference import synthesize_reference
-from datacreate.stages.stage5_alignment import run_alignment, write_candidates
-from datacreate.stages.stage7_features import extract_mels
+from datacreate.stages.stage5_alignment import run_alignment
 from datacreate.stages.stage8_bundle import write_labels_template, write_metadata
 from datacreate.utils import read_json, write_json
 
@@ -84,6 +83,7 @@ def apply_score_segment(
     )
     synthesize_reference(verified, sample_dir, config, logger)
     _ensure_labels_template(sample_dir, config)
+    _invalidate_alignment_artifacts(sample_dir, logger)
 
     segment_info: dict[str, Any] = {
         "start_measure": start_measure,
@@ -143,6 +143,7 @@ def apply_performance_trim(
         "trimmed_duration": round(len(trimmed) / sr, 4),
     }
     _update_metadata(sample_dir, config, {"performance_trim": trim_info}, logger)
+    _invalidate_alignment_artifacts(sample_dir, logger)
     return trim_info
 
 
@@ -151,17 +152,26 @@ def reprocess_alignment(
     config: PipelineConfig,
     logger: logging.Logger,
 ) -> dict[str, Any]:
+    """Re-run DTW only. Does not infer or write candidates."""
     perf = sample_dir / "performance_audio.wav"
     ref = sample_dir / "reference_audio.wav"
     if not perf.exists() or not ref.exists():
         raise FileNotFoundError("performance_audio.wav or reference_audio.wav missing")
-    result = run_alignment(perf, ref, sample_dir, config, logger)
-    write_candidates(result.candidates, sample_dir, config.schema_version)
-    extract_mels(perf, ref, sample_dir, config, logger)
+    result = run_alignment(
+        perf, ref, sample_dir, config, logger, detect_candidates=False
+    )
     return {
-        "candidate_count": len(result.candidates),
         "alignment_path": str(result.alignment_path),
     }
+
+
+def _invalidate_alignment_artifacts(sample_dir: Path, logger: logging.Logger) -> None:
+    """Drop DTW/candidates so a segment or trim does not keep a stale map."""
+    for name in ("alignment.npz", "candidates.json"):
+        path = sample_dir / name
+        if path.exists():
+            path.unlink()
+            logger.info("Removed stale %s", name)
 
 
 def _ensure_labels_template(sample_dir: Path, config: PipelineConfig) -> None:

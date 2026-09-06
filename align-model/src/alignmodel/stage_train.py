@@ -13,14 +13,27 @@ from torch.utils.data import DataLoader, Dataset, random_split
 from alignmodel.config import FRAME_HOP_SEC
 from alignmodel.dataset import list_sample_dirs
 from alignmodel.device import device_label, resolve_device
-from alignmodel.stages.gold import load_labels, overlaps, repetition_labs
+from alignmodel.stages.gold import (
+    extra_copies_of,
+    gap_span,
+    load_first_pass_labels,
+    overlaps,
+    replay_spans,
+    repetition_labs,
+)
 from alignmodel.stages.models import (
     EDIT_CLASSES,
+    MIN_EDIT_CROP_SEC,
     EditCropNet,
     RestartScorer,
     RhythmNet,
     cosine_pair_loss,
 )
+
+MATCH_CLASS_WEIGHT = 1.0
+MATCH_NEGS_PER_ERROR = 1
+CLEAN_MATCH_PER_CLIP = 1
+EDIT_SOFTMAX_FLOOR = 0.35
 
 CROP_FRAMES = 64
 CROP_FRAMES_RESTART = 96
@@ -139,7 +152,7 @@ def _restart_items(dirs: list[Path], rng: random.Random) -> list[dict]:
     """Balanced copy-detection pairs. Positives = gold repeat vs its source."""
     items = []
     for sample in dirs:
-        labels = load_labels(sample)
+        labels = load_first_pass_labels(sample)
         reps = repetition_labs(labels)
         if not reps:
             continue
@@ -153,56 +166,74 @@ def _restart_items(dirs: list[Path], rng: random.Random) -> list[dict]:
             src = lab.get("repeats_label_range") or {}
             s0 = float(src.get("start_time", 0.0))
             s1 = float(src.get("end_time", s0 + 0.5))
-            t0 = float(lab["start_time"])
-            t1 = float(lab["end_time"])
-            items.append(
-                {"dir": sample, "t0": t0, "t1": t1, "s0": s0, "s1": s1, "y": 1.0}
-            )
-            length = max(0.35, t1 - t0)
-            # Hard negative: continuation after the repeat (same length, not a copy).
-            after = t1
-            if after + length < dur - 0.05:
-                items.append(
-                    {
-                        "dir": sample,
-                        "t0": after,
-                        "t1": after + length,
-                        "s0": t0,
-                        "s1": t1,
-                        "y": 0.0,
-                    }
-                )
-            # Hard negative: the measure before the source vs the restated measure.
-            before = s0 - length
-            if before >= 0.0:
+            copies = extra_copies_of(lab)
+            for t0, t1 in replay_spans(lab):
                 items.append(
                     {
                         "dir": sample,
                         "t0": t0,
                         "t1": t1,
-                        "s0": before,
-                        "s1": s0,
-                        "y": 0.0,
+                        "s0": s0,
+                        "s1": s1,
+                        "y": 1.0,
+                        "extra_copies": copies,
                     }
                 )
-            # Random non-overlapping pair of the same length.
-            for _ in range(max(0, NEG_PER_POS - 1)):
-                start = rng.uniform(0.0, max(0.05, dur - 2 * length - 0.05))
-                other = start + length + rng.uniform(0.15, 0.6)
-                if other + length > dur:
-                    continue
-                if any(overlaps(start, start + length, a, b) for a, b in error_spans):
-                    continue
-                items.append(
-                    {
-                        "dir": sample,
-                        "t0": other,
-                        "t1": other + length,
-                        "s0": start,
-                        "s1": start + length,
-                        "y": 0.0,
-                    }
-                )
+                length = max(0.35, t1 - t0)
+                after = t1
+                if after + length < dur - 0.05:
+                    items.append(
+                        {
+                            "dir": sample,
+                            "t0": after,
+                            "t1": after + length,
+                            "s0": t0,
+                            "s1": t1,
+                            "y": 0.0,
+                        }
+                    )
+                before = s0 - length
+                if before >= 0.0:
+                    items.append(
+                        {
+                            "dir": sample,
+                            "t0": t0,
+                            "t1": t1,
+                            "s0": before,
+                            "s1": s0,
+                            "y": 0.0,
+                        }
+                    )
+                gap = gap_span(lab)
+                if gap is not None:
+                    g0, g1 = gap
+                    items.append(
+                        {
+                            "dir": sample,
+                            "t0": g0,
+                            "t1": g1,
+                            "s0": s0,
+                            "s1": s1,
+                            "y": 0.0,
+                        }
+                    )
+                for _ in range(max(0, NEG_PER_POS - 1)):
+                    start = rng.uniform(0.0, max(0.05, dur - 2 * length - 0.05))
+                    other = start + length + rng.uniform(0.15, 0.6)
+                    if other + length > dur:
+                        continue
+                    if any(overlaps(start, start + length, a, b) for a, b in error_spans):
+                        continue
+                    items.append(
+                        {
+                            "dir": sample,
+                            "t0": other,
+                            "t1": other + length,
+                            "s0": start,
+                            "s1": start + length,
+                            "y": 0.0,
+                        }
+                    )
     # Cross-clip negatives: two clarinet spans that are not copies of each other.
     pos = [it for it in items if it["y"] > 0.5]
     if len(pos) >= 2:
@@ -225,32 +256,50 @@ def _restart_items(dirs: list[Path], rng: random.Random) -> list[dict]:
 
 
 def _edit_items(dirs: list[Path], rng: random.Random) -> list[dict]:
+    """Gold first-pass errors plus extra match negatives (neighbors and clean spans)."""
     error_types = set(EDIT_CLASSES) - {"match"}
+    match_i = EDIT_CLASSES.index("match")
     items = []
     for sample in dirs:
-        labels = load_labels(sample)
-        dur = None
-        used = []
+        labels = load_first_pass_labels(sample)
+        dur = _clip_duration(sample)
+        used: list[tuple[float, float]] = []
+        errors: list[tuple[float, float]] = []
+
+        def add_match(t0: float, t1: float) -> bool:
+            if t1 - t0 < MIN_EDIT_CROP_SEC:
+                return False
+            if t0 < -1e-6 or t1 > dur + 1e-6:
+                return False
+            if any(overlaps(t0, t1, a, b) for a, b in used):
+                return False
+            items.append({"dir": sample, "t0": t0, "t1": t1, "y": match_i})
+            used.append((t0, t1))
+            return True
+
         for lab in labels:
             kind = lab.get("type")
             if kind not in error_types:
                 continue
             t0 = float(lab["start_time"])
             t1 = float(lab["end_time"])
+            if t1 - t0 < MIN_EDIT_CROP_SEC:
+                continue
             items.append({"dir": sample, "t0": t0, "t1": t1, "y": EDIT_CLASSES.index(kind)})
             used.append((t0, t1))
-        if dur is None:
-            dur = _clip_duration(sample)
-        n_neg = max(1, min(3, len(used)))
-        for _ in range(n_neg):
+            errors.append((t0, t1))
+        for t0, t1 in errors:
+            length = t1 - t0
+            add_match(t1, t1 + length)
+        n_neg = max(CLEAN_MATCH_PER_CLIP, MATCH_NEGS_PER_ERROR * max(len(errors), 1))
+        added = 0
+        tries = 0
+        while added < n_neg and tries < n_neg * 8:
+            tries += 1
             length = rng.uniform(0.25, 0.9)
             start = rng.uniform(0.0, max(0.05, dur - length))
-            end = start + length
-            if any(overlaps(start, end, a, b) for a, b in used):
-                continue
-            items.append(
-                {"dir": sample, "t0": start, "t1": end, "y": EDIT_CLASSES.index("match")}
-            )
+            if add_match(start, start + length):
+                added += 1
     return items
 
 
@@ -258,7 +307,7 @@ def _rhythm_items(dirs: list[Path], rng: random.Random) -> list[dict]:
     """Span-level rhythm crops from gold labels, not linear-mapped score notes."""
     items: list[dict] = []
     for sample in dirs:
-        labels = load_labels(sample)
+        labels = load_first_pass_labels(sample)
         rhythm_spans = [
             (float(lab["start_time"]), float(lab["end_time"]))
             for lab in labels
@@ -331,16 +380,19 @@ class RestartDataset(Dataset):
 
 
 class EditDataset(Dataset):
-    def __init__(self, items: list[dict]):
+    def __init__(self, items: list[dict], cache: _MelCache | None = None, augment: bool = False):
         self.items = items
+        self.cache = cache
+        self.augment = augment
 
     def __len__(self):
         return len(self.items)
 
     def __getitem__(self, idx):
         it = self.items[idx]
-        mel = _load_mel(it["dir"])
-        crop = _mel_crop(mel, it["t0"], it["t1"])
+        mel = self.cache.get(it["dir"]) if self.cache is not None else _load_mel(it["dir"])
+        j = random.uniform(-0.04, 0.04) if self.augment else 0.0
+        crop = _mel_crop(mel, it["t0"] + j, it["t1"] + j)
         return torch.from_numpy(crop), torch.tensor(it["y"], dtype=torch.long)
 
 
@@ -474,6 +526,44 @@ def _best_logit_threshold(logits: np.ndarray, y: np.ndarray) -> tuple[float, flo
     pool = usable or candidates
     best = max(pool, key=lambda c: (c[0], c[2], -abs(c[1])))
     return best[1], best[0], best[2], best[3]
+
+
+def _softmax_rows(logits: np.ndarray) -> np.ndarray:
+    z = logits - logits.max(axis=-1, keepdims=True)
+    exp = np.exp(z)
+    return exp / np.maximum(exp.sum(axis=-1, keepdims=True), 1e-12)
+
+
+def _error_prf(pred: np.ndarray, y: np.ndarray) -> tuple[float, float, float]:
+    y_err = y != 0
+    p_err = pred != 0
+    tp = int((p_err & y_err).sum())
+    fp = int((p_err & ~y_err).sum())
+    fn = int((~p_err & y_err).sum())
+    prec = tp / max(tp + fp, 1)
+    rec = tp / max(tp + fn, 1)
+    f1 = 2 * prec * rec / max(prec + rec, 1e-8)
+    return f1, prec, rec
+
+
+def _best_softmax_threshold(logits: np.ndarray, y: np.ndarray) -> tuple[float, float, float, float]:
+    """Confidence needed to emit a non-match class. Prefer precision so heuristic spam drops."""
+    if logits.ndim != 2 or logits.shape[0] == 0:
+        return EDIT_SOFTMAX_FLOOR, 0.0, 0.0, 0.0
+    probs = _softmax_rows(logits)
+    pred = probs.argmax(axis=-1)
+    conf = probs[np.arange(len(pred)), pred]
+    candidates: list[tuple[float, float, float, float]] = []
+    for t in np.concatenate(([0.0], np.linspace(0.20, 0.85, 27))):
+        gated = np.where((pred != 0) & (conf >= float(t)), pred, 0)
+        f1, prec, rec = _error_prf(gated, y)
+        candidates.append((f1, float(t), prec, rec))
+    usable = [c for c in candidates if c[2] >= 0.55 and c[3] >= 0.25]
+    if not usable:
+        usable = [c for c in candidates if c[2] >= 0.45 and c[3] >= 0.20]
+    pool = usable or candidates
+    best = max(pool, key=lambda c: (c[0], c[2], -abs(c[1] - 0.45)))
+    return max(best[1], EDIT_SOFTMAX_FLOOR), best[0], best[2], best[3]
 
 
 def _forward_binary(model: nn.Module, batch) -> torch.Tensor:
@@ -624,9 +714,16 @@ def _run_multiclass(
     model = model.to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=1e-2)
     ce = nn.CrossEntropyLoss(weight=weights.to(device))
-    train_loader = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True, num_workers=0)
-    val_loader = DataLoader(val_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=0)
-    best = float("inf")
+    pin = device.type == "cuda"
+    train_loader = DataLoader(
+        train_ds, batch_size=cfg.batch_size, shuffle=True, num_workers=0, pin_memory=pin
+    )
+    val_loader = DataLoader(
+        val_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=0, pin_memory=pin
+    )
+    best_f1 = -1.0
+    best_val = float("inf")
+    stale = 0
     out_path.parent.mkdir(parents=True, exist_ok=True)
     history = []
     for epoch in range(1, cfg.epochs + 1):
@@ -636,8 +733,9 @@ def _run_multiclass(
         for x, y in train_loader:
             x, y = x.to(device), y.to(device)
             opt.zero_grad(set_to_none=True)
-            loss = ce(model(x), y)
+            loss = ce(model(_time_freq_mask(x)), y)
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step()
             running += float(loss.detach())
             n += 1
@@ -647,6 +745,8 @@ def _run_multiclass(
         total = 0
         err_correct = 0
         n_err = 0
+        all_logits = []
+        all_y = []
         with torch.no_grad():
             for x, y in val_loader:
                 x, y = x.to(device), y.to(device)
@@ -658,31 +758,215 @@ def _run_multiclass(
                 err = y != 0
                 err_correct += int(((pred == y) & err).sum())
                 n_err += int(err.sum())
+                all_logits.append(logits.detach().cpu().numpy())
+                all_y.append(y.detach().cpu().numpy())
         val_loss /= max(len(val_loader), 1)
         acc = correct / max(total, 1)
         err_acc = err_correct / max(n_err, 1)
+        logits_np = np.concatenate(all_logits) if all_logits else np.zeros((1, len(EDIT_CLASSES)))
+        y_np = np.concatenate(all_y) if all_y else np.zeros(1, dtype=np.int64)
+        thresh, f1, prec, rec = _best_softmax_threshold(logits_np, y_np)
         row = {
             "epoch": epoch,
             "train_loss": running / max(n, 1),
             "val_loss": val_loss,
             "acc": acc,
             "error_acc": err_acc,
+            "error_f1": f1,
+            "error_precision": prec,
+            "error_recall": rec,
+            "logit_threshold": thresh,
+            "softmax_threshold": thresh,
         }
         history.append(row)
         print(
             f"{name} epoch {epoch} train={row['train_loss']:.4f} val={val_loss:.4f} "
-            f"acc={acc:.3f} error_acc={err_acc:.3f} device={device_label(device)}"
+            f"acc={acc:.3f} error_acc={err_acc:.3f} err_f1={f1:.3f} "
+            f"p={prec:.3f} r={rec:.3f} thr={thresh:.2f} device={device_label(device)}"
         )
-        ckpt = {"model": model.state_dict(), "epoch": epoch, "metrics": row}
+        ckpt = {
+            "model": model.state_dict(),
+            "epoch": epoch,
+            "metrics": row,
+            "logit_threshold": thresh,
+            "softmax_threshold": thresh,
+        }
         torch.save(ckpt, out_path.parent / f"{out_path.stem}_last.pt")
-        if val_loss <= best:
-            best = val_loss
+        improved = f1 > best_f1 + 1e-4 or (
+            abs(f1 - best_f1) <= 1e-4 and val_loss <= best_val
+        )
+        if improved:
+            best_f1 = max(best_f1, f1)
+            best_val = min(best_val, val_loss)
+            stale = 0
             torch.save(ckpt, out_path)
+        else:
+            stale += 1
+            if stale >= 2:
+                print(
+                    f"{name} early stop at epoch {epoch} best_error_f1={best_f1:.3f}"
+                )
+                break
     (out_path.parent / f"{out_path.stem}_history.json").write_text(
         json.dumps(history, indent=2), encoding="utf-8"
     )
-    print(f"Wrote {out_path}")
+    print(f"Wrote {out_path} best_error_f1={best_f1:.3f}")
     return out_path
+
+
+def _holdout_sample_dirs(root: Path, seed: int) -> set[Path]:
+    dirs = [
+        p
+        for p in list_sample_dirs(root)
+        if (p / "verified_score.musicxml").exists()
+    ]
+    dirs = sorted(dirs, key=lambda p: p.name)
+    rng = random.Random(seed)
+    shuffled = list(dirs)
+    rng.shuffle(shuffled)
+    n_val = max(1, int(len(shuffled) * 0.1))
+    if len(shuffled) > 1:
+        n_val = min(n_val, len(shuffled) - 1)
+    return set(shuffled[:n_val])
+
+
+def _calibrate_edit_softmax_threshold(
+    model: nn.Module,
+    sample_dirs: list[Path],
+    device: torch.device,
+    stage1_dir: Path,
+) -> tuple[float, dict]:
+    """Sweep softmax gate on heuristic stage-2 proposals vs first-pass gold."""
+    from alignmodel.pipeline import run_pipeline
+
+    error_types = set(EDIT_CLASSES) - {"match"}
+    model = model.to(device).eval()
+    clip_rows: list[dict] = []
+    for sample in sample_dirs:
+        try:
+            state = run_pipeline(sample, stages={1, 2}, device=str(device), weights_dir=stage1_dir)
+        except Exception as exc:
+            print(f"stage2 calib skip {sample.name}: {exc}")
+            continue
+        gold = [
+            (float(lab["start_time"]), float(lab["end_time"]))
+            for lab in load_first_pass_labels(sample)
+            if lab.get("type") in error_types
+        ]
+        pending = [
+            lab
+            for lab in state.labels
+            if lab.type in error_types
+            and float(lab.end_time) - float(lab.start_time) >= MIN_EDIT_CROP_SEC
+        ]
+        if not pending:
+            clip_rows.append({"probs": np.zeros((0, len(EDIT_CLASSES))), "hits": np.zeros(0, dtype=bool), "n_gold": len(gold)})
+            continue
+        mel = _load_mel(sample)
+        crops = np.stack(
+            [_mel_crop(mel, float(lab.start_time), float(lab.end_time)) for lab in pending]
+        )
+        probs_out = []
+        with torch.no_grad():
+            for i0 in range(0, len(crops), 64):
+                batch = torch.from_numpy(crops[i0 : i0 + 64]).to(device)
+                probs_out.append(torch.softmax(model(batch), dim=-1).detach().cpu().numpy())
+        probs = np.concatenate(probs_out, axis=0)
+        hits = []
+        for lab in pending:
+            t0, t1 = float(lab.start_time), float(lab.end_time)
+            hits.append(any(overlaps(t0, t1, a, b) for a, b in gold))
+        clip_rows.append(
+            {"probs": probs, "hits": np.array(hits, dtype=bool), "n_gold": len(gold)}
+        )
+    if not clip_rows or not any(row["probs"].shape[0] for row in clip_rows):
+        return EDIT_SOFTMAX_FLOOR, {"n_clips": len(clip_rows), "reason": "no_proposals"}
+
+    candidates = []
+    for t in np.concatenate(([0.0], np.linspace(0.20, 0.85, 27))):
+        tp = fp = fn = 0
+        n_pred = 0
+        n_gold = 0
+        for row in clip_rows:
+            n_gold += int(row["n_gold"])
+            if row["probs"].shape[0] == 0:
+                fn += int(row["n_gold"])
+                continue
+            pred = row["probs"].argmax(axis=-1)
+            conf = row["probs"][np.arange(len(pred)), pred]
+            emit = (pred != 0) & (conf >= float(t))
+            n_pred += int(emit.sum())
+            hits = row["hits"]
+            tp += int((emit & hits).sum())
+            fp += int((emit & ~hits).sum())
+            # clip-level misses: gold spans with no emitted overlapping proposal
+            fn += max(int(row["n_gold"]) - int((emit & hits).sum()), 0)
+        n_clips = max(len(clip_rows), 1)
+        prec = tp / max(tp + fp, 1)
+        rec = tp / max(tp + fn, 1)
+        f1 = 2 * prec * rec / max(prec + rec, 1e-8)
+        candidates.append(
+            {
+                "t": float(t),
+                "f1": f1,
+                "prec": prec,
+                "rec": rec,
+                "mean_n_pred": n_pred / n_clips,
+                "mean_n_gold": n_gold / n_clips,
+            }
+        )
+    usable = [
+        c
+        for c in candidates
+        if c["prec"] >= 0.40 and c["rec"] >= 0.30 and c["mean_n_pred"] <= max(8.0, 2.2 * c["mean_n_gold"])
+    ]
+    if not usable:
+        usable = [c for c in candidates if c["prec"] >= 0.35 and c["rec"] >= 0.25]
+    pool = usable or candidates
+    best = max(pool, key=lambda c: (c["f1"], c["prec"], c["t"]))
+    thr = max(float(best["t"]), EDIT_SOFTMAX_FLOOR)
+    print(
+        f"stage2 calib thr={thr:.2f} (crop-best {best['t']:.2f}) "
+        f"f1={best['f1']:.3f} p={best['prec']:.3f} r={best['rec']:.3f} "
+        f"mean_n_pred={best['mean_n_pred']:.2f} gold={best['mean_n_gold']:.2f} "
+        f"clips={len(clip_rows)}"
+    )
+    return thr, {"chosen": best, "n_clips": len(clip_rows), "sweep": candidates}
+
+
+def _maybe_calibrate_stage2(
+    ckpt_path: Path, dirs: list[Path], cfg: StageTrainConfig, device: torch.device
+) -> None:
+    holdout = _holdout_sample_dirs(cfg.data_root, cfg.seed)
+    rng = random.Random(cfg.seed + 17)
+    pool = [d for d in dirs if d not in holdout and (d / "verified_score.musicxml").exists()]
+    rng.shuffle(pool)
+    calib_dirs = pool[:20]
+    if not calib_dirs:
+        print("stage2 calib skipped (no non-holdout clips)")
+        return
+    stage1_dir = ckpt_path.parent / "_calib_stage1"
+    s1 = ckpt_path.parent / "stage1.pt"
+    if s1.exists():
+        stage1_dir.mkdir(parents=True, exist_ok=True)
+        dest = stage1_dir / "stage1.pt"
+        if not dest.exists() or dest.stat().st_mtime < s1.stat().st_mtime:
+            dest.write_bytes(s1.read_bytes())
+    else:
+        stage1_dir = ckpt_path.parent
+    blob = torch.load(ckpt_path, map_location=device, weights_only=False)
+    model = EditCropNet()
+    model.load_state_dict(blob["model"])
+    try:
+        thr, info = _calibrate_edit_softmax_threshold(model, calib_dirs, device, stage1_dir)
+    except Exception as exc:
+        print(f"stage2 calib failed: {exc}")
+        return
+    blob["logit_threshold"] = thr
+    blob["softmax_threshold"] = thr
+    blob["calibration"] = {k: info[k] for k in info if k != "sweep"}
+    torch.save(blob, ckpt_path)
+    print(f"Updated {ckpt_path} softmax_threshold={thr:.2f}")
 
 
 def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
@@ -721,23 +1005,50 @@ def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
         counts = [0] * len(EDIT_CLASSES)
         for it in items:
             counts[it["y"]] += 1
-        print(f"stage2 examples={len(items)} counts={dict(zip(EDIT_CLASSES, counts))}")
-        ds = EditDataset(items)
-        train_ds, val_ds = _split(ds, cfg.val_fraction, cfg.seed)
-        total = max(sum(counts), 1)
-        weights = torch.tensor(
-            [total / max(c, 1) for c in counts], dtype=torch.float32
+        train_items, val_items = _split_by_sample(items, cfg.val_fraction, cfg.seed)
+        print(
+            f"stage2 examples={len(items)} counts={dict(zip(EDIT_CLASSES, counts))} "
+            f"train={len(train_items)} val={len(val_items)}"
         )
-        weights = weights / weights.mean()
-        written["stage2"] = _run_multiclass(
-            EditCropNet(),
-            train_ds,
-            val_ds,
-            cfg,
-            cfg.output_dir / "stage2.pt",
-            weights,
-            name="stage2",
-        )
+        cache = _MelCache(maxsize=768)
+        weights = torch.ones(len(EDIT_CLASSES), dtype=torch.float32)
+        weights[EDIT_CLASSES.index("match")] = MATCH_CLASS_WEIGHT
+        train_ds = EditDataset(train_items, cache=cache, augment=True)
+        val_ds = EditDataset(val_items, cache=cache, augment=False)
+        batch = cfg.batch_size
+        while True:
+            try:
+                if str(cfg.device).startswith("cuda"):
+                    torch.cuda.empty_cache()
+                stage_cfg = StageTrainConfig(
+                    data_root=cfg.data_root,
+                    output_dir=cfg.output_dir,
+                    epochs=cfg.epochs,
+                    batch_size=batch,
+                    lr=cfg.lr,
+                    device=cfg.device,
+                    seed=cfg.seed,
+                    val_fraction=cfg.val_fraction,
+                    stages=cfg.stages,
+                    max_samples=cfg.max_samples,
+                )
+                written["stage2"] = _run_multiclass(
+                    EditCropNet(),
+                    train_ds,
+                    val_ds,
+                    stage_cfg,
+                    cfg.output_dir / "stage2.pt",
+                    weights,
+                    name="stage2",
+                )
+                break
+            except RuntimeError as exc:
+                if "out of memory" not in str(exc).lower() or batch <= 4:
+                    raise
+                print(f"stage2 OOM at batch {batch}; retrying {batch // 2}")
+                torch.cuda.empty_cache()
+                batch //= 2
+        _maybe_calibrate_stage2(written["stage2"], dirs, cfg, resolve_device(cfg.device))
 
     if 3 in cfg.stages:
         items = _rhythm_items(dirs, rng)

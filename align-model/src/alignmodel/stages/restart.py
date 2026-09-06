@@ -311,15 +311,26 @@ def _candidate_spans(
 
 
 def _emit_repetition_labels(state: PipelineState) -> None:
+    groups: dict[tuple[float | None, float | None], list[UnfoldedSegment]] = {}
     for seg in state.segments:
         if not seg.is_repetition:
             continue
+        src = seg.repeats_label_range
+        key = (
+            round(src.start_time, 3) if src is not None else None,
+            round(src.end_time, 3) if src is not None else None,
+        )
+        groups.setdefault(key, []).append(seg)
+    for segs in groups.values():
+        segs = sorted(segs, key=lambda item: item.perf_start)
+        copies = min(2, max(1, len(segs)))
         lab = PipelineLabel(
             id=next_label_id(state),
             type="repetition",
-            start_time=seg.perf_start,
-            end_time=seg.perf_end,
+            start_time=segs[0].perf_start,
+            end_time=segs[-1].perf_end,
             comment="practice restart (stage 1)",
-            repeats_label_range=seg.repeats_label_range,
+            repeats_label_range=segs[0].repeats_label_range,
+            extra_copies=copies,
         )
         state.labels.append(lab)

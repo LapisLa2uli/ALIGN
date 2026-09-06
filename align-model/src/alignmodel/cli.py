@@ -95,6 +95,37 @@ def main() -> None:
     p_eval.add_argument("--device", default="cuda")
     p_eval.add_argument("--out", type=Path, default=None)
 
+    p_tm = sub.add_parser(
+        "train-melody",
+        help="Train the melody-first model (schema 1.2 score-part spans)",
+    )
+    p_tm.add_argument(
+        "--data",
+        type=Path,
+        default=Path("synth-pipeline/output"),
+        help="Root of synth sample folders",
+    )
+    p_tm.add_argument("--out", type=Path, default=Path("align-model/runs/melody"))
+    p_tm.add_argument("--epochs", type=int, default=8)
+    p_tm.add_argument("--batch-size", type=int, default=4)
+    p_tm.add_argument("--lr", type=float, default=2e-4)
+    p_tm.add_argument("--device", default="cuda")
+    p_tm.add_argument("--max-samples", type=int, default=0)
+    p_tm.add_argument("--overfit", type=int, default=0)
+
+    p_rm = sub.add_parser(
+        "run-melody",
+        help="Run the melody-first checkpoint on one bundle (writes melody_pred.json)",
+    )
+    p_rm.add_argument("--sample", type=Path, required=True)
+    p_rm.add_argument(
+        "--ckpt",
+        type=Path,
+        default=Path("align-model/runs/melody/best.pt"),
+    )
+    p_rm.add_argument("--out", type=Path, default=None)
+    p_rm.add_argument("--device", default="cuda")
+
     p_run.add_argument(
         "--weights",
         type=Path,
@@ -205,6 +236,43 @@ def main() -> None:
                 max_samples=args.max_samples,
             )
         )
+        return
+
+    if args.cmd == "train-melody":
+        from alignmodel.melody_train import MelodyTrainConfig, train_melody
+
+        train_melody(
+            MelodyTrainConfig(
+                data_root=args.data.resolve(),
+                output_dir=args.out.resolve(),
+                epochs=args.epochs,
+                batch_size=args.batch_size,
+                lr=args.lr,
+                device=args.device,
+                max_samples=args.max_samples,
+                overfit=args.overfit,
+            )
+        )
+        return
+
+    if args.cmd == "run-melody":
+        from alignmodel.melody_infer import (
+            infer_melody_sample,
+            load_melody_model,
+            write_melody_prediction,
+        )
+
+        device = resolve_device(args.device)
+        model = load_melody_model(args.ckpt, device)
+        result = infer_melody_sample(model, args.sample, device)
+        out = args.out or (args.sample / "melody_pred.json")
+        write_melody_prediction(result, out)
+        print(f"Wrote {out}")
+        print(f"device={device}")
+        counts: dict[str, int] = {}
+        for lab in result["labels"]:
+            counts[lab["type"]] = counts.get(lab["type"], 0) + 1
+        print(f"labels={counts} extra_copies={result['extra_copies']}")
         return
 
     from alignmodel.infer import infer_sample, load_model, write_prediction

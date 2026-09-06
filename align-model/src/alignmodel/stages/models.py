@@ -11,6 +11,7 @@ EDIT_CLASSES = (
     "wrong_note",
     "intonation_error",
 )
+MIN_EDIT_CROP_SEC = 0.15
 
 
 class MelEncoder(nn.Module):

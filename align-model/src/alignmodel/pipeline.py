@@ -12,6 +12,7 @@ from alignmodel.stages.restart import run_stage1
 from alignmodel.stages.rhythm import run_stage3
 from alignmodel.stages.score_graph import build_score_graph
 from alignmodel.stages.timbre import run_stage4
+from alignmodel.melody import attach_schema12_fields
 from alignmodel.types import (
     PipelineConfig,
     PipelineState,
@@ -102,6 +103,7 @@ def run_pipeline(
         run_stage3(state, learned=learned, mel=mel)
     if 4 in wanted:
         run_stage4(state, audio)
+    attach_schema12_fields(state)
     return state
 
 

@@ -65,6 +65,7 @@
       <strong>View</strong>
       <button id="viewNormalBtn" type="button" class="mode-btn active">Normal</button>
       <button id="viewAlignmentBtn" type="button" class="mode-btn">Alignment</button>
+      <button id="realignBtn" type="button" title="Re-run DTW on the current performance and reference (no candidate inference)">Re-align</button>
       <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide confirmed label regions">Labels</button>
       <label class="zoom-control">Zoom
         <input id="zoomSlider" type="range" min="0" max="100" value="50" title="Zoom level" />
@@ -120,7 +121,7 @@
     </div>
     <div id="repetitionPanel" class="repetition-panel hidden">
       <h3>Original passage</h3>
-      <p id="repetitionLinkInfo" class="hint">Required: link the earlier range this repetition restates.</p>
+      <p id="repetitionLinkInfo" class="hint">Optional: link the earlier range this repetition restates.</p>
       <div class="actions">
         <button id="linkRepetitionRegionBtn" type="button">Link to region</button>
         <button id="drawRepetitionLinkBtn" type="button">Draw original range</button>
@@ -147,7 +148,7 @@
       <li>Ctrl+drag on waveform: select multiple regions</li>
       <li>Shift+right-drag: rectangle-select labels</li>
       <li>Staff highlight: blue = erred core, green = auto pad (2 notes per side)</li>
-      <li>Repetition labels: link the original passage before saving</li>
+      <li>Repetition labels: original-passage link is optional</li>
       <li>Ctrl+wheel on waveform: zoom; wheel: scroll horizontally</li>
     </ul>
   </aside>

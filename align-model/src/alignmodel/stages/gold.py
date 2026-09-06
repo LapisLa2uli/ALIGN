@@ -5,6 +5,16 @@ from typing import Any
 import numpy as np
 
 from alignmodel.score import ScoreNote
+from datacreate.melody import is_repeated_pass
+
+SCORED_TYPES = {
+    "wrong_note",
+    "missed_note",
+    "extra_note",
+    "intonation_error",
+    "rhythm_error",
+    "repetition",
+}
 
 
 def load_labels(sample_dir) -> list[dict[str, Any]]:
@@ -17,8 +27,47 @@ def load_labels(sample_dir) -> list[dict[str, Any]]:
     return json.loads(path.read_text(encoding="utf-8")).get("labels", [])
 
 
+def first_pass_labels(labels: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Schema 1.2 gold: drop repeated-pass copies; keep first pass + repetition."""
+    return [lab for lab in labels if not is_repeated_pass(lab)]
+
+
+def load_first_pass_labels(sample_dir) -> list[dict[str, Any]]:
+    return first_pass_labels(load_labels(sample_dir))
+
+
+def extra_copies_of(lab: dict[str, Any]) -> int:
+    raw = lab.get("extra_copies")
+    if raw is None:
+        return 1
+    return max(1, min(2, int(raw)))
+
+
+def replay_spans(lab: dict[str, Any]) -> list[tuple[float, float]]:
+    """Split a repetition window into extra_copies sequential replays."""
+    t0 = float(lab["start_time"])
+    t1 = float(lab["end_time"])
+    n = extra_copies_of(lab)
+    if n <= 1 or t1 <= t0:
+        return [(t0, t1)]
+    width = (t1 - t0) / n
+    return [(t0 + i * width, t0 + (i + 1) * width) for i in range(n)]
+
+
+def gap_span(lab: dict[str, Any]) -> tuple[float, float] | None:
+    """Silent rest between first pass and the replay, if present."""
+    src = lab.get("repeats_label_range") or {}
+    if "end_time" not in src:
+        return None
+    s1 = float(src["end_time"])
+    t0 = float(lab["start_time"])
+    if t0 - s1 < 0.15:
+        return None
+    return (s1, t0)
+
+
 def repetition_labs(labels: list[dict]) -> list[dict]:
-    return [lab for lab in labels if lab.get("type") == "repetition"]
+    return [lab for lab in first_pass_labels(labels) if lab.get("type") == "repetition"]
 
 
 def overlaps(a0: float, a1: float, b0: float, b1: float) -> bool:

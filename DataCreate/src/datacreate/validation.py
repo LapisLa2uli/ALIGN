@@ -113,8 +113,6 @@ def validate_labels_file(path: Path, config: PipelineConfig | None = None) -> li
             errors.append(
                 f"{path}: label {label.id} type '{label.type}' not in taxonomy {sorted(allowed)}"
             )
-        if label.type == "repetition" and label.repeats_label_range is None:
-            errors.append(f"{path}: repetition label {label.id} missing repeats_label_range")
 
     allowed_schemas = {config.schema_version, "1.1", "1.2"}
     if doc.schema_version not in allowed_schemas:

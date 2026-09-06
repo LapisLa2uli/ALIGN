@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import Any
 
 from datacreate.melody import (
+    MATCH_LENGTH_RATIO,
+    MATCH_SIMILARITY_THRESHOLD,
     MelodySpan,
     ScoreSoundingNote,
     WeakMelody,
@@ -15,6 +17,8 @@ from datacreate.melody import (
     match_melodies,
     match_melodies_detail,
     melodies_containment_match,
+    melodies_set_match,
+    melody_pair_score,
     melody_similarity,
     midi_from_comment,
     note_set_iou,
@@ -26,10 +30,16 @@ from datacreate.melody import (
     score_bpm,
 )
 
+from alignmodel.stages.gold import SCORED_TYPES
+from alignmodel.types import PipelineLabel, PipelineState, ScorePart
+
 __all__ = [
+    "MATCH_LENGTH_RATIO",
+    "MATCH_SIMILARITY_THRESHOLD",
     "MelodySpan",
     "ScoreSoundingNote",
     "WeakMelody",
+    "attach_schema12_fields",
     "extra_neighbor_core",
     "gold_melodies_from_labels",
     "is_contiguous_part",
@@ -39,7 +49,10 @@ __all__ = [
     "match_melodies",
     "match_melodies_detail",
     "melodies_containment_match",
+    "melodies_set_match",
+    "melody_pair_score",
     "melody_similarity",
+    "melody_span_from_label",
     "midi_from_comment",
     "note_set_iou",
     "notes_for_measure_pitch",
@@ -144,3 +157,82 @@ def load_bundle_notes(sample_dir: Path) -> list[ScoreSoundingNote]:
     if not score.exists():
         return []
     return parse_sounding_notes(score)
+
+
+def melody_span_from_label(
+    lab: dict[str, Any],
+    notes: list[ScoreSoundingNote],
+    pad_notes: int = 2,
+) -> MelodySpan | None:
+    if not notes:
+        return None
+    if label_already_converted(lab):
+        part = lab["score_part"]
+        i0 = max(0, min(int(part["start_note_index"]), len(notes) - 1))
+        i1 = max(i0, min(int(part["end_note_index"]), len(notes) - 1))
+        span_notes = notes[i0 : i1 + 1]
+        return MelodySpan(
+            start_note_index=i0,
+            end_note_index=i1,
+            pad_notes=int(part.get("pad_notes") or pad_notes),
+            pitches=[item.pitch for item in span_notes],
+            note_ids=[item.note_id for item in span_notes],
+            start_measure=span_notes[0].measure,
+            end_measure=span_notes[-1].measure,
+        )
+    core = _core_from_timed_label(lab, notes)
+    if core is None:
+        return None
+    if lab.get("type") == "extra_note":
+        core = extra_neighbor_core(notes, core[0])
+    return padded_melody(notes, core[0], core[1], pad_notes)
+
+
+def attach_schema12_fields(state: PipelineState, pad_notes: int = 2) -> None:
+    notes = load_bundle_notes(Path(state.sample_dir))
+    if not notes:
+        return
+    for lab in state.labels:
+        if lab.type not in SCORED_TYPES:
+            continue
+        span = melody_span_from_label(_label_as_mapping(lab), notes, pad_notes=pad_notes)
+        if span is None:
+            continue
+        lab.score_part = ScorePart(
+            start_note_index=span.start_note_index,
+            end_note_index=span.end_note_index,
+            pad_notes=span.pad_notes,
+            start_measure=span.start_measure,
+            end_measure=span.end_measure,
+        )
+        lab.pitches = list(span.pitches)
+        lab.note_ids = list(span.note_ids)
+        if lab.type == "repetition" and lab.extra_copies is None:
+            lab.extra_copies = 1
+
+
+def _label_as_mapping(lab: PipelineLabel) -> dict[str, Any]:
+    src = None
+    if lab.repeats_label_range is not None:
+        src = {
+            "start_time": lab.repeats_label_range.start_time,
+            "end_time": lab.repeats_label_range.end_time,
+        }
+    return {
+        "type": lab.type,
+        "start_time": lab.start_time,
+        "end_time": lab.end_time,
+        "comment": lab.comment,
+        "measure_number": lab.measure_number,
+        "repeats_label_range": src,
+        "score_part": (
+            {
+                "start_note_index": lab.score_part.start_note_index,
+                "end_note_index": lab.score_part.end_note_index,
+                "pad_notes": lab.score_part.pad_notes,
+            }
+            if lab.score_part is not None
+            else None
+        ),
+        "pitches": lab.pitches,
+    }

@@ -10,6 +10,7 @@ from torch.utils.data import Dataset
 
 from alignmodel.config import FRAME_HOP_SEC, SCORE_CLASSES, ModelConfig
 from alignmodel.score import ScoreNote, parse_score_notes
+from alignmodel.stages.gold import first_pass_labels
 
 # Overlap priority: more specific pitch/timing errors beat match.
 _SPAN_TO_CLASS = {
@@ -94,8 +95,10 @@ class AlignBundleDataset(Dataset):
         mel_mask = np.ones(t, dtype=np.bool_)
 
         notes = _load_score_notes(sample_dir)[: self.cfg.max_score_notes]
-        labels = json.loads((sample_dir / "labels.json").read_text(encoding="utf-8")).get(
-            "labels", []
+        labels = first_pass_labels(
+            json.loads((sample_dir / "labels.json").read_text(encoding="utf-8")).get(
+                "labels", []
+            )
         )
         meta_path = sample_dir / "metadata.json"
         repeated = False

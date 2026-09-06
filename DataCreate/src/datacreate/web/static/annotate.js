@@ -38,6 +38,7 @@ const EWMA_ALPHA = 0.3;
 const ZOOM_STEP = 1.25;
 const MIN_ZOOM_FACTOR = 1;
 const MAX_ZOOM_FACTOR = 32;
+const MIN_NOTE_GAP_PX = 12;
 const MAX_UNDO = 50;
 let undoStack = [];
 let idleSnapshot = null;
@@ -691,7 +692,7 @@ function updateRepetitionPanel(region) {
   } else if (repetitionLinkMode === "draw") {
     info.textContent = "Drag on the waveform to mark the original passage.";
   } else {
-    info.textContent = "Required: link the earlier range this repetition restates.";
+    info.textContent = "Optional: link the earlier range this repetition restates.";
   }
 }
 
@@ -867,9 +868,34 @@ function getScrollContainerWidth() {
   return wrap?.clientWidth || 800;
 }
 
+function typicalScoreEventGapSec(events = getScoreEvents()) {
+  if (!events || events.length < 2) return null;
+  const starts = events.map((ev) => eventPerfStart(ev)).sort((a, b) => a - b);
+  const gaps = [];
+  for (let i = 1; i < starts.length; i += 1) {
+    const gap = starts[i] - starts[i - 1];
+    if (gap > 0.008) gaps.push(gap);
+  }
+  if (!gaps.length) return null;
+  gaps.sort((a, b) => a - b);
+  return gaps[Math.floor(gaps.length * 0.1)] || gaps[0];
+}
+
 function computeFitPxPerSec(duration) {
   if (!duration || duration <= 0) return 1;
-  return getScrollContainerWidth() / duration;
+  const widthFit = getScrollContainerWidth() / duration;
+  const gap = typicalScoreEventGapSec();
+  if (!gap) return widthFit;
+  const densityFit = MIN_NOTE_GAP_PX / gap;
+  return Math.max(widthFit, Math.min(densityFit, widthFit * 6, 160));
+}
+
+function unpackStaffXs(events, pxPerSec, startOf, minGap = MIN_NOTE_GAP_PX) {
+  const xs = events.map((ev) => startOf(ev) * pxPerSec);
+  for (let i = 1; i < xs.length; i += 1) {
+    if (xs[i] < xs[i - 1] + minGap) xs[i] = xs[i - 1] + minGap;
+  }
+  return xs;
 }
 
 function getCurrentPxPerSec() {
@@ -1670,17 +1696,9 @@ function eventPerfEnd(ev) {
   return eventRefEnd(ev);
 }
 
-function referenceScoreDuration(events = getScoreEvents()) {
-  return events.reduce((max, ev) => Math.max(max, eventRefEnd(ev)), 0);
-}
-
-function melodyPxPerSec(width = getAlignmentContentWidth()) {
-  const dur = referenceScoreDuration();
-  return dur > 1e-6 ? width / dur : getEffectivePxPerSec();
-}
-
-function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf } = {}) {
+function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf, xs } = {}) {
   const startAt = startOf || ((ev) => ev.perf_start || 0);
+  const noteXs = xs || unpackStaffXs(events, pxPerSec, startAt);
   const lineGap = 9;
   const padding = 10;
   const ledgerHalfWidth = 14;
@@ -1703,14 +1721,16 @@ function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf } = 
   const height = (maxStep - minStep) * lineGap + padding * 2;
   const staffBottomY = padding + (maxStep - staffBottomStep) * lineGap;
   const staffMidY = staffBottomY - 2 * lineGap;
+  const lastX = noteXs.length ? noteXs[noteXs.length - 1] : 0;
+  const drawWidth = Math.max(width, lastX + 16);
   const svgParts = [
-    `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`,
+    `<svg width="${drawWidth}" height="${height}" xmlns="http://www.w3.org/2000/svg">`,
     `<rect width="100%" height="100%" fill="${fill}"/>`,
   ];
   for (let s = 0; s <= 4; s += 1) {
     const y = staffBottomY - s * lineGap;
     svgParts.push(
-      `<line x1="0" y1="${y}" x2="${width}" y2="${y}" stroke="#999" stroke-width="1"/>`,
+      `<line x1="0" y1="${y}" x2="${drawWidth}" y2="${y}" stroke="#999" stroke-width="1"/>`,
     );
   }
 
@@ -1734,8 +1754,8 @@ function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf } = 
     }
   };
 
-  events.forEach((ev) => {
-    const x = startAt(ev) * pxPerSec;
+  events.forEach((ev, i) => {
+    const x = noteXs[i];
     const ql = Number(ev.duration_ql) || 1;
     if (ev.is_rest) {
       appendRestGlyph(svgParts, x, staffBottomY, lineGap, ql);
@@ -1937,8 +1957,8 @@ function renderMelodyStrip() {
   const container = document.getElementById("melodyStrip");
   if (!container) return;
   const events = getScoreEvents();
-  const width = getAlignmentContentWidth();
-  const pxPerSec = melodyPxPerSec(width);
+  const pxPerSec = getEffectivePxPerSec();
+  const width = getAlignmentContentWidth(pxPerSec);
   const canDrag = events.length > 0;
   container.style.width = `${width}px`;
   container.style.minWidth = `${width}px`;
@@ -1951,16 +1971,18 @@ function renderMelodyStrip() {
     return;
   }
 
-  const lastRef = events.length ? eventRefEnd(events[events.length - 1]) : 0;
-  const renderKey = `ref:${events.length}:${width}:${pxPerSec}:${events[0]?.id}:${lastRef}`;
+  const lastPerf = events.length ? eventPerfEnd(events[events.length - 1]) : 0;
+  const renderKey = `perf:${events.length}:${width}:${pxPerSec}:${events[0]?.id}:${lastPerf}`;
   if (container.dataset.renderKey === renderKey && container.querySelector("svg")) {
     paintMelodyHits(container, events);
     return;
   }
 
+  const noteXs = unpackStaffXs(events, pxPerSec, eventPerfStart);
   const staff = buildStaffSvg(events, pxPerSec, width, {
     fill: "#f4f1ea",
-    startOf: eventRefStart,
+    startOf: eventPerfStart,
+    xs: noteXs,
   });
   container.innerHTML = staff.html;
   container.style.height = `${staff.height}px`;
@@ -1970,10 +1992,10 @@ function renderMelodyStrip() {
     hit.type = "button";
     hit.className = "melody-hit";
     hit.dataset.index = String(i);
-    const x0 = eventRefStart(ev) * pxPerSec;
-    const x1 = Math.max(x0 + 18, eventRefEnd(ev) * pxPerSec);
-    hit.style.left = `${x0 - 4}px`;
-    hit.style.width = `${Math.max(18, x1 - x0 + 8)}px`;
+    const x0 = noteXs[i];
+    const nextX = i + 1 < noteXs.length ? noteXs[i + 1] : x0 + MIN_NOTE_GAP_PX + 6;
+    hit.style.left = `${Math.max(0, x0 - 3)}px`;
+    hit.style.width = `${Math.max(8, nextX - x0)}px`;
     hit.title = `${ev.is_rest ? "Rest" : (ev.pitch || "note")}${ev.measure != null ? ` · m${ev.measure}` : ""}`;
     container.appendChild(hit);
   });
@@ -1990,20 +2012,20 @@ function melodyIndexFromTarget(target) {
 function melodyIndexFromClientX(clientX) {
   const events = getScoreEvents();
   if (!events.length) return null;
-  const px = melodyPxPerSec();
+  const px = getEffectivePxPerSec();
   if (!(px > 0)) return null;
-  const t = contentXFromClientX(clientX) / px;
+  const xs = unpackStaffXs(events, px, eventPerfStart);
+  const x = contentXFromClientX(clientX);
   let best = 0;
   let bestDist = Infinity;
-  events.forEach((ev, i) => {
-    const t0 = eventRefStart(ev);
-    const t1 = eventRefEnd(ev);
-    if (t >= t0 && t <= t1) {
+  xs.forEach((cx, i) => {
+    const next = i + 1 < xs.length ? xs[i + 1] : cx + 16;
+    if (x >= cx && x < next) {
       best = i;
       bestDist = 0;
       return;
     }
-    const dist = Math.min(Math.abs(t - t0), Math.abs(t - t1));
+    const dist = Math.abs(x - cx);
     if (dist < bestDist) {
       bestDist = dist;
       best = i;
@@ -2137,7 +2159,8 @@ async function loadScoreEvents() {
       if (inferred.length) region.data.core_note_ids = inferred;
     });
   }
-  refreshMelodyUi();
+  if (!userZoomed) fitWaveformToContainer();
+  else refreshMelodyUi();
 }
 
 function mergeConsecutiveRests(events, eps = 1e-3) {
@@ -2313,6 +2336,12 @@ function renderAlignmentInfo(data) {
         </tr>`,
     )
     .join("");
+  const orderWarn =
+    s.score_order_ok === false
+      ? `<div class="summary" style="color:#b45309">Score measures are out of written order. ` +
+        `Use <strong>Apply &amp; regenerate</strong> on the measure range so the pickup ` +
+        `and reference audio stay in score order, then alignment will rematch.</div>`
+      : "";
   el.innerHTML =
     `<div class="summary">` +
     `DTW path: ${s.warping_path_length ?? "?"} steps · ` +
@@ -2320,6 +2349,7 @@ function renderAlignmentInfo(data) {
     `max ${s.max_residual ?? "?"} · ` +
     `${s.event_count ?? 0} score events` +
     `</div>` +
+    orderWarn +
     `<table><thead><tr>` +
     `<th>m</th><th>note</th><th>perf start</th><th>perf end</th><th>dur</th><th>residual</th>` +
     `</tr></thead><tbody>${rows}</tbody></table>`;
@@ -2659,6 +2689,7 @@ function buildScoreSegmentQuery({ start, end, startBeat, endBeat }) {
 function setupPrepControls() {
   document.getElementById("applySegmentBtn").onclick = applyScoreSegment;
   document.getElementById("applyTrimBtn").onclick = applyPerformanceTrim;
+  document.getElementById("realignBtn").onclick = reAlignSample;
   document.getElementById("viewFullScoreBtn").onclick = () => {
     if (!sampleData?.full_score_url) return;
     if ((sampleData.prep?.total_measures || 0) > LARGE_SCORE_MEASURES) {
@@ -3150,12 +3181,31 @@ async function applyScoreSegment() {
     });
     if (!res.ok) throw new Error(await res.text());
     await loadSample(currentSample);
-    alert("Score segment applied. Reference audio updated.");
+    alert("Score segment applied. Reference audio updated. Use Re-align if you need DTW again.");
   } catch (err) {
     alert(err.message || String(err));
   } finally {
     btn.disabled = false;
     btn.textContent = "Apply & regenerate";
+  }
+}
+
+async function reAlignSample() {
+  if (!currentSample) return;
+  if (!confirm("Re-run DTW alignment on the current performance and reference?")) return;
+  const btn = document.getElementById("realignBtn");
+  btn.disabled = true;
+  btn.textContent = "Aligning…";
+  try {
+    const res = await fetch(`/api/samples/${currentSample}/re-align`, { method: "POST" });
+    if (!res.ok) throw new Error(await res.text());
+    await loadSample(currentSample);
+    alert("DTW alignment updated.");
+  } catch (err) {
+    alert(err.message || String(err));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Re-align";
   }
 }
 
@@ -3197,16 +3247,6 @@ async function saveLabels() {
     if (isTrimRegion(r) || isLinkOverlay(r)) return;
     labels.push(regionDataToLabel(r));
   });
-  const missingRepetitionLink = labels.filter(
-    (label) => label.type === "repetition" && !label.repeats_label_range,
-  );
-  if (missingRepetitionLink.length) {
-    alert(
-      `${missingRepetitionLink.length} repetition label(s) need an original passage link. ` +
-      "Select each repetition, then use Link to region or Draw original range.",
-    );
-    return;
-  }
   const allowedTypes = new Set([...taxonomy, "wrong_pitch"]);
   const invalidType = labels.filter((label) => label.type && !allowedTypes.has(label.type));
   if (invalidType.length) {
