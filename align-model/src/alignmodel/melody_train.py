@@ -18,6 +18,7 @@ from alignmodel.config import (
 from alignmodel.dataset import list_sample_dirs
 from alignmodel.device import device_label, resolve_device
 from alignmodel.melody import gold_melodies_from_labels, load_bundle_notes, melody_span_from_label
+from alignmodel.bakeoff.common import span_targets_from_score_y
 from alignmodel.melody_model import MelodyFirst, class_index, decode_note_runs, types_from_logits
 from alignmodel.stages.gold import extra_copies_of, load_first_pass_labels
 from datacreate.melody import ScoreSoundingNote, WeakMelody, match_melodies_detail
@@ -58,6 +59,81 @@ class MelodyTrainConfig:
     coverage_loss_weight: float = 2.0
     error_aux_weight: float = 3.0
     model: ModelConfig = field(default_factory=ModelConfig)
+    # Shared early stop is always on; versions cannot disable it.
+    es_min_steps: int = 80
+    es_plateau_steps: int = 150
+    es_ema_alpha: float = 0.05
+    es_rel_tol: float = 0.002
+    es_f1_delta: float = 0.005
+    es_patience_epochs: int = 2
+    variant: str = "v1"
+
+
+def step_ema_update(ema: float | None, loss: float, alpha: float = 0.05) -> float:
+    loss_f = float(loss)
+    if ema is None:
+        return loss_f
+    return alpha * loss_f + (1.0 - alpha) * float(ema)
+
+
+def step_ema_is_plateau(ema: float, ema_prev: float, rel_tol: float = 0.002) -> bool:
+    return abs(float(ema) - float(ema_prev)) / max(float(ema_prev), 1e-6) < rel_tol
+
+
+def dump_train_history(
+    path: Path,
+    history: list[dict],
+    stopped_reason: str | None,
+    epoch: int,
+    step: int,
+) -> None:
+    payload = {
+        "stopped_reason": stopped_reason,
+        "epoch": epoch,
+        "step": step,
+        "history": history,
+    }
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _variant_name(cfg: MelodyTrainConfig) -> str:
+    return (getattr(cfg, "variant", "v1") or "v1").lower()
+
+
+def build_train_model(cfg: MelodyTrainConfig):
+    v = _variant_name(cfg)
+    if v in {"v1", "control", ""}:
+        return MelodyFirst(cfg.model)
+    from alignmodel.bakeoff import build_model
+
+    return build_model(v, cfg.model)
+
+
+def compute_train_loss(outputs, batch, cfg: MelodyTrainConfig):
+    v = _variant_name(cfg)
+    if v in {"v1", "control", ""}:
+        return compute_loss(outputs, batch, cfg)
+    from alignmodel.bakeoff import compute_loss as variant_loss
+
+    return variant_loss(v, outputs, batch, cfg)
+
+
+def predict_eval_labels(out, batch, b: int, cfg: MelodyTrainConfig) -> list[dict]:
+    n = int(batch["n_notes"][b])
+    notes = _notes_from_tensors(
+        batch["pitch"][b],
+        batch["onset"][b],
+        batch["duration"][b],
+        n,
+    )
+    v = _variant_name(cfg)
+    if v in {"v1", "control", ""}:
+        types = types_from_logits(out["type_logits"][b, :n])
+        copies = int(out["copies_logits"][b].argmax(-1).cpu())
+        return decode_note_runs(types, notes, copies)
+    from alignmodel.bakeoff import decode_sample
+
+    return decode_sample(v, out, b, n, notes)
 
 
 class MelodyBundleDataset(Dataset):
@@ -138,6 +214,9 @@ class MelodyBundleDataset(Dataset):
             if kind == "repetition":
                 copies = max(copies, extra_copies_of(lab))
 
+        bio_y, type_span_y, mask_y = span_targets_from_score_y(
+            score_y, n, class_index("match")
+        )
         golds = gold_melodies_from_labels(labels)
         return {
             "mel": torch.from_numpy(mel),
@@ -147,6 +226,9 @@ class MelodyBundleDataset(Dataset):
             "duration": torch.from_numpy(duration),
             "note_mask": torch.from_numpy(note_mask),
             "score_y": torch.from_numpy(score_y),
+            "bio_y": torch.from_numpy(bio_y),
+            "type_span_y": torch.from_numpy(type_span_y),
+            "mask_y": torch.from_numpy(mask_y),
             "copies_y": torch.tensor(copies, dtype=torch.int64),
             "n_notes": n,
             "sample_id": sample_dir.name,
@@ -200,6 +282,9 @@ def collate_melody(batch: list[dict]) -> dict:
         "duration": torch.stack([item["duration"] for item in batch]),
         "note_mask": torch.stack([item["note_mask"] for item in batch]),
         "score_y": torch.stack([item["score_y"] for item in batch]),
+        "bio_y": torch.stack([item["bio_y"] for item in batch]),
+        "type_span_y": torch.stack([item["type_span_y"] for item in batch]),
+        "mask_y": torch.stack([item["mask_y"] for item in batch]),
         "copies_y": torch.stack([item["copies_y"] for item in batch]),
         "sample_id": [item["sample_id"] for item in batch],
         "sample_dir": [item["sample_dir"] for item in batch],
@@ -274,31 +359,33 @@ def evaluate(
             batch_dev["note_mask"],
             FRAME_HOP_SEC,
         )
-        _, parts = compute_loss(out, batch_dev, cfg)
+        _, parts = compute_train_loss(out, batch_dev, cfg)
         for k, val in parts.items():
             totals[k] = totals.get(k, 0.0) + val
-        pred = out["type_logits"].argmax(-1)
+        variant = _variant_name(cfg)
         mask = batch_dev["note_mask"]
-        n_correct += int(((pred == batch_dev["score_y"]) & mask).sum())
+        if variant in {"v3", "bio"} and "bio_logits" in out:
+            pred = out["bio_logits"].argmax(-1)
+            target = batch_dev["bio_y"]
+            n_pred_err += int((mask & (pred != 0)).sum())
+        elif variant in {"v5", "dice"} and "mask_logits" in out:
+            pred = (out["mask_logits"].sigmoid() >= 0.5).long()
+            target = (batch_dev["mask_y"] > 0.5).long()
+            n_pred_err += int((mask & (pred > 0)).sum())
+        else:
+            pred = out["type_logits"].argmax(-1)
+            target = batch_dev["score_y"]
+            n_pred_err += int((mask & (pred != class_index("match"))).sum())
+        n_correct += int(((pred == target) & mask).sum())
         n_notes += int(mask.sum())
         err_mask = mask & (batch_dev["score_y"] != class_index("match"))
-        n_err_correct += int(((pred == batch_dev["score_y"]) & err_mask).sum())
+        n_err_correct += int(((pred == target) & err_mask).sum())
         n_err += int(err_mask.sum())
-        n_pred_err += int((mask & (pred != class_index("match"))).sum())
         copies_correct += int((out["copies_logits"].argmax(-1) == batch_dev["copies_y"]).sum())
         n_clip += int(batch_dev["copies_y"].numel())
-        bsz = int(out["type_logits"].size(0))
+        bsz = int(out["copies_logits"].size(0))
         for b in range(bsz):
-            n = int(batch["n_notes"][b])
-            types = types_from_logits(out["type_logits"][b, :n])
-            copies = int(out["copies_logits"][b].argmax(-1).cpu())
-            notes = _notes_from_tensors(
-                batch_dev["pitch"][b],
-                batch_dev["onset"][b],
-                batch_dev["duration"][b],
-                n,
-            )
-            pred_labs = decode_note_runs(types, notes, copies)
+            pred_labs = predict_eval_labels(out, batch_dev, b, cfg)
             pred_mels = [WeakMelody(pitches=lab["pitches"]) for lab in pred_labs]
             gold_mels = [WeakMelody(pitches=list(p)) for p in batch["gold_pitches"][b]]
             detail = match_melodies_detail(gold_mels, pred_mels)
@@ -388,20 +475,31 @@ def train_melody(cfg: MelodyTrainConfig) -> Path:
         collate_fn=collate_melody,
     )
 
-    model = MelodyFirst(cfg.model).to(device)
+    model = build_train_model(cfg).to(device)
     n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"params={n_params / 1e6:.2f}M device={device_label(device)} train={n_train} val={n_val}")
+    print(
+        f"params={n_params / 1e6:.2f}M device={device_label(device)} "
+        f"train={n_train} val={n_val} variant={_variant_name(cfg)}"
+    )
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     cfg.output_dir.mkdir(parents=True, exist_ok=True)
     best_path = cfg.output_dir / "best.pt"
     last_path = cfg.output_dir / "last.pt"
     history: list[dict] = []
     best_f1 = -1.0
+    patience_best = -1.0
+    stale_epochs = 0
+    ema: float | None = None
+    ema_prev: float | None = None
+    plateau_logged = 0
+    global_step = 0
+    stopped_reason = "max_epochs"
 
     for epoch in range(1, cfg.epochs + 1):
         model.train()
         running = 0.0
         steps = 0
+        stop_train = False
         for step, batch in enumerate(train_loader, start=1):
             batch_dev = {k: v.to(device) if torch.is_tensor(v) else v for k, v in batch.items()}
             opt.zero_grad(set_to_none=True)
@@ -414,21 +512,36 @@ def train_melody(cfg: MelodyTrainConfig) -> Path:
                 batch_dev["note_mask"],
                 FRAME_HOP_SEC,
             )
-            loss, parts = compute_loss(out, batch_dev, cfg)
+            loss, parts = compute_train_loss(out, batch_dev, cfg)
             loss.backward()
             nn.utils.clip_grad_norm_(model.parameters(), cfg.grad_clip)
             opt.step()
             running += parts["loss"]
             steps += 1
+            global_step += 1
+            ema = step_ema_update(ema, parts["loss"], cfg.es_ema_alpha)
             if step % cfg.log_every == 0:
                 print(
                     f"epoch {epoch} step {step} loss={parts['loss']:.4f} "
                     f"type={parts['type']:.4f} err={parts.get('err', 0.0):.4f} "
-                    f"copies={parts['copies']:.4f} coverage={parts.get('coverage', 0.0):.4f}"
+                    f"copies={parts['copies']:.4f} coverage={parts.get('coverage', 0.0):.4f} "
+                    f"ema={ema:.4f}"
                 )
+                if global_step >= cfg.es_min_steps and ema_prev is not None:
+                    if step_ema_is_plateau(ema, ema_prev, cfg.es_rel_tol):
+                        plateau_logged += 1
+                    else:
+                        plateau_logged = 0
+                    if plateau_logged >= cfg.es_plateau_steps:
+                        stopped_reason = "step_ema_plateau"
+                        stop_train = True
+                ema_prev = ema
+            if stop_train:
+                break
         val_metrics = evaluate(model, val_loader, device, cfg)
         row = {
             "epoch": epoch,
+            "step": global_step,
             "train_loss": running / max(steps, 1),
             **{f"val_{k}": v for k, v in val_metrics.items()},
         }
@@ -449,16 +562,44 @@ def train_melody(cfg: MelodyTrainConfig) -> Path:
         ckpt = {
             "model": model.state_dict(),
             "config": cfg.model.__dict__,
+            "variant": getattr(cfg, "variant", "v1"),
             "epoch": epoch,
+            "step": global_step,
             "metrics": val_metrics,
         }
         torch.save(ckpt, last_path)
         if val_metrics["set_f1"] >= best_f1:
             best_f1 = val_metrics["set_f1"]
             torch.save(ckpt, best_path)
-        (cfg.output_dir / "history.json").write_text(
-            json.dumps(history, indent=2), encoding="utf-8"
+        if val_metrics["set_f1"] >= patience_best + cfg.es_f1_delta:
+            patience_best = val_metrics["set_f1"]
+            stale_epochs = 0
+        else:
+            stale_epochs += 1
+            if stale_epochs >= cfg.es_patience_epochs and stopped_reason == "max_epochs":
+                stopped_reason = "val_f1_patience"
+                stop_train = True
+        if stop_train:
+            history[-1]["stopped_reason"] = stopped_reason
+        dump_train_history(
+            cfg.output_dir / "history.json",
+            history,
+            stopped_reason if stop_train else None,
+            epoch,
+            global_step,
         )
+        if stop_train:
+            break
 
-    print(f"Wrote {best_path}")
+    if history and "stopped_reason" not in history[-1]:
+        history[-1]["stopped_reason"] = stopped_reason
+    dump_train_history(
+        cfg.output_dir / "history.json",
+        history,
+        stopped_reason,
+        history[-1]["epoch"] if history else 0,
+        global_step,
+    )
+    last_epoch = history[-1]["epoch"] if history else 0
+    print(f"Wrote {best_path} stopped_reason={stopped_reason} epoch={last_epoch} step={global_step}")
     return best_path

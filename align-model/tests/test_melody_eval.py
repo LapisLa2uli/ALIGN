@@ -99,6 +99,16 @@ def test_exclusive_one_to_one():
     assert detail["recall"] == 1.0
 
 
+def test_soft_partial_similarity_still_scores():
+    gold = [WeakMelody(pitches=[60, 62, 64, 65, 67])]
+    pred = [WeakMelody(pitches=[60, 62, 63, 66, 67])]
+    hard = match_melodies_detail(gold, pred, soft=False)
+    soft = match_melodies_detail(gold, pred, soft=True)
+    assert hard["f1"] == 0.0
+    assert soft["f1"] > 0.5
+    assert abs(soft["f1"] - 0.6) < 1e-6
+
+
 def test_near_equal_sequence_matches():
     gold = [WeakMelody(pitches=[60, 62, 64, 65])]
     pred = [WeakMelody(pitches=[60, 62, 64, 65, 67])]

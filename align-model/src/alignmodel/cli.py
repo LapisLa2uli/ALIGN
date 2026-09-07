@@ -94,6 +94,11 @@ def main() -> None:
     p_eval.add_argument("--pad", type=int, default=2)
     p_eval.add_argument("--device", default="cuda")
     p_eval.add_argument("--out", type=Path, default=None)
+    p_eval.add_argument(
+        "--soft",
+        action="store_true",
+        help="Soft set-F1: 1-1 assignment, partial credit from melody similarity",
+    )
 
     p_tm = sub.add_parser(
         "train-melody",
@@ -112,6 +117,11 @@ def main() -> None:
     p_tm.add_argument("--device", default="cuda")
     p_tm.add_argument("--max-samples", type=int, default=0)
     p_tm.add_argument("--overfit", type=int, default=0)
+    p_tm.add_argument(
+        "--variant",
+        default="v1",
+        help="Bakeoff variant: v1 (control), v3 (BIO), v5 (dice), v7 (combo)",
+    )
 
     p_rm = sub.add_parser(
         "run-melody",
@@ -196,6 +206,7 @@ def main() -> None:
             max_samples=args.max_samples,
             pad_notes=args.pad,
             device=args.device,
+            soft=bool(args.soft),
         )
         text = json.dumps(
             {
@@ -251,6 +262,7 @@ def main() -> None:
                 device=args.device,
                 max_samples=args.max_samples,
                 overfit=args.overfit,
+                variant=args.variant,
             )
         )
         return

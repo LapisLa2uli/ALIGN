@@ -343,46 +343,59 @@ def match_melodies(
 
 
 def match_melodies_detail(
-    gold: list[WeakMelody], pred: list[WeakMelody]
+    gold: list[WeakMelody],
+    pred: list[WeakMelody],
+    *,
+    soft: bool = False,
 ) -> dict[str, float]:
+    """Exclusive set scores.
+
+    ``soft=False`` (Model B default): a pair counts only if similarity ≥
+    ``MATCH_SIMILARITY_THRESHOLD``.
+    ``soft=True``: Hungarian still 1-1, but each assigned pair contributes its
+    raw similarity (equal lists = 1, partial LCS-Dice if length ratio holds).
+    """
+    empty = {
+        "f1": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "n_pred_correct": 0,
+        "n_gold_covered": 0,
+        "n_matched": 0,
+        "similarity_sum": 0.0,
+    }
     if not gold and not pred:
-        return {
-            "f1": 1.0,
-            "precision": 1.0,
-            "recall": 1.0,
-            "n_pred_correct": 0,
-            "n_gold_covered": 0,
-            "n_matched": 0,
-        }
-    if not gold:
-        return {
-            "f1": 0.0,
-            "precision": 0.0,
-            "recall": 0.0,
-            "n_pred_correct": 0,
-            "n_gold_covered": 0,
-            "n_matched": 0,
-        }
-    if not pred:
-        return {
-            "f1": 0.0,
-            "precision": 0.0,
-            "recall": 0.0,
-            "n_pred_correct": 0,
-            "n_gold_covered": 0,
-            "n_matched": 0,
-        }
+        return empty
+    zero = {
+        "f1": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "n_pred_correct": 0,
+        "n_gold_covered": 0,
+        "n_matched": 0,
+        "similarity_sum": 0.0,
+    }
+    if not gold or not pred:
+        return zero
     scores = [
         [melody_pair_score(p.pitches, g.pitches) for g in gold] for p in pred
     ]
-    matched = [
-        (i, j, score)
-        for i, j, score in _exclusive_pairs(scores)
-        if score >= MATCH_SIMILARITY_THRESHOLD
-    ]
-    n_matched = len(matched)
-    precision = n_matched / len(pred)
-    recall = n_matched / len(gold)
+    pairs = _exclusive_pairs(scores)
+    if soft:
+        sim_sum = float(sum(score for _i, _j, score in pairs))
+        precision = sim_sum / len(pred)
+        recall = sim_sum / len(gold)
+        n_matched = sim_sum
+    else:
+        matched = [
+            (i, j, score)
+            for i, j, score in pairs
+            if score >= MATCH_SIMILARITY_THRESHOLD
+        ]
+        n_matched = float(len(matched))
+        sim_sum = float(sum(score for _i, _j, score in matched))
+        precision = n_matched / len(pred)
+        recall = n_matched / len(gold)
     f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
     return {
         "f1": f1,
@@ -391,4 +404,5 @@ def match_melodies_detail(
         "n_pred_correct": n_matched,
         "n_gold_covered": n_matched,
         "n_matched": n_matched,
+        "similarity_sum": sim_sum,
     }

@@ -369,7 +369,9 @@ def _first_voiced_island(
     """First voiced run in [start, end), merging brief articulation gaps.
 
     When ``expected_sec`` is set, short dips cannot end the island before
-    ~75% of the written phrase, and a long slur is capped near the phrase.
+    ~88% of the written phrase, and a long slur is capped near the phrase.
+    Gaps longer than ``long_merge`` (~0.42s) always end the island so a
+    written rest or practice stop cannot swallow the next figure.
     """
     if feat.size == 0 or feat.shape[0] <= _CHROMA_BINS:
         return start, end
@@ -388,7 +390,7 @@ def _first_voiced_island(
         return start, end
     fts = hop / float(sr)
     merge_n = max(2, int(round(merge_gap_sec / max(fts, 1e-6))))
-    long_merge = max(merge_n, int(round(0.30 / max(fts, 1e-6))))
+    long_merge = max(merge_n, int(round(0.42 / max(fts, 1e-6))))
     min_keep = 0
     max_keep = i1 - i
     if expected_sec is not None and expected_sec > 0:
@@ -446,8 +448,24 @@ def _match_phrase_in_window(
     i0, i1 = _first_voiced_island(
         perf_feat, y0, y1, hop, sr, expected_sec=expected_sec, pace=pace
     )
-    min_island = max(8, int(0.85 * (expected_sec or (qlen * hop / float(sr))) / max(hop / float(sr), 1e-6)))
-    if i1 - i0 >= min_island:
+    exp_sec = expected_sec if expected_sec and expected_sec > 0 else qlen * hop / float(sr)
+    min_island = max(8, int(0.72 * exp_sec / max(fts, 1e-6)))
+    island_sec = (i1 - i0) * fts
+    gap_after = 0.0
+    if i1 < y1 and perf_feat.shape[0] > _CHROMA_BINS:
+        energy = np.abs(perf_feat[-1])
+        peak = float(np.max(energy)) if energy.size else 0.0
+        if peak >= 1e-12:
+            voiced = energy / peak >= 0.08
+            k = i1
+            while k < y1 and not voiced[k]:
+                k += 1
+            gap_after = (k - i1) * fts
+    # Accept a slightly short first island when a clear stop follows it.
+    # Otherwise a 0.6s inter-phrase rest can reject the island (11.7s vs
+    # 0.85×14s) and bounded DTW end-pins across the next figure.
+    clear_break = gap_after >= 0.45 and island_sec >= 0.55 * exp_sec
+    if i1 - i0 >= min_island or clear_break:
         y0, y1 = i0, i1
     elif i0 > y0:
         y0 = i0
@@ -549,12 +567,14 @@ def _skip_restart_extra(
     sr: int,
     n_perf: int,
     logger: logging.Logger | None = None,
+    current_ref: float = 0.0,
 ) -> float:
     """Skip a practice restart so leftover score sits on the continuation.
 
     After a stop, players often replay earlier figures and then continue.
     If leftover audio is much longer than leftover score, jump past the extra
-    prefix (after the last clear gap when there is one).
+    prefix (after the last gap that still leaves enough audio for the score).
+    A trailing breath near the end must not cancel a mid-take restart.
     """
     fts = hop / float(sr)
     perf_end = n_perf * fts
@@ -562,18 +582,37 @@ def _skip_restart_extra(
     need = max(0.4, remain_ref * pace * 1.15)
     if leftover <= need * 1.40:
         return cursor
+    # Continuous in-order figure: the next island starts immediately and is
+    # the right length. A looping take's last phrase looks like this — do
+    # not jump it onto a later playthrough.
+    if current_ref > 0.2:
+        i0, i1 = _first_voiced_island(
+            perf_feat,
+            min(n_perf - 1, max(0, int(cursor / fts))),
+            n_perf,
+            hop,
+            sr,
+            expected_sec=current_ref,
+            pace=pace,
+        )
+        delay = i0 * fts - cursor
+        island = (i1 - i0) * fts
+        if delay < 0.32 and 0.55 * current_ref <= island <= 1.40 * current_ref * max(pace, 0.85):
+            return cursor
     # Only jump when the player actually stopped. A long continuous tail is
     # extras after the written ending — do not steal the last figure.
     gaps = _silence_gaps(perf_feat, cursor, perf_end, hop, sr, min_gap_sec=0.35)
     if not gaps:
         return cursor
-    after = gaps[-1][1]
-    leftover_after = perf_end - after
-    if leftover_after < remain_ref * pace * 0.70:
+    min_after = remain_ref * pace * 0.70
+    suitable = [g1 for _g0, g1 in gaps if (perf_end - g1) >= min_after]
+    if not suitable:
         return cursor
-    new_cursor = after
-    leftover = leftover_after
-    if leftover > need * 1.40:
+    new_cursor = suitable[-1]
+    leftover = perf_end - new_cursor
+    later_gaps = [g1 for _g0, g1 in gaps if g1 > new_cursor + 0.05]
+    # One long island after the stop is restart+continuation; keep the tail.
+    if not later_gaps and leftover > need * 1.40:
         new_cursor = max(new_cursor, perf_end - need)
     if logger is not None and new_cursor > cursor + 0.2:
         logger.info(
@@ -621,7 +660,15 @@ def _align_phrases_sequential(
         perf_end = n_perf * fts
         if idx >= 1:
             cursor = _skip_restart_extra(
-                cursor, leftover_score, pace, perf_feat, hop, sr, n_perf, logger
+                cursor,
+                leftover_score,
+                pace,
+                perf_feat,
+                hop,
+                sr,
+                n_perf,
+                logger,
+                current_ref=ref_dur,
             )
         window_lo = cursor
         expected = ref_dur * pace * slack

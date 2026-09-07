@@ -836,8 +836,10 @@ def _calibrate_edit_softmax_threshold(
     device: torch.device,
     stage1_dir: Path,
 ) -> tuple[float, dict]:
-    """Sweep softmax gate on heuristic stage-2 proposals vs first-pass gold."""
+    """Sweep softmax gate to maximize soft exclusive set-F1 (melody similarity)."""
+    from alignmodel.eval_melodies import eval_sample
     from alignmodel.pipeline import run_pipeline
+    from alignmodel.types import pipeline_label_to_dict
 
     error_types = set(EDIT_CLASSES) - {"match"}
     model = model.to(device).eval()
@@ -848,19 +850,15 @@ def _calibrate_edit_softmax_threshold(
         except Exception as exc:
             print(f"stage2 calib skip {sample.name}: {exc}")
             continue
-        gold = [
-            (float(lab["start_time"]), float(lab["end_time"]))
-            for lab in load_first_pass_labels(sample)
-            if lab.get("type") in error_types
-        ]
         pending = [
             lab
             for lab in state.labels
             if lab.type in error_types
             and float(lab.end_time) - float(lab.start_time) >= MIN_EDIT_CROP_SEC
         ]
+        kept = [lab for lab in state.labels if lab.type not in error_types]
         if not pending:
-            clip_rows.append({"probs": np.zeros((0, len(EDIT_CLASSES))), "hits": np.zeros(0, dtype=bool), "n_gold": len(gold)})
+            clip_rows.append({"sample": sample, "kept": kept, "pending": [], "probs": None})
             continue
         mel = _load_mel(sample)
         crops = np.stack(
@@ -872,61 +870,59 @@ def _calibrate_edit_softmax_threshold(
                 batch = torch.from_numpy(crops[i0 : i0 + 64]).to(device)
                 probs_out.append(torch.softmax(model(batch), dim=-1).detach().cpu().numpy())
         probs = np.concatenate(probs_out, axis=0)
-        hits = []
-        for lab in pending:
-            t0, t1 = float(lab.start_time), float(lab.end_time)
-            hits.append(any(overlaps(t0, t1, a, b) for a, b in gold))
         clip_rows.append(
-            {"probs": probs, "hits": np.array(hits, dtype=bool), "n_gold": len(gold)}
+            {"sample": sample, "kept": kept, "pending": pending, "probs": probs}
         )
-    if not clip_rows or not any(row["probs"].shape[0] for row in clip_rows):
-        return EDIT_SOFTMAX_FLOOR, {"n_clips": len(clip_rows), "reason": "no_proposals"}
+    if not clip_rows:
+        return EDIT_SOFTMAX_FLOOR, {"n_clips": 0, "reason": "no_clips"}
 
     candidates = []
     for t in np.concatenate(([0.0], np.linspace(0.20, 0.85, 27))):
-        tp = fp = fn = 0
-        n_pred = 0
-        n_gold = 0
+        f1s: list[float] = []
+        precs: list[float] = []
+        recs: list[float] = []
+        n_preds: list[int] = []
+        n_golds: list[int] = []
         for row in clip_rows:
-            n_gold += int(row["n_gold"])
-            if row["probs"].shape[0] == 0:
-                fn += int(row["n_gold"])
-                continue
-            pred = row["probs"].argmax(axis=-1)
-            conf = row["probs"][np.arange(len(pred)), pred]
-            emit = (pred != 0) & (conf >= float(t))
-            n_pred += int(emit.sum())
-            hits = row["hits"]
-            tp += int((emit & hits).sum())
-            fp += int((emit & ~hits).sum())
-            # clip-level misses: gold spans with no emitted overlapping proposal
-            fn += max(int(row["n_gold"]) - int((emit & hits).sum()), 0)
-        n_clips = max(len(clip_rows), 1)
-        prec = tp / max(tp + fp, 1)
-        rec = tp / max(tp + fn, 1)
-        f1 = 2 * prec * rec / max(prec + rec, 1e-8)
+            kept = list(row["kept"])
+            pending = row["pending"]
+            probs = row["probs"]
+            if pending and probs is not None:
+                pred = probs.argmax(axis=-1)
+                conf = probs[np.arange(len(pred)), pred]
+                for lab, cls, p in zip(pending, pred, conf):
+                    if int(cls) == 0 or float(p) < float(t):
+                        continue
+                    kept.append(lab)
+            labels = [pipeline_label_to_dict(lab) for lab in kept]
+            scored = eval_sample(row["sample"], pred_labels=labels, soft=True)
+            f1s.append(scored["melody_f1"])
+            precs.append(scored["melody_precision"])
+            recs.append(scored["melody_recall"])
+            n_preds.append(scored["n_pred"])
+            n_golds.append(scored["n_gold"])
+        n = max(len(f1s), 1)
+        mean_gold = sum(n_golds) / n
         candidates.append(
             {
                 "t": float(t),
-                "f1": f1,
-                "prec": prec,
-                "rec": rec,
-                "mean_n_pred": n_pred / n_clips,
-                "mean_n_gold": n_gold / n_clips,
+                "f1": sum(f1s) / n,
+                "prec": sum(precs) / n,
+                "rec": sum(recs) / n,
+                "mean_n_pred": sum(n_preds) / n,
+                "mean_n_gold": mean_gold,
             }
         )
     usable = [
         c
         for c in candidates
-        if c["prec"] >= 0.40 and c["rec"] >= 0.30 and c["mean_n_pred"] <= max(8.0, 2.2 * c["mean_n_gold"])
+        if c["rec"] >= 0.15 and c["mean_n_pred"] <= max(10.0, 2.5 * max(c["mean_n_gold"], 1.0))
     ]
-    if not usable:
-        usable = [c for c in candidates if c["prec"] >= 0.35 and c["rec"] >= 0.25]
     pool = usable or candidates
     best = max(pool, key=lambda c: (c["f1"], c["prec"], c["t"]))
     thr = max(float(best["t"]), EDIT_SOFTMAX_FLOOR)
     print(
-        f"stage2 calib thr={thr:.2f} (crop-best {best['t']:.2f}) "
+        f"stage2 calib (soft set-F1) thr={thr:.2f} "
         f"f1={best['f1']:.3f} p={best['prec']:.3f} r={best['rec']:.3f} "
         f"mean_n_pred={best['mean_n_pred']:.2f} gold={best['mean_n_gold']:.2f} "
         f"clips={len(clip_rows)}"

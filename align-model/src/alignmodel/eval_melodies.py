@@ -25,6 +25,7 @@ def eval_sample(
     pad_notes: int = 2,
     run_infer: bool = False,
     device: str = "cuda",
+    soft: bool = False,
 ) -> dict[str, Any]:
     sample_dir = Path(sample_dir)
     gold_doc = json.loads((sample_dir / "labels.json").read_text(encoding="utf-8"))
@@ -38,7 +39,7 @@ def eval_sample(
         pred_labels = _label_dicts_from_pipeline(state)
     pred_labels = pred_labels or []
     pred = pred_melodies_from_labels(pred_labels, notes, pad_notes=pad_notes)
-    detail = match_melodies_detail(gold, pred)
+    detail = match_melodies_detail(gold, pred, soft=soft)
     f1 = round(detail["f1"], 4)
     precision = round(detail["precision"], 4)
     recall = round(detail["recall"], 4)
@@ -52,6 +53,8 @@ def eval_sample(
         "melody_recall": recall,
         "melody_similarity": f1,
         "note_set_iou": precision,
+        "soft": soft,
+        "similarity_sum": round(float(detail.get("similarity_sum") or 0.0), 4),
         "gold_types": [g.type for g in gold],
         "pred_types": [p.type for p in pred],
     }
@@ -65,6 +68,7 @@ def eval_root(
     max_samples: int = 0,
     pad_notes: int = 2,
     device: str = "cuda",
+    soft: bool = False,
 ) -> dict[str, Any]:
     root = Path(root)
     dirs = sorted(
@@ -86,6 +90,7 @@ def eval_root(
             pad_notes=pad_notes,
             run_infer=run_infer,
             device=device,
+            soft=soft,
         )
         rows.append(row)
     n = max(len(rows), 1)
@@ -102,5 +107,6 @@ def eval_root(
         "mean_note_set_iou": round(mean_prec, 4),
         "mean_n_gold": round(sum(r["n_gold"] for r in rows) / n, 3) if rows else 0.0,
         "mean_n_pred": round(sum(r["n_pred"] for r in rows) / n, 3) if rows else 0.0,
+        "soft": soft,
         "samples": rows,
     }

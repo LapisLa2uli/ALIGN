@@ -26,6 +26,7 @@ from datacreate.stages.stage5_alignment import (
     _align_phrases_sequential,
     _densify_warping_path,
     _score_phrase_spans,
+    _skip_restart_extra,
     run_alignment,
     silence_keep_mask,
 )
@@ -572,3 +573,74 @@ def test_practice_restart_does_not_stretch_last_phrase(tmp_path):
     assert notes[1]["perf_start"] > 1.70
     assert notes[1]["perf_end"] < 2.55
     assert notes[1]["perf_end"] - notes[1]["perf_start"] < 1.1
+
+
+def _energy_feat(islands: list[tuple[float, float]], end_sec: float, hop: int = 512, sr: int = 22050) -> np.ndarray:
+    fts = hop / sr
+    n = int(end_sec / fts) + 2
+    feat = np.zeros((13, n), dtype=np.float64)
+    for a, b in islands:
+        i0 = max(0, int(a / fts))
+        i1 = min(n, int(np.ceil(b / fts)))
+        feat[0, i0:i1] = 1.0
+        feat[12, i0:i1] = 1.0
+    return feat
+
+
+def test_skip_restart_ignores_trailing_breath():
+    """A breath near the end must not cancel a mid-take restart skip."""
+    hop, sr = 512, 22050
+    # Phrase 0, stop, replay, stop, continuation, breath, short extra.
+    feat = _energy_feat(
+        [(0.0, 1.0), (1.5, 2.5), (3.0, 4.0), (4.6, 5.0)],
+        5.1,
+        hop,
+        sr,
+    )
+    cursor = _skip_restart_extra(
+        cursor=1.05,
+        remain_ref=0.9,
+        pace=1.1,
+        perf_feat=feat,
+        hop=hop,
+        sr=sr,
+        n_perf=feat.shape[1],
+        current_ref=0.9,
+    )
+    assert 2.85 < cursor < 3.25
+
+
+def test_skip_restart_keeps_in_order_last_phrase():
+    """A looping take's last figure starts immediately — do not jump it later."""
+    hop, sr = 512, 22050
+    feat = _energy_feat([(0.0, 2.0), (2.15, 3.1), (3.6, 6.6)], 6.7, hop, sr)
+    cursor = _skip_restart_extra(
+        cursor=2.05,
+        remain_ref=0.9,
+        pace=1.1,
+        perf_feat=feat,
+        hop=hop,
+        sr=sr,
+        n_perf=feat.shape[1],
+        current_ref=0.9,
+    )
+    assert cursor < 2.25
+
+
+def test_skip_restart_clips_prefix_of_long_restart_island():
+    """Stop, then one long island of replay+continuation — keep the tail."""
+    hop, sr = 512, 22050
+    feat = _energy_feat([(0.0, 2.0), (2.6, 12.0)], 12.1, hop, sr)
+    cursor = _skip_restart_extra(
+        cursor=2.05,
+        remain_ref=2.0,
+        pace=1.2,
+        perf_feat=feat,
+        hop=hop,
+        sr=sr,
+        n_perf=feat.shape[1],
+        current_ref=2.0,
+    )
+    need = 2.0 * 1.2 * 1.15
+    assert cursor > 12.1 - need - 0.4
+    assert cursor > 6.0

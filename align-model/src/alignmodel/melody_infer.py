@@ -5,6 +5,7 @@ from pathlib import Path
 
 import torch
 
+from alignmodel.bakeoff import build_model, decode_sample, normalize_variant
 from alignmodel.config import FRAME_HOP_SEC, ModelConfig
 from alignmodel.melody import load_bundle_notes
 from alignmodel.melody_model import MelodyFirst, decode_note_runs, types_from_logits
@@ -15,9 +16,11 @@ from alignmodel.types import schema12_document
 def load_melody_model(ckpt_path: Path, device: torch.device) -> MelodyFirst:
     blob = torch.load(ckpt_path, map_location=device, weights_only=False)
     cfg = ModelConfig(**blob["config"])
-    model = MelodyFirst(cfg).to(device)
+    variant = normalize_variant(blob.get("variant", "v1"))
+    model = build_model(variant, cfg).to(device)
     model.load_state_dict(blob["model"])
     model.eval()
+    model.bakeoff_variant = variant
     return model
 
 
@@ -38,15 +41,21 @@ def infer_melody_sample(
         FRAME_HOP_SEC,
     )
     n = int(item["n_notes"])
-    types = types_from_logits(out["type_logits"][0, :n])
     extra_copies = int(out["copies_logits"][0].argmax(-1).cpu())
     notes = load_bundle_notes(sample_dir)[:n]
-    labels = decode_note_runs(types, notes, extra_copies)
+    variant = getattr(model, "bakeoff_variant", "v1")
+    if variant in {"v1", "control", ""}:
+        types = types_from_logits(out["type_logits"][0, :n])
+        labels = decode_note_runs(types, notes, extra_copies)
+    else:
+        labels = decode_sample(variant, out, 0, n, notes)
+        types = [lab["type"] for lab in labels]
     return {
         "sample_id": sample_dir.name,
         "labels": labels,
         "extra_copies": extra_copies,
         "note_types": types,
+        "variant": variant,
     }
 
 
