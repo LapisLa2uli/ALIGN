@@ -34,6 +34,40 @@ class SampleResult:
     repeated: bool
 
 
+_COMPLETE_FILES = (
+    "labels.json",
+    "metadata.json",
+    "performance_audio.wav",
+    "reference_audio.wav",
+    "verified_score.musicxml",
+    "performance_score.musicxml",
+)
+
+
+def _sample_id_number(name: str) -> int | None:
+    try:
+        return int(name.rsplit("_", 1)[1])
+    except (IndexError, ValueError):
+        return None
+
+
+def sample_is_complete(sample_dir: Path) -> bool:
+    return sample_dir.is_dir() and all((sample_dir / name).is_file() for name in _COMPLETE_FILES)
+
+
+def complete_sample_ids(root: Path) -> set[int]:
+    done: set[int] = set()
+    if not root.exists():
+        return done
+    for path in root.iterdir():
+        if not path.is_dir():
+            continue
+        number = _sample_id_number(path.name)
+        if number is not None and sample_is_complete(path):
+            done.add(number)
+    return done
+
+
 def generate_samples(
     config: SynthConfig,
     count: int,
@@ -43,6 +77,7 @@ def generate_samples(
     logger: logging.Logger | None = None,
     midi_backend: str | None = None,
     soundfont: str | None = None,
+    skip_existing: bool = False,
 ) -> list[SampleResult]:
     log = logger or logging.getLogger("synthpipeline")
     if soundfont:
@@ -57,8 +92,13 @@ def generate_samples(
     backend = (midi_backend or config.midi_backend()).lower()
 
     score_paths = resolve_score_inputs(score_arg, config)
+    done_ids = complete_sample_ids(root) if skip_existing else set()
     results: list[SampleResult] = []
     for i in range(count):
+        sid_num = int(seed) + i
+        if skip_existing and sid_num in done_ids:
+            log.info("Skipping existing sample id %s", sid_num)
+            continue
         rng = random.Random(seed + i)
         snippet_meta: dict = {}
         source = "gen"
@@ -124,6 +164,7 @@ def generate_samples(
                 repeated=built["repeated"],
             )
             results.append(result)
+            done_ids.add(sid_num)
             log.info("Created %s in %.2fs", sample_dir, elapsed)
         except InjectionError as exc:
             sample_log.exception("Failed to build sample %s", sample_id)
@@ -146,6 +187,7 @@ def generate_samples_parallel(
     logger: logging.Logger | None = None,
     midi_backend: str | None = None,
     soundfont: str | None = None,
+    skip_existing: bool = False,
 ) -> list[SampleResult]:
     log = logger or logging.getLogger("synthpipeline")
     workers = max(1, int(workers))
@@ -159,6 +201,7 @@ def generate_samples_parallel(
             logger=log,
             midi_backend=midi_backend,
             soundfont=soundfont,
+            skip_existing=skip_existing,
         )
 
     config_path = config._config_path
@@ -177,6 +220,7 @@ def generate_samples_parallel(
             "score": str(score_arg) if score_arg else None,
             "midi_backend": midi_backend,
             "soundfont": soundfont,
+            "skip_existing": bool(skip_existing),
             "worker_id": worker_id,
         }
         for job_seed, n, worker_id in jobs
@@ -233,6 +277,7 @@ def worker_generate(payload: dict) -> list[dict]:
         score_arg=score,
         midi_backend=payload.get("midi_backend"),
         soundfont=payload.get("soundfont"),
+        skip_existing=bool(payload.get("skip_existing")),
     )
     return [
         {

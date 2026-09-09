@@ -51,6 +51,11 @@ def main(argv: list[str] | None = None) -> None:
         dest="generate_config",
         help="Path to synth-pipeline YAML config",
     )
+    gen.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Skip sample IDs that already have a complete bundle on disk",
+    )
 
     conv = sub.add_parser(
         "convert-labels",
@@ -112,6 +117,7 @@ def main(argv: list[str] | None = None) -> None:
                 score_arg=args.score,
                 midi_backend=args.midi_backend or "music21",
                 soundfont=args.soundfont,
+                skip_existing=bool(args.skip_existing),
             )
         else:
             results = generate_samples(
@@ -122,6 +128,7 @@ def main(argv: list[str] | None = None) -> None:
                 score_arg=args.score,
                 midi_backend=args.midi_backend or "music21",
                 soundfont=args.soundfont,
+                skip_existing=bool(args.skip_existing),
             )
         wall = time.perf_counter() - started
         root = args.output or config.output_root()
