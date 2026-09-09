@@ -56,12 +56,33 @@ def test_pred_miss_is_zero():
     assert precision == 0.0
 
 
-def test_set_match_equal_lists():
+def test_set_match_equal_lists_same_type():
     gold = [WeakMelody(pitches=[60, 62, 64, 65], type="wrong_note")]
-    pred = [WeakMelody(pitches=[60, 62, 64, 65], type="repetition")]
+    pred = [WeakMelody(pitches=[60, 62, 64, 65], type="wrong_note")]
     f1, precision = match_melodies(gold, pred)
     assert f1 == 1.0
     assert precision == 1.0
+
+
+def test_correct_range_wrong_type_is_half():
+    gold = [WeakMelody(pitches=[60, 62, 64, 65], type="wrong_note")]
+    pred = [WeakMelody(pitches=[60, 62, 64, 65], type="repetition")]
+    detail = match_melodies_detail(gold, pred)
+    assert detail["f1"] == 0.5
+    assert detail["precision"] == 0.5
+    assert detail["recall"] == 0.5
+    assert detail["n_matched"] == 0.5
+
+
+def test_ignore_type_gives_full_credit_on_type_mismatch():
+    gold = [WeakMelody(pitches=[60, 62, 64, 65], type="wrong_note")]
+    pred = [WeakMelody(pitches=[60, 62, 64, 65], type="repetition")]
+    sensitive = match_melodies_detail(gold, pred, ignore_type=False)
+    insensitive = match_melodies_detail(gold, pred, ignore_type=True)
+    assert sensitive["f1"] == 0.5
+    assert insensitive["f1"] == 1.0
+    assert insensitive["precision"] == 1.0
+    assert insensitive["recall"] == 1.0
 
 
 def test_slice_and_containment_do_not_match():
@@ -107,6 +128,13 @@ def test_soft_partial_similarity_still_scores():
     assert hard["f1"] == 0.0
     assert soft["f1"] > 0.5
     assert abs(soft["f1"] - 0.6) < 1e-6
+
+
+def test_soft_wrong_type_halves_similarity():
+    gold = [WeakMelody(pitches=[60, 62, 64, 65, 67], type="wrong_note")]
+    pred = [WeakMelody(pitches=[60, 62, 63, 66, 67], type="rhythm_error")]
+    soft = match_melodies_detail(gold, pred, soft=True)
+    assert abs(soft["f1"] - 0.3) < 1e-6
 
 
 def test_near_equal_sequence_matches():

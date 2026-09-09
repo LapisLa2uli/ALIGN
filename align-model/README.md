@@ -1,6 +1,6 @@
 # ALIGN error detector
 
-Score-informed clarinet error detector for ALIGN bundles. Official gold is schema **1.2**: a contiguous clean-score melody (`score_part`, `pitches`, `note_ids`) on `verified_score.musicxml`, first pass only. Official synth score is **set-F1** (`eval-melodies`): exclusive 1-1 matching of predicted vs gold pitch lists as the same event, not timestamp IoU and not slice/containment.
+Score-informed clarinet error detector for ALIGN bundles. Official gold is schema **1.2**: a contiguous clean-score melody (`score_part`, `pitches`, `note_ids`) on `verified_score.musicxml`, first pass only. Official synth score is **set-F1** (`eval-melodies`): exclusive 1-1 matching of predicted vs gold pitch lists as the same event, then type (wrong type on a range hit is 0.5, not 1). Not timestamp IoU and not slice/containment.
 
 Two models share that gold and that metric:
 
@@ -21,7 +21,7 @@ The on-disk bundle is unchanged (`verified_score.musicxml`, `performance_audio.w
 - **First-pass only.** Comments with `repeated pass` or `(pass N)` are not gold. One `repetition` label is kept.
 - **`extra_note` gold is the neighbors** on the clean score, not the inserted note.
 - **`repetition`** has `extra_copies` (`1` = two plays, `2` = three) and a **0.2–1.0 s silent gap** before the replay. `repeats_label_range` is the first-pass source. The gap is not part of the gold melody.
-- Official synth metric: Hungarian 1-1 set matching. A pair matches only if the pitch lists are the same event (equal, or LCS-Dice ≥ 0.80 with length ratio ≥ 0.60). A slice of gold, or a pred that contains gold, does **not** match. Type is ignored. Empty vs empty scores 1.
+- Official synth metric: Hungarian 1-1 set matching on pitch lists (the range). A pair is a range hit if the lists are the same event (equal, or LCS-Dice ≥ 0.80 with length ratio ≥ 0.60). A slice of gold, or a pred that contains gold, does **not** match. A range hit with the same error type scores 1; a range hit with the wrong type scores 0.5. Empty vs empty scores 1.
 
 Trainers drop repeated-pass copies (`first_pass_labels` in `alignmodel.stages.gold`). Timbre types (`click`, `squeak`, `bad_start`, `bad_timbre`) are ignored by both trainers.
 

@@ -45,7 +45,7 @@ pip install -e ./DataCreate
 pip install -e ./synth-pipeline
 ```
 
-MIDI is written with **music21**. Audio is rendered with tinysoundfont and a **clarinet SoundFont** (`freepats` by default). See [`soundfonts/README.md`](soundfonts/README.md).
+MIDI is written with **music21**. Audio is rendered with an **oscillator MIDI player** so every MIDI key sounds (including C6–A7 squeaks the SoundFont cannot play) and hanging tremolo/ornament note-ons are clipped. Quality is simpler than a SoundFont. See [`soundfonts/README.md`](soundfonts/README.md) for the old sample banks.
 
 Bb clarinet audio is **sounding pitch** (`render.sounding_transpose: -2`): written C sounds Bb. MusicXML and `labels.json` `pitches` stay **written**. New renders transpose only the MIDI sent to the SoundFont. Existing bundles can be shifted in place (duration preserved; `performance_audio_original` is left alone):
 

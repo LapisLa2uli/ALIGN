@@ -14,7 +14,7 @@ from alignmodel.stage_train import StageTrainConfig, train_stages
 from alignmodel.types import pipeline_label_to_dict
 
 ROOT = Path(__file__).resolve().parents[2]
-DATA = ROOT / "synth-pipeline" / "output"
+DATA = Path("E:/output")
 OUT = ROOT / "align-model" / "runs" / "stages-random12k-setsoft"
 PRED = ROOT / "align-model" / "runs" / "eval-dual" / "A-random12k-setsoft_on_random12k-holdout"
 SUMMARY = ROOT / "align-model" / "runs" / "eval-dual" / "summary_model_a_setsoft.json"

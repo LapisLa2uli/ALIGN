@@ -11,7 +11,7 @@ from synthpipeline.render import render_midi_clarinet
 from synthpipeline.soundfonts import CATALOG, SOUNDFONT_ROOT
 from synthpipeline.transpose_audio import _rewrite_mel, discover_bundles
 
-AUDIO_RENDER_MARK = "soundfont_rerender"
+AUDIO_RENDER_MARK = "oscillator_v1"
 _STEP = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 _PAIRS = (
     ("performance_audio.mid", "performance_audio.wav", "performance_score.musicxml"),
@@ -132,7 +132,10 @@ def regenerate_bundle(
         if not force and meta.get("audio_render") == AUDIO_RENDER_MARK:
             return "skip_done"
 
-    soundfont, program = resolve_bundle_soundfont(meta)
+    try:
+        soundfont, program = resolve_bundle_soundfont(meta)
+    except FileNotFoundError:
+        soundfont, program = Path("unused.sf2"), int(meta.get("clarinet_program") or 0)
     cfg = _dc_config(meta, soundfont, sample_rate)
     logger = logging.getLogger("synthpipeline.rerender")
     logger.setLevel(logging.WARNING)

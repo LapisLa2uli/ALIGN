@@ -125,6 +125,11 @@ class PipelineConfig:
     far_gap: int = 6
     far_log_threshold: float = 0.35
     min_rhythm_ms: float = 80.0
+    use_dc_rhythm_alignment: bool = True
+    rhythm_detector: str = "gated_net"  # gated_net | net | heuristic
+    rhythm_merge_gap_sec: float = 0.05
+    # 2k holdout: checkpoint -0.6 over-fires; 1.0 with DC-gated spans matches gold count better.
+    rhythm_logit_override: float | None = 1.0
     onset_lookback_sec: float = 0.15
     onset_max_shift_sec: float = 0.6
     onset_rise_db: float = 8.0
@@ -149,6 +154,7 @@ class PipelineState:
     beam: list[RestartHypothesis] = field(default_factory=list)
     segments: list[UnfoldedSegment] = field(default_factory=list)
     pairs: list[PairedEvent] = field(default_factory=list)
+    rhythm_pairs: list[PairedEvent] = field(default_factory=list)
     labels: list[PipelineLabel] = field(default_factory=list)
     stages_run: list[int] = field(default_factory=list)
 
@@ -226,6 +232,7 @@ def labels_document(state: PipelineState) -> dict[str, Any]:
             "boundaries": [round(t, 4) for t in state.boundaries],
             "n_segments": len(state.segments),
             "n_pairs": len(state.pairs),
+            "n_rhythm_pairs": len(state.rhythm_pairs),
         },
     }
 

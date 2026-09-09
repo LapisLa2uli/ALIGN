@@ -6,6 +6,7 @@ from typing import Any
 from datacreate.melody import (
     MATCH_LENGTH_RATIO,
     MATCH_SIMILARITY_THRESHOLD,
+    TYPE_MISMATCH_SCALE,
     MelodySpan,
     ScoreSoundingNote,
     WeakMelody,
@@ -16,6 +17,7 @@ from datacreate.melody import (
     lcs_length,
     match_melodies,
     match_melodies_detail,
+    melody_label_score,
     melodies_containment_match,
     melodies_set_match,
     melody_pair_score,
@@ -36,6 +38,7 @@ from alignmodel.types import PipelineLabel, PipelineState, ScorePart
 __all__ = [
     "MATCH_LENGTH_RATIO",
     "MATCH_SIMILARITY_THRESHOLD",
+    "TYPE_MISMATCH_SCALE",
     "MelodySpan",
     "ScoreSoundingNote",
     "WeakMelody",
@@ -48,6 +51,7 @@ __all__ = [
     "lcs_length",
     "match_melodies",
     "match_melodies_detail",
+    "melody_label_score",
     "melodies_containment_match",
     "melodies_set_match",
     "melody_pair_score",

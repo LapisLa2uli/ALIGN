@@ -43,7 +43,10 @@ def main() -> None:
     batch_range.add_argument("--id-width", type=int, default=3)
     batch_range.add_argument("--no-skip-existing", action="store_true")
 
-    sub.add_parser("serve", help="Launch annotation web UI")
+    sub.add_parser(
+        "serve",
+        help="Launch annotation web UI (also /compare for gold vs Model A)",
+    )
 
     args = parser.parse_args()
     config = PipelineConfig.load(_config_path(args.config))
@@ -143,6 +146,8 @@ def serve_main(config: PipelineConfig | None = None) -> None:
 
     config = config or PipelineConfig.load()
     app = create_app(config)
+    print("Annotator     http://127.0.0.1:8765/")
+    print("Gold vs model http://127.0.0.1:8765/compare")
     uvicorn.run(app, host="127.0.0.1", port=8765, log_level="info")
 
 

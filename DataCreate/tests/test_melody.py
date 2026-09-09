@@ -4,6 +4,7 @@ from datacreate.melody import (
     extra_neighbor_core,
     is_contiguous_part,
     match_melodies,
+    match_melodies_detail,
     melody_similarity,
     padded_melody,
 )
@@ -85,12 +86,31 @@ def test_match_melodies_set_equal_and_near():
         WeakMelody(pitches=[67, 69, 71], type="repetition"),
     ]
     pred = [
-        WeakMelody(pitches=[67, 69, 71], type="extra_note"),
+        WeakMelody(pitches=[67, 69, 71], type="repetition"),
         WeakMelody(pitches=[60, 62, 64], type="wrong_note"),
     ]
     f1, precision = match_melodies(gold, pred)
     assert f1 == 1.0
     assert precision == 1.0
+
+
+def test_match_melodies_wrong_type_is_half():
+    gold = [WeakMelody(pitches=[60, 62, 64], type="wrong_note")]
+    pred = [WeakMelody(pitches=[60, 62, 64], type="extra_note")]
+    f1, precision = match_melodies(gold, pred)
+    assert f1 == 0.5
+    assert precision == 0.5
+
+
+def test_ignore_type_gives_full_credit_on_type_mismatch():
+    gold = [WeakMelody(pitches=[60, 62, 64], type="wrong_note")]
+    pred = [WeakMelody(pitches=[60, 62, 64], type="extra_note")]
+    sensitive = match_melodies_detail(gold, pred, ignore_type=False)
+    insensitive = match_melodies_detail(gold, pred, ignore_type=True)
+    assert sensitive["f1"] == 0.5
+    assert insensitive["f1"] == 1.0
+    assert insensitive["precision"] == 1.0
+    assert insensitive["recall"] == 1.0
 
 
 def test_pred_inside_gold_is_not_a_match():

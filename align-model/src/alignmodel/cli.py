@@ -33,7 +33,7 @@ def main() -> None:
     p_smoke.add_argument(
         "--data",
         type=Path,
-        default=Path("synth-pipeline/output"),
+        default=Path("E:/output"),
         help="Root of ALIGN synth bundles",
     )
     p_smoke.add_argument("--out", type=Path, default=None)
@@ -58,7 +58,7 @@ def main() -> None:
     p_st.add_argument(
         "--data",
         type=Path,
-        default=Path("synth-pipeline/output"),
+        default=Path("E:/output"),
         help="Root of synth sample folders",
     )
     p_st.add_argument("--out", type=Path, default=Path("align-model/runs/stages"))
@@ -76,7 +76,7 @@ def main() -> None:
     p_eval.add_argument(
         "--data",
         type=Path,
-        default=Path("synth-pipeline/output"),
+        default=Path("E:/output"),
         help="Root of synth sample folders",
     )
     p_eval.add_argument(
@@ -97,7 +97,18 @@ def main() -> None:
     p_eval.add_argument(
         "--soft",
         action="store_true",
-        help="Soft set-F1: 1-1 assignment, partial credit from melody similarity",
+        help="Soft set-F1: 1-1 assignment, partial credit from melody similarity; wrong type halves credit",
+    )
+    p_eval.add_argument(
+        "--ignore-type",
+        action="store_true",
+        help="Type-insensitive scoring: a range hit gets full credit even if types differ",
+    )
+    p_eval.add_argument(
+        "--weights",
+        type=Path,
+        default=None,
+        help="Directory with stage1.pt / stage2.pt / stage3.pt (used with --infer)",
     )
 
     p_tm = sub.add_parser(
@@ -107,7 +118,7 @@ def main() -> None:
     p_tm.add_argument(
         "--data",
         type=Path,
-        default=Path("synth-pipeline/output"),
+        default=Path("E:/output"),
         help="Root of synth sample folders",
     )
     p_tm.add_argument("--out", type=Path, default=Path("align-model/runs/melody"))
@@ -172,7 +183,7 @@ def main() -> None:
             counts[lab.type] = counts.get(lab.type, 0) + 1
         print(
             f"stages={state.stages_run} segments={len(state.segments)} "
-            f"pairs={len(state.pairs)} labels={counts}"
+            f"pairs={len(state.pairs)} rhythm_pairs={len(state.rhythm_pairs)} labels={counts}"
         )
         return
 
@@ -207,6 +218,8 @@ def main() -> None:
             pad_notes=args.pad,
             device=args.device,
             soft=bool(args.soft),
+            ignore_type=bool(args.ignore_type),
+            weights_dir=args.weights,
         )
         text = json.dumps(
             {

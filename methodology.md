@@ -295,10 +295,10 @@ Then expand `[core_i0, core_i1)` by `pad_notes` ∈ `{1, 2}` on each side and st
 
 Official synth metric: `align-model eval-melodies` (also the headline of `align-model smoke`).
 
-A **predicted** pitch list is correct if it is a **contiguous slice** of some gold melody, **equals** one, or **contains** a gold melody as a contiguous slice. A subsequence that skips notes does not count. Type is not required to match. Matching is **not exclusive**: one gold can validate several predictions and the reverse.
+Matching is **exclusive** (Hungarian 1-1) on pitch-list similarity. A pair is a **range hit** if the predicted list **equals** gold, or LCS-Dice ≥ 0.80 with length ratio ≥ 0.60. A contiguous slice of gold, or a prediction that contains gold, does **not** match. After a range hit: the same error type scores 1; a different type scores 0.5.
 
-- Precision = fraction of predictions that match any gold this way
-- Recall = fraction of golds hit by any prediction
+- Precision = sum of pair credits / number of predictions
+- Recall = sum of pair credits / number of golds
 - Headline = F1 of those two
 
 Empty gold and empty prediction scores 1. Mapping a timestamp-only prediction onto the clean score uses the same core-plus-pad rules (extras still expand to the neighbors).

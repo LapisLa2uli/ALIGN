@@ -18,6 +18,7 @@ from datacreate.note_alignment import (
     _extract_score_events,
     _interp_ref_to_perf,
     align_score_events,
+    note_edge_clustering,
 )
 
 
@@ -64,7 +65,10 @@ def extract_features(audio: np.ndarray, sr: int, config: PipelineConfig) -> np.n
         chroma = librosa.feature.chroma_cqt(y=audio, sr=sr, n_bins=bins, hop_length=hop)
     else:
         chroma = librosa.feature.chroma_cqt(y=audio, sr=sr, hop_length=hop)
-    return _with_energy(chroma, audio, sr, hop, config)
+    midi = _midi_contour_row(audio, sr, hop, int(chroma.shape[1]))
+    stacked = np.vstack([chroma, midi]) if midi is not None else chroma
+    feat = _with_energy(stacked, audio, sr, hop, config)
+    return _gate_midi_by_energy(feat)
 
 
 def _with_energy(
@@ -94,6 +98,61 @@ def _with_energy(
     else:
         normed = np.clip(energy / peak, 0.0, 1.0)
     return np.vstack([chroma, weight * normed])
+
+
+def _midi_contour_row(
+    audio: np.ndarray,
+    sr: int,
+    hop: int,
+    n_frames: int,
+) -> np.ndarray | None:
+    """One row of MIDI/24 so DTW follows melody height, not just chroma class."""
+    if n_frames < 4 or audio is None or len(audio) < hop * 4:
+        return np.zeros((1, max(n_frames, 1)), dtype=np.float64)
+    fmin = float(librosa.note_to_hz("D3"))
+    fmax = float(librosa.note_to_hz("C7"))
+    try:
+        f0 = librosa.yin(
+            audio,
+            fmin=fmin,
+            fmax=fmax,
+            sr=sr,
+            hop_length=hop,
+            frame_length=min(2048, max(512, (len(audio) // hop) * hop or 512)),
+        )
+    except Exception:
+        return np.zeros((1, n_frames), dtype=np.float64)
+    midi = np.zeros(int(f0.size), dtype=np.float64)
+    ok = np.isfinite(f0) & (f0 >= fmin)
+    if np.any(ok):
+        midi[ok] = librosa.hz_to_midi(f0[ok])
+    if midi.size != n_frames:
+        if midi.size == 0:
+            midi = np.zeros(n_frames, dtype=np.float64)
+        else:
+            midi = np.interp(
+                np.linspace(0.0, 1.0, n_frames),
+                np.linspace(0.0, 1.0, midi.size),
+                midi,
+            )
+    return (midi / 24.0).reshape(1, -1)
+
+
+def _gate_midi_by_energy(feat: np.ndarray, thresh: float = 0.08) -> np.ndarray:
+    """Drop F0 on silent frames so rests do not impersonate a pitch."""
+    if feat.shape[0] < 14:
+        return feat
+    energy = np.abs(feat[-1])
+    peak = float(np.max(energy)) if energy.size else 0.0
+    if peak < 1e-12:
+        feat = feat.copy()
+        feat[-2] = 0.0
+        return feat
+    silent = energy / peak < thresh
+    if np.any(silent):
+        feat = feat.copy()
+        feat[-2, silent] = 0.0
+    return feat
 
 
 def _voiced_from_energy(
@@ -184,8 +243,13 @@ def _compress_for_dtw(
     return feat[:, kept], kept.astype(np.int32)
 
 
-def _dtw_cost(ref_feat: np.ndarray, perf_feat: np.ndarray, energy_weight: float) -> np.ndarray:
-    """Cosine chroma distance plus |energy| so rests do not match notes."""
+def _dtw_cost(
+    ref_feat: np.ndarray,
+    perf_feat: np.ndarray,
+    energy_weight: float,
+    midi_weight: float = 1.5,
+) -> np.ndarray:
+    """Chroma distance, plus energy and melody-height so DTW follows the line."""
     ref_c = _chroma(ref_feat).astype(np.float64, copy=False)
     perf_c = _chroma(perf_feat).astype(np.float64, copy=False)
     ref_n = np.linalg.norm(ref_c, axis=0, keepdims=True)
@@ -199,6 +263,12 @@ def _dtw_cost(ref_feat: np.ndarray, perf_feat: np.ndarray, energy_weight: float)
         ref_e = ref_e / max(float(np.max(ref_e)), 1e-8)
         perf_e = perf_e / max(float(np.max(perf_e)), 1e-8)
         cost = cost + float(energy_weight) * np.abs(ref_e[:, None] - perf_e[None, :])
+    if midi_weight > 0 and ref_feat.shape[0] >= 14 and perf_feat.shape[0] >= 14:
+        ref_m = ref_feat[-2].astype(np.float64)
+        perf_m = perf_feat[-2].astype(np.float64)
+        both = (ref_m[:, None] > 0.08) & (perf_m[None, :] > 0.08)
+        delta = np.abs(ref_m[:, None] - perf_m[None, :])
+        cost = cost + float(midi_weight) * np.where(both, delta, 0.0)
     return cost
 
 
@@ -230,7 +300,11 @@ def _sounding_feature_span(
 
 
 def _dtw_band_ratio(n_ref: int, n_perf: int, configured: float) -> float:
-    """Widen the Sakoe–Chiba band enough to cover remaining length mismatch."""
+    """Sakoe–Chiba radius. Fast takes stay near the compression diagonal."""
+    if n_perf < n_ref * 0.92:
+        # A wide band lets the path pile early ref frames onto the opening
+        # (half the notes in the first seconds). Keep local wiggle only.
+        return float(np.clip(configured, 0.08, 0.18))
     longer = max(n_ref, n_perf, 1)
     mismatch = abs(n_ref - n_perf) / longer
     return float(min(0.5, max(configured, mismatch + 0.05)))
@@ -307,6 +381,163 @@ def _voiced_bounds(feat: np.ndarray, thresh: float = 0.08) -> tuple[int, int]:
     return int(voiced[0]), int(voiced[-1]) + 1
 
 
+def _linear_sounding_path(
+    n_ref: int,
+    n_perf: int,
+    perf_feat: np.ndarray,
+    prefix_n: int | None = None,
+) -> np.ndarray:
+    """Uniform ref→perf map onto the sounding performance (no end-pin pile).
+
+    ``prefix_n`` maps only the played score onto the take; leftover frames pin
+    to the last sounding sample so an unplayed coda is not smeared backwards.
+    """
+    i0, i1 = _voiced_bounds(perf_feat)
+    if i1 - i0 < 8:
+        i0, i1 = 0, n_perf
+    n_ref = max(1, int(n_ref))
+    used = n_ref if prefix_n is None else int(max(8, min(n_ref, prefix_n)))
+    rs = np.arange(used, dtype=np.int32)
+    ps = np.linspace(i0, max(i0, i1 - 1), len(rs))
+    path = np.column_stack(
+        [rs, np.clip(ps, 0, max(0, n_perf - 1)).astype(np.int32)]
+    )
+    if used < n_ref:
+        last_p = int(np.clip(i1 - 1, 0, max(0, n_perf - 1)))
+        tail = np.column_stack(
+            [
+                np.arange(used, n_ref, dtype=np.int32),
+                np.full(n_ref - used, last_p, dtype=np.int32),
+            ]
+        )
+        path = np.vstack([path, tail])
+    return path
+
+
+def _midi_path_error(ref_feat: np.ndarray, perf_feat: np.ndarray, wp: np.ndarray) -> float:
+    """Mean |ΔMIDI/24| on voiced frames. High = melody does not follow the path."""
+    if wp is None or len(wp) == 0 or ref_feat.shape[0] < 14 or perf_feat.shape[0] < 14:
+        return 9.0
+    ref_m = ref_feat[-2]
+    perf_m = perf_feat[-2]
+    n_ref = int(ref_m.size)
+    n_perf = int(perf_m.size)
+    diffs: list[float] = []
+    step = max(1, len(wp) // 400)
+    for r, p in wp[::step]:
+        ri = int(max(0, min(n_ref - 1, r)))
+        pi = int(max(0, min(n_perf - 1, p)))
+        rm = float(ref_m[ri])
+        pm = float(perf_m[pi])
+        if rm > 0.08 and pm > 0.08:
+            diffs.append(abs(rm - pm))
+    if len(diffs) < 8:
+        return 9.0
+    return float(np.mean(diffs))
+
+
+def _best_contour_linear_path(
+    ref_feat: np.ndarray,
+    perf_feat: np.ndarray,
+) -> tuple[np.ndarray, int, float]:
+    """Linear map whose prefix best matches performance melody height."""
+    n_ref = int(ref_feat.shape[1])
+    n_perf = int(perf_feat.shape[1])
+    best_wp = _linear_sounding_path(n_ref, n_perf, perf_feat)
+    best_err = _midi_path_error(ref_feat, perf_feat, best_wp)
+    best_prefix = n_ref
+    # Incomplete takes (short audio, long excerpt) score better on a prefix.
+    for frac in (1.0, 0.90, 0.80, 0.70, 0.60, 0.50, 0.42, 0.35):
+        prefix = int(round(frac * n_ref))
+        if prefix < 16:
+            continue
+        cand = _linear_sounding_path(n_ref, n_perf, perf_feat, prefix_n=prefix)
+        err = _midi_path_error(ref_feat, perf_feat, cand)
+        if err < best_err - 0.005:
+            best_err = err
+            best_wp = cand
+            best_prefix = prefix
+    return best_wp, best_prefix, best_err
+
+
+def _repair_clustered_path(
+    wp: np.ndarray,
+    score_path: Path,
+    ref_feat: np.ndarray,
+    perf_feat: np.ndarray,
+    hop: int,
+    sr: int,
+    logger: logging.Logger,
+) -> np.ndarray:
+    """If notes pile at either end, replace with a melody-matched linear path.
+
+    Chroma DTW on repeating figures can pin the path at either end. A linear
+    map onto sounding audio spreads score order across the take so melody
+    height can still match. Skip when the performance is longer than the
+    score (practice restarts) — extras must not be smeared into the notes.
+    Incomplete excerpts keep a score prefix; leftover frames pin at the end.
+    """
+    if not score_path.exists():
+        return wp
+    fts = hop / float(sr)
+    n_ref = int(ref_feat.shape[1])
+    n_perf = int(perf_feat.shape[1])
+    perf_dur = n_perf * fts
+    events = align_score_events(
+        score_path,
+        wp,
+        n_ref,
+        fts,
+        onset_refine=False,
+        perf_audio=None,
+    )
+    stats = note_edge_clustering(events, perf_dur, ref_dur=n_ref * fts)
+    pace = _global_pace(ref_feat, perf_feat)
+    incomplete = _voiced_length(ref_feat) > 1.65 * max(8, _voiced_length(perf_feat))
+    # End-pile of leftover score on a short take is expected; start-pile is not.
+    start_pile = bool(stats["clustered"] and stats["frac_first"] >= 0.5)
+    end_pile = bool(stats["clustered"] and stats["frac_last"] >= 0.5 and not incomplete)
+    if not (start_pile or end_pile):
+        return wp
+    if pace > 1.20:
+        logger.info(
+            "Clustered notes (first=%.2f last=%.2f) but pace=%.2f; keep restart path",
+            stats["frac_first"],
+            stats["frac_last"],
+            pace,
+        )
+        return wp
+    dtw_err = _midi_path_error(ref_feat, perf_feat, wp)
+    linear, prefix, lin_err = _best_contour_linear_path(ref_feat, perf_feat)
+    lin_events = align_score_events(
+        score_path,
+        linear,
+        n_ref,
+        fts,
+        onset_refine=False,
+        perf_audio=None,
+    )
+    lin_stats = note_edge_clustering(lin_events, perf_dur, ref_dur=n_ref * fts)
+    lin_start = bool(lin_stats["clustered"] and lin_stats["frac_first"] >= 0.5)
+    if lin_start:
+        logger.info(
+            "Clustered notes (first=%.2f last=%.2f); linear still piled, keep DTW",
+            stats["frac_first"],
+            stats["frac_last"],
+        )
+        return wp
+    logger.info(
+        "Clustered notes (first=%.2f last=%.2f); linear prefix %d/%d (err %.3f→%.3f)",
+        stats["frac_first"],
+        stats["frac_last"],
+        prefix,
+        n_ref,
+        dtw_err,
+        lin_err,
+    )
+    return linear
+
+
 def _run_subseq_dtw(
     query: np.ndarray,
     target: np.ndarray,
@@ -353,7 +584,9 @@ def _voiced_length(feat: np.ndarray, thresh: float = 0.08) -> int:
 def _global_pace(ref_feat: np.ndarray, perf_feat: np.ndarray) -> float:
     ref_n = max(8, _voiced_length(ref_feat))
     perf_n = max(8, _voiced_length(perf_feat))
-    return float(np.clip(perf_n / ref_n, 0.85, 1.55))
+    # Fast takes (half the written duration) must go below 0.85; otherwise
+    # phrase 0's window eats the next figure and leftover notes pile up.
+    return float(np.clip(perf_n / ref_n, 0.40, 1.55))
 
 
 def _first_voiced_island(
@@ -394,9 +627,11 @@ def _first_voiced_island(
     min_keep = 0
     max_keep = i1 - i
     if expected_sec is not None and expected_sec > 0:
-        # min_keep follows written duration, not global pace (extras inflate pace).
-        min_keep = int(round(0.88 * expected_sec / max(fts, 1e-6)))
-        max_keep = int(round(1.15 * expected_sec * max(pace, 0.85) / max(fts, 1e-6))) + 4
+        # Shrink min_keep when the take is faster than written. Do not grow it
+        # with pace>1: extras inflate pace and would swallow the next figure.
+        keep_pace = float(np.clip(pace, 0.40, 1.0))
+        min_keep = int(round(0.88 * expected_sec * keep_pace / max(fts, 1e-6)))
+        max_keep = int(round(1.15 * expected_sec * max(pace, 0.40) / max(fts, 1e-6))) + 4
     j = i
     while j < i1 and (j - i) < max_keep:
         if voiced[j]:
@@ -434,6 +669,7 @@ def _match_phrase_in_window(
     n_ref = int(ref_feat.shape[1])
     n_perf = int(perf_feat.shape[1])
     energy_weight = float(config.alignment.get("energy_weight", 1.5))
+    midi_weight = float(config.alignment.get("midi_weight", 1.5))
     r0 = int(max(0, min(n_ref - 1, np.floor(t0 / fts))))
     r1 = int(max(r0 + 8, min(n_ref, np.ceil(t1 / fts) + 1)))
     q_lo, q_hi = _voiced_bounds(ref_feat[:, r0:r1])
@@ -449,7 +685,8 @@ def _match_phrase_in_window(
         perf_feat, y0, y1, hop, sr, expected_sec=expected_sec, pace=pace
     )
     exp_sec = expected_sec if expected_sec and expected_sec > 0 else qlen * hop / float(sr)
-    min_island = max(8, int(0.72 * exp_sec / max(fts, 1e-6)))
+    keep_pace = float(np.clip(pace, 0.40, 1.0))
+    min_island = max(8, int(0.55 * exp_sec * keep_pace / max(fts, 1e-6)))
     island_sec = (i1 - i0) * fts
     gap_after = 0.0
     if i1 < y1 and perf_feat.shape[0] > _CHROMA_BINS:
@@ -458,13 +695,14 @@ def _match_phrase_in_window(
         if peak >= 1e-12:
             voiced = energy / peak >= 0.08
             k = i1
-            while k < y1 and not voiced[k]:
+            n_voiced = int(voiced.size)
+            while k < y1 and k < n_voiced and not voiced[k]:
                 k += 1
             gap_after = (k - i1) * fts
     # Accept a slightly short first island when a clear stop follows it.
-    # Otherwise a 0.6s inter-phrase rest can reject the island (11.7s vs
-    # 0.85×14s) and bounded DTW end-pins across the next figure.
-    clear_break = gap_after >= 0.45 and island_sec >= 0.55 * exp_sec
+    # Compare against paced duration: a 2x take's 6s island is enough for a
+    # 12s written phrase, and rejecting it lets DTW pin into the next figure.
+    clear_break = gap_after >= 0.45 and island_sec >= 0.45 * exp_sec * keep_pace
     if i1 - i0 >= min_island or clear_break:
         y0, y1 = i0, i1
     elif i0 > y0:
@@ -482,7 +720,7 @@ def _match_phrase_in_window(
         if min(q_comp.shape[1], t_comp.shape[1]) >= 8:
             band = _dtw_band_ratio(int(q_comp.shape[1]), int(t_comp.shape[1]), 0.25)
             _, seg = dtw(
-                C=_dtw_cost(q_comp, t_comp, energy_weight),
+                C=_dtw_cost(q_comp, t_comp, energy_weight, midi_weight=midi_weight),
                 metric="euclidean",
                 subseq=False,
                 band_rad=band,
@@ -502,7 +740,7 @@ def _match_phrase_in_window(
     m0 = int(seg[:, 1].min())
     m1 = int(seg[:, 1].max()) + 1
     ylen = m1 - m0
-    if ylen < max(8, int(0.55 * qlen)) or ylen > int(2.4 * qlen) + 8:
+    if ylen < max(8, int(0.55 * qlen * keep_pace)) or ylen > int(2.4 * qlen) + 8:
         return None
     if rq0 > r0:
         lead = np.column_stack(
@@ -614,10 +852,20 @@ def _skip_restart_extra(
     # One long island after the stop is restart+continuation; keep the tail.
     if not later_gaps and leftover > need * 1.40:
         new_cursor = max(new_cursor, perf_end - need)
-    if logger is not None and new_cursor > cursor + 0.2:
+    skip = new_cursor - cursor
+    # A 90s jump is a looping take, not a restart of the last phrase.
+    if skip > max(12.0, need * 1.35):
+        if logger is not None:
+            logger.info(
+                "Skip %.2fs exceeds restart cap; keep cursor at %.2fs",
+                skip,
+                cursor,
+            )
+        return cursor
+    if logger is not None and skip > 0.2:
         logger.info(
             "Skipped %.2fs of restart extra (cursor %.2f -> %.2f, leftover score %.2fs)",
-            new_cursor - cursor,
+            skip,
             cursor,
             new_cursor,
             remain_ref,
@@ -658,7 +906,9 @@ def _align_phrases_sequential(
         remain = sum(max(p[1] - p[0], 0.0) for p in phrases[idx + 1 :])
         leftover_score = ref_dur + remain
         perf_end = n_perf * fts
-        if idx >= 1:
+        # Only the last figure may jump a practice restart. Jumping earlier
+        # phrases onto the final loop piles every later note at the end.
+        if idx == len(phrases) - 1:
             cursor = _skip_restart_extra(
                 cursor,
                 leftover_score,
@@ -675,7 +925,9 @@ def _align_phrases_sequential(
         if idx + 1 < len(phrases):
             reserve = remain * pace * 0.35
             window_hi = min(perf_end - reserve, window_lo + expected + 0.20)
-            window_hi = max(window_hi, window_lo + ref_dur * 0.80)
+            # Floor is paced: 80% of the slow written duration would eat the
+            # next figure on a 6/8 take rendered at quarter=120.
+            window_hi = max(window_hi, window_lo + ref_dur * pace * 0.80)
         else:
             # Do not end-pin the last figure across a restart / extra tail.
             window_hi = min(perf_end, window_lo + expected + 0.35)
@@ -741,7 +993,14 @@ def _align_phrases_sequential(
             y0 = int(max(0, min(n_perf - 1, np.floor(cursor / fts))))
             span = min(n_perf - y0, max(8, int(round(expected / fts)) + 4))
             y1 = y0 + span
-            if r1 - r0 >= 8 and y1 - y0 >= 8 and (y1 - y0) * fts <= expected * 1.55 + 0.4:
+            span_sec = (y1 - y0) * fts
+            need = ref_dur * pace
+            # A 12s leftover phrase must not be linearly packed into 3s of audio.
+            if (
+                r1 - r0 >= 8
+                and y1 - y0 >= 8
+                and 0.70 * need <= span_sec <= expected * 1.55 + 0.4
+            ):
                 rs = np.arange(r0, r1, dtype=np.int32)
                 ps = np.linspace(y0, y1 - 1, r1 - r0)
                 seg = np.column_stack([rs, np.clip(ps, 0, n_perf - 1).astype(np.int32)])
@@ -750,13 +1009,35 @@ def _align_phrases_sequential(
                     idx, t0, t1, y0 * fts, y1 * fts,
                 )
         if seg is None:
-            # Do not inherit a lagged global end; keep walking at score tempo.
-            cursor = min(perf_end, cursor + ref_dur)
-            logger.info(
-                "Phrase %d kept walking cursor at %.2fs (no local match)",
-                idx,
-                cursor,
-            )
+            n_ref = int(ref_feat.shape[1])
+            r0 = int(max(0, min(n_ref - 1, np.floor(t0 / fts))))
+            r1 = int(max(r0 + 1, min(n_ref, np.ceil(t1 / fts) + 1)))
+            # Unmatched leftover after the take is consumed: pin to the end
+            # so global DTW cannot smear later bars onto already-used audio.
+            if cursor >= perf_end - 0.25 and r1 > r0:
+                last_p = max(0, n_perf - 1)
+                pin = np.column_stack(
+                    [
+                        np.arange(r0, r1, dtype=np.int32),
+                        np.full(r1 - r0, last_p, dtype=np.int32),
+                    ]
+                )
+                clear_from = 0 if idx == 0 else int(np.floor(phrases[idx - 1][1] / fts))
+                wp = _splice_path(wp, pin, clear_from_ref=clear_from)
+                logger.info(
+                    "Phrase %d pinned leftover %.2f–%.2fs at end (%.2fs)",
+                    idx,
+                    t0,
+                    t1,
+                    perf_end,
+                )
+            else:
+                cursor = min(perf_end, cursor + ref_dur * pace)
+                logger.info(
+                    "Phrase %d kept walking cursor at %.2fs (no local match)",
+                    idx,
+                    cursor,
+                )
             continue
         m0 = int(seg[:, 1].min())
         m1 = int(seg[:, 1].max()) + 1
@@ -874,6 +1155,11 @@ def run_alignment(
                 wp, phrases, ref_feat, perf_feat, hop, sr, config, logger
             )
 
+    if config.alignment.get("cluster_repair", True):
+        wp = _repair_clustered_path(
+            wp, score_path, ref_feat, perf_feat, hop, sr, logger
+        )
+
     wp = _densify_warping_path(wp)
     wp[:, 0] = np.clip(wp[:, 0], 0, int(ref_feat.shape[1]) - 1)
     wp[:, 1] = np.clip(wp[:, 1], 0, int(perf_feat.shape[1]) - 1)
@@ -893,6 +1179,47 @@ def run_alignment(
         onset_rise_db=float(config.alignment.get("onset_rise_db", 8.0)),
         phrase_min_rest_ql=float(config.alignment.get("phrase_min_rest_ql", 0.25)),
     )
+    if config.alignment.get("cluster_repair", True):
+        snap_stats = note_edge_clustering(
+            aligned_events,
+            int(perf_feat.shape[1]) * frame_to_sec,
+            ref_dur=int(ref_feat.shape[1]) * frame_to_sec,
+        )
+        pace = _global_pace(ref_feat, perf_feat)
+        incomplete = _voiced_length(ref_feat) > 1.65 * max(
+            8, _voiced_length(perf_feat)
+        )
+        start_pile = snap_stats["clustered"] and snap_stats["frac_first"] >= 0.5
+        end_pile = (
+            snap_stats["clustered"]
+            and snap_stats["frac_last"] >= 0.5
+            and not incomplete
+        )
+        if (start_pile or end_pile) and pace <= 1.20:
+            logger.info(
+                "Post-snap clustering (first=%.2f last=%.2f); melody-linear path",
+                snap_stats["frac_first"],
+                snap_stats["frac_last"],
+            )
+            wp, _, _ = _best_contour_linear_path(ref_feat, perf_feat)
+            wp = _densify_warping_path(wp)
+            wp[:, 0] = np.clip(wp[:, 0], 0, int(ref_feat.shape[1]) - 1)
+            wp[:, 1] = np.clip(wp[:, 1], 0, int(perf_feat.shape[1]) - 1)
+            residuals = _frame_residuals(ref_feat, perf_feat, wp)
+            aligned_events = align_score_events(
+                score_path,
+                wp,
+                int(ref_feat.shape[1]),
+                frame_to_sec,
+                residuals=residuals,
+                perf_audio=perf,
+                sample_rate=sr,
+                onset_refine=bool(config.alignment.get("onset_refine", True)),
+                onset_lookback_sec=float(config.alignment.get("onset_lookback_sec", 0.15)),
+                onset_max_shift_sec=float(config.alignment.get("onset_max_shift_sec", 0.6)),
+                onset_rise_db=float(config.alignment.get("onset_rise_db", 8.0)),
+                phrase_min_rest_ql=float(config.alignment.get("phrase_min_rest_ql", 0.25)),
+            )
 
     candidates: list[Label] = []
     if detect_candidates:
@@ -937,7 +1264,8 @@ def _run_dtw(
         logger.info("Running bounded DTW (band_rad=%.3f)", band_ratio)
     try:
         energy_weight = float(config.alignment.get("energy_weight", 1.5))
-        cost = _dtw_cost(ref_feat, perf_feat, energy_weight)
+        midi_weight = float(config.alignment.get("midi_weight", 1.5))
+        cost = _dtw_cost(ref_feat, perf_feat, energy_weight, midi_weight=midi_weight)
         cost_matrix, wp = dtw(
             C=cost,
             metric="euclidean",

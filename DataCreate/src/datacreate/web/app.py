@@ -26,6 +26,7 @@ from datacreate.sample_prep import (
 from datacreate.score_segment import extract_measure_range
 from datacreate.utils import read_json, setup_sample_logger, write_json
 from datacreate.validation import validate_labels_file
+from datacreate.web.compare_eval import default_eval_dir, load_summary, sample_payload
 
 
 WEB_DIR = Path(__file__).resolve().parent
@@ -100,6 +101,19 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         html = html.replace("/static/style.css", f"/static/style.css?v={css_v}")
         html = html.replace("/static/annotate.js", f"/static/annotate.js?v={js_v}")
         return HTMLResponse(html, headers={"Cache-Control": "no-store"})
+
+    def _inject_asset_versions(name: str) -> HTMLResponse:
+        html = (TEMPLATES_DIR / name).read_text(encoding="utf-8")
+        js_name = "compare.js" if name == "compare.html" else "annotate.js"
+        js_v = int((STATIC_DIR / js_name).stat().st_mtime)
+        css_v = int((STATIC_DIR / "style.css").stat().st_mtime)
+        html = html.replace("/static/style.css", f"/static/style.css?v={css_v}")
+        html = html.replace(f"/static/{js_name}", f"/static/{js_name}?v={js_v}")
+        return HTMLResponse(html, headers={"Cache-Control": "no-store"})
+
+    @app.get("/compare", response_class=HTMLResponse)
+    def compare_index() -> HTMLResponse:
+        return _inject_asset_versions("compare.html")
 
     @app.get("/api/samples")
     def list_samples() -> list[dict[str, Any]]:
@@ -351,6 +365,50 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         if errors:
             raise HTTPException(400, "; ".join(errors))
         return {"status": "saved"}
+
+    @app.get("/api/compare/summary")
+    def compare_summary() -> dict[str, Any]:
+        eval_dir = default_eval_dir()
+        try:
+            summary = load_summary(eval_dir)
+        except FileNotFoundError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        samples = []
+        for row in summary.get("samples") or []:
+            sid = str(row.get("sample") or "")
+            if not sid:
+                continue
+            hs = row.get("hard_type_sensitive") or {}
+            hi = row.get("hard_type_insensitive") or {}
+            samples.append(
+                {
+                    "id": sid,
+                    "n_gold": row.get("n_gold"),
+                    "n_pred": row.get("n_pred"),
+                    "hard_type_sensitive_f1": hs.get("melody_f1"),
+                    "hard_type_insensitive_f1": hi.get("melody_f1"),
+                }
+            )
+        return {
+            "eval_dir": str(eval_dir),
+            "checkpoint": summary.get("checkpoint"),
+            "n_samples": summary.get("n_samples"),
+            "n_skipped": summary.get("n_skipped"),
+            "criteria": summary.get("criteria"),
+            "samples": samples,
+        }
+
+    @app.get("/api/compare/samples/{sample_id}")
+    def compare_sample(sample_id: str) -> dict[str, Any]:
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        eval_dir = default_eval_dir()
+        try:
+            summary = load_summary(eval_dir)
+        except FileNotFoundError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        return sample_payload(sample_dir, eval_dir, summary)
 
     @app.post("/api/samples/{sample_id}/review")
     def compare_annotations(sample_id: str, payload: ReviewPayload) -> dict[str, Any]:

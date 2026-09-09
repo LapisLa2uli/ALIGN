@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MusicEval · Gold vs Model A</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script>
+  <script src="https://unpkg.com/opensheetmusicdisplay@1.8.9/build/opensheetmusicdisplay.min.js"></script>
+</head>
+<body class="compare-page">
+  <header>
+    <h1>Gold vs Model A</h1>
+    <div class="controls">
+      <label>Sample
+        <select id="sampleSelect"></select>
+      </label>
+      <span id="sampleStats" class="hint"></span>
+      <a class="header-link" href="/">Annotator</a>
+    </div>
+  </header>
+
+  <section id="compareBar" class="batch-panel">
+    <strong>Eval</strong>
+    <span id="evalMeta" class="hint">Loading…</span>
+    <span id="headlineStats" class="compare-pills"></span>
+  </section>
+
+  <section id="scorePanel">
+    <div class="score-toolbar">
+      <strong>Score</strong>
+      <button id="viewFullScoreBtn" type="button">View full</button>
+      <button id="viewSegmentScoreBtn" type="button">View segment</button>
+      <span id="measureTotal" class="hint"></span>
+    </div>
+    <div id="osmdContainer"></div>
+  </section>
+
+  <section id="timelinePanel">
+    <div class="transport">
+      <button id="playBtn">Play/Pause</button>
+      <button id="loopBtn">Loop selection</button>
+      <label>Speed
+        <select id="speedSelect">
+          <option value="0.5">0.5x</option>
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+        </select>
+      </label>
+      <span id="timeDisplay">00:00.000</span>
+    </div>
+    <div class="view-toolbar">
+      <strong>Tracks</strong>
+      <button id="toggleGoldBtn" type="button" class="mode-btn active">Gold</button>
+      <button id="togglePredBtn" type="button" class="mode-btn active">Model</button>
+      <label class="zoom-control">Zoom
+        <input id="zoomSlider" type="range" min="0" max="100" value="50" />
+      </label>
+      <button id="zoomFitBtn" type="button">Fit</button>
+    </div>
+    <div id="waveformScroll" class="waveform-scroll">
+      <div id="alignmentStack" class="alignment-stack">
+        <div id="scrubber" class="scrubber" title="Click or drag to move playhead">
+          <div id="scrubberProgress" class="scrubber-progress"></div>
+          <div id="playhead" class="playhead"></div>
+        </div>
+        <div class="waveform-wrap">
+          <div id="waveform"></div>
+        </div>
+        <div id="melodyStrip" class="melody-strip idle" title="Reference notes on the performance timeline"></div>
+      </div>
+    </div>
+    <div class="track-label">Top half of waveform: gold &nbsp;·&nbsp; Bottom half: Model A &nbsp;·&nbsp; Solid = range+type match &nbsp;·&nbsp; Dashed = range only (0.5) &nbsp;·&nbsp; Faint = unmatched</div>
+  </section>
+
+  <aside id="inspector">
+    <h2>Selected label</h2>
+    <p id="selectionInfo">Click a gold or model region, or a row in the lists below.</p>
+    <div id="selectionDetail" class="compare-detail"></div>
+    <h3>Gold</h3>
+    <div id="goldList" class="label-list"></div>
+    <h3>Model A</h3>
+    <div id="predList" class="label-list"></div>
+    <h3>Legend</h3>
+    <ul class="hotkeys">
+      <li>Type colors match the annotator.</li>
+      <li>White border: selected.</li>
+      <li>Space: play/pause.</li>
+      <li>Click a list row to seek and highlight the score span.</li>
+    </ul>
+  </aside>
+
+  <script src="/static/compare.js"></script>
+</body>
+</html>

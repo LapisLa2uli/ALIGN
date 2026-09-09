@@ -48,6 +48,8 @@ alignment:
   silence_pad_sec: 0.08
   # Interior rests: energy row + compress long silent runs before DTW
   energy_weight: 1.5
+  midi_weight: 1.5          # melody-height row so DTW follows pitch, not just chroma
+  cluster_repair: true      # linear fallback if half the notes pile at either end
   compress_silence: true
   silence_energy_thresh: 0.08
   keep_silence_sec: 0.16

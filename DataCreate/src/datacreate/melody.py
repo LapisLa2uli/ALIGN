@@ -274,7 +274,7 @@ def melody_pair_score(a: list[int], b: list[int]) -> float:
     LCS Dice (``melody_similarity``) if the lists have similar length, else 0.
     Equal lists score 1. A short slice of a long list, or a whole-score dump
     that contains a gold melody, scores 0 because ``min/max`` length <
-    ``MATCH_LENGTH_RATIO``. Type is not part of the score.
+    ``MATCH_LENGTH_RATIO``. Type is applied later by ``melody_label_score``.
     """
     if not a and not b:
         return 1.0
@@ -324,17 +324,55 @@ def _exclusive_pairs(scores: list[list[float]]) -> list[tuple[int, int, float]]:
         return out
 
 
+TYPE_MISMATCH_SCALE = 0.5
+
+
+def _types_agree(pred: WeakMelody, gold: WeakMelody) -> bool:
+    pt, gt = pred.type, gold.type
+    if pt is None and gt is None:
+        return True
+    if pt is None or gt is None:
+        return False
+    return str(pt) == str(gt)
+
+
+def melody_label_score(
+    pred: WeakMelody,
+    gold: WeakMelody,
+    *,
+    soft: bool = False,
+    ignore_type: bool = False,
+) -> float:
+    """Pitch-list similarity, then type: mismatch halves a positive score.
+
+    Assignment still uses pitch lists only. After a pair is a range hit,
+    matching types keep full credit; a wrong type scales it by
+    ``TYPE_MISMATCH_SCALE`` (0.5). Hard mode: exact/near range is 1 or 0.5.
+    Soft mode: raw similarity, or half of that on a type mismatch.
+    ``ignore_type=True`` skips the type check (old type-insensitive scoring).
+    """
+    pitch = melody_pair_score(pred.pitches, gold.pitches)
+    if pitch <= 0.0:
+        return 0.0
+    if not soft and pitch < MATCH_SIMILARITY_THRESHOLD:
+        return 0.0
+    credit = pitch if soft else 1.0
+    if ignore_type or _types_agree(pred, gold):
+        return credit
+    return TYPE_MISMATCH_SCALE * credit
+
+
 def match_melodies(
     gold: list[WeakMelody], pred: list[WeakMelody]
 ) -> tuple[float, float]:
     """Exclusive set-F1 and precision.
 
-    Each prediction matches at most one gold and vice versa (Hungarian 1-1).
-    A pair matches only when the pitch lists are the same event: equal, or
-    LCS-Dice ≥ ``MATCH_SIMILARITY_THRESHOLD`` with length ratio ≥
-    ``MATCH_LENGTH_RATIO``. Slice/containment ("pred is part of gold" or
-    "pred contains gold") does not match. Type is ignored: the official
-    task is recovering the set of fault pitch-lists, not type labels.
+    Each prediction matches at most one gold and vice versa (Hungarian 1-1
+    on pitch-list similarity). A pair is a range hit only when the pitch
+    lists are the same event: equal, or LCS-Dice ≥ ``MATCH_SIMILARITY_THRESHOLD``
+    with length ratio ≥ ``MATCH_LENGTH_RATIO``. Slice/containment does not
+    match. A range hit with the same type scores 1; a range hit with a
+    different type scores ``TYPE_MISMATCH_SCALE`` (0.5).
 
     Returns ``(F1, precision)``. Use ``match_melodies_detail`` for recall.
     """
@@ -347,13 +385,14 @@ def match_melodies_detail(
     pred: list[WeakMelody],
     *,
     soft: bool = False,
+    ignore_type: bool = False,
 ) -> dict[str, float]:
-    """Exclusive set scores.
+    """Exclusive set scores with type-aware credit.
 
-    ``soft=False`` (Model B default): a pair counts only if similarity ≥
-    ``MATCH_SIMILARITY_THRESHOLD``.
-    ``soft=True``: Hungarian still 1-1, but each assigned pair contributes its
-    raw similarity (equal lists = 1, partial LCS-Dice if length ratio holds).
+    Hungarian is 1-1 on pitch-list similarity. Each assigned pair then
+    contributes ``melody_label_score`` (hard: 1 / 0.5 / 0; soft: similarity
+    or half of it when types differ). ``ignore_type=True`` gives full range
+    credit even when types differ.
     """
     empty = {
         "f1": 1.0,
@@ -381,21 +420,15 @@ def match_melodies_detail(
         [melody_pair_score(p.pitches, g.pitches) for g in gold] for p in pred
     ]
     pairs = _exclusive_pairs(scores)
-    if soft:
-        sim_sum = float(sum(score for _i, _j, score in pairs))
-        precision = sim_sum / len(pred)
-        recall = sim_sum / len(gold)
-        n_matched = sim_sum
-    else:
-        matched = [
-            (i, j, score)
-            for i, j, score in pairs
-            if score >= MATCH_SIMILARITY_THRESHOLD
-        ]
-        n_matched = float(len(matched))
-        sim_sum = float(sum(score for _i, _j, score in matched))
-        precision = n_matched / len(pred)
-        recall = n_matched / len(gold)
+    sim_sum = float(
+        sum(
+            melody_label_score(pred[i], gold[j], soft=soft, ignore_type=ignore_type)
+            for i, j, _ in pairs
+        )
+    )
+    precision = sim_sum / len(pred)
+    recall = sim_sum / len(gold)
+    n_matched = sim_sum
     f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
     return {
         "f1": f1,

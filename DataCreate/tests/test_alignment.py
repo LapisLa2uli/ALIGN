@@ -17,6 +17,7 @@ from datacreate.note_alignment import (
     _snap_phrases_to_voiced,
     _tempo_map,
     align_score_events,
+    note_edge_clustering,
 )
 from datacreate.score_segment import (
     extract_measure_range,
@@ -644,3 +645,190 @@ def test_skip_restart_clips_prefix_of_long_restart_island():
     need = 2.0 * 1.2 * 1.15
     assert cursor > 12.1 - need - 0.4
     assert cursor > 6.0
+
+
+def test_fast_second_phrase_is_not_swallowed(tmp_path):
+    """A ~2x take must keep phrase 2 on the later island, not crush it at the end."""
+    sr = 22050
+    ref = np.concatenate(
+        [
+            _tone(sr, 440, 2.0),
+            np.zeros(int(sr * 0.50), dtype=np.float32),
+            _tone(sr, 554, 2.0),
+        ]
+    )
+    perf = np.concatenate(
+        [
+            _tone(sr, 440, 1.0),
+            np.zeros(int(sr * 0.55), dtype=np.float32),
+            _tone(sr, 554, 1.0),
+        ]
+    )
+    save_wav(tmp_path / "reference_audio.wav", ref, sr)
+    save_wav(tmp_path / "performance_audio.wav", perf, sr)
+
+    score = stream.Score()
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=120))
+    part.append(note.Note("A4", quarterLength=4.0))
+    part.append(note.Rest(quarterLength=1.0))
+    part.append(note.Note("C#5", quarterLength=4.0))
+    score.insert(0, part)
+    score.write("musicxml", fp=str(tmp_path / "verified_score.musicxml"))
+
+    config = PipelineConfig.load()
+    config.audio["sample_rate"] = sr
+    run_alignment(
+        tmp_path / "performance_audio.wav",
+        tmp_path / "reference_audio.wav",
+        tmp_path,
+        config,
+        logging.getLogger("test_fast_phrase"),
+        detect_candidates=False,
+    )
+    data = np.load(tmp_path / "alignment.npz")
+    events = align_score_events(
+        tmp_path / "verified_score.musicxml",
+        data["warping_path"],
+        int(data["ref_features"].shape[1]),
+        float(data["hop_length"]) / float(data["sample_rate"]),
+        onset_refine=False,
+    )
+    notes = [ev for ev in events if not ev["is_rest"]]
+    assert len(notes) >= 2
+    # Phrase 0 must occupy the first island, not a 200ms pile at t=0.
+    assert notes[0]["perf_start"] < 0.25
+    assert notes[0]["perf_end"] > 0.55
+    assert notes[0]["perf_end"] < 1.25
+    assert notes[1]["perf_start"] > 1.35
+    assert notes[1]["perf_start"] < 1.80
+    assert notes[1]["perf_end"] - notes[1]["perf_start"] > 0.40
+
+
+def test_note_edge_clustering_detects_start_pile():
+    events = [{"is_rest": False, "perf_start": 0.2 * (i % 3)} for i in range(20)]
+    stats = note_edge_clustering(events, perf_dur=10.0)
+    assert stats["clustered"]
+    assert stats["frac_first"] >= 0.5
+
+
+def test_note_edge_clustering_accepts_uniform_spread():
+    events = [{"is_rest": False, "perf_start": 0.4 + 0.4 * i} for i in range(20)]
+    stats = note_edge_clustering(events, perf_dur=10.0)
+    assert not stats["clustered"]
+    assert stats["frac_first"] < 0.4
+    assert stats["frac_last"] < 0.4
+
+
+def test_note_edge_clustering_looping_first_pass_is_ok():
+    """A 16s excerpt at the start of a 45s looping take is not an end-pin fault."""
+    events = [{"is_rest": False, "perf_start": 0.3 + 0.7 * i} for i in range(20)]
+    stats = note_edge_clustering(events, perf_dur=45.0, ref_dur=16.0)
+    assert stats["frac_first"] >= 0.5
+    assert not stats["clustered"]
+
+
+def test_note_edge_clustering_bimodal_skip_is_fault():
+    events = (
+        [{"is_rest": False, "perf_start": 0.2 * i} for i in range(10)]
+        + [{"is_rest": False, "perf_start": 38.0 + 0.2 * i} for i in range(10)]
+    )
+    stats = note_edge_clustering(events, perf_dur=45.0, ref_dur=16.0)
+    assert stats["clustered"]
+
+
+def test_note_edge_clustering_incomplete_end_pin_is_ok():
+    events = [{"is_rest": False, "perf_start": 0.4 * i} for i in range(12)]
+    events += [{"is_rest": False, "perf_start": 8.9} for _ in range(12)]
+    stats = note_edge_clustering(events, perf_dur=9.2, ref_dur=36.0)
+    assert stats["frac_last"] >= 0.5
+    assert not stats["clustered"]
+
+
+def test_octave_jump_maps_second_note_to_later_audio(tmp_path):
+    """Same chroma class (A4 then A5) must still follow melody height."""
+    sr = 22050
+    ref = np.concatenate([_tone(sr, 440, 0.70), _tone(sr, 880, 0.70)])
+    perf = np.concatenate([_tone(sr, 440, 0.55), _tone(sr, 880, 0.55)])
+    save_wav(tmp_path / "reference_audio.wav", ref, sr)
+    save_wav(tmp_path / "performance_audio.wav", perf, sr)
+
+    score = stream.Score()
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=120))
+    part.append(note.Note("A4", quarterLength=1.4))
+    part.append(note.Note("A5", quarterLength=1.4))
+    score.insert(0, part)
+    score.write("musicxml", fp=str(tmp_path / "verified_score.musicxml"))
+
+    config = PipelineConfig.load()
+    config.audio["sample_rate"] = sr
+    run_alignment(
+        tmp_path / "performance_audio.wav",
+        tmp_path / "reference_audio.wav",
+        tmp_path,
+        config,
+        logging.getLogger("test_octave"),
+        detect_candidates=False,
+    )
+    data = np.load(tmp_path / "alignment.npz")
+    events = align_score_events(
+        tmp_path / "verified_score.musicxml",
+        data["warping_path"],
+        int(data["ref_features"].shape[1]),
+        float(data["hop_length"]) / float(data["sample_rate"]),
+        onset_refine=False,
+    )
+    notes = [ev for ev in events if not ev["is_rest"]]
+    assert notes[0]["perf_end"] < 0.70
+    assert notes[1]["perf_start"] > 0.45
+    assert notes[1]["perf_start"] > notes[0]["perf_end"] - 0.05
+
+
+def test_fast_scale_notes_are_spread_not_front_loaded(tmp_path):
+    """Compressed scale: notes must follow pitch and fill the take, not pile at t=0."""
+    sr = 22050
+    freqs = [262, 294, 330, 349, 392, 440, 494, 523, 587, 659, 698, 784]
+    names = ["C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", "D5", "E5", "F5", "G5"]
+    ref = np.concatenate([_tone(sr, f, 0.36) for f in freqs])
+    perf = np.concatenate([_tone(sr, f, 0.20) for f in freqs])
+    save_wav(tmp_path / "reference_audio.wav", ref, sr)
+    save_wav(tmp_path / "performance_audio.wav", perf, sr)
+
+    score = stream.Score()
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=120))
+    for name in names:
+        part.append(note.Note(name, quarterLength=0.72))
+    score.insert(0, part)
+    score.write("musicxml", fp=str(tmp_path / "verified_score.musicxml"))
+
+    config = PipelineConfig.load()
+    config.audio["sample_rate"] = sr
+    run_alignment(
+        tmp_path / "performance_audio.wav",
+        tmp_path / "reference_audio.wav",
+        tmp_path,
+        config,
+        logging.getLogger("test_scale"),
+        detect_candidates=False,
+    )
+    data = np.load(tmp_path / "alignment.npz")
+    fts = float(data["hop_length"]) / float(data["sample_rate"])
+    events = align_score_events(
+        tmp_path / "verified_score.musicxml",
+        data["warping_path"],
+        int(data["ref_features"].shape[1]),
+        fts,
+        onset_refine=False,
+    )
+    perf_dur = int(data["perf_features"].shape[1]) * fts
+    stats = note_edge_clustering(events, perf_dur)
+    assert not stats["clustered"]
+    notes = [ev for ev in events if not ev["is_rest"]]
+    assert notes[0]["perf_start"] < 0.25
+    assert notes[-1]["perf_start"] > perf_dur * 0.55
+    mids = [0.5 * (ev["perf_start"] + ev["perf_end"]) for ev in notes]
+    assert mids == sorted(mids)
+    # Later scale degrees must land later than earlier ones.
+    assert notes[6]["perf_start"] > notes[2]["perf_end"]

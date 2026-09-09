@@ -698,6 +698,60 @@ def _snap_phrases_to_voiced(
     return events
 
 
+def note_edge_clustering(
+    events: list[dict[str, Any]],
+    perf_dur: float,
+    *,
+    edge: float = 0.25,
+    min_notes: int = 12,
+    cluster_frac: float = 0.5,
+    ref_dur: float | None = None,
+) -> dict[str, Any]:
+    """Detect a DTW pile-up: half the notes in the first or last ``edge`` of the take."""
+    times = [float(ev["perf_start"]) for ev in events if not ev.get("is_rest")]
+    n = len(times)
+    out: dict[str, Any] = {
+        "n": n,
+        "frac_first": 0.0,
+        "frac_last": 0.0,
+        "clustered": False,
+        "occupied": 0.0,
+        "hole": 0.0,
+    }
+    if n < min_notes or perf_dur <= 0.4:
+        return out
+    first_cut = float(edge) * float(perf_dur)
+    last_cut = (1.0 - float(edge)) * float(perf_dur)
+    times_sorted = sorted(times)
+    frac_first = sum(t <= first_cut for t in times) / n
+    frac_last = sum(t >= last_cut for t in times) / n
+    occupied = times_sorted[-1] - times_sorted[0]
+    hole = 0.0
+    for a, b in zip(times_sorted, times_sorted[1:]):
+        hole = max(hole, b - a)
+    out["frac_first"] = float(frac_first)
+    out["frac_last"] = float(frac_last)
+    out["occupied"] = float(occupied)
+    out["hole"] = float(hole)
+    piled = bool(frac_first >= cluster_frac or frac_last >= cluster_frac)
+    # Looping extras make a first-pass mapping look like a start pile on the
+    # raw take. That is OK when notes fill an excerpt-length region with no
+    # restart hole. A 040-style crush still fails: occupied << take.
+    looping = ref_dur is not None and float(perf_dur) > 1.45 * max(float(ref_dur), 1.0)
+    incomplete = ref_dur is not None and float(ref_dur) > 1.60 * float(perf_dur)
+    if looping and piled:
+        expected = min(float(perf_dur), max(float(ref_dur), 1.0) * 1.15)
+        filled = occupied >= 0.55 * expected
+        bimodal = hole >= 3.0 and hole >= 0.20 * float(perf_dur)
+        crushed = occupied < 0.45 * min(float(perf_dur), expected)
+        piled = bool(bimodal or crushed or not filled)
+    elif incomplete and piled and frac_last >= cluster_frac and frac_first < cluster_frac:
+        # Unplayed coda pinned at the end of a short take.
+        piled = False
+    out["clustered"] = piled
+    return out
+
+
 def _enforce_monotonic_perf_times(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Keep mapped spans in score order so later bars cannot precede earlier ones."""
     last_end = 0.0

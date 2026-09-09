@@ -211,24 +211,45 @@ def apply_learned_edits(state: PipelineState, mel: np.ndarray, models: StageMode
     state.labels = kept
 
 
-def apply_learned_rhythm(state: PipelineState, mel: np.ndarray, models: StageModels) -> None:
-    if models.rhythm is None or mel is None:
-        return
-    pairs = [p for p in state.pairs if p.kind in {"match", "substitute"}]
+def rhythm_windows_from_pairs(
+    pairs: list, *, gap: float = 0.25, max_width: float = 1.35, min_width: float = 0.28
+) -> list[tuple[float, float]]:
     if not pairs:
-        return
-    pairs = sorted(pairs, key=lambda p: p.perf_start)
+        return []
+    ordered = sorted(pairs, key=lambda p: p.perf_start)
     windows: list[tuple[float, float]] = []
-    cur_s, cur_e = pairs[0].perf_start, pairs[0].perf_end
-    for pair in pairs[1:]:
-        if pair.perf_start - cur_e > 0.25 or pair.perf_end - cur_s > 1.35:
-            if cur_e - cur_s >= 0.28:
+    cur_s, cur_e = ordered[0].perf_start, ordered[0].perf_end
+    for pair in ordered[1:]:
+        if pair.perf_start - cur_e > gap or pair.perf_end - cur_s > max_width:
+            if cur_e - cur_s >= min_width:
                 windows.append((cur_s, cur_e))
             cur_s, cur_e = pair.perf_start, pair.perf_end
         else:
             cur_e = max(cur_e, pair.perf_end)
-    if cur_e - cur_s >= 0.28:
+    if cur_e - cur_s >= min_width:
         windows.append((cur_s, cur_e))
+    return windows
+
+
+def apply_learned_rhythm(
+    state: PipelineState,
+    mel: np.ndarray,
+    models: StageModels,
+    *,
+    pairs: list | None = None,
+    gate_spans: list[tuple[float, float]] | None = None,
+) -> None:
+    if models.rhythm is None or mel is None:
+        return
+    if pairs is None:
+        pairs = list(state.rhythm_pairs or state.pairs)
+    pairs = [p for p in pairs if p.kind in {"match", "substitute", "rest"}]
+    if gate_spans is not None:
+        windows = [(t0, t1) for t0, t1 in gate_spans if t1 - t0 >= 0.12]
+    else:
+        windows = rhythm_windows_from_pairs(pairs)
+    if not windows:
+        return
     device = models.device
     model = models.rhythm
     thr = models.rhythm_threshold

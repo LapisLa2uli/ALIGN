@@ -26,6 +26,8 @@ def eval_sample(
     run_infer: bool = False,
     device: str = "cuda",
     soft: bool = False,
+    ignore_type: bool = False,
+    weights_dir: Path | str | None = None,
 ) -> dict[str, Any]:
     sample_dir = Path(sample_dir)
     gold_doc = json.loads((sample_dir / "labels.json").read_text(encoding="utf-8"))
@@ -35,11 +37,11 @@ def eval_sample(
         gold = pred_melodies_from_labels(gold_doc.get("labels") or [], notes, pad_notes=pad_notes)
 
     if pred_labels is None and run_infer:
-        state = run_pipeline(sample_dir, device=device)
+        state = run_pipeline(sample_dir, device=device, weights_dir=weights_dir)
         pred_labels = _label_dicts_from_pipeline(state)
     pred_labels = pred_labels or []
     pred = pred_melodies_from_labels(pred_labels, notes, pad_notes=pad_notes)
-    detail = match_melodies_detail(gold, pred, soft=soft)
+    detail = match_melodies_detail(gold, pred, soft=soft, ignore_type=ignore_type)
     f1 = round(detail["f1"], 4)
     precision = round(detail["precision"], 4)
     recall = round(detail["recall"], 4)
@@ -47,13 +49,14 @@ def eval_sample(
         "sample": sample_dir.name,
         "n_gold": len(gold),
         "n_pred": len(pred),
-        "n_matched": int(detail.get("n_matched", detail["n_pred_correct"])),
+        "n_matched": round(float(detail.get("n_matched", detail["n_pred_correct"])), 4),
         "melody_f1": f1,
         "melody_precision": precision,
         "melody_recall": recall,
         "melody_similarity": f1,
         "note_set_iou": precision,
         "soft": soft,
+        "ignore_type": ignore_type,
         "similarity_sum": round(float(detail.get("similarity_sum") or 0.0), 4),
         "gold_types": [g.type for g in gold],
         "pred_types": [p.type for p in pred],
@@ -69,6 +72,8 @@ def eval_root(
     pad_notes: int = 2,
     device: str = "cuda",
     soft: bool = False,
+    ignore_type: bool = False,
+    weights_dir: Path | str | None = None,
 ) -> dict[str, Any]:
     root = Path(root)
     dirs = sorted(
@@ -91,6 +96,8 @@ def eval_root(
             run_infer=run_infer,
             device=device,
             soft=soft,
+            ignore_type=ignore_type,
+            weights_dir=weights_dir,
         )
         rows.append(row)
     n = max(len(rows), 1)
@@ -108,5 +115,6 @@ def eval_root(
         "mean_n_gold": round(sum(r["n_gold"] for r in rows) / n, 3) if rows else 0.0,
         "mean_n_pred": round(sum(r["n_pred"] for r in rows) / n, 3) if rows else 0.0,
         "soft": soft,
+        "ignore_type": ignore_type,
         "samples": rows,
     }
