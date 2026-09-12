@@ -52,3 +52,29 @@ def test_snippet_skips_rest_only_prefix():
     snippet, meta = snippet_score(score, random.Random(0), cfg)
     assert meta["snippet_start_measure"] >= 8
     assert meta["snippet_notes"] >= 12
+
+
+def test_midi_export_is_written_minus_two(tmp_path):
+    import logging
+
+    from music21 import note
+    from tinysoundfont.midi import NoteOn, load
+
+    from synthpipeline.render import export_score_to_midi_music21
+    from synthpipeline.scoregen import write_musicxml
+
+    cfg = SynthConfig.load()
+    score = generate_score(random.Random(42), cfg)
+    written = [int(n.pitch.midi) for n in score.flatten().getElementsByClass(note.Note)]
+    xml_path = tmp_path / "verified.musicxml"
+    midi_path = tmp_path / "reference.mid"
+    write_musicxml(score, xml_path)
+    export_score_to_midi_music21(
+        score, xml_path, midi_path, logging.getLogger("test"), sounding_transpose=-2
+    )
+    keys = [
+        int(ev.action.key)
+        for ev in load(str(midi_path), persistent=False)
+        if isinstance(ev.action, NoteOn) and int(getattr(ev.action, "velocity", 0) or 0) > 0
+    ]
+    assert keys[:12] == [pitch - 2 for pitch in written[:12]]

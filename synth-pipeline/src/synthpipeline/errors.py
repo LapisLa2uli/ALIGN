@@ -279,6 +279,9 @@ def _extra_note(
         comment = f"inserted neighbor MIDI {inserted} by splitting a note"
     target.duration.quarterLength = half
     extra = note.Note(pitch.Pitch(midi=inserted), quarterLength=half)
+    from synthpipeline.note_map import tag_extra_note
+
+    tag_extra_note(extra, score)
     parent.insert(float(target.offset) + half, extra)
     ql_start, _ = _element_ql_span(target, score)
     _, extra_end = _element_ql_span(extra, score)

@@ -11,7 +11,7 @@ RHYTHM_PAIR_KINDS = {"match", "substitute", "rest"}
 def run_stage3(state: PipelineState, *, learned=None, mel=None) -> None:
     pairs = [
         p
-        for p in ensure_rhythm_pairs(state)
+        for p in ensure_rhythm_pairs(state, learned=learned, mel=mel)
         if p.kind in RHYTHM_PAIR_KINDS
     ]
     detector = str(getattr(state.config, "rhythm_detector", "gated_net") or "gated_net")

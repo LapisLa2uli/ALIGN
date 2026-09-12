@@ -1,7 +1,15 @@
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
-from alignmodel.stages.dc_alignment import pairs_from_aligned_events
+import numpy as np
+
+from alignmodel.stages.dc_alignment import (
+    pairs_from_aligned_events,
+    pairs_from_learned_alignment,
+)
+from alignmodel.stages.note_align import AlignmentOperation, AlignmentResult
 from alignmodel.stages.learned import rhythm_windows_from_pairs
 from alignmodel.stages.rhythm import (
     flagged_rhythm_hits,
@@ -165,3 +173,48 @@ class Stage3DcTests(unittest.TestCase):
         self.assertTrue(any(not ev.get("is_rest") for ev in events))
         sounding = [ev for ev in events if not ev.get("is_rest")]
         self.assertTrue(all("perf_start" in ev and "ref_start" in ev for ev in sounding))
+
+    def test_learned_alignment_becomes_timed_pairs(self):
+        class FakeAligner:
+            def align(self, notes, score):
+                return AlignmentResult(
+                    operations=[
+                        AlignmentOperation("match", 0, 1, 0.9),
+                        AlignmentOperation("extra", 1, None, 0.8),
+                    ],
+                    n_performance_notes=2,
+                    n_score_notes=2,
+                    total_cost=0.1,
+                )
+
+        state = PipelineState(
+            sample_id="t",
+            sample_dir=".",
+            sr=22050,
+            duration_sec=2.0,
+            hop_sec=0.023,
+            config=PipelineConfig(),
+            score=ScoreGraph(notes=[_note(0, 60, 0.0), _note(1, 62, 1.0)]),
+        )
+        learned = SimpleNamespace(
+            transcriber=object(),
+            transcriber_decode=object(),
+            note_aligner=FakeAligner(),
+            device="cpu",
+        )
+        transcribed = [
+            SimpleNamespace(pitch=62, start=0.8, end=1.25, confidence=0.9),
+            SimpleNamespace(pitch=65, start=1.3, end=1.5, confidence=0.8),
+        ]
+        with patch(
+            "alignmodel.transcription.infer_sample_notes",
+            return_value=transcribed,
+        ):
+            pairs = pairs_from_learned_alignment(
+                state, np.zeros((128, 10), np.float32), learned
+            )
+        self.assertEqual(len(pairs), 1)
+        self.assertEqual(pairs[0].score_index, 1)
+        self.assertEqual(pairs[0].pitch, 62)
+        self.assertAlmostEqual(pairs[0].perf_start, 0.8)
+        self.assertAlmostEqual(pairs[0].ref_start, 1.0)

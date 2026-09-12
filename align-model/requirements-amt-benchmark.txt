@@ -1,0 +1,22 @@
+# Install in an isolated Python 3.11 environment with the matching PyTorch index:
+#   pip install -r requirements-amt-benchmark.txt \
+#     --extra-index-url https://download.pytorch.org/whl/cu124
+#
+# CREPE Notes' Madmom extra requires MSVC on Windows. The benchmark uses its
+# installed pitch backends with a Librosa onset fallback:
+#   pip install --no-deps crepe-notes==0.2.0
+#
+# Tsumugi uses its own uv.lock and environment:
+#   git clone https://github.com/anime-song/tsumugi.git
+#   cd tsumugi
+#   git checkout f7411471a4de0ad3d430191de11b8623d67e5b38
+#   uv sync --locked
+
+basic-pitch==0.4.0
+penn==1.0.0
+pesto-pitch==2.0.1
+torchcrepe==0.0.24
+muscriptor==0.3.0
+torchaudio==2.6.0+cu124
+setuptools<81
+Cython<3

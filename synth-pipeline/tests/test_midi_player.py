@@ -48,3 +48,31 @@ def test_squeak_c7_is_audible() -> None:
     peak = float(freqs[int(np.argmax(spec))])
     expected = midi_key_to_hz(96)
     assert abs(peak - expected) < 40.0
+
+
+def test_strip_ornaments_keeps_principal_notes_only() -> None:
+    from music21 import duration, expressions, meter, note, stream
+
+    from synthpipeline.midi_player import strip_ornaments
+
+    score = stream.Score()
+    part = stream.Part()
+    part.append(meter.TimeSignature("4/4"))
+    measure = stream.Measure(number=1)
+    grace = note.Note("D5")
+    grace.duration = duration.GraceDuration(0.25)
+    principal = note.Note("C5", quarterLength=1.0)
+    trilled = note.Note("G4", quarterLength=2.0)
+    trilled.expressions.append(expressions.Trill())
+    measure.append(grace)
+    measure.append(principal)
+    measure.append(trilled)
+    part.append(measure)
+    score.append(part)
+
+    removed = strip_ornaments(score)
+    notes = list(score.flatten().getElementsByClass(note.Note))
+    assert removed >= 2
+    assert [n.pitch.nameWithOctave for n in notes] == ["C5", "G4"]
+    assert all(not n.duration.isGrace for n in notes)
+    assert all(not any(type(e).__name__ == "Trill" for e in n.expressions) for n in notes)

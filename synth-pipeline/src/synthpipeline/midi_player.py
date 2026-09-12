@@ -209,13 +209,8 @@ def render_midi_events(
     return render_notes(notes, sample_rate, tail_seconds=tail_seconds)
 
 
-def strip_ornaments(score) -> None:
-    """Drop tremolo/trill marks so MIDI export is one note with a real off."""
-    try:
-        from music21 import note
-    except Exception:
-        return
-    drop = {
+_ORNAMENT_MARKS = frozenset(
+    {
         "Tremolo",
         "Trill",
         "Mordent",
@@ -224,8 +219,32 @@ def strip_ornaments(score) -> None:
         "InvertedTurn",
         "Shake",
         "Schleifer",
+        "Appoggiatura",
+        "Acciaccatura",
     }
-    for el in score.recurse().getElementsByClass(note.Note):
-        kept = [expr for expr in (el.expressions or []) if type(expr).__name__ not in drop]
-        if len(kept) != len(el.expressions or []):
+)
+
+
+def strip_ornaments(score) -> int:
+    """Remove grace notes and ornament marks, leaving the principal note only.
+
+    Acciaccaturas/appoggiaturas are dropped. Trill/tremolo/mordent/turn marks
+    are stripped so MIDI export writes one finite note instead of a full-beat
+    decoration.
+    """
+    from music21 import note
+
+    removed = 0
+    for el in list(score.recurse().notes):
+        if bool(getattr(el.duration, "isGrace", False)):
+            site = el.activeSite
+            if site is not None:
+                site.remove(el)
+                removed += 1
+            continue
+        exprs = list(el.expressions or [])
+        kept = [expr for expr in exprs if type(expr).__name__ not in _ORNAMENT_MARKS]
+        if len(kept) != len(exprs):
             el.expressions = kept
+            removed += 1
+    return removed

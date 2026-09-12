@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
@@ -27,18 +28,28 @@ class StageModels:
     restart_threshold: float = 0.0
     rhythm_threshold: float = 0.0
     edits_threshold: float = 0.0
+    transcriber: Any | None = None
+    transcriber_decode: Any | None = None
+    note_aligner: Any | None = None
 
 
-def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageModels:
-    if weights_dir is None:
-        return StageModels()
-    weights_dir = Path(weights_dir)
-    if not weights_dir.exists():
+def load_stage_models(
+    weights_dir: Path | None,
+    device: str = "cuda",
+    alignment_weights_dir: Path | None = None,
+) -> StageModels:
+    weights_dir = Path(weights_dir) if weights_dir is not None else None
+    alignment_weights_dir = (
+        Path(alignment_weights_dir)
+        if alignment_weights_dir is not None
+        else weights_dir
+    )
+    if weights_dir is None and alignment_weights_dir is None:
         return StageModels()
     torch_device = resolve_device(device)
     out = StageModels(device=torch_device)
-    s1 = weights_dir / "stage1.pt"
-    if s1.exists():
+    s1 = weights_dir / "stage1.pt" if weights_dir is not None else None
+    if s1 is not None and s1.exists():
         blob = torch.load(s1, map_location=torch_device, weights_only=False)
         model = RestartScorer()
         try:
@@ -47,8 +58,8 @@ def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageMo
             out.restart_threshold = float(blob.get("logit_threshold", 0.0))
         except RuntimeError:
             print(f"skip incompatible stage1 weights in {s1}")
-    s2 = weights_dir / "stage2.pt"
-    if s2.exists():
+    s2 = weights_dir / "stage2.pt" if weights_dir is not None else None
+    if s2 is not None and s2.exists():
         model = EditCropNet()
         blob = torch.load(s2, map_location=torch_device, weights_only=False)
         model.load_state_dict(blob["model"])
@@ -56,8 +67,8 @@ def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageMo
         out.edits_threshold = float(
             blob.get("softmax_threshold", blob.get("logit_threshold", 0.0))
         )
-    s3 = weights_dir / "stage3.pt"
-    if s3.exists():
+    s3 = weights_dir / "stage3.pt" if weights_dir is not None else None
+    if s3 is not None and s3.exists():
         blob = torch.load(s3, map_location=torch_device, weights_only=False)
         model = RhythmNet()
         try:
@@ -66,6 +77,27 @@ def load_stage_models(weights_dir: Path | None, device: str = "cuda") -> StageMo
             out.rhythm_threshold = float(blob.get("logit_threshold", 0.0))
         except RuntimeError:
             print(f"skip incompatible stage3 weights in {s3}")
+    if alignment_weights_dir is not None and alignment_weights_dir.exists():
+        transcriber_path = alignment_weights_dir / "note_transcriber.pt"
+        if not transcriber_path.exists():
+            transcriber_path = alignment_weights_dir / "best.pt"
+        if not transcriber_path.exists():
+            transcriber_path = alignment_weights_dir / "transcriber" / "best.pt"
+        aligner_path = alignment_weights_dir / "note_aligner.pt"
+        if not aligner_path.exists():
+            aligner_path = alignment_weights_dir / "aligner" / "note_aligner.pt"
+        if transcriber_path.exists():
+            from alignmodel.transcription import load_note_transcriber
+
+            out.transcriber, out.transcriber_decode = load_note_transcriber(
+                transcriber_path, torch_device
+            )
+        if aligner_path.exists():
+            from alignmodel.stages.note_align import NoteAligner
+
+            out.note_aligner = NoteAligner.from_checkpoint(
+                aligner_path, device=torch_device
+            )
     return out
 
 
@@ -160,17 +192,22 @@ def apply_learned_restarts(state: PipelineState, mel: np.ndarray, models: StageM
                 cur.score_i1 = prev.score_i1
 
 
+def edit_error_probability(logits: torch.Tensor) -> torch.Tensor:
+    """P(error) = 1 - P(match). Match is EDIT_CLASSES index 0."""
+    if logits.ndim == 1:
+        logits = logits.unsqueeze(0)
+    return 1.0 - torch.softmax(logits, dim=-1)[..., 0]
+
+
 def gate_edit_prediction(logits: torch.Tensor, threshold: float) -> int:
-    """Return an EDIT_CLASSES index. Match is the default unless an error is confident."""
+    """Emit an error class iff P(error) meets the threshold; otherwise drop to match."""
     if logits.ndim == 2:
         logits = logits[0]
-    probs = torch.softmax(logits, dim=-1)
-    pred = int(torch.argmax(probs).item())
-    if pred == 0:
+    error_p = float(edit_error_probability(logits).reshape(-1)[0].item())
+    if error_p < float(threshold):
         return 0
-    if float(probs[pred].item()) < float(threshold):
-        return 0
-    return pred
+    pred = int(torch.argmax(logits, dim=-1).item())
+    return pred if pred != 0 else 1
 
 
 def apply_learned_edits(state: PipelineState, mel: np.ndarray, models: StageModels) -> None:

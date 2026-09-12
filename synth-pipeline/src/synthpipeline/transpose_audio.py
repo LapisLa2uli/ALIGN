@@ -103,6 +103,14 @@ def transpose_bundle(
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         if not force and int(meta.get("sounding_transpose") or 0) == int(semitones):
             return "skip_done"
+        from synthpipeline.pitch_convention import infer_midi_pitch_space
+
+        inferred_space, offset = infer_midi_pitch_space(sample_dir, meta)
+        if inferred_space == "sounding" and offset == int(semitones) and not force:
+            return "skip_midi_already_sounding"
+    from synthpipeline.pitch_convention import effective_audio_transpose
+
+    prior_audio_shift = effective_audio_transpose(meta)
 
     for name in WAV_NAMES:
         path = sample_dir / name
@@ -113,7 +121,24 @@ def transpose_bundle(
             _rewrite_mel(shifted, sr, sample_dir / f"{name.split('_')[0]}_mel.npy")
         except Exception:
             return "failed_mel"
+    from synthpipeline.pitch_convention import annotate_pitch_metadata, infer_midi_pitch_space
+
+    inferred_space, _offset = infer_midi_pitch_space(sample_dir, meta)
+    new_audio_shift = prior_audio_shift - int(semitones)
     meta["sounding_transpose"] = int(semitones)
+    acoustic_space = (
+        "written"
+        if new_audio_shift == 0
+        else ("sounding" if new_audio_shift == -int(semitones) else "transposed")
+    )
+    meta.update(
+        annotate_pitch_metadata(
+            meta,
+            midi_space=inferred_space,
+            audio_space=acoustic_space,
+            effective_audio_shift=new_audio_shift,
+        )
+    )
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
     return "converted"
 
@@ -154,6 +179,7 @@ def transpose_root(
         "skip_missing": 0,
         "failed": 0,
         "failed_mel": 0,
+        "skip_midi_already_sounding": 0,
         "n_bundles": len(dirs),
     }
     jobs = [(str(p), int(semitones), bool(force), int(sample_rate)) for p in dirs]

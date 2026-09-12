@@ -61,7 +61,7 @@ Prefer a SoundFont re-render (same MIDI and pitch-bends, no muffled time-stretch
 synth-pipeline regenerate-audio --root ./output --root ./1000dataexport --root ./output_2k_rawdata --semitones -2 --workers 8
 ```
 
-That writes `audio_render: soundfont_rerender` and skips those bundles on the next run unless `--force`.
+That writes `audio_render: oscillator_v1` and an explicit `midi_pitch_space` (`written` or `sounding`) so later loaders do not guess. Bundles already marked `oscillator_v1` are skipped unless `--force`.
 
 ## Usage
 
@@ -117,6 +117,34 @@ synth-pipeline convert-labels --root ./output --force --pad-random --workers 8
 
 `--force` overwrites existing `score_part` / `pitches`. `--pad-random` picks pad ∈ {1, 2} unless the file already stored `pad_notes`. Extra-note conversion maps the extra’s **performance time** onto the clean score, then expands to the notes before and after. Repeat to convert more roots: `--root ./output --root ./1000dataexport`.
 
+Exact note lineage is written during generation to `note_map.json`. Every performed
+sounding note has `clean_index` (or `null`), `relationship`
+(`match`, `substitute`, `extra`, or `copy`), and `copy_pass` (`0` for the first
+pass). A copied extra keeps `clean_index: null` and has
+`origin_relationship: extra`. `deleted_clean_notes` contains clean indices that
+never sound. `rendered_notes` is the audio-facing
+view: each MIDI/audio event stores `clean_indices`, so one sustained event can
+cover several tied written notes instead of forcing a false one-to-one target.
+
+Backfill existing bundles by deterministic replay. The saved MusicXML files are
+used only to validate complete pitch/onset/duration/measure signatures; lineage
+comes from replayed in-memory identities. Cache output is isolated under the
+chosen root, and the script never writes score, audio, or label files:
+
+```powershell
+conda run -n MusicEval python ../align-model/scripts/backfill_synth_note_maps.py `
+  --root ./output_10k_multi --output-root ./note_map_cache_10k `
+  --config ./config/multi_error_10k.yaml
+
+conda run -n MusicEval python ../align-model/scripts/backfill_synth_note_maps.py `
+  --root ./output_2k_rawdata --output-root ./note_map_cache_2k `
+  --config ./config/rawdata_snippets_2k.yaml
+```
+
+Raw-score replay requires the original `paths.score_root` files and ordering.
+Any config/source/version drift fails signature validation and writes no cache
+for that bundle. `--force` replaces only an existing `note_map.json` cache.
+
 ## Output
 
 Each sample is an ALIGN bundle:
@@ -127,6 +155,7 @@ output/synth_gen_0010/
 ├── performance_score.musicxml   # errored (and maybe repeated) render source
 ├── reference_audio.wav          # clarinet, clean score
 ├── performance_audio.wav        # clarinet, with the injected error
+├── note_map.json                # exact performed-to-clean note lineage
 ├── labels.json                  # source: synthetic, schema 1.2
 ├── candidates.json
 ├── alignment.npz

@@ -42,6 +42,7 @@ def run_pipeline(
     config: PipelineConfig | None = None,
     device: str | None = None,
     weights_dir: Path | str | None = None,
+    alignment_weights_dir: Path | str | None = None,
 ) -> PipelineState:
     sample_dir = Path(sample_dir)
     cfg = config or PipelineConfig()
@@ -49,8 +50,18 @@ def run_pipeline(
         cfg.device = device
     if weights_dir is not None:
         cfg.weights_dir = str(weights_dir)
+    if alignment_weights_dir is not None:
+        cfg.alignment_weights_dir = str(alignment_weights_dir)
     torch_device = set_audio_device(cfg.device)
-    learned = load_stage_models(Path(cfg.weights_dir) if cfg.weights_dir else None, cfg.device)
+    learned = load_stage_models(
+        Path(cfg.weights_dir) if cfg.weights_dir else None,
+        cfg.device,
+        (
+            Path(cfg.alignment_weights_dir)
+            if cfg.alignment_weights_dir
+            else None
+        ),
+    )
     wanted = set(stages or {1, 2, 3})
     if timbre:
         wanted.add(4)

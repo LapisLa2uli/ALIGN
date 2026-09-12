@@ -109,8 +109,8 @@ class PipelineConfig:
     min_silence_sec: float = 0.15
     min_hold_sec: float = 0.8
     copy_window_sec: float = 1.6
-    copy_sim_threshold: float = 0.72
-    min_window_sec: float = 0.55
+    copy_sim_threshold: float = 0.76
+    min_window_sec: float = 0.70
     beam_k: int = 5
     span_dur_lo: float = 0.5
     span_dur_hi: float = 1.8
@@ -128,8 +128,8 @@ class PipelineConfig:
     use_dc_rhythm_alignment: bool = True
     rhythm_detector: str = "gated_net"  # gated_net | net | heuristic
     rhythm_merge_gap_sec: float = 0.05
-    # 2k holdout: checkpoint -0.6 over-fires; 1.0 with DC-gated spans matches gold count better.
-    rhythm_logit_override: float | None = 1.0
+    # None uses the checkpoint logit_threshold. Set only for explicit ablations.
+    rhythm_logit_override: float | None = None
     onset_lookback_sec: float = 0.15
     onset_max_shift_sec: float = 0.6
     onset_rise_db: float = 8.0
@@ -138,6 +138,7 @@ class PipelineConfig:
     device: str = "cuda"
     n_fft: int = 2048
     weights_dir: str | None = "align-model/runs/stages"
+    alignment_weights_dir: str | None = None
 
 
 @dataclass

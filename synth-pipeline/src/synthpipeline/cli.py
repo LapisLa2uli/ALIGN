@@ -91,6 +91,11 @@ def main(argv: list[str] | None = None) -> None:
     regen.add_argument("--semitones", type=int, default=-2)
     regen.add_argument("--force", action="store_true")
     regen.add_argument("--workers", type=int, default=8)
+    regen.add_argument(
+        "--strip-ornaments",
+        action="store_true",
+        help="Remove grace notes and trill/tremolo marks from scores, then rewrite MIDI/audio",
+    )
 
     fonts = sub.add_parser("list-soundfonts", help="Show available clarinet SoundFonts")
     fetch = sub.add_parser("fetch-soundfonts", help="Download bundled clarinet SoundFonts")
@@ -197,6 +202,7 @@ def main(argv: list[str] | None = None) -> None:
                 semitones=int(args.semitones),
                 force=bool(args.force),
                 workers=int(args.workers),
+                strip_ornaments=bool(getattr(args, "strip_ornaments", False)),
             )
             print(
                 f"root={root} bundles={counts['n_bundles']} converted={counts['converted']} "

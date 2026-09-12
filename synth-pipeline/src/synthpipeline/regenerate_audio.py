@@ -12,6 +12,7 @@ from synthpipeline.soundfonts import CATALOG, SOUNDFONT_ROOT
 from synthpipeline.transpose_audio import _rewrite_mel, discover_bundles
 
 AUDIO_RENDER_MARK = "oscillator_v1"
+BARE_RENDER_MARK = "oscillator_v1_bare"
 _STEP = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 _PAIRS = (
     ("performance_audio.mid", "performance_audio.wav", "performance_score.musicxml"),
@@ -101,16 +102,70 @@ def midi_note_transpose(midi_path: Path, xml_path: Path, target: int = -2) -> in
 
 def _dc_config(meta: dict, soundfont: Path, sample_rate: int) -> PipelineConfig:
     musescore = dict(meta.get("musescore") or {})
-    cfg = PipelineConfig(
-        paths={"soundfont": str(soundfont)},
-        audio={"sample_rate": int(sample_rate), "mono": True},
-        musescore={
+    try:
+        cfg = PipelineConfig.load()
+    except Exception:
+        cfg = PipelineConfig()
+    cfg.paths["soundfont"] = str(soundfont)
+    cfg.audio["sample_rate"] = int(sample_rate)
+    cfg.audio["mono"] = True
+    cfg.musescore.update(
+        {
             "synthesizer_gain_db": musescore.get("synthesizer_gain_db", -6),
             "tail_seconds": musescore.get("tail_seconds", 2.0),
             "render_chunk_size": musescore.get("render_chunk_size", 4096),
-        },
+        }
     )
+    if meta.get("mel_params"):
+        cfg.mel.update(meta["mel_params"])
+    if meta.get("alignment_params"):
+        cfg.alignment.update(meta["alignment_params"])
     return cfg
+
+
+def _pitch_bends_from_labels(sample_dir: Path) -> list[dict]:
+    path = sample_dir / "labels.json"
+    if not path.exists():
+        return []
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    bends: list[dict] = []
+    for lab in doc.get("labels") or []:
+        if lab.get("type") != "intonation_error":
+            continue
+        cents = lab.get("deviation_cents")
+        if cents is None:
+            continue
+        bends.append(
+            {
+                "cents": float(cents),
+                "ql_start": float(lab["start_time"]),
+                "ql_end": float(lab["end_time"]),
+            }
+        )
+    return bends
+
+
+def _rewrite_scores_and_midi(sample_dir: Path, semitones: int, logger: logging.Logger) -> None:
+    from music21 import converter
+
+    from synthpipeline.midi_player import strip_ornaments
+    from synthpipeline.render import export_score_to_midi_music21
+    from synthpipeline.scoregen import write_musicxml
+
+    for midi_name, _wav_name, xml_name in _PAIRS:
+        xml_path = sample_dir / xml_name
+        if not xml_path.exists():
+            continue
+        score = converter.parse(str(xml_path))
+        strip_ornaments(score)
+        write_musicxml(score, xml_path)
+        export_score_to_midi_music21(
+            converter.parse(str(xml_path)),
+            xml_path,
+            sample_dir / midi_name,
+            logger,
+            sounding_transpose=int(semitones),
+        )
 
 
 def regenerate_bundle(
@@ -119,6 +174,7 @@ def regenerate_bundle(
     *,
     force: bool = False,
     sample_rate: int = 22050,
+    strip_ornaments: bool = False,
 ) -> str:
     sample_dir = Path(sample_dir)
     meta_path = sample_dir / "metadata.json"
@@ -127,9 +183,10 @@ def regenerate_bundle(
     ).exists():
         return "skip_missing"
     meta: dict = {}
+    mark = BARE_RENDER_MARK if strip_ornaments else AUDIO_RENDER_MARK
     if meta_path.exists():
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        if not force and meta.get("audio_render") == AUDIO_RENDER_MARK:
+        if not force and meta.get("audio_render") == mark:
             return "skip_done"
 
     try:
@@ -140,10 +197,16 @@ def regenerate_bundle(
     logger = logging.getLogger("synthpipeline.rerender")
     logger.setLevel(logging.WARNING)
 
+    if strip_ornaments:
+        _rewrite_scores_and_midi(sample_dir, semitones, logger)
+
+    bends = _pitch_bends_from_labels(sample_dir) if strip_ornaments else []
     for midi_name, wav_name, xml_name in _PAIRS:
         midi_path = sample_dir / midi_name
         wav_path = sample_dir / wav_name
-        shift = midi_note_transpose(midi_path, sample_dir / xml_name, semitones)
+        shift = 0 if strip_ornaments else midi_note_transpose(
+            midi_path, sample_dir / xml_name, semitones
+        )
         render_midi_clarinet(
             midi_path,
             wav_path,
@@ -151,12 +214,30 @@ def regenerate_bundle(
             logger,
             clarinet_program=program,
             note_transpose=shift,
+            pitch_bends=bends if midi_name.startswith("performance") else None,
+            bpm=60.0 if bends and midi_name.startswith("performance") else None,
         )
         audio, _ = _load_mono(wav_path, sample_rate)
         _rewrite_mel(audio, sample_rate, sample_dir / f"{wav_name.split('_')[0]}_mel.npy")
 
+    from synthpipeline.pitch_convention import (
+        annotate_pitch_metadata,
+        infer_midi_pitch_space,
+    )
+
+    inferred_space, _offset = infer_midi_pitch_space(sample_dir, meta)
     meta["sounding_transpose"] = int(semitones)
-    meta["audio_render"] = AUDIO_RENDER_MARK
+    meta.update(
+        annotate_pitch_metadata(
+            meta,
+            midi_space=inferred_space,
+            audio_space="sounding",
+            effective_audio_shift=-int(semitones),
+            audio_render=mark,
+        )
+    )
+    if strip_ornaments:
+        meta["ornaments_stripped"] = True
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
     return "converted"
 
@@ -167,10 +248,16 @@ def _load_mono(path: Path, sample_rate: int):
     return load_audio(path, sample_rate, mono=True)
 
 
-def _one(payload: tuple[str, int, bool, int]) -> str:
-    sample, semis, force, sr = payload
+def _one(payload: tuple[str, int, bool, int, bool]) -> str:
+    sample, semis, force, sr, strip = payload
     try:
-        return regenerate_bundle(Path(sample), semis, force=force, sample_rate=sr)
+        return regenerate_bundle(
+            Path(sample),
+            semis,
+            force=force,
+            sample_rate=sr,
+            strip_ornaments=strip,
+        )
     except Exception as exc:
         print(f"failed {sample}: {type(exc).__name__}: {exc}", flush=True)
         return "failed"
@@ -183,6 +270,7 @@ def regenerate_root(
     force: bool = False,
     workers: int = 8,
     sample_rate: int = 22050,
+    strip_ornaments: bool = False,
 ) -> dict[str, int]:
     dirs = discover_bundles(root)
     counts = {
@@ -192,7 +280,10 @@ def regenerate_root(
         "failed": 0,
         "n_bundles": len(dirs),
     }
-    jobs = [(str(p), int(semitones), bool(force), int(sample_rate)) for p in dirs]
+    jobs = [
+        (str(p), int(semitones), bool(force), int(sample_rate), bool(strip_ornaments))
+        for p in dirs
+    ]
     workers = max(1, int(workers))
     if workers == 1:
         statuses = [_one(job) for job in jobs]

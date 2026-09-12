@@ -14,6 +14,12 @@ from music21 import stream
 
 from synthpipeline.config import SynthConfig
 from synthpipeline.errors import InjectionError, inject_error
+from synthpipeline.note_map import (
+    attach_rendered_events,
+    build_note_map,
+    tag_clean_notes,
+    write_note_map,
+)
 from synthpipeline.render import render_score_as_clarinet
 from synthpipeline.scoregen import (
     generate_score,
@@ -324,9 +330,13 @@ def _build_sample(
     verified_path = sample_dir / "verified_score.musicxml"
     write_musicxml(clean, verified_path)
 
+    tag_clean_notes(clean)
     result = inject_error(copy.deepcopy(clean), rng, config)
     performance_path = sample_dir / "performance_score.musicxml"
     write_musicxml(result.score, performance_path)
+    # Capture lineage before MIDI export strips ornaments or otherwise
+    # normalizes the in-memory score.
+    note_map = build_note_map(clean, result.score)
 
     if midi_backend == "musescore":
         from datacreate.tools.musescore import check_musescore_version
@@ -358,6 +368,13 @@ def _build_sample(
         bpm=result.bpm,
         sounding_transpose=sounding,
     )
+    attach_rendered_events(
+        note_map,
+        perf_wav.with_suffix(".mid"),
+        sounding_transpose=sounding,
+        performed_score_path=performance_path,
+    )
+    write_note_map(sample_dir / "note_map.json", note_map)
     ingest_performance(perf_wav, sample_dir, dc_config, logger)
 
     midi_path = perf_wav.with_suffix(".mid")
@@ -385,19 +402,28 @@ def _build_sample(
     alignment = run_alignment(perf_wav, ref_wav, sample_dir, dc_config, logger)
     write_candidates(alignment.candidates, sample_dir, config.schema_version)
     extract_mels(perf_wav, ref_wav, sample_dir, dc_config, logger)
+    from synthpipeline.pitch_convention import annotate_pitch_metadata
+
     write_metadata(
         sample_dir,
         dc_config,
-        {
-            "mode": "synth-pipeline",
-            "error_type": result.error_type,
-            "error_types": list((result.extra or {}).get("error_types") or [result.error_type]),
-            "repeated": result.repeated,
-            "extra_copies": int((result.extra or {}).get("extra_copies") or 0),
-            "melody_pad_notes": pad_notes,
-            "sounding_transpose": sounding,
-            **extra_meta,
-        },
+        annotate_pitch_metadata(
+            {
+                "mode": "synth-pipeline",
+                "error_type": result.error_type,
+                "error_types": list((result.extra or {}).get("error_types") or [result.error_type]),
+                "repeated": result.repeated,
+                "extra_copies": int((result.extra or {}).get("extra_copies") or 0),
+                "melody_pad_notes": pad_notes,
+                "sounding_transpose": sounding,
+                "recording_kind": "synthetic",
+                **extra_meta,
+            },
+            midi_space="sounding",
+            audio_space="sounding",
+            effective_audio_shift=-sounding,
+            audio_render="oscillator_v1",
+        ),
         logger,
     )
     logger.info(

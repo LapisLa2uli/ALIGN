@@ -28,6 +28,12 @@ def main() -> None:
     )
     p_run.add_argument("--include-state", action="store_true")
     p_run.add_argument("--device", default="cuda", help="cuda | cpu | auto")
+    p_run.add_argument(
+        "--alignment-weights",
+        type=Path,
+        default=None,
+        help="Directory with note_transcriber.pt and note_aligner.pt",
+    )
 
     p_smoke = sub.add_parser("smoke", help="Run pipeline on one synth repetition bundle")
     p_smoke.add_argument(
@@ -68,6 +74,28 @@ def main() -> None:
     p_st.add_argument("--device", default="cuda")
     p_st.add_argument("--stages", default="1,2,3")
     p_st.add_argument("--max-samples", type=int, default=0)
+    p_st.add_argument(
+        "--skip-holdout",
+        action="store_true",
+        help="Drop the seed-365 official holdout clips from training",
+    )
+    p_st.add_argument(
+        "--mine-heuristic-edits",
+        action="store_true",
+        help="Add Stage 2 crops from chroma-DTW proposals labeled against gold",
+    )
+    p_st.add_argument(
+        "--heuristic-mine-max",
+        type=int,
+        default=0,
+        help="Cap clips used for heuristic mining; 0 uses every training clip",
+    )
+    p_st.add_argument(
+        "--stage2-max-train-examples",
+        type=int,
+        default=20_000,
+        help="Stratified Stage 2 training-crop cap; 0 keeps every crop",
+    )
 
     p_eval = sub.add_parser(
         "eval-melodies",
@@ -173,6 +201,7 @@ def main() -> None:
             timbre=timbre,
             device=args.device,
             weights_dir=args.weights,
+            alignment_weights_dir=args.alignment_weights,
         )
         out = args.out or (args.sample / "pipeline_pred.json")
         write_prediction(state, out, include_state=bool(args.include_state))
@@ -258,6 +287,10 @@ def main() -> None:
                 device=args.device,
                 stages=stages,
                 max_samples=args.max_samples,
+                skip_holdout=bool(args.skip_holdout),
+                mine_heuristic_edits=bool(args.mine_heuristic_edits),
+                heuristic_mine_max=max(0, args.heuristic_mine_max),
+                stage2_max_train_examples=max(0, args.stage2_max_train_examples),
             )
         )
         return

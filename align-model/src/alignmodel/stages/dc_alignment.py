@@ -117,8 +117,64 @@ def pairs_from_aligned_events(
     return pairs
 
 
-def ensure_rhythm_pairs(state: PipelineState) -> list[PairedEvent]:
-    """Fill ``state.rhythm_pairs`` from DataCreate alignment, else stage-2 pairs."""
+def pairs_from_learned_alignment(
+    state: PipelineState, mel, learned
+) -> list[PairedEvent]:
+    """Transcribe audio notes, align them to the score, and return timed pairs."""
+    if (
+        mel is None
+        or learned is None
+        or getattr(learned, "transcriber", None) is None
+        or getattr(learned, "note_aligner", None) is None
+    ):
+        return []
+    from alignmodel.stages.note_align import normalize_notes
+    from alignmodel.transcription import infer_sample_notes
+
+    transcribed = infer_sample_notes(
+        learned.transcriber,
+        state.sample_dir,
+        learned.device or state.device,
+        decode_config=learned.transcriber_decode,
+    )
+    observed = normalize_notes(transcribed)
+    result = learned.note_aligner.align(observed, state.score)
+    pairs: list[PairedEvent] = []
+    for op in result.operations:
+        if (
+            op.performance_index is None
+            or op.score_index is None
+            or op.kind not in {"match", "substitute"}
+        ):
+            continue
+        if not (0 <= op.performance_index < len(observed)):
+            continue
+        if not (0 <= op.score_index < len(state.score.notes)):
+            continue
+        played = observed[op.performance_index]
+        written = state.score.notes[op.score_index]
+        pairs.append(
+            PairedEvent(
+                score_index=written.index,
+                pitch=written.pitch,
+                ref_start=written.start,
+                ref_end=written.end,
+                perf_start=played.start,
+                perf_end=played.end,
+                kind=op.kind,
+                measure=written.measure,
+            )
+        )
+    return sorted(pairs, key=lambda pair: (pair.perf_start, pair.ref_start))
+
+
+def ensure_rhythm_pairs(
+    state: PipelineState, *, learned=None, mel=None
+) -> list[PairedEvent]:
+    """Prefer learned note alignment; fall back to DataCreate DTW, then stage 2."""
+    if state.rhythm_pairs:
+        return state.rhythm_pairs
+    state.rhythm_pairs = pairs_from_learned_alignment(state, mel, learned)
     if state.rhythm_pairs:
         return state.rhythm_pairs
     if not getattr(state.config, "use_dc_rhythm_alignment", True):

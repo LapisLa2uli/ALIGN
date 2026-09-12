@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import copy
 import logging
 import time
 from pathlib import Path
 
 import numpy as np
 
-from music21 import converter, stream
+from music21 import converter, note, stream
 
 from datacreate.audio_utils import audio_stats, is_silent, save_wav
 from datacreate.config import PipelineConfig
@@ -71,6 +72,20 @@ def render_score_as_clarinet(
     return output_wav
 
 
+def transpose_notes_chromatic(score: stream.Score, semitones: int) -> stream.Score:
+    """Shift each note by semitones without music21 Stream/key-signature transpose.
+
+    ``Score.transpose(-2)`` and ``pitch.midi -= 2`` corrupt generated clarinet
+    scores in keys such as Bb major. Assigning ``pitch.transpose(...)`` is safe.
+    """
+    if not semitones:
+        return score
+    shift = int(semitones)
+    for item in score.flatten().getElementsByClass(note.Note):
+        item.pitch = item.pitch.transpose(shift)
+    return score
+
+
 def export_score_to_midi_music21(
     score: stream.Score | None,
     score_path: Path,
@@ -80,11 +95,13 @@ def export_score_to_midi_music21(
 ) -> Path:
     if score is None:
         score = converter.parse(str(score_path))
+    else:
+        score = copy.deepcopy(score)
     from synthpipeline.midi_player import strip_ornaments
 
     strip_ornaments(score)
     if sounding_transpose:
-        score = score.transpose(int(sounding_transpose))
+        transpose_notes_chromatic(score, int(sounding_transpose))
         logger.info(
             "Writing MIDI via music21 at sounding pitch (%+d semitones): %s",
             int(sounding_transpose),

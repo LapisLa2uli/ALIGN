@@ -38,6 +38,28 @@ After stages 1–3 the pipeline maps each scored label onto the clean score (ext
 
 Stages share one `PipelineState`. `EditCropNet` module names stay the same so an old `stage2.pt` still loads.
 
+### Learned note alignment
+
+Stage 3 can use a separate audio-to-note and note-to-score alignment checkpoint
+instead of DataCreate DTW. The aligner supports inserted, deleted, substituted,
+and replayed notes; replayed performance notes may point to the same written
+score range as the first pass.
+
+```powershell
+python scripts/run_full_note_alignment.py
+
+align-model run --sample "E:\output\synth_gen_0042" `
+  --weights "align-model\runs\stages-random12k-typed" `
+  --alignment-weights "align-model\runs\note-align-full-e-s365\weights"
+```
+
+The full training command uses both `E:\output` and
+`E:\output_2k_rawdata`, creates a frozen stratified split, reconstructs only
+strictly validated synth lineage maps, trains the note recognizer and aligner,
+and evaluates against symbolic and DTW baselines. `performance_score.musicxml`
+and synth MIDI are training/evaluation supervision only; inference reads
+`performance_mel.npy` and `verified_score.musicxml`.
+
 ## Melody-first (Model B)
 
 A separate checkpoint family. It does **not** emit one label per DTW pair.

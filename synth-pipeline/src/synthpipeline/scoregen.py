@@ -48,7 +48,11 @@ def clarinet_instrument() -> instrument.Instrument:
 
 
 def write_musicxml(score: stream.Score, path: Path) -> Path:
-    return _write_score(score, path, "musicxml")
+    from synthpipeline.midi_player import strip_ornaments
+
+    strip_ornaments(score)
+    # music21's MusicXML writer can mutate clarinet pitches in-place.
+    return _write_score(copy.deepcopy(score), path, "musicxml")
 
 
 def write_midi(score: stream.Score, path: Path) -> Path:
@@ -146,6 +150,9 @@ def load_score(path: Path, config: SynthConfig) -> stream.Score:
         score.insert(0, metadata.Metadata())
     if not score.metadata.title:
         score.metadata.title = path.stem
+    from synthpipeline.midi_player import strip_ornaments
+
+    strip_ornaments(score)
     return score
 
 

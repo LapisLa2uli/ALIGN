@@ -34,6 +34,7 @@ MATCH_CLASS_WEIGHT = 1.0
 MATCH_NEGS_PER_ERROR = 1
 CLEAN_MATCH_PER_CLIP = 1
 EDIT_SOFTMAX_FLOOR = 0.35
+EDIT_IOU_POSITIVE = 0.30
 
 CROP_FRAMES = 64
 CROP_FRAMES_RESTART = 96
@@ -255,6 +256,130 @@ def _restart_items(dirs: list[Path], rng: random.Random) -> list[dict]:
     return items
 
 
+def span_iou(a0: float, a1: float, b0: float, b1: float) -> float:
+    inter = max(0.0, min(a1, b1) - max(a0, b0))
+    if inter <= 0.0:
+        return 0.0
+    union = (a1 - a0) + (b1 - b0) - inter
+    return inter / max(union, 1e-8)
+
+
+def heuristic_edit_class(
+    t0: float,
+    t1: float,
+    kind: str,
+    gold_spans: list[tuple[str, float, float]],
+    *,
+    min_iou: float = EDIT_IOU_POSITIVE,
+) -> int:
+    """Map a heuristic crop to an EDIT_CLASSES index; unmatched proposals are match."""
+    scored = [
+        (span_iou(t0, t1, g0, g1), gold_type == kind, gold_type)
+        for gold_type, g0, g1 in gold_spans
+    ]
+    if not scored:
+        return EDIT_CLASSES.index("match")
+    best_iou, _same_type, best_type = max(scored, key=lambda row: (row[0], row[1]))
+    if best_iou >= min_iou and best_type in set(EDIT_CLASSES) - {"match"}:
+        return EDIT_CLASSES.index(best_type)
+    return EDIT_CLASSES.index("match")
+
+
+def _gold_edit_spans(sample: Path) -> list[tuple[str, float, float]]:
+    error_types = set(EDIT_CLASSES) - {"match"}
+    spans = []
+    for lab in load_first_pass_labels(sample):
+        kind = lab.get("type")
+        if kind not in error_types:
+            continue
+        spans.append((str(kind), float(lab["start_time"]), float(lab["end_time"])))
+    return spans
+
+
+def _heuristic_edit_cache_path(cache_dir: Path, sample: Path) -> Path:
+    return cache_dir / sample.name / "heuristic_edits.json"
+
+
+def _collect_heuristic_edit_spans(
+    sample: Path,
+    *,
+    device: str,
+    cache_dir: Path | None = None,
+) -> list[dict]:
+    if cache_dir is not None:
+        path = _heuristic_edit_cache_path(cache_dir, sample)
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8"))
+    from alignmodel.pipeline import run_pipeline
+    from alignmodel.types import PipelineConfig
+
+    state = run_pipeline(
+        sample,
+        stages={1, 2},
+        device=device,
+        config=PipelineConfig(weights_dir=None),
+    )
+    error_types = set(EDIT_CLASSES) - {"match"}
+    rows = [
+        {
+            "t0": float(lab.start_time),
+            "t1": float(lab.end_time),
+            "type": lab.type,
+        }
+        for lab in state.labels
+        if lab.type in error_types
+        and float(lab.end_time) - float(lab.start_time) >= MIN_EDIT_CROP_SEC
+    ]
+    if cache_dir is not None:
+        path = _heuristic_edit_cache_path(cache_dir, sample)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(rows), encoding="utf-8")
+    return rows
+
+
+def _heuristic_edit_items(
+    dirs: list[Path],
+    *,
+    device: str,
+    cache_dir: Path | None = None,
+    max_samples: int = 0,
+) -> list[dict]:
+    """Chroma-DTW proposals labeled by IoU against first-pass gold edits."""
+    selected = list(dirs)
+    if max_samples:
+        selected = selected[: max_samples]
+    items: list[dict] = []
+    for i, sample in enumerate(selected, start=1):
+        gold = _gold_edit_spans(sample)
+        try:
+            proposals = _collect_heuristic_edit_spans(
+                sample, device=device, cache_dir=cache_dir
+            )
+        except Exception as exc:
+            print(f"stage2 heuristic mine skip {sample.name}: {exc}", flush=True)
+            continue
+        for row in proposals:
+            items.append(
+                {
+                    "dir": sample,
+                    "t0": float(row["t0"]),
+                    "t1": float(row["t1"]),
+                    "y": heuristic_edit_class(
+                        float(row["t0"]),
+                        float(row["t1"]),
+                        str(row["type"]),
+                        gold,
+                    ),
+                }
+            )
+        if i == 1 or i % 50 == 0:
+            print(
+                f"stage2 heuristic mine {i}/{len(selected)} items={len(items)}",
+                flush=True,
+            )
+    return items
+
+
 def _edit_items(dirs: list[Path], rng: random.Random) -> list[dict]:
     """Gold first-pass errors plus extra match negatives (neighbors and clean spans)."""
     error_types = set(EDIT_CLASSES) - {"match"}
@@ -346,7 +471,47 @@ def _rhythm_items(dirs: list[Path], rng: random.Random) -> list[dict]:
                     continue
                 items.append({"dir": sample, "t0": start, "t1": end, "y": 0.0})
                 added += 1
+            for g0, g1 in _phrase_gap_spans(mel, dur, used, t0, t1):
+                items.append({"dir": sample, "t0": g0, "t1": g1, "y": 0.0})
+                used.append((g0, g1))
     return items
+
+
+def _phrase_gap_spans(
+    mel: np.ndarray,
+    dur: float,
+    used: list[tuple[float, float]],
+    t0: float,
+    t1: float,
+    *,
+    min_width: float = 0.18,
+    max_width: float = 0.85,
+) -> list[tuple[float, float]]:
+    """Low-energy breath / phrase-gap negatives around a gold rhythm span."""
+    pos_rms = float(_rhythm_aux(mel, t0, t1)[1])
+    quiet = max(0.12 * pos_rms, 1e-4)
+    candidates = [
+        (max(0.0, t0 - 0.65), t0),
+        (t1, min(dur, t1 + 0.65)),
+    ]
+    out: list[tuple[float, float]] = []
+    for a0, a1 in candidates:
+        if a1 - a0 < min_width:
+            continue
+        if any(overlaps(a0, a1, u0, u1) for u0, u1 in used):
+            continue
+        rms = float(_rhythm_aux(mel, a0, a1)[1])
+        if rms > quiet:
+            continue
+        width = min(max_width, a1 - a0)
+        if a0 < t0:
+            span = (a1 - width, a1)
+        else:
+            span = (a0, a0 + width)
+        if span[1] - span[0] < min_width:
+            continue
+        out.append(span)
+    return out
 
 
 class RestartDataset(Dataset):
@@ -430,6 +595,10 @@ class StageTrainConfig:
     val_fraction: float = 0.1
     stages: tuple[int, ...] = (1, 2, 3)
     max_samples: int = 0
+    skip_holdout: bool = False
+    mine_heuristic_edits: bool = False
+    heuristic_mine_max: int = 0
+    stage2_max_train_examples: int = 20_000
 
 
 class _MelCache:
@@ -475,6 +644,46 @@ def _split_by_sample(items: list[dict], frac: float, seed: int) -> tuple[list[di
     if not val:
         val = list(train)
     return train, val
+
+
+def _limit_edit_training_items(
+    items: list[dict], max_examples: int, seed: int
+) -> list[dict]:
+    """Cap Stage 2 training while retaining every error class.
+
+    Forty percent of the budget is reserved for match examples and the rest
+    is divided across the four error classes, including intonation errors.
+    Any unused class quota is filled from the remaining shuffled examples.
+    """
+    if max_examples <= 0 or len(items) <= max_examples:
+        return list(items)
+    rng = random.Random(seed)
+    buckets: dict[int, list[dict]] = {i: [] for i in range(len(EDIT_CLASSES))}
+    for item in items:
+        buckets[int(item["y"])].append(item)
+    for bucket in buckets.values():
+        rng.shuffle(bucket)
+
+    match_quota = min(len(buckets[0]), int(round(max_examples * 0.40)))
+    remaining_budget = max_examples - match_quota
+    error_classes = list(range(1, len(EDIT_CLASSES)))
+    base_error_quota = remaining_budget // len(error_classes)
+    selected = buckets[0][:match_quota]
+    used = {0: match_quota}
+    for class_i in error_classes:
+        count = min(len(buckets[class_i]), base_error_quota)
+        selected.extend(buckets[class_i][:count])
+        used[class_i] = count
+
+    leftovers = [
+        item
+        for class_i, bucket in buckets.items()
+        for item in bucket[used.get(class_i, 0) :]
+    ]
+    rng.shuffle(leftovers)
+    selected.extend(leftovers[: max_examples - len(selected)])
+    rng.shuffle(selected)
+    return selected
 
 
 def _time_freq_mask(x: torch.Tensor) -> torch.Tensor:
@@ -547,15 +756,15 @@ def _error_prf(pred: np.ndarray, y: np.ndarray) -> tuple[float, float, float]:
 
 
 def _best_softmax_threshold(logits: np.ndarray, y: np.ndarray) -> tuple[float, float, float, float]:
-    """Confidence needed to emit a non-match class. Prefer precision so heuristic spam drops."""
+    """Threshold on P(error)=1-P(match). Prefer precision so heuristic spam drops."""
     if logits.ndim != 2 or logits.shape[0] == 0:
         return EDIT_SOFTMAX_FLOOR, 0.0, 0.0, 0.0
     probs = _softmax_rows(logits)
     pred = probs.argmax(axis=-1)
-    conf = probs[np.arange(len(pred)), pred]
+    error_p = 1.0 - probs[:, 0]
     candidates: list[tuple[float, float, float, float]] = []
     for t in np.concatenate(([0.0], np.linspace(0.20, 0.85, 27))):
-        gated = np.where((pred != 0) & (conf >= float(t)), pred, 0)
+        gated = np.where(error_p >= float(t), np.where(pred != 0, pred, 1), 0)
         f1, prec, rec = _error_prf(gated, y)
         candidates.append((f1, float(t), prec, rec))
     usable = [c for c in candidates if c[2] >= 0.55 and c[3] >= 0.25]
@@ -836,7 +1045,7 @@ def _calibrate_edit_softmax_threshold(
     device: torch.device,
     stage1_dir: Path,
 ) -> tuple[float, dict]:
-    """Sweep softmax gate to maximize soft exclusive set-F1 (melody similarity)."""
+    """Sweep P(error) gate to maximize official hard type-aware melody F1."""
     from alignmodel.eval_melodies import eval_sample
     from alignmodel.pipeline import run_pipeline
     from alignmodel.types import pipeline_label_to_dict
@@ -888,14 +1097,13 @@ def _calibrate_edit_softmax_threshold(
             pending = row["pending"]
             probs = row["probs"]
             if pending and probs is not None:
-                pred = probs.argmax(axis=-1)
-                conf = probs[np.arange(len(pred)), pred]
-                for lab, cls, p in zip(pending, pred, conf):
-                    if int(cls) == 0 or float(p) < float(t):
+                error_p = 1.0 - probs[:, 0]
+                for lab, p_err in zip(pending, error_p):
+                    if float(p_err) < float(t):
                         continue
                     kept.append(lab)
             labels = [pipeline_label_to_dict(lab) for lab in kept]
-            scored = eval_sample(row["sample"], pred_labels=labels, soft=True)
+            scored = eval_sample(row["sample"], pred_labels=labels, soft=False)
             f1s.append(scored["melody_f1"])
             precs.append(scored["melody_precision"])
             recs.append(scored["melody_recall"])
@@ -922,7 +1130,7 @@ def _calibrate_edit_softmax_threshold(
     best = max(pool, key=lambda c: (c["f1"], c["prec"], c["t"]))
     thr = max(float(best["t"]), EDIT_SOFTMAX_FLOOR)
     print(
-        f"stage2 calib (soft set-F1) thr={thr:.2f} "
+        f"stage2 calib (hard set-F1) thr={thr:.2f} "
         f"f1={best['f1']:.3f} p={best['prec']:.3f} r={best['rec']:.3f} "
         f"mean_n_pred={best['mean_n_pred']:.2f} gold={best['mean_n_gold']:.2f} "
         f"clips={len(clip_rows)}"
@@ -933,11 +1141,7 @@ def _calibrate_edit_softmax_threshold(
 def _maybe_calibrate_stage2(
     ckpt_path: Path, dirs: list[Path], cfg: StageTrainConfig, device: torch.device
 ) -> None:
-    holdout = _holdout_sample_dirs(cfg.data_root, cfg.seed)
-    rng = random.Random(cfg.seed + 17)
-    pool = [d for d in dirs if d not in holdout and (d / "verified_score.musicxml").exists()]
-    rng.shuffle(pool)
-    calib_dirs = pool[:20]
+    calib_dirs = _calib_pool(dirs, cfg, n=20)
     if not calib_dirs:
         print("stage2 calib skipped (no non-holdout clips)")
         return
@@ -965,10 +1169,153 @@ def _maybe_calibrate_stage2(
     print(f"Updated {ckpt_path} softmax_threshold={thr:.2f}")
 
 
+def _calib_pool(dirs: list[Path], cfg: StageTrainConfig, n: int = 20) -> list[Path]:
+    holdout = _holdout_sample_dirs(cfg.data_root, cfg.seed)
+    rng = random.Random(cfg.seed + 17)
+    pool = [d for d in dirs if d not in holdout and (d / "verified_score.musicxml").exists()]
+    rng.shuffle(pool)
+    return pool[:n]
+
+
+def _calibrate_rhythm_threshold(
+    model: nn.Module,
+    sample_dirs: list[Path],
+    device: torch.device,
+    weights_dir: Path,
+) -> tuple[float, dict]:
+    """Sweep RhythmNet logit threshold against official hard melody F1."""
+    from alignmodel.eval_melodies import eval_sample
+    from alignmodel.pipeline import run_pipeline
+    from alignmodel.stages.dc_alignment import ensure_rhythm_pairs
+    from alignmodel.stages.rhythm import flagged_rhythm_spans, merge_time_spans
+    from alignmodel.types import PipelineConfig, pipeline_label_to_dict
+
+    model = model.to(device).eval()
+    cfg = PipelineConfig(weights_dir=str(weights_dir), rhythm_logit_override=None)
+    clip_rows: list[dict] = []
+    for sample in sample_dirs:
+        try:
+            state = run_pipeline(sample, stages={1, 2}, device=str(device), config=cfg)
+        except Exception as exc:
+            print(f"stage3 calib skip {sample.name}: {exc}")
+            continue
+        kept = list(state.labels)
+        try:
+            mel = _load_mel(sample)
+            pairs = [
+                pair
+                for pair in ensure_rhythm_pairs(state, learned=None, mel=mel)
+                if pair.kind in {"match", "substitute", "rest"}
+            ]
+            windows = merge_time_spans(
+                flagged_rhythm_spans(pairs, state.config),
+                gap=float(state.config.rhythm_merge_gap_sec),
+                min_dur=float(state.config.min_candidate_sec),
+            )
+        except Exception as exc:
+            print(f"stage3 calib windows skip {sample.name}: {exc}")
+            clip_rows.append({"sample": sample, "kept": kept, "hits": []})
+            continue
+        hits = []
+        for t0, t1 in windows:
+            if t1 - t0 < 0.12:
+                continue
+            crop = torch.from_numpy(_mel_span_resize(mel, t0, t1)).unsqueeze(0).to(device)
+            aux = torch.from_numpy(_rhythm_aux(mel, t0, t1)).unsqueeze(0).to(device)
+            with torch.no_grad():
+                logit = float(model(crop, aux).squeeze().detach().cpu())
+            hits.append((float(t0), float(t1), logit))
+        clip_rows.append({"sample": sample, "kept": kept, "hits": hits})
+    if not clip_rows:
+        return 0.0, {"n_clips": 0, "reason": "no_clips"}
+
+    logits = [hit[2] for row in clip_rows for hit in row["hits"]]
+    grid = [-1.5, -1.0, -0.5, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+    if logits:
+        grid.extend(float(q) for q in np.quantile(np.asarray(logits), [0.2, 0.4, 0.6, 0.8]))
+    candidates = []
+    for t in sorted(set(round(float(x), 3) for x in grid)):
+        f1s: list[float] = []
+        precs: list[float] = []
+        recs: list[float] = []
+        n_preds: list[int] = []
+        n_golds: list[int] = []
+        for row in clip_rows:
+            labels = [pipeline_label_to_dict(lab) for lab in row["kept"]]
+            for t0, t1, logit in row["hits"]:
+                if logit <= t:
+                    continue
+                labels.append(
+                    {
+                        "id": f"rcal-{len(labels)}",
+                        "type": "rhythm_error",
+                        "start_time": t0,
+                        "end_time": t1,
+                        "source": "pipeline",
+                    }
+                )
+            scored = eval_sample(row["sample"], pred_labels=labels, soft=False)
+            f1s.append(scored["melody_f1"])
+            precs.append(scored["melody_precision"])
+            recs.append(scored["melody_recall"])
+            n_preds.append(scored["n_pred"])
+            n_golds.append(scored["n_gold"])
+        n = max(len(f1s), 1)
+        mean_gold = sum(n_golds) / n
+        candidates.append(
+            {
+                "t": float(t),
+                "f1": sum(f1s) / n,
+                "prec": sum(precs) / n,
+                "rec": sum(recs) / n,
+                "mean_n_pred": sum(n_preds) / n,
+                "mean_n_gold": mean_gold,
+            }
+        )
+    usable = [
+        c
+        for c in candidates
+        if c["rec"] >= 0.10 and c["mean_n_pred"] <= max(12.0, 3.0 * max(c["mean_n_gold"], 1.0))
+    ]
+    pool = usable or candidates
+    best = max(pool, key=lambda c: (c["f1"], c["prec"], c["t"]))
+    print(
+        f"stage3 calib (hard set-F1) thr={best['t']:.2f} "
+        f"f1={best['f1']:.3f} p={best['prec']:.3f} r={best['rec']:.3f} "
+        f"mean_n_pred={best['mean_n_pred']:.2f} gold={best['mean_n_gold']:.2f} "
+        f"clips={len(clip_rows)}"
+    )
+    return float(best["t"]), {"chosen": best, "n_clips": len(clip_rows), "sweep": candidates}
+
+
+def _maybe_calibrate_stage3(
+    ckpt_path: Path, dirs: list[Path], cfg: StageTrainConfig, device: torch.device
+) -> None:
+    calib_dirs = _calib_pool(dirs, cfg, n=20)
+    if not calib_dirs:
+        print("stage3 calib skipped (no non-holdout clips)")
+        return
+    blob = torch.load(ckpt_path, map_location=device, weights_only=False)
+    model = RhythmNet()
+    model.load_state_dict(blob["model"])
+    try:
+        thr, info = _calibrate_rhythm_threshold(model, calib_dirs, device, ckpt_path.parent)
+    except Exception as exc:
+        print(f"stage3 calib failed: {exc}")
+        return
+    blob["logit_threshold"] = thr
+    blob["calibration"] = {k: info[k] for k in info if k != "sweep"}
+    torch.save(blob, ckpt_path)
+    print(f"Updated {ckpt_path} logit_threshold={thr:.2f}")
+
+
 def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
     rng = random.Random(cfg.seed)
     torch.manual_seed(cfg.seed)
     dirs = list_sample_dirs(cfg.data_root)
+    if cfg.skip_holdout:
+        holdout = _holdout_sample_dirs(cfg.data_root, cfg.seed)
+        dirs = [sample for sample in dirs if sample not in holdout]
     if cfg.max_samples:
         dirs = dirs[: cfg.max_samples]
     if not dirs:
@@ -998,15 +1345,31 @@ def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
 
     if 2 in cfg.stages:
         items = _edit_items(dirs, rng)
+        if cfg.mine_heuristic_edits:
+            mined = _heuristic_edit_items(
+                dirs,
+                device=cfg.device,
+                cache_dir=cfg.output_dir / "heuristic_edit_cache",
+                max_samples=cfg.heuristic_mine_max,
+            )
+            print(f"stage2 mined heuristic crops={len(mined)}")
+            items.extend(mined)
         counts = [0] * len(EDIT_CLASSES)
         for it in items:
             counts[it["y"]] += 1
         train_items, val_items = _split_by_sample(items, cfg.val_fraction, cfg.seed)
+        train_items = _limit_edit_training_items(
+            train_items, cfg.stage2_max_train_examples, cfg.seed
+        )
+        train_counts = [0] * len(EDIT_CLASSES)
+        for it in train_items:
+            train_counts[it["y"]] += 1
         print(
             f"stage2 examples={len(items)} counts={dict(zip(EDIT_CLASSES, counts))} "
-            f"train={len(train_items)} val={len(val_items)}"
+            f"train={len(train_items)} train_counts={dict(zip(EDIT_CLASSES, train_counts))} "
+            f"val={len(val_items)}"
         )
-        cache = _MelCache(maxsize=768)
+        cache = _MelCache(maxsize=4096)
         weights = torch.ones(len(EDIT_CLASSES), dtype=torch.float32)
         weights[EDIT_CLASSES.index("match")] = MATCH_CLASS_WEIGHT
         train_ds = EditDataset(train_items, cache=cache, augment=True)
@@ -1027,6 +1390,10 @@ def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
                     val_fraction=cfg.val_fraction,
                     stages=cfg.stages,
                     max_samples=cfg.max_samples,
+                    skip_holdout=cfg.skip_holdout,
+                    mine_heuristic_edits=cfg.mine_heuristic_edits,
+                    heuristic_mine_max=cfg.heuristic_mine_max,
+                    stage2_max_train_examples=cfg.stage2_max_train_examples,
                 )
                 written["stage2"] = _run_multiclass(
                     EditCropNet(),
@@ -1064,4 +1431,5 @@ def train_stages(cfg: StageTrainConfig) -> dict[str, Path]:
             name="stage3",
             siamese=False,
         )
+        _maybe_calibrate_stage3(written["stage3"], dirs, cfg, resolve_device(cfg.device))
     return written
