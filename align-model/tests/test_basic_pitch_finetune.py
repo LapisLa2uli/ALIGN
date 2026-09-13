@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 
@@ -134,15 +135,16 @@ class ExactTargetTests(unittest.TestCase):
         self.assertEqual(targets["contour"][plain_frame, note_bin * 3], 1.0)
         self.assertEqual(targets["contour"][bent_frame, note_bin * 3 + 1], 1.0)
 
-    def test_rendered_sounding_pitch_must_match_explicit_metadata(self) -> None:
+    def test_explicit_acoustic_shift_overrides_stale_rendered_pitch(self) -> None:
         note = {
             "pitch_midi_written": 60,
             "pitch_midi_sounding": 59,
             "start_sec": 0.1,
             "end_sec": 0.2,
         }
-        with self.assertRaisesRegex(ValueError, "pitch-space mismatch"):
-            bpft.build_window_targets([note], [], 2)
+        targets = bpft.build_window_targets([note], [], 2)
+        self.assertGreater(targets["note"][:, 58 - 21].sum(), 0)
+        self.assertEqual(targets["note"][:, 59 - 21].sum(), 0)
 
     def test_window_is_exact_length_and_zero_padded(self) -> None:
         audio = np.arange(100, dtype=np.float32)
@@ -231,6 +233,14 @@ class StagedFreezeTests(unittest.TestCase):
         self.assertIn("contour_trunk", trainable)
         self.assertNotIn("cqt", trainable)
         self.assertNotIn("harmonic_stacking", trainable)
+
+    def test_onnx_request_reports_skip_without_tf2onnx(self) -> None:
+        with patch.dict(sys.modules, {"tf2onnx": None}):
+            result = bpft.export_onnx_if_requested(
+                None, None, Path("unused.onnx"), requested=True
+            )
+        self.assertEqual(result["status"], "skipped")
+        self.assertIn("not installed", result["reason"])
 
 
 if __name__ == "__main__":

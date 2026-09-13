@@ -198,3 +198,50 @@ def pesto_cache_path(
     cache_root: Path | str, sample_dir: Path | str, corpus: str
 ) -> Path:
     return Path(cache_root) / str(corpus) / f"{Path(sample_dir).name}.npz"
+
+
+def apply_pesto_cents(
+    notes: list,
+    basic_features: BasicPitchFeatures,
+    pesto: np.ndarray,
+    *,
+    minimum_confidence: float = 0.80,
+) -> list:
+    """Estimate signed cents relative to each Basic Pitch intended note."""
+
+    from .decode import TransNote
+
+    frame_times = np.asarray(basic_features.frame_times, dtype=np.float64)
+    feature = np.asarray(pesto, dtype=np.float32)
+    output = []
+    for note in notes:
+        mask = (
+            (frame_times >= float(note.start))
+            & (frame_times < float(note.end))
+            & (feature[:, 1] >= minimum_confidence)
+            & (feature[:, 0] > 0)
+        )
+        if np.any(mask):
+            deviation = 100.0 * float(
+                np.median(feature[mask, 0] - int(note.pitch))
+            )
+            cents = float(np.clip(deviation, -100.0, 100.0))
+        else:
+            cents = float(note.cents)
+        candidates = [int(note.pitch)]
+        if abs(cents) >= 35.0:
+            direction = 1 if cents > 0 else -1
+            candidates.append(int(note.pitch) + direction)
+        candidates.extend(int(value) for value in note.pitch_candidates)
+        unique = tuple(dict.fromkeys(candidates))[:3]
+        output.append(
+            TransNote(
+                pitch=int(note.pitch),
+                start=float(note.start),
+                end=float(note.end),
+                confidence=float(note.confidence),
+                cents=round(cents, 2),
+                pitch_candidates=unique,
+            )
+        )
+    return output

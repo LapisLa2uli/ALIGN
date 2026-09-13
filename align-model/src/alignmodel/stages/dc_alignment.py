@@ -10,7 +10,14 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from alignmodel.types import GraphNote, PairedEvent, PipelineState
+import numpy as np
+
+from alignmodel.types import (
+    GraphNote,
+    PairedEvent,
+    PipelineState,
+    TranscribedNote,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -117,42 +124,86 @@ def pairs_from_aligned_events(
     return pairs
 
 
+def transcribe_pipeline_state(state: PipelineState, learned) -> list[TranscribedNote]:
+    """Populate the one shared transcription used by all three layers."""
+
+    if state.transcribed_notes:
+        return state.transcribed_notes
+    if learned is None or getattr(learned, "transcriber", None) is None:
+        return []
+    from alignmodel.transcription import infer_note_decoder
+
+    values = infer_note_decoder(learned.transcriber, state.sample_dir)
+    state.transcribed_notes = [
+        TranscribedNote(
+            pitch=int(note.pitch),
+            start=float(note.start),
+            end=float(note.end),
+            confidence=float(note.confidence),
+            cents=float(getattr(note, "cents", 0.0)),
+            pitch_candidates=tuple(
+                int(value)
+                for value in (getattr(note, "pitch_candidates", ()) or ())
+            ),
+        )
+        for note in values
+    ]
+    return state.transcribed_notes
+
+
 def pairs_from_learned_alignment(
     state: PipelineState, mel, learned
 ) -> list[PairedEvent]:
-    """Transcribe audio notes, align them to the score, and return timed pairs."""
+    """Align one shared transcription, treating Layer-1 repeats explicitly."""
     if (
-        mel is None
-        or learned is None
+        learned is None
         or getattr(learned, "transcriber", None) is None
-        or getattr(learned, "note_aligner", None) is None
     ):
         return []
     from alignmodel.stages.note_align import normalize_notes
-    from alignmodel.transcription import infer_sample_notes
-
-    transcribed = infer_sample_notes(
-        learned.transcriber,
-        state.sample_dir,
-        learned.device or state.device,
-        decode_config=learned.transcriber_decode,
-    )
+    transcribed = transcribe_pipeline_state(state, learned)
     observed = normalize_notes(transcribed)
-    result = learned.note_aligner.align(observed, state.score)
+    repeated_indices = {
+        index
+        for repetition in state.note_repetitions
+        for index in range(repetition.repeat_i0, repetition.repeat_i1)
+    }
+    first_pass_indices = [
+        index for index in range(len(observed)) if index not in repeated_indices
+    ]
+    first_pass = [observed[index] for index in first_pass_indices]
+    mapping: list[int | None] = [None] * len(observed)
+    contextual = getattr(learned, "contextual_note_aligner", None)
+    if contextual is not None and bool(
+        getattr(state.config, "use_contextual_note_aligner", True)
+    ):
+        first_mapping = contextual.align(first_pass, state.score.notes)
+    else:
+        first_mapping = _monotonic_pitch_mapping(
+            first_pass, state.score.notes
+        )
+    for local_index, score_index in enumerate(first_mapping):
+        mapping[first_pass_indices[local_index]] = score_index
+    for repetition in state.note_repetitions:
+        source_count = repetition.source_i1 - repetition.source_i0
+        repeat_count = repetition.repeat_i1 - repetition.repeat_i0
+        for offset in range(min(source_count, repeat_count)):
+            source_index = repetition.source_i0 + offset
+            repeat_index = repetition.repeat_i0 + offset
+            if (
+                0 <= source_index < len(mapping)
+                and 0 <= repeat_index < len(mapping)
+            ):
+                mapping[repeat_index] = mapping[source_index]
+    state.note_mapping = mapping
     pairs: list[PairedEvent] = []
-    for op in result.operations:
-        if (
-            op.performance_index is None
-            or op.score_index is None
-            or op.kind not in {"match", "substitute"}
-        ):
+    for performance_index, score_index in enumerate(mapping):
+        if score_index is None:
             continue
-        if not (0 <= op.performance_index < len(observed)):
+        if not (0 <= score_index < len(state.score.notes)):
             continue
-        if not (0 <= op.score_index < len(state.score.notes)):
-            continue
-        played = observed[op.performance_index]
-        written = state.score.notes[op.score_index]
+        played = observed[performance_index]
+        written = state.score.notes[score_index]
         pairs.append(
             PairedEvent(
                 score_index=written.index,
@@ -161,11 +212,53 @@ def pairs_from_learned_alignment(
                 ref_end=written.end,
                 perf_start=played.start,
                 perf_end=played.end,
-                kind=op.kind,
+                kind="match" if played.pitch == written.pitch else "substitute",
+                cents=float(getattr(played, "cents", 0.0)),
                 measure=written.measure,
             )
         )
     return sorted(pairs, key=lambda pair: (pair.perf_start, pair.ref_start))
+
+
+def _monotonic_pitch_mapping(observed, score_notes) -> list[int | None]:
+    """Edit-distance map for the non-repeated first pass."""
+
+    n, m = len(observed), len(score_notes)
+    gap = 0.90
+    dp = np.zeros((n + 1, m + 1), dtype=np.float32)
+    back = np.zeros((n + 1, m + 1), dtype=np.int8)
+    dp[:, 0] = np.arange(n + 1, dtype=np.float32) * gap
+    dp[0, :] = np.arange(m + 1, dtype=np.float32) * gap
+    back[1:, 0] = 1
+    back[0, 1:] = 2
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            delta = abs(int(observed[i - 1].pitch) - int(score_notes[j - 1].pitch))
+            pair_cost = 0.0 if delta == 0 else 1.05 + min(delta, 12) / 60.0
+            choices = (
+                (float(dp[i - 1, j - 1]) + pair_cost, 0),
+                (
+                    float(dp[i - 1, j])
+                    + gap
+                    + 0.1 * float(observed[i - 1].confidence),
+                    1,
+                ),
+                (float(dp[i, j - 1]) + gap, 2),
+            )
+            dp[i, j], back[i, j] = min(choices, key=lambda item: item[0])
+    mapping: list[int | None] = [None] * n
+    i, j = n, m
+    while i or j:
+        code = int(back[i, j])
+        if i and j and code == 0:
+            mapping[i - 1] = j - 1
+            i -= 1
+            j -= 1
+        elif i and (not j or code == 1):
+            i -= 1
+        else:
+            j -= 1
+    return mapping
 
 
 def ensure_rhythm_pairs(

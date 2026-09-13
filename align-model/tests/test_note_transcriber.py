@@ -60,7 +60,10 @@ class NoteTargetTests(unittest.TestCase):
                 "synthpipeline.timing.midi_note_times",
                 return_value=[(58, 0.10, 0.30)],
             ):
-                self.assertEqual(load_written_notes(sample), [(60, 0.1, 0.3)])
+                self.assertEqual(
+                    load_written_notes(sample, allow_legacy_midi=True),
+                    [(60, 0.1, 0.3)],
+                )
 
     def test_legacy_soundfont_midi_is_already_written(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -78,7 +81,10 @@ class NoteTargetTests(unittest.TestCase):
                 "synthpipeline.timing.midi_note_times",
                 return_value=[(60, 0.10, 0.30)],
             ):
-                self.assertEqual(load_written_notes(sample), [(60, 0.1, 0.3)])
+                self.assertEqual(
+                    load_written_notes(sample, allow_legacy_midi=True),
+                    [(60, 0.1, 0.3)],
+                )
 
     def test_intonation_keeps_written_pitch_and_records_cents(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -107,7 +113,9 @@ class NoteTargetTests(unittest.TestCase):
                 return_value=[(58, 0.10, 0.30)],
             ):
                 self.assertEqual(
-                    load_written_notes_with_cents(sample),
+                    load_written_notes_with_cents(
+                        sample, allow_legacy_midi=True
+                    ),
                     [(60, 0.1, 0.3, -55.0)],
                 )
 
@@ -134,6 +142,20 @@ class NoteTargetTests(unittest.TestCase):
             val_rows = load_split([root_a, root_b], manifest, "val")
             self.assertEqual(train_rows[0].sample_dir, train)
             self.assertEqual(val_rows[0].sample_dir, val)
+            (train / "note_map.json").write_text(
+                json.dumps(
+                    {
+                        "rendered_notes": [
+                            {
+                                "pitch_midi_written": 60,
+                                "start_sec": 0.05,
+                                "end_sec": 0.20,
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
             with patch(
                 "synthpipeline.timing.midi_note_times",
                 return_value=[(58, 0.05, 0.20)],
@@ -254,6 +276,20 @@ class NoteModelTests(unittest.TestCase):
                 (sample / "performance_audio.mid").write_bytes(b"MThd")
                 (sample / "metadata.json").write_text(
                     json.dumps({"sounding_transpose": -2}), encoding="utf-8"
+                )
+                (sample / "note_map.json").write_text(
+                    json.dumps(
+                        {
+                            "rendered_notes": [
+                                {
+                                    "pitch_midi_written": 60,
+                                    "start_sec": 0.05,
+                                    "end_sec": 0.30,
+                                }
+                            ]
+                        }
+                    ),
+                    encoding="utf-8",
                 )
             manifest = base / "split.json"
             manifest.write_text(

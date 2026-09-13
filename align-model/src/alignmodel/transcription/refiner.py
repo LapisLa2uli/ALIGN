@@ -289,6 +289,12 @@ class NoteRefiner(nn.Module):
         pesto: Tensor,
     ) -> dict[str, Tensor]:
         self._validate_inputs(note, onset, contour, pesto)
+        base_note_probability = note[
+            :, :, self.config.axis_start : self.config.axis_end
+        ].clamp(0.0, 1.0)
+        base_onset_probability = onset[
+            :, :, self.config.axis_start : self.config.axis_end
+        ].clamp(0.0, 1.0)
         (
             features,
             voiced_base,
@@ -346,6 +352,8 @@ class NoteRefiner(nn.Module):
             "pitch_residual": pitch_residual,
             "confidence_residual": confidence_residual,
             "cents_residual": cents_residual,
+            "basic_note_probability": base_note_probability,
+            "basic_onset_probability": base_onset_probability,
         }
 
 
@@ -443,7 +451,7 @@ def note_refiner_loss(
 
     interval = zero
     target_intervals = targets.get("intervals")
-    if target_intervals is not None:
+    if target_intervals is not None and interval_weight > 0:
         losses = []
         for batch_index, raw_intervals in enumerate(target_intervals):
             intervals = [
@@ -457,6 +465,9 @@ def note_refiner_loss(
                     ),
                 )
                 for start, end, pitch in raw_intervals
+                if cfg.min_note_frames
+                <= int(end) - int(start)
+                <= cfg.max_note_frames
             ]
             graph = build_refiner_candidates(
                 outputs, cfg, batch_index=batch_index,
@@ -509,6 +520,16 @@ def build_refiner_candidates(
     required_intervals: Sequence[tuple[int, int, int]] = (),
 ) -> IntervalCandidates:
     cfg = config or NoteRefinerConfig()
+    base_intervals = _basic_pitch_intervals(
+        _one_clip(outputs.get("basic_note_probability"), batch_index)
+        if outputs.get("basic_note_probability") is not None
+        else None,
+        _one_clip(outputs.get("basic_onset_probability"), batch_index)
+        if outputs.get("basic_onset_probability") is not None
+        else None,
+        cfg,
+    )
+    all_required = tuple(required_intervals) + tuple(base_intervals)
     return candidate_pruned_intervals(
         _one_clip(outputs["voiced_logits"], batch_index),
         _one_clip(outputs["onset_logits"], batch_index),
@@ -520,8 +541,43 @@ def build_refiner_candidates(
         boundary_threshold=cfg.boundary_threshold,
         max_boundaries=cfg.max_boundaries,
         max_ends_per_start=cfg.max_ends_per_start,
-        required_intervals=required_intervals,
+        required_intervals=all_required,
     )
+
+
+def _basic_pitch_intervals(
+    note_probability: Tensor | None,
+    onset_probability: Tensor | None,
+    config: NoteRefinerConfig,
+) -> list[tuple[int, int, int]]:
+    """Propose per-pitch runs so the residual decoder preserves its teacher."""
+
+    if note_probability is None or onset_probability is None:
+        return []
+    note = note_probability.detach().cpu()
+    onset = onset_probability.detach().cpu()
+    frames, pitches = note.shape
+    intervals: list[tuple[int, int, int]] = []
+    for pitch in range(pitches):
+        active = note[:, pitch] >= 0.40
+        index = 0
+        while index < frames:
+            if not bool(active[index]):
+                index += 1
+                continue
+            start = index
+            index += 1
+            while index < frames and bool(active[index]):
+                if (
+                    index - start >= config.min_note_frames
+                    and float(onset[index, pitch]) >= 0.50
+                ):
+                    intervals.append((start, index, pitch))
+                    start = index
+                index += 1
+            if index - start >= config.min_note_frames:
+                intervals.append((start, index, pitch))
+    return intervals
 
 
 @torch.no_grad()

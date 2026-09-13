@@ -290,7 +290,7 @@ def candidate_pruned_intervals(
         if 0 <= start < end <= frames and 0 <= pitch < n_pitches
     }
     records: dict[tuple[int, int, int], Tensor] = {}
-    pitch_log_probability = pitch_logits.log_softmax(dim=-1)
+    pitch_probability = pitch_logits.softmax(dim=-1)
     for start in starts:
         valid_ends = [
             end for end in ends
@@ -311,7 +311,7 @@ def candidate_pruned_intervals(
                 | required_for_start
             )
         for end in valid_ends:
-            pitch_evidence = pitch_log_probability[start:end].mean(dim=0)
+            pitch_evidence = pitch_probability[start:end].mean(dim=0)
             top = torch.topk(
                 pitch_evidence, k=min(pitches_per_interval, n_pitches)
             ).indices.detach().cpu().tolist()
@@ -319,13 +319,23 @@ def candidate_pruned_intervals(
                 pitch for req_start, req_end, pitch in required
                 if req_start == start and req_end == end
             )
-            boundary_score = onset_logits[start]
+            boundary_score = 2.0 * onset_probability[start]
             boundary_score = boundary_score + (
-                offset_logits[end] if end < frames else offset_logits[end - 1]
+                offset_probability[end]
+                if end < frames
+                else offset_probability[end - 1]
             )
-            voice_score = voiced_logits[start:end].mean()
+            voice_score = voiced_probability[start:end].mean()
             for pitch in sorted(set(int(value) for value in top)):
-                score = boundary_score + voice_score + pitch_evidence[pitch]
+                # Centered probability score keeps the frozen Basic Pitch
+                # residual initialization decodable while remaining fully
+                # differentiable for Semi-CRF likelihood training.
+                score = (
+                    boundary_score
+                    + 1.5 * voice_score
+                    + 1.5 * pitch_evidence[pitch]
+                    - 1.5
+                )
                 records[(start, end, pitch)] = score
 
     if not records:

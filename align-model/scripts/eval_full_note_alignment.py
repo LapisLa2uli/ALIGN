@@ -14,10 +14,14 @@ from music21 import converter, note
 from alignmodel.note_align_train import load_exact_note_map
 from alignmodel.stages.note_align import NoteAligner, ObservedNote, alignment_metrics
 from alignmodel.transcription import (
+    decode_frozen_basic_pitch,
     evaluate_note_lists,
+    extract_sample_basic_pitch_features,
     infer_full_clip,
+    infer_note_decoder,
     infer_sample_notes,
     infer_sample_notes_hybrid,
+    load_note_decoder,
     load_note_transcriber,
     match_notes,
 )
@@ -250,7 +254,7 @@ def main() -> None:
     parser.add_argument(
         "--decode",
         default="neural",
-        choices=("neural", "fused", "hybrid", "midi"),
+        choices=("refiner", "basic_pitch", "neural", "fused", "hybrid", "midi"),
         help="Transcription frontend used for the reported transcription/e2e rows",
     )
     parser.add_argument("--out", type=Path, required=True)
@@ -260,15 +264,27 @@ def main() -> None:
     splits = args.split or ["test_id", "test_ood"]
     transcriber_path = args.transcriber_ckpt
     if transcriber_path is None:
-        transcriber_path = (
-            args.weights / "note_transcriber.pt"
-            if (args.weights / "note_transcriber.pt").exists()
-            else args.weights / "best.pt"
+        candidates = (
+            args.weights / "note_decoder.pt",
+            args.weights / "note_decoder.json",
+            args.weights / "note_transcriber.pt",
+            args.weights / "best.pt",
+        )
+        transcriber_path = next(
+            (path for path in candidates if path.exists()), candidates[-1]
         )
     aligner_path = args.aligner_ckpt or (args.weights / "note_aligner.pt")
-    transcriber, decode_cfg = load_note_transcriber(transcriber_path, args.device)
-    if args.pitch_change_frames is not None:
-        decode_cfg.pitch_change_frames = int(args.pitch_change_frames)
+    decoder = None
+    transcriber = None
+    decode_cfg = None
+    if args.decode in {"refiner", "basic_pitch"} and transcriber_path.exists():
+        decoder = load_note_decoder(transcriber_path, args.device)
+    elif args.decode not in {"basic_pitch", "midi"}:
+        transcriber, decode_cfg = load_note_transcriber(
+            transcriber_path, args.device
+        )
+        if args.pitch_change_frames is not None:
+            decode_cfg.pitch_change_frames = int(args.pitch_change_frames)
     learned = NoteAligner.from_checkpoint(
         aligner_path, device=args.device
     )
@@ -300,7 +316,19 @@ def main() -> None:
                         {"pitch": pitch, "start": start, "end": end, "confidence": 1.0}
                         for pitch, start, end in load_written_notes(sample)
                     ]
+                elif args.decode == "basic_pitch":
+                    if decoder is not None and decoder.kind == "basic-pitch":
+                        transcribed = infer_note_decoder(decoder, sample)
+                    else:
+                        transcribed = decode_frozen_basic_pitch(
+                            extract_sample_basic_pitch_features(sample)
+                        )
+                elif args.decode == "refiner":
+                    if decoder is None:
+                        raise RuntimeError("Refiner decoder was not loaded")
+                    transcribed = infer_note_decoder(decoder, sample)
                 elif args.decode == "hybrid":
+                    assert transcriber is not None and decode_cfg is not None
                     transcribed = infer_sample_notes_hybrid(
                         transcriber,
                         sample,
@@ -308,6 +336,7 @@ def main() -> None:
                         decode_config=decode_cfg,
                     )
                 elif args.decode == "fused":
+                    assert transcriber is not None and decode_cfg is not None
                     transcribed = infer_sample_notes(
                         transcriber,
                         sample,
@@ -316,6 +345,7 @@ def main() -> None:
                         fusion="conservative",
                     )
                 else:
+                    assert transcriber is not None and decode_cfg is not None
                     transcribed = infer_full_clip(
                         transcriber,
                         sample / "performance_mel.npy",

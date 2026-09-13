@@ -9,6 +9,7 @@ from alignmodel.audio import (
     mean_chroma,
     pitch_class_mismatch,
     score_chroma_template,
+    spectral_midi_frames,
 )
 from alignmodel.types import (
     GraphNote,
@@ -26,9 +27,17 @@ def run_stage2(
     chroma: np.ndarray,
     ref_chroma: np.ndarray | None = None,
     *,
+    ref_audio: np.ndarray | None = None,
     mel: np.ndarray | None = None,
     learned=None,
 ) -> None:
+    if state.transcribed_notes and learned is not None:
+        _run_transcribed_note_errors(state, learned=learned, mel=mel)
+        state.labels = [
+            label for label in state.labels if label.type != "intonation_error"
+        ]
+        state.stages_run.append(2)
+        return
     if not state.segments:
         state.segments = [
             UnfoldedSegment(
@@ -41,15 +50,214 @@ def run_stage2(
                 None,
             )
         ]
+    perf_f0 = ref_f0 = None
+    if ref_audio is not None:
+        perf_f0 = spectral_midi_frames(audio, state.sr, hop_length=state.config.hop_length)
+        ref_f0 = spectral_midi_frames(
+            ref_audio, state.sr, hop_length=state.config.hop_length
+        )
     pairs: list[PairedEvent] = []
     for seg in state.segments:
-        pairs.extend(_edits_for_segment(state, seg, audio, chroma, ref_chroma))
+        label_count = len(state.labels)
+        segment_pairs = _edits_for_segment(
+            state,
+            seg,
+            audio,
+            chroma,
+            ref_chroma,
+            perf_f0=perf_f0,
+            ref_f0=ref_f0,
+        )
+        if seg.is_repetition:
+            # Replayed errors are repeated-pass annotations, not first-pass
+            # mistakes in the official melody metric.
+            del state.labels[label_count:]
+        pairs.extend(segment_pairs)
     state.pairs = pairs
     if learned is not None and mel is not None:
         from alignmodel.stages.learned import apply_learned_edits
 
         apply_learned_edits(state, mel, learned)
+    if not bool(getattr(state.config, "detect_intonation", False)):
+        state.labels = [
+            label for label in state.labels if label.type != "intonation_error"
+        ]
     state.stages_run.append(2)
+
+
+def _run_transcribed_note_errors(
+    state: PipelineState, *, learned, mel=None
+) -> None:
+    """Layer 2: classify discrete note errors from the shared note mapping."""
+
+    from alignmodel.stages.dc_alignment import ensure_rhythm_pairs
+
+    pairs = ensure_rhythm_pairs(state, learned=learned, mel=mel)
+    state.pairs = list(pairs)
+    mapping = state.note_mapping
+    if len(mapping) != len(state.transcribed_notes):
+        mapping = [None] * len(state.transcribed_notes)
+    mapped_score = {index for index in mapping if index is not None}
+    minimum_confidence = float(state.config.note_error_min_confidence)
+    for index, played in enumerate(state.transcribed_notes):
+        target = mapping[index]
+        if target is None:
+            if played.confidence < minimum_confidence:
+                continue
+            state.labels.append(
+                PipelineLabel(
+                    id=next_label_id(state),
+                    type="extra_note",
+                    start_time=played.start,
+                    end_time=played.end,
+                    comment="transcribed note not mapped to written score",
+                    pitches=[played.pitch],
+                )
+            )
+            continue
+        if not (0 <= target < len(state.score.notes)):
+            continue
+        written = state.score.notes[target]
+        if (
+            played.pitch != written.pitch
+            and played.confidence >= minimum_confidence
+        ):
+            state.labels.append(
+                PipelineLabel(
+                    id=next_label_id(state),
+                    type="wrong_note",
+                    start_time=played.start,
+                    end_time=played.end,
+                    comment=(
+                        f"played MIDI {played.pitch}; "
+                        f"expected written MIDI {written.pitch}"
+                    ),
+                    measure_number=written.measure,
+                    note_id=f"note_{written.index:04d}",
+                    pitches=[played.pitch],
+                )
+            )
+    for written in state.score.notes:
+        if written.is_rest or written.index in mapped_score:
+            continue
+        state.labels.append(
+            PipelineLabel(
+                id=next_label_id(state),
+                type="missed_note",
+                start_time=written.start,
+                end_time=written.end,
+                comment=f"written MIDI {written.pitch} was not transcribed",
+                measure_number=written.measure,
+                note_id=f"note_{written.index:04d}",
+                pitches=[written.pitch],
+            )
+        )
+
+
+def _median_f0(
+    track: tuple[np.ndarray, np.ndarray] | None,
+    start: float,
+    end: float,
+    hop_sec: float,
+) -> float | None:
+    if track is None:
+        return None
+    midi, strength = track
+    if midi.size == 0:
+        return None
+    i0 = max(0, min(len(midi), int(round(start / hop_sec)) + 1))
+    i1 = max(i0 + 1, min(len(midi), int(round(end / hop_sec)) - 1))
+    values = midi[i0:i1]
+    weights = strength[i0:i1]
+    valid = np.isfinite(values) & (weights > 0.0)
+    if not np.any(valid):
+        return None
+    values = values[valid]
+    weights = weights[valid]
+    floor = 0.25 * float(np.max(weights))
+    strong = values[weights >= floor]
+    if strong.size < 2:
+        strong = values
+    return float(np.median(strong))
+
+
+def _fine_cents_for_event(
+    perf_track: tuple[np.ndarray, np.ndarray] | None,
+    ref_track: tuple[np.ndarray, np.ndarray] | None,
+    perf_start: float,
+    perf_end: float,
+    ref_start: float,
+    ref_end: float,
+    hop_sec: float,
+) -> float | None:
+    perf_midi = _median_f0(perf_track, perf_start, perf_end, hop_sec)
+    ref_midi = _median_f0(ref_track, ref_start, ref_end, hop_sec)
+    if perf_midi is None or ref_midi is None:
+        return None
+    return float(np.clip(100.0 * (perf_midi - ref_midi), -300.0, 300.0))
+
+
+def _f0_intonation_spans(
+    warping_path: np.ndarray,
+    perf_track: tuple[np.ndarray, np.ndarray] | None,
+    ref_track: tuple[np.ndarray, np.ndarray] | None,
+    *,
+    perf_origin: float,
+    ref_origin: float,
+    hop_sec: float,
+    tolerance: float,
+) -> list[tuple[float, float, float]]:
+    """Group sustained DTW-aligned 25–95 cent deviations."""
+    if perf_track is None or ref_track is None or warping_path.size == 0:
+        return []
+    perf_midi, perf_strength = perf_track
+    ref_midi, ref_strength = ref_track
+    perf_base = int(round(perf_origin / hop_sec))
+    ref_base = int(round(ref_origin / hop_sec))
+    rows: list[tuple[int, float]] = []
+    for ref_local, perf_local in np.asarray(warping_path, dtype=np.int64):
+        pi = perf_base + int(perf_local)
+        ri = ref_base + int(ref_local)
+        if not (0 <= pi < len(perf_midi) and 0 <= ri < len(ref_midi)):
+            continue
+        if not (np.isfinite(perf_midi[pi]) and np.isfinite(ref_midi[ri])):
+            continue
+        if perf_strength[pi] <= 0.0 or ref_strength[ri] <= 0.0:
+            continue
+        cents = 100.0 * float(perf_midi[pi] - ref_midi[ri])
+        if max(25.0, tolerance) <= abs(cents) < 95.0:
+            rows.append((pi, cents))
+    if not rows:
+        return []
+    by_frame: dict[int, list[float]] = {}
+    for frame, cents in rows:
+        by_frame.setdefault(frame, []).append(cents)
+    points = sorted((frame, float(np.median(values))) for frame, values in by_frame.items())
+    spans: list[tuple[float, float, float]] = []
+    group = [points[0]]
+    for point in points[1:]:
+        same_sign = np.sign(point[1]) == np.sign(group[-1][1])
+        if point[0] - group[-1][0] <= 2 and same_sign:
+            group.append(point)
+            continue
+        if len(group) >= 3:
+            spans.append(
+                (
+                    group[0][0] * hop_sec,
+                    (group[-1][0] + 1) * hop_sec,
+                    float(np.median([value for _, value in group])),
+                )
+            )
+        group = [point]
+    if len(group) >= 3:
+        spans.append(
+            (
+                group[0][0] * hop_sec,
+                (group[-1][0] + 1) * hop_sec,
+                float(np.median([value for _, value in group])),
+            )
+        )
+    return spans
 
 
 def _edits_for_segment(
@@ -58,6 +266,9 @@ def _edits_for_segment(
     audio: np.ndarray,
     chroma: np.ndarray,
     ref_chroma: np.ndarray | None,
+    *,
+    perf_f0: tuple[np.ndarray, np.ndarray] | None = None,
+    ref_f0: tuple[np.ndarray, np.ndarray] | None = None,
 ) -> list[PairedEvent]:
     notes = state.score.notes[seg.score_i0 : seg.score_i1]
     cfg = state.config
@@ -75,6 +286,25 @@ def _edits_for_segment(
     t0 = notes[0].start
     events = _map_notes_to_perf(notes, wp, t0, hop, seg.perf_start)
     events = _refine_onsets(events, audio, state.sr, cfg)
+    for cents_start, cents_end, cents_value in _f0_intonation_spans(
+        wp,
+        perf_f0,
+        ref_f0,
+        perf_origin=seg.perf_start,
+        ref_origin=t0,
+        hop_sec=cfg.hop_length / float(state.sr),
+        tolerance=float(cfg.cents_tolerance),
+    ):
+        state.labels.append(
+            PipelineLabel(
+                id=next_label_id(state),
+                type="intonation_error",
+                start_time=cents_start,
+                end_time=cents_end,
+                comment="DTW-aligned fine-pitch deviation",
+                deviation_cents=cents_value,
+            )
+        )
 
     tmpl_used = set(int(r) for r, _p in wp) if len(wp) else set()
     perf_used = set(int(p) for _r, p in wp) if len(wp) else set()
@@ -93,8 +323,29 @@ def _edits_for_segment(
             if ref_chroma is not None
             else vec_score
         )
-        cents = cents_off(vec_ref, vec_perf) if ref_chroma is not None else None
-        mismatch = pitch_class_mismatch(vec_score, vec_perf, cfg.chroma_peak_min)
+        cents = _fine_cents_for_event(
+            perf_f0,
+            ref_f0,
+            p0,
+            p1,
+            note.start,
+            note.end,
+            state.config.hop_length / float(state.sr),
+        )
+        if cents is None and ref_chroma is not None:
+            cents = cents_off(vec_ref, vec_perf)
+        # Compare against the rendered clean reference when available. Using
+        # the written score pitch here creates a systematic wrong-note flood
+        # for transposing instruments and masks sub-semitone intonation.
+        mismatch = pitch_class_mismatch(vec_ref, vec_perf, cfg.chroma_peak_min)
+        ref_peak = int(np.argmax(vec_ref))
+        perf_peak = int(np.argmax(vec_perf))
+        peak_steps = min((perf_peak - ref_peak) % 12, (ref_peak - perf_peak) % 12)
+        intonation_like = (
+            cents is not None
+            and cfg.cents_tolerance < abs(cents) < 95.0
+            and peak_steps <= 1
+        )
         tmpl_i0 = int(round((note.start - t0) / hop))
         tmpl_i1 = max(tmpl_i0 + 1, int(round((note.end - t0) / hop)))
         covered = any(tmpl_i0 <= f < tmpl_i1 for f in tmpl_used)
@@ -113,7 +364,7 @@ def _edits_for_segment(
                 )
             )
             continue
-        if mismatch:
+        if mismatch and not intonation_like:
             state.labels.append(
                 PipelineLabel(
                     id=next_label_id(state),
@@ -140,7 +391,7 @@ def _edits_for_segment(
                 )
             )
             continue
-        if cents is not None and abs(cents) > cfg.cents_tolerance and not mismatch:
+        if intonation_like:
             state.labels.append(
                 PipelineLabel(
                     id=next_label_id(state),

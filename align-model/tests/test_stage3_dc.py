@@ -207,7 +207,7 @@ class Stage3DcTests(unittest.TestCase):
             SimpleNamespace(pitch=65, start=1.3, end=1.5, confidence=0.8),
         ]
         with patch(
-            "alignmodel.transcription.infer_sample_notes",
+            "alignmodel.transcription.infer_note_decoder",
             return_value=transcribed,
         ):
             pairs = pairs_from_learned_alignment(

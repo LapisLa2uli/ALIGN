@@ -60,6 +60,77 @@ and evaluates against symbolic and DTW baselines. `performance_score.musicxml`
 and synth MIDI are training/evaluation supervision only; inference reads
 `performance_mel.npy` and `verified_score.musicxml`.
 
+### Basic Pitch clarinet refiner
+
+The v3 note path uses the official Basic Pitch 0.4.0 onset/note/contour maps,
+PESTO fine pitch, and a compact PyTorch monophonic interval refiner. Its
+checkpoint loader remains backward-compatible with v1/v2 `NoteFrameNet`
+weights. The current training run is deliberately procedural-only while the
+raw-derived corpus is being edited.
+
+```powershell
+# Isolated TensorFlow/Basic Pitch environment
+python -m venv align-model\.venv-amt-bench --system-site-packages
+align-model\.venv-amt-bench\Scripts\pip install `
+  -r align-model\requirements-amt-benchmark.txt `
+  --extra-index-url https://download.pytorch.org/whl/cu124
+
+python align-model\scripts\run_basic_pitch_refiner.py `
+  --max-train-samples 256 --max-val-samples 80 --max-test-samples 80
+```
+
+The strict manifest contains only `procedural12k` rows, requires exact
+`note_map.json/rendered_notes`, and records the effective acoustic-to-written
+transpose explicitly. Basic Pitch and PESTO caches are SHA-256 keyed, so edited
+WAV files cannot reuse stale activations. A candidate refiner is promoted only
+if it beats frozen Basic Pitch and passes note-count gates; otherwise
+`weights/note_decoder.json` keeps frozen Basic Pitch canonical.
+
+The current bounded promotion run retained frozen Basic Pitch: the refiner
+reached 0.304 test-ID F1 versus 0.827 for Basic Pitch. PESTO reduced ordinary
+cents error, but intonation-only error stayed near 60 cents because 98% of
+labeled intonation regions in the audited procedural WAVs measure within 20
+cents of zero. `regenerate_audio.py` now preserves pitch-bend labels in ordinary
+rerenders; existing affected WAVs must be regenerated before cents training can
+pass its promotion gate.
+
+The basic production pipeline is transcription-first:
+
+1. Basic Pitch transcribes the WAV once and stores the written notes.
+2. Layer 1 finds repeated note phrases entirely inside that transcription.
+3. Repeated notes reuse the source phrase's score mapping; Layer 2 emits only
+   `wrong_note`, `extra_note`, and `missed_note`.
+4. Layer 3 uses those same repetition-aware pairs for conservative duration
+   errors.
+
+Requesting Layer 2 or 3 automatically runs its prerequisites. Intonation
+detection is disabled by default and filtered from final output.
+
+Layer 1 also includes a small note-sequence scorer trained on 1,000 procedural
+bundles. Long phrases use deterministic tempo-tolerant matching; the learned
+scorer is only a one-note rescue when no long repetition was found, using the
+fact that the repeated note looks like an insertion/extra relative to the
+first pass.
+
+```powershell
+python align-model\scripts\train_note_repetition.py `
+  --manifest align-model\runs\basic-pitch-refiner-procedural-s365\split.json `
+  --out align-model\runs\basic-pitch-refiner-procedural-s365\weights\note_repetition.pt `
+  --train-samples 1000 --val-samples 200
+```
+
+On 100 procedural test-ID clips, this hybrid Layer 1 scored 0.755 repetition
+F1 (71/89 repetitions found, 99 predictions), versus 0.753 without the learned
+one-note rescue (70/89 found, 97 predictions).
+
+A contextual GRU note aligner was also trained on 10,000 procedural exact maps
+after removing gold replay copies from the first-pass sequence. It reached
+0.711 validation note-position accuracy, but failed the pipeline promotion
+test: 0.0244 held-out mapping F1 versus 0.0256 for deterministic edit
+alignment on the same 100 Basic Pitch clips. The checkpoint is retained under
+`candidates/contextual_note_aligner.pt`; it is intentionally absent from
+`weights/`, so production keeps the stronger deterministic aligner.
+
 ## Melody-first (Model B)
 
 A separate checkpoint family. It does **not** emit one label per DTW pair.

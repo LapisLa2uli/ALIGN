@@ -6,6 +6,7 @@ from alignmodel.audio import extract_chroma, load_mono, set_audio_device
 from alignmodel.device import device_label
 from alignmodel.stage_train import _load_mel
 from alignmodel.stages.boundaries import apply_boundaries
+from alignmodel.stages.dc_alignment import transcribe_pipeline_state
 from alignmodel.stages.edits import run_stage2
 from alignmodel.stages.learned import load_stage_models
 from alignmodel.stages.restart import run_stage1
@@ -63,6 +64,10 @@ def run_pipeline(
         ),
     )
     wanted = set(stages or {1, 2, 3})
+    if 3 in wanted:
+        wanted.update({1, 2})
+    elif 2 in wanted:
+        wanted.add(1)
     if timbre:
         wanted.add(4)
     score_path = sample_dir / "verified_score.musicxml"
@@ -71,6 +76,7 @@ def run_pipeline(
 
     audio, chroma, hop_sec, duration = load_bundle_audio(sample_dir, cfg)
     ref_chroma = None
+    ref_audio = None
     ref_wav = sample_dir / "reference_audio.wav"
     if ref_wav.exists():
         ref_audio = load_mono(ref_wav, cfg.sample_rate)
@@ -92,9 +98,20 @@ def run_pipeline(
     if (sample_dir / "performance_mel.npy").exists():
         mel = _load_mel(sample_dir)
 
+    if wanted & {1, 2, 3} and getattr(learned, "transcriber", None) is not None:
+        transcribe_pipeline_state(state, learned)
+
     if 1 in wanted:
-        apply_boundaries(state, audio, chroma)
-        run_stage1(state, chroma, ref_chroma, mel=mel, learned=learned)
+        if not state.transcribed_notes:
+            apply_boundaries(state, audio, chroma)
+        run_stage1(
+            state,
+            chroma,
+            ref_chroma,
+            audio=audio,
+            mel=mel,
+            learned=learned,
+        )
     else:
         state.segments = [
             UnfoldedSegment(
@@ -109,11 +126,23 @@ def run_pipeline(
         ]
 
     if 2 in wanted:
-        run_stage2(state, audio, chroma, ref_chroma, mel=mel, learned=learned)
+        run_stage2(
+            state,
+            audio,
+            chroma,
+            ref_chroma,
+            ref_audio=ref_audio,
+            mel=mel,
+            learned=learned,
+        )
     if 3 in wanted:
         run_stage3(state, learned=learned, mel=mel)
     if 4 in wanted:
         run_stage4(state, audio)
+    if not cfg.detect_intonation:
+        state.labels = [
+            label for label in state.labels if label.type != "intonation_error"
+        ]
     attach_schema12_fields(state)
     return state
 

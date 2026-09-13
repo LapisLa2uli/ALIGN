@@ -83,6 +83,29 @@ class PairedEvent:
 
 
 @dataclass
+class TranscribedNote:
+    pitch: int
+    start: float
+    end: float
+    confidence: float = 1.0
+    cents: float = 0.0
+    pitch_candidates: tuple[int, ...] = ()
+
+
+@dataclass
+class NoteRepetition:
+    source_i0: int
+    source_i1: int
+    repeat_i0: int
+    repeat_i1: int
+    source_start: float
+    source_end: float
+    repeat_start: float
+    repeat_end: float
+    confidence: float
+
+
+@dataclass
 class PipelineLabel:
     id: str
     type: str
@@ -111,6 +134,10 @@ class PipelineConfig:
     copy_window_sec: float = 1.6
     copy_sim_threshold: float = 0.76
     min_window_sec: float = 0.70
+    repetition_max_lookback_sec: float = 20.0
+    repetition_search_step_sec: float = 0.25
+    repetition_probe_sec: float = 3.0
+    repetition_min_confidence: float = 0.88
     beam_k: int = 5
     span_dur_lo: float = 0.5
     span_dur_hi: float = 1.8
@@ -125,6 +152,13 @@ class PipelineConfig:
     far_gap: int = 6
     far_log_threshold: float = 0.35
     min_rhythm_ms: float = 80.0
+    note_repetition_min_notes: int = 1
+    note_repetition_max_notes: int = 64
+    note_repetition_min_confidence: float = 0.80
+    use_note_repetition_model: bool = True
+    use_contextual_note_aligner: bool = True
+    note_error_min_confidence: float = 0.60
+    detect_intonation: bool = False
     use_dc_rhythm_alignment: bool = True
     rhythm_detector: str = "gated_net"  # gated_net | net | heuristic
     rhythm_merge_gap_sec: float = 0.05
@@ -137,7 +171,7 @@ class PipelineConfig:
     squeak_max_sec: float = 0.28
     device: str = "cuda"
     n_fft: int = 2048
-    weights_dir: str | None = "align-model/runs/stages"
+    weights_dir: str | None = "align-model/runs/model-a-improve/stage3-procedural"
     alignment_weights_dir: str | None = None
 
 
@@ -156,6 +190,9 @@ class PipelineState:
     segments: list[UnfoldedSegment] = field(default_factory=list)
     pairs: list[PairedEvent] = field(default_factory=list)
     rhythm_pairs: list[PairedEvent] = field(default_factory=list)
+    transcribed_notes: list[TranscribedNote] = field(default_factory=list)
+    note_repetitions: list[NoteRepetition] = field(default_factory=list)
+    note_mapping: list[int | None] = field(default_factory=list)
     labels: list[PipelineLabel] = field(default_factory=list)
     stages_run: list[int] = field(default_factory=list)
 
@@ -234,6 +271,8 @@ def labels_document(state: PipelineState) -> dict[str, Any]:
             "n_segments": len(state.segments),
             "n_pairs": len(state.pairs),
             "n_rhythm_pairs": len(state.rhythm_pairs),
+            "n_transcribed_notes": len(state.transcribed_notes),
+            "n_note_repetitions": len(state.note_repetitions),
         },
     }
 

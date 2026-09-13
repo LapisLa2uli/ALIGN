@@ -640,11 +640,9 @@ def _prediction_maps(
     """Convert transcriber outputs into aligner training rows with exact lineage."""
     if cfg.transcriber_checkpoint is None:
         return []
-    from alignmodel.transcription import infer_sample_notes, load_note_transcriber
+    from alignmodel.transcription import infer_note_decoder, load_note_decoder
 
-    transcriber, decode_cfg = load_note_transcriber(
-        cfg.transcriber_checkpoint, device
-    )
+    transcriber = load_note_decoder(cfg.transcriber_checkpoint, device)
     output: list[ExactNoteMap] = []
     for index, item in enumerate(items, start=1):
         sample_dir = item.sample_dir
@@ -656,11 +654,9 @@ def _prediction_maps(
             continue
         gold_performed = item.notes
         predicted = normalize_notes(
-            infer_sample_notes(
+            infer_note_decoder(
                 transcriber,
                 sample_dir,
-                device,
-                decode_config=decode_cfg,
             )
         )
         available = set(range(len(gold_performed)))

@@ -23,7 +23,12 @@ def run_stage3(state: PipelineState, *, learned=None, mel=None) -> None:
     override = getattr(state.config, "rhythm_logit_override", None)
     if has_net and override is not None:
         learned.rhythm_threshold = float(override)
-    if has_net and detector in {"gated_net", "net"}:
+    if state.transcribed_notes:
+        for pair, comment, ms in flagged_note_first_rhythm_hits(
+            pairs, state.config
+        ):
+            _rhythm_label(state, pair, comment, ms)
+    elif has_net and detector in {"gated_net", "net"}:
         from alignmodel.stages.learned import apply_learned_rhythm
 
         gate = None
@@ -40,6 +45,40 @@ def run_stage3(state: PipelineState, *, learned=None, mel=None) -> None:
                 _rhythm_label(state, pair, comment, ms)
     merge_rhythm_labels(state, gap=float(state.config.rhythm_merge_gap_sec))
     state.stages_run.append(3)
+
+
+def flagged_note_first_rhythm_hits(
+    pairs: list[PairedEvent], cfg
+) -> list[tuple[PairedEvent, str, float]]:
+    """Conservative duration errors after repetition-aware note alignment."""
+
+    usable = [
+        pair
+        for pair in pairs
+        if pair.kind in {"match", "substitute"} and _ratio(pair) is not None
+    ]
+    if len(usable) < 4:
+        return []
+    ratios = np.asarray([float(_ratio(pair)) for pair in usable])
+    baseline = float(np.median(ratios))
+    if baseline <= 0:
+        return []
+    threshold = max(0.35, float(cfg.ewma_log_threshold))
+    minimum_ms = max(120.0, float(cfg.min_rhythm_ms))
+    hits = []
+    for pair, ratio in zip(usable, ratios):
+        log_error = abs(float(np.log(ratio / baseline)))
+        expected = (pair.ref_end - pair.ref_start) * baseline
+        error_ms = abs((pair.perf_end - pair.perf_start) - expected) * 1000.0
+        if log_error >= threshold and error_ms >= minimum_ms:
+            hits.append(
+                (
+                    pair,
+                    f"note-duration deviation (log={log_error:.3f})",
+                    error_ms,
+                )
+            )
+    return hits
 
 
 def flagged_rhythm_spans(pairs: list[PairedEvent], cfg) -> list[tuple[float, float]]:

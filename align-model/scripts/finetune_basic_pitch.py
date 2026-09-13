@@ -262,14 +262,9 @@ def build_window_targets(
             raise ValueError("Every rendered note must include pitch_midi_written")
         written_pitch = int(item["pitch_midi_written"])
         sounding_pitch = written_pitch - int(effective_audio_transpose)
-        if item.get("pitch_midi_sounding") is not None:
-            mapped = int(item["pitch_midi_sounding"])
-            if mapped != sounding_pitch:
-                raise ValueError(
-                    "rendered_notes pitch-space mismatch: "
-                    f"written {written_pitch} - effective_audio_transpose "
-                    f"{effective_audio_transpose} != sounding {mapped}"
-                )
+        # Legacy note maps may retain the sounding MIDI pitch from before a
+        # later audio-only regeneration/transpose. The explicit effective
+        # acoustic correction is authoritative for waveform supervision.
         start = float(item["start_sec"])
         end = max(float(item["end_sec"]), start + 0.001)
         if end <= window_start_sec or start >= window_end:

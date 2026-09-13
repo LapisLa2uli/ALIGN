@@ -1230,9 +1230,34 @@ def _calibrate_rhythm_threshold(
         return 0.0, {"n_clips": 0, "reason": "no_clips"}
 
     logits = [hit[2] for row in clip_rows for hit in row["hits"]]
-    grid = [-1.5, -1.0, -0.5, 0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+    grid = [
+        -1.5,
+        -1.0,
+        -0.5,
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.5,
+        2.0,
+        2.5,
+        3.0,
+        4.0,
+        5.0,
+        7.5,
+        10.0,
+        15.0,
+        20.0,
+    ]
     if logits:
-        grid.extend(float(q) for q in np.quantile(np.asarray(logits), [0.2, 0.4, 0.6, 0.8]))
+        grid.extend(
+            float(q)
+            for q in np.quantile(
+                np.asarray(logits), [0.2, 0.4, 0.6, 0.8, 0.9, 0.95, 0.99]
+            )
+        )
     candidates = []
     for t in sorted(set(round(float(x), 3) for x in grid)):
         f1s: list[float] = []

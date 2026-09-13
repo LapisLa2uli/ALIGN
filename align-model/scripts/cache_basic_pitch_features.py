@@ -10,7 +10,8 @@ from typing import Any, Iterable
 
 from alignmodel.transcription.basic_pitch import (
     basic_pitch_cache_path,
-    extract_sample_basic_pitch_features,
+    extract_basic_pitch_features,
+    load_audio_metadata,
 )
 
 
@@ -75,11 +76,15 @@ def _resolve_sample_dir(
     return root / sample
 
 
-def _worker(task: tuple[int, str, str, str]) -> dict[str, Any]:
-    index, sample_text, corpus, cache_text = task
+def _worker(task: tuple[int, str, str, str, str]) -> dict[str, Any]:
+    index, sample_text, corpus, cache_text, metadata_text = task
     sample = Path(sample_text)
     destination = basic_pitch_cache_path(Path(cache_text), sample, corpus)
-    features = extract_sample_basic_pitch_features(sample, cache_path=destination)
+    features = extract_basic_pitch_features(
+        sample / "performance_audio.wav",
+        source_metadata=json.loads(metadata_text),
+        cache_path=destination,
+    )
     return {
         "index": index,
         "sample": sample.name,
@@ -112,7 +117,7 @@ def _default_splits(document: dict[str, Any]) -> list[str]:
 
 
 def _run_tasks(
-    tasks: list[tuple[int, str, str, str]], workers: int
+    tasks: list[tuple[int, str, str, str, str]], workers: int
 ) -> Iterable[tuple[dict[str, Any] | None, str | None]]:
     if workers <= 1:
         for task in tasks:
@@ -185,11 +190,28 @@ def main() -> None:
         if args.max_samples is not None:
             selected = selected[: max(0, args.max_samples)]
 
-        tasks: list[tuple[int, str, str, str]] = []
+        tasks: list[tuple[int, str, str, str, str]] = []
         for row in selected:
             sample = _resolve_sample_dir(row, roots)
+            metadata = load_audio_metadata(sample)
+            metadata.update(
+                {
+                    key: row[key]
+                    for key in (
+                        "audio_pitch_space",
+                        "effective_audio_transpose",
+                    )
+                    if key in row
+                }
+            )
             tasks.append(
-                (task_index, str(sample), _corpus(row), str(args.cache_root))
+                (
+                    task_index,
+                    str(sample),
+                    _corpus(row),
+                    str(args.cache_root),
+                    json.dumps(metadata, sort_keys=True),
+                )
             )
             task_index += 1
 

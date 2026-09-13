@@ -20,6 +20,17 @@ def _as_note(value) -> TransNote:
             cents=float(value.get("cents", 0.0)),
             pitch_candidates=tuple(value.get("pitch_candidates") or ()),
         )
+    if all(hasattr(value, name) for name in ("pitch", "start", "end")):
+        return TransNote(
+            pitch=int(value.pitch),
+            start=float(value.start),
+            end=float(value.end),
+            confidence=float(getattr(value, "confidence", 1.0)),
+            cents=float(getattr(value, "cents", 0.0)),
+            pitch_candidates=tuple(
+                getattr(value, "pitch_candidates", ()) or ()
+            ),
+        )
     pitch, start, end = value[:3]
     cents = float(value[3]) if len(value) > 3 else 0.0
     return TransNote(int(pitch), float(start), float(end), 1.0, cents=cents)

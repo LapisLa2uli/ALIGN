@@ -200,7 +200,10 @@ def regenerate_bundle(
     if strip_ornaments:
         _rewrite_scores_and_midi(sample_dir, semitones, logger)
 
-    bends = _pitch_bends_from_labels(sample_dir) if strip_ornaments else []
+    # Intonation labels are wall-clock seconds; at the synthetic 60 BPM
+    # regeneration clock they map directly to ql positions. Preserve them in
+    # both ordinary and ornament-stripped rerenders.
+    bends = _pitch_bends_from_labels(sample_dir)
     for midi_name, wav_name, xml_name in _PAIRS:
         midi_path = sample_dir / midi_name
         wav_path = sample_dir / wav_name

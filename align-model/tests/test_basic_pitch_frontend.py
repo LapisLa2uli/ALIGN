@@ -25,6 +25,7 @@ class BasicPitchFrontendTests(unittest.TestCase):
     def tearDown(self) -> None:
         frontend._MODEL = None
         frontend._MODEL_PID = None
+        frontend._MODEL_RUNTIME = None
 
     def test_import_does_not_import_basic_pitch_or_tensorflow(self) -> None:
         code = (
@@ -191,7 +192,7 @@ class BasicPitchFrontendTests(unittest.TestCase):
         self.assertEqual(notes[0].pitch, 62)
         self.assertAlmostEqual(notes[0].cents, 33.33, places=2)
         self.assertEqual(captured["onset_thresh"], 0.5)
-        self.assertEqual(captured["frame_thresh"], 0.3)
+        self.assertEqual(captured["frame_thresh"], 0.4)
         self.assertEqual(captured["min_note_len"], 5)
         self.assertTrue(captured["multiple_pitch_bends"])
 

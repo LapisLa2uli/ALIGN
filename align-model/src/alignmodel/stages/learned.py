@@ -31,6 +31,8 @@ class StageModels:
     transcriber: Any | None = None
     transcriber_decode: Any | None = None
     note_aligner: Any | None = None
+    note_repetition: Any | None = None
+    contextual_note_aligner: Any | None = None
 
 
 def load_stage_models(
@@ -78,7 +80,31 @@ def load_stage_models(
         except RuntimeError:
             print(f"skip incompatible stage3 weights in {s3}")
     if alignment_weights_dir is not None and alignment_weights_dir.exists():
-        transcriber_path = alignment_weights_dir / "note_transcriber.pt"
+        repetition_path = alignment_weights_dir / "note_repetition.pt"
+        if repetition_path.exists():
+            from alignmodel.stages.note_repetition_model import (
+                load_note_repetition_model,
+            )
+
+            out.note_repetition, _repeat_extra = load_note_repetition_model(
+                repetition_path, torch_device
+            )
+        contextual_path = (
+            alignment_weights_dir / "contextual_note_aligner.pt"
+        )
+        if contextual_path.exists():
+            from alignmodel.stages.contextual_note_aligner import (
+                load_contextual_aligner,
+            )
+
+            out.contextual_note_aligner, _context_extra = (
+                load_contextual_aligner(contextual_path, torch_device)
+            )
+        transcriber_path = alignment_weights_dir / "note_decoder.pt"
+        if not transcriber_path.exists():
+            transcriber_path = alignment_weights_dir / "note_decoder.json"
+        if not transcriber_path.exists():
+            transcriber_path = alignment_weights_dir / "note_transcriber.pt"
         if not transcriber_path.exists():
             transcriber_path = alignment_weights_dir / "best.pt"
         if not transcriber_path.exists():
@@ -87,11 +113,10 @@ def load_stage_models(
         if not aligner_path.exists():
             aligner_path = alignment_weights_dir / "aligner" / "note_aligner.pt"
         if transcriber_path.exists():
-            from alignmodel.transcription import load_note_transcriber
+            from alignmodel.transcription import load_note_decoder
 
-            out.transcriber, out.transcriber_decode = load_note_transcriber(
-                transcriber_path, torch_device
-            )
+            out.transcriber = load_note_decoder(transcriber_path, torch_device)
+            out.transcriber_decode = out.transcriber.decode_config
         if aligner_path.exists():
             from alignmodel.stages.note_align import NoteAligner
 

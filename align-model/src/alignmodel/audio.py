@@ -148,15 +148,28 @@ def chroma_slice(chroma: np.ndarray, start_sec: float, end_sec: float, hop_sec: 
 
 
 def cents_off(ref_vec: np.ndarray, perf_vec: np.ndarray) -> float | None:
-    if float(np.max(ref_vec)) < 0.15:
+    """Estimate signed sub-semitone offset around the reference pitch class.
+
+    Chroma has one bin per semitone, so this uses the left/right energy
+    imbalance around the expected bin. It is intentionally bounded to one
+    semitone; pitch-class substitutions are handled separately.
+    """
+    ref_vec = np.asarray(ref_vec, dtype=np.float64)
+    perf_vec = np.asarray(perf_vec, dtype=np.float64)
+    if ref_vec.size != 12 or perf_vec.size != 12 or float(np.max(ref_vec)) < 0.15:
         return None
-    dot = float(np.dot(ref_vec, perf_vec))
-    norm = float(np.linalg.norm(ref_vec) * np.linalg.norm(perf_vec))
-    if norm < 1e-6:
-        return None
-    similarity = max(-1.0, min(1.0, dot / norm))
-    angle = float(np.arccos(similarity))
-    return angle * 1200.0 / np.pi
+    center = int(np.argmax(ref_vec))
+
+    def local_offset(vec: np.ndarray) -> float:
+        left = max(0.0, float(vec[(center - 1) % 12]))
+        middle = max(0.0, float(vec[center]))
+        right = max(0.0, float(vec[(center + 1) % 12]))
+        total = left + middle + right
+        if total < 1e-8:
+            return 0.0
+        return 200.0 * (right - left) / total
+
+    return float(np.clip(local_offset(perf_vec) - local_offset(ref_vec), -100.0, 100.0))
 
 
 def pitch_class_mismatch(
@@ -172,3 +185,30 @@ def pitch_class_mismatch(
 def mean_chroma(chroma: np.ndarray, start_sec: float, end_sec: float, hop_sec: float) -> np.ndarray:
     sl = chroma_slice(chroma, start_sec, end_sec, hop_sec)
     return np.mean(sl, axis=1)
+
+
+def spectral_midi_frames(
+    audio: np.ndarray,
+    sr: int,
+    *,
+    hop_length: int = 512,
+    n_fft: int = 4096,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return unrounded monophonic MIDI estimates and spectral strengths."""
+    if audio.size < n_fft or sr <= 0:
+        return np.zeros(0, dtype=np.float32), np.zeros(0, dtype=np.float32)
+    pitches, magnitudes = librosa.piptrack(
+        y=np.asarray(audio, dtype=np.float32),
+        sr=sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        fmin=50.0,
+        fmax=4200.0,
+    )
+    best = magnitudes.argmax(axis=0)
+    columns = np.arange(pitches.shape[1])
+    hz = pitches[best, columns]
+    midi = librosa.hz_to_midi(np.maximum(hz, 1.0)).astype(np.float32)
+    strength = magnitudes[best, columns].astype(np.float32)
+    midi[hz <= 0.0] = np.nan
+    return midi, strength

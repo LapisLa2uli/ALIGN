@@ -22,7 +22,7 @@ from typing import Any, Mapping
 import numpy as np
 
 BASIC_PITCH_VERSION = "0.4.0"
-FRONTEND_VERSION = "align-basic-pitch-0.4.0-v1"
+FRONTEND_VERSION = "align-basic-pitch-0.4.0-v2"
 CACHE_SCHEMA_VERSION = 1
 
 AUDIO_SAMPLE_RATE = 22050
@@ -41,7 +41,7 @@ class BasicPitchDecodeConfig:
     """Frozen, calibrated baseline settings for ALIGN clarinet audio."""
 
     onset_threshold: float = 0.50
-    frame_threshold: float = 0.30
+    frame_threshold: float = 0.40
     minimum_note_length_ms: float = 55.0
     minimum_frequency: float = 45.0
     maximum_frequency: float = 2600.0
@@ -74,7 +74,14 @@ class BasicPitchFeatures:
 
 _MODEL: Any = None
 _MODEL_PID: int | None = None
+_MODEL_RUNTIME: str | None = None
 _MODEL_LOCK = threading.Lock()
+
+
+def selected_runtime() -> str:
+    return str(
+        os.environ.get("ALIGN_BASIC_PITCH_RUNTIME") or "tensorflow"
+    ).lower()
 
 
 def sha256_file(path: Path | str, chunk_size: int = 1024 * 1024) -> str:
@@ -100,14 +107,11 @@ def load_audio_metadata(sample_dir: Path | str) -> dict[str, Any]:
 def effective_audio_transpose(metadata: Mapping[str, Any] | None) -> int:
     """Return semitones added to detected WAV pitch to recover written pitch."""
 
-    values = metadata or {}
-    raw = values.get("effective_audio_transpose")
-    if raw is not None:
-        return int(raw)
-    if values.get("audio_pitch_space") == "written":
-        return 0
-    sounding_transpose = values.get("sounding_transpose", -2)
-    return -int(-2 if sounding_transpose is None else sounding_transpose)
+    from synthpipeline.pitch_convention import (
+        effective_audio_transpose as shared_effective_audio_transpose,
+    )
+
+    return shared_effective_audio_transpose(dict(metadata or {}))
 
 
 def effective_pitch_policy(
@@ -193,15 +197,43 @@ def _official_modules() -> tuple[Any, Any, Any]:
 def get_basic_pitch_model() -> Any:
     """Return the process-local official model, loading it exactly once."""
 
-    global _MODEL, _MODEL_PID
+    global _MODEL, _MODEL_PID, _MODEL_RUNTIME
     process_id = os.getpid()
-    if _MODEL is not None and _MODEL_PID == process_id:
+    runtime = selected_runtime()
+    if (
+        _MODEL is not None
+        and _MODEL_PID == process_id
+        and _MODEL_RUNTIME == runtime
+    ):
         return _MODEL
     with _MODEL_LOCK:
-        if _MODEL is None or _MODEL_PID != process_id:
+        if (
+            _MODEL is None
+            or _MODEL_PID != process_id
+            or _MODEL_RUNTIME != runtime
+        ):
             package, inference, _note_creation = _official_modules()
-            _MODEL = inference.Model(package.ICASSP_2022_MODEL_PATH)
+            if not hasattr(package, "build_icassp_2022_model_path"):
+                model_path = package.ICASSP_2022_MODEL_PATH
+            elif runtime == "onnx":
+                model_path = package.build_icassp_2022_model_path(
+                    package.FilenameSuffix.onnx
+                )
+            elif runtime == "tflite":
+                model_path = package.build_icassp_2022_model_path(
+                    package.FilenameSuffix.tflite
+                )
+            elif runtime == "tensorflow":
+                model_path = package.build_icassp_2022_model_path(
+                    package.FilenameSuffix.tf
+                )
+            else:
+                raise ValueError(
+                    "ALIGN_BASIC_PITCH_RUNTIME must be onnx, tflite, or tensorflow"
+                )
+            _MODEL = inference.Model(model_path)
             _MODEL_PID = process_id
+            _MODEL_RUNTIME = runtime
     return _MODEL
 
 
@@ -243,6 +275,7 @@ def _expected_cache_metadata(
         "cache_schema_version": CACHE_SCHEMA_VERSION,
         "frontend_version": FRONTEND_VERSION,
         "basic_pitch_version": BASIC_PITCH_VERSION,
+        "runtime": selected_runtime(),
         "wav_sha256": wav_sha256 or sha256_file(wav_path),
         "pitch_policy": effective_pitch_policy(source_metadata),
         "pitch_space": "written",

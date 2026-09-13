@@ -5,7 +5,11 @@ from dataclasses import dataclass
 import numpy as np
 
 from alignmodel.audio import chroma_slice, dtw_normalized_cost, score_chroma_template
-from alignmodel.stages.boundaries import window_times, _merge_cuts
+from alignmodel.stages.repetition import (
+    RepetitionCandidate,
+    find_past_repetitions,
+    silence_intervals,
+)
 from alignmodel.stages.score_graph import span_is_legal_continuation
 from alignmodel.types import (
     GraphNote,
@@ -32,9 +36,24 @@ def run_stage1(
     chroma: np.ndarray,
     ref_chroma: np.ndarray | None = None,
     *,
+    audio: np.ndarray | None = None,
     mel: np.ndarray | None = None,
     learned=None,
 ) -> None:
+    if state.transcribed_notes:
+        from alignmodel.stages.repetition import apply_note_repetitions
+
+        apply_note_repetitions(state, learned=learned)
+        state.beam = [
+            RestartHypothesis(
+                segments=list(state.segments),
+                total_cost=0.0,
+                unexplained_sec=0.0,
+                score=0.0,
+            )
+        ]
+        state.stages_run.append(1)
+        return
     notes = state.score.notes
     cfg = state.config
     if not notes:
@@ -44,65 +63,134 @@ def run_stage1(
         state.stages_run.append(1)
         return
 
-    windows = window_times(state.boundaries, state.duration_sec, cfg.min_window_sec)
-    copy_cuts: list[float] = []
-    if learned is not None and getattr(learned, "restart", None) is not None and mel is not None:
-        from alignmodel.stages.learned import propose_copy_cuts
+    repetitions: list[RepetitionCandidate] = []
+    if audio is not None:
+        silences = silence_intervals(
+            audio,
+            state.sr,
+            silence_db=float(cfg.silence_db),
+            min_silence_sec=float(cfg.min_silence_sec),
+            hop_length=int(cfg.hop_length),
+        )
+        repetitions = find_past_repetitions(
+            chroma,
+            state.hop_sec,
+            state.duration_sec,
+            silences,
+            max_lookback_sec=float(cfg.repetition_max_lookback_sec),
+            search_step_sec=float(cfg.repetition_search_step_sec),
+            probe_sec=float(cfg.repetition_probe_sec),
+            min_confidence=float(cfg.repetition_min_confidence),
+        )
+    state.segments = _segments_from_retrieval(state, repetitions)
+    state.beam = [
+        RestartHypothesis(
+            segments=list(state.segments),
+            total_cost=0.0,
+            unexplained_sec=sum(
+                max(0.0, item.start_time - item.source_end) for item in repetitions
+            ),
+            score=0.0,
+        )
+    ]
+    _apply_retrieved_repetitions(state, repetitions)
+    state.stages_run.append(1)
 
-        copy_cuts = propose_copy_cuts(mel, learned, state.duration_sec)
-        if copy_cuts:
-            state.boundaries = _merge_cuts(
-                list(state.boundaries) + copy_cuts,
-                state.duration_sec,
-                min_gap=cfg.min_window_sec * 0.5,
-            )
-            windows = window_times(state.boundaries, state.duration_sec, cfg.min_window_sec)
-    beam = _search_beam(
-        state.score,
-        chroma,
-        windows,
-        state.hop_sec,
-        cfg.beam_k,
-        cfg,
-        ref_chroma,
-        copy_cuts=copy_cuts,
+
+def _note_span_for_times(
+    notes: list[GraphNote], start_time: float, end_time: float
+) -> tuple[int, int]:
+    hits = [
+        note.index
+        for note in notes
+        if note.end > start_time and note.start < end_time and not note.is_rest
+    ]
+    if hits:
+        return min(hits), max(hits) + 1
+    nearest = min(
+        range(len(notes)),
+        key=lambda i: abs(float(notes[i].start) - float(start_time)),
     )
-    if not beam:
-        beam = [
-            RestartHypothesis(
-                segments=[
-                    UnfoldedSegment(
-                        0.0,
-                        state.duration_sec,
-                        0,
-                        len(notes),
-                        0.0,
-                        False,
-                        None,
-                    )
-                ],
-                total_cost=0.0,
-                unexplained_sec=0.0,
-                score=0.0,
+    return nearest, min(len(notes), nearest + 1)
+
+
+def _segments_from_retrieval(
+    state: PipelineState, repetitions: list[RepetitionCandidate]
+) -> list[UnfoldedSegment]:
+    """Build monotonic first-pass segments plus explicit retrieved replay spans."""
+    notes = state.score.notes
+    if not repetitions:
+        return [
+            UnfoldedSegment(
+                0.0,
+                state.duration_sec,
+                0,
+                len(notes),
+                0.0,
             )
         ]
-    beam.sort(key=lambda h: h.score)
-    for rank, hyp in enumerate(beam):
-        for seg in hyp.segments:
-            seg.hypothesis_rank = rank
-    state.beam = beam[: cfg.beam_k]
-    chosen = state.beam[0]
-    state.segments = chosen.segments
-    for seg in state.segments:
-        seg.is_repetition = False
-        seg.repeats_label_range = None
-    _mark_score_replays(state)
-    if learned is not None and getattr(learned, "restart", None) is not None and mel is not None:
-        from alignmodel.stages.learned import apply_learned_restarts
+    segments: list[UnfoldedSegment] = []
+    perf_cursor = 0.0
+    score_cursor = 0.0
+    score_end = max(float(state.score.duration_sec), float(notes[-1].end))
+    for item in sorted(repetitions, key=lambda value: value.start_time):
+        normal_end = max(perf_cursor, item.source_end)
+        if normal_end - perf_cursor >= 0.05:
+            i0, i1 = _note_span_for_times(notes, score_cursor, item.source_end)
+            segments.append(
+                UnfoldedSegment(perf_cursor, normal_end, i0, i1, 0.0)
+            )
+        source_i0, source_i1 = _note_span_for_times(
+            notes, item.source_start, item.source_end
+        )
+        source = RepeatRange(item.source_start, item.source_end)
+        segments.append(
+            UnfoldedSegment(
+                item.start_time,
+                item.end_time,
+                source_i0,
+                source_i1,
+                0.0,
+                True,
+                source,
+            )
+        )
+        perf_cursor = item.end_time
+        score_cursor = item.source_end
+    if state.duration_sec - perf_cursor >= 0.05:
+        i0, i1 = _note_span_for_times(notes, score_cursor, score_end + 1e-3)
+        segments.append(
+            UnfoldedSegment(perf_cursor, state.duration_sec, i0, i1, 0.0)
+        )
+    return segments
 
-        apply_learned_restarts(state, mel, learned)
-    _emit_repetition_labels(state)
-    state.stages_run.append(1)
+
+def _apply_retrieved_repetitions(
+    state: PipelineState, repetitions: list[RepetitionCandidate]
+) -> None:
+    """Mark alignment segments and emit labels from retrieval detections."""
+    for item in repetitions:
+        source = RepeatRange(item.source_start, item.source_end)
+        repeated_segments = [
+            seg
+            for seg in state.segments
+            if seg.perf_start < item.end_time and item.start_time < seg.perf_end
+        ]
+        for seg in repeated_segments:
+            seg.is_repetition = True
+            seg.repeats_label_range = source
+        state.labels.append(
+            PipelineLabel(
+                id=next_label_id(state),
+                type="repetition",
+                start_time=item.start_time,
+                end_time=item.end_time,
+                source="pipeline",
+                comment=f"past-span retrieval confidence={item.confidence:.3f}",
+                repeats_label_range=source,
+                extra_copies=item.extra_copies,
+            )
+        )
 
 
 def _mark_score_replays(state: PipelineState) -> None:
