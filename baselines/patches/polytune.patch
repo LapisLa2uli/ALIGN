@@ -1,0 +1,239 @@
+diff --git a/inference_error.py b/inference_error.py
+index 5e1ec2d..1dbba0f 100755
+--- a/inference_error.py
++++ b/inference_error.py
+@@ -17,6 +17,40 @@ import matplotlib.pyplot as plt
+ MIN_LOG_MEL = -12
+ MAX_LOG_MEL = 5
+ 
++# Track names written into the predicted MIDI, keyed by error class
++# (note.instrument in the decoded NoteSequence): 1 = Extra, 2 = Missing, 3 = Correct.
++ERROR_CLASS_TRACK_NAMES = {1: "extra", 2: "missing", 3: "correct"}
++
++
++def resolve_device(preferred=None):
++    """Pick the inference device: POLYTUNE_DEVICE env var > cuda > mps > cpu.
++
++    Identical to the original hard-coded torch.device("cuda") whenever CUDA is available.
++    """
++    name = preferred or os.environ.get("POLYTUNE_DEVICE")
++    if name:
++        return torch.device(name)
++    if torch.cuda.is_available():
++        return torch.device("cuda")
++    mps = getattr(torch.backends, "mps", None)
++    if mps is not None and mps.is_available():
++        return torch.device("mps")
++    return torch.device("cpu")
++
++
++def name_error_class_tracks(ns):
++    """Attach instrument_infos so note_sequence_to_midi_file names each output track.
++
++    pretty_midi then exposes the class as Instrument.name ('extra'/'missing'/'correct')
++    instead of relying on track position, which shifts when a class has no notes.
++    """
++    del ns.instrument_infos[:]
++    for error_class, name in ERROR_CLASS_TRACK_NAMES.items():
++        info = ns.instrument_infos.add()
++        info.instrument = error_class
++        info.name = name
++    return ns
++
+ 
+ class InferenceHandler:
+ 
+@@ -113,6 +147,16 @@ class InferenceHandler:
+             mistake_frames = np.pad(mistake_frames, ((0, max_frame_shape - mistake_frames.shape[0]), (0, 0)), mode='constant')
+         if score_frames.shape[0] < max_frame_shape:
+             score_frames = np.pad(score_frames, ((0, max_frame_shape - score_frames.shape[0]), (0, 0)), mode='constant')
++        # Keep the frame-time grids as long as the (padded) frames.  Upstream assumes mistake and
++        # score audio have identical length; when the score is shorter (repeats, real recordings)
++        # the un-padded score_frame_times made score_end_idx negative below and the slice
++        # assignment raised "could not broadcast input array from shape (0,128)".  Padded frames
++        # are silence, so extending the time grid is the consistent choice (no-op for equal lengths).
++        fps = self.spectrogram_config.frames_per_second
++        if mistake_frame_times.shape[0] < max_frame_shape:
++            mistake_frame_times = np.arange(max_frame_shape) / fps
++        if score_frame_times.shape[0] < max_frame_shape:
++            score_frame_times = np.arange(max_frame_shape) / fps
+         print("last 100 mistake_frames", mistake_frames[-100:], "last 100 score_frames", score_frames[-100:], flush=True)
+         print("last 100 mistake_frame_times", mistake_frame_times[-100:], "last 100 score_frame_times", score_frame_times[-100:], flush=True)
+         
+@@ -426,6 +470,7 @@ class InferenceHandler:
+                 results.append(result)
+ 
+             event = self._to_event(results, frame_times)
++            name_error_class_tracks(event)
+             if outpath is None:
+                 filename = audio_path.split("/")[-1].split(".")[0]
+                 outpath = f"./out/{filename}.mid"
+@@ -434,8 +479,9 @@ class InferenceHandler:
+             # converts note sequence to midi file
+             note_seq.note_sequence_to_midi_file(event, outpath)
+ 
+-        except Exception as e:
+-            traceback.print_exc()
++        except Exception:
++            # Fail the run; a stale or partial MIDI must not pass evaluation.
++            raise
+ 
+     def _postprocess_batch(self, result):
+         after_eos = torch.cumsum(
+@@ -457,9 +503,11 @@ class InferenceHandler:
+         predictions = []
+         for i, batch in enumerate(predictions_np):
+             for j, tokens in enumerate(batch):
+-                tokens = tokens[
+-                    : np.argmax(tokens == vocabularies.DECODED_EOS_ID)
+-                ]  # trim after EOS
++                # A length-capped generation need not contain EOS. np.argmax on
++                # an all-false mask is zero and used to erase the entire segment.
++                eos_positions = np.flatnonzero(tokens == vocabularies.DECODED_EOS_ID)
++                if eos_positions.size:
++                    tokens = tokens[:int(eos_positions[0])]
+                 start_time = frame_times[i][j][0]  # get start time of the frame
+                 start_time -= start_time % (
+                     1 / self.codec.steps_per_second
+diff --git a/polytune_test_inference.py b/polytune_test_inference.py
+index a1bc82a..6ef7f0f 100755
+--- a/polytune_test_inference.py
++++ b/polytune_test_inference.py
+@@ -1,7 +1,7 @@
+ import os
+ import torch
+ import hydra
+-from inference_error import InferenceHandler
++from inference_error import InferenceHandler, resolve_device
+ import librosa
+ from omegaconf import DictConfig
+ 
+@@ -11,7 +11,7 @@ def load_audio(file_path, sr=16000):
+     return audio
+ 
+ def run_inference(model, mistake_file, score_file, output_dir, batch_size=1, max_length=1024):
+-    handler = InferenceHandler(model=model, device=torch.device("cuda"))
++    handler = InferenceHandler(model=model, device=resolve_device())  # cuda -> mps -> cpu
+ 
+     mistake_audio = load_audio(mistake_file)
+     score_audio = load_audio(score_file)
+diff --git a/tasks/polytune_net.py b/tasks/polytune_net.py
+index 96e3fe6..31ee511 100644
+--- a/tasks/polytune_net.py
++++ b/tasks/polytune_net.py
+@@ -52,7 +52,7 @@ class polytune(pl.LightningModule):
+             loss = (loss_masked.sum() + self.optim_cfg.error_loss_weight * loss_instruments.sum()) / (loss_instruments.shape[0] + loss_masked.shape[0])
+ 
+         self.log('train_loss_other', loss_masked.sum()/loss_masked.shape[0], prog_bar=True, on_step=True, on_epoch=False, sync_dist=True)
+-        self.log('train_loss_inst', loss_instruments.sum()/loss_instruments.shape[0], prog_bar=True, on_step=True, on_epoch=False, sync_dist=True)            
++        self.log('train_loss_inst', loss_instruments.mean() if loss_instruments.numel() else 0.0, prog_bar=True, on_step=True, on_epoch=False, sync_dist=True)
+         self.log('train_loss', loss, prog_bar=True, on_step=True, on_epoch=False, sync_dist=True)
+         return loss
+ 
+@@ -99,8 +99,7 @@ class polytune(pl.LightningModule):
+             "scheduler": get_cosine_schedule_with_warmup(
+                 optimizer=optimizer,
+                 num_warmup_steps=warmup_step,
+-                num_training_steps=self.optim_cfg.num_steps_per_epoch
+-                * self.optim_cfg.num_epochs,
++                num_training_steps=int(self.trainer.estimated_stepping_batches),
+                 min_lr=self.optim_cfg.min_lr,
+             ),
+             "interval": "step",
+diff --git a/test_polytune.py b/test_polytune.py
+index 1c57007..e3f340e 100755
+--- a/test_polytune.py
++++ b/test_polytune.py
+@@ -1,6 +1,7 @@
++from align_runtime import load_model_weights, validate_eval_dataset, select_eval_subset, write_eval_selection
+ import os
+ import torch
+-from inference_error import InferenceHandler
++from inference_error import InferenceHandler, resolve_device
+ from glob import glob
+ from tqdm import tqdm
+ import librosa
+@@ -26,9 +27,13 @@ def get_scores(
+     batch_size=1,
+     max_length=1024,
+ ):
++    if os.path.exists(exp_tag_name):
++        raise FileExistsError(f"Prediction directory already exists: {exp_tag_name}; choose a new --tag")
++    os.makedirs(exp_tag_name)
++    write_eval_selection(exp_tag_name, ground_truth)
+     handler = InferenceHandler(
+         model=model,
+-        device=torch.device("cuda"),
++        device=resolve_device(),  # cuda -> mps -> cpu (POLYTUNE_DEVICE overrides)
+         mel_norm=mel_norm,
+         contiguous_inference=contiguous_inference,
+     )
+@@ -140,7 +145,7 @@ def _build_dataset(root_dir, json_path, split):
+     }
+ 
+     # Match files based on the common identifier
+-    for track_id in extra_notes_files.keys():
++    for track_id in sorted(extra_notes_files.keys()):
+ 
+         file_number = midi_filename_to_number.get(track_id)
+         if (
+@@ -191,6 +196,8 @@ def main(cfg):
+         split="test",
+     )
+ 
++    validate_eval_dataset(dataset, cfg.dataset.test.root_dir,
++                          cfg.dataset.test.split_json_path, "test")
+     pl = hydra.utils.instantiate(cfg.model, optim_cfg=cfg.optim)
+     print(f"Loading weights from: {cfg.path}")
+     if cfg.path.endswith(".ckpt"):
+@@ -200,19 +207,14 @@ def main(cfg):
+         # ///// fix errors /////
+         pl = model_cls.load_from_checkpoint(
+             cfg.path,
++            map_location="cpu",
+             config=cfg.model.config,
+             optim_cfg=cfg.optim,
+         )
+         model = pl.model
+     else:
+-        # load weights for nn.Module
+         model = pl.model
+-        if cfg.eval.load_weights_strict is not None:
+-            model.load_state_dict(
+-                torch.load(cfg.path), strict=cfg.eval.load_weights_strict
+-            )
+-        else:
+-            model.load_state_dict(torch.load(cfg.path), strict=False)
++        load_model_weights(model, cfg.path)
+ 
+     model.eval()
+     # if torch.cuda.is_available():
+@@ -220,15 +222,9 @@ def main(cfg):
+ 
+     
+     
+-    if cfg.eval.eval_first_n_examples:
+-        random_offset = 0
+-        if len(mistakes_audio_dir) > cfg.eval.eval_first_n_examples:
+-            random_offset = np.random.randint(0, len(mistakes_audio_dir) - cfg.eval.eval_first_n_examples)
+-        mistakes_audio_dir = mistakes_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
+-        scores_audio_dir = scores_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
+-        mistakes_audio_dir = mistakes_audio_dir[: cfg.eval.eval_first_n_examples]
+-        scores_audio_dir = scores_audio_dir[: cfg.eval.eval_first_n_examples]
+-
++    dataset = select_eval_subset(dataset, cfg.eval.eval_first_n_examples)
++    mistakes_audio_dir = [entry["mistake_audio"] for entry in dataset]
++    scores_audio_dir = [entry["score_audio"] for entry in dataset]
+ 
+     mel_norm = True
+     
+@@ -243,6 +239,9 @@ def main(cfg):
+         ground_truth=dataset,
+         contiguous_inference=cfg.eval.contiguous_inference,
+         batch_size=cfg.eval.batch_size,
++        # eval.max_length (absent upstream -> 1024): decoder tokens generated per 2.048 s segment.
++        # Smoke runs on CPU pass a small value; greedy decoding here has no KV cache.
++        max_length=int(cfg.eval.get("max_length", None) or 1024),
+     )
+ 
+ 

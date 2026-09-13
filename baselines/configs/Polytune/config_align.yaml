@@ -1,0 +1,85 @@
+# Polytune on ALIGN bundles (clarinet practice recordings + score renderings).
+# Copy of config_maestro.yaml with ALIGN defaults. Run through
+#   baselines/scripts/polytune_train.sh   (training; also sets optim.num_steps_per_epoch)
+#   baselines/scripts/polytune_eval.sh    (test_polytune.py + per-class onset F1)
+# or directly:
+#   ALIGN_BASELINE_ROOT=<DATA_ROOT> ALIGN_BASELINE_SPLIT_JSON=<DATA_ROOT>/split.json \
+#   python train_polytune.py --config-name config_align optim.num_steps_per_epoch=<ceil(n_train/batch_size)>
+num_epochs: 40            # ALIGN: ~10-12k clips of 15-115 s; 40 epochs is an experiment budget, not a convergence claim
+devices: 1
+mode: "train"
+model_type: ${hydra:runtime.choices.model} # parse the filename of the config
+dataset_type: ${hydra:runtime.choices.dataset}
+seed: 365
+path: null                # no CocoChorales/MAE initialisation: train from scratch. Set path=<x>.ckpt to resume.
+path_old:
+event_length: 1024        # max target tokens per 2.048 s segment; use 1024 for reported runs; reduced budgets are smoke-only
+mel_length: 256
+num_rows_per_batch: 8     # rows (2.048 s segments) sampled per piece per batch. Our clips are 15-115 s -> 1-7 16 s chunks, so 8 (not 12)
+split_frame_length: 2000
+dataset_is_deterministic: false # false for training (True only for debugging / deterministic sampling)
+dataset_is_randomize_tokens: True
+dataset_is_random_alignment_shift_augmentation: False
+optim:
+  error_loss_weight: 8    # up-weights the Extra (1135) / Missed (1136) error-class tokens in the CE loss
+  lr: 2e-5
+  warmup_steps: 4000
+  num_epochs: ${num_epochs}
+  # Legacy diagnostic value. The patched task uses trainer.estimated_stepping_batches
+  # for the LR schedule, including accumulation, devices and batch limits.
+  num_steps_per_epoch: 2500
+  min_lr: 0.5            # dimensionless LR multiplier floor (0.5 * 2e-5 = 1e-5); upstream LambdaLR convention (see utils.get_cosine_schedule_with_warmup)
+
+grad_accum: 1
+
+dataloader:
+  train:
+    batch_size: 4         # pieces per batch; each contributes num_rows_per_batch segments
+    num_workers: 8
+    shuffle: true
+  val:
+    batch_size: 4
+    num_workers: 8
+
+modelcheckpoint:
+  monitor: 'val_loss'
+  mode: 'min'
+  save_last: True
+  save_top_k: 3
+  save_weights_only: False
+  every_n_epochs: 1
+  filename: '{epoch}-{step}-{val_loss:.4f}'
+
+trainer:
+  # Defaults target a single CUDA GPU. polytune_train.sh --profile mps|cpu overrides
+  # accelerator / precision=32-true / strategy=auto / num_workers=0.
+  precision: bf16-mixed
+  max_epochs: ${num_epochs}
+  accelerator: 'gpu'
+  accumulate_grad_batches: ${grad_accum}
+  num_sanity_val_steps: 2
+  log_every_n_steps: 50
+  strategy: auto
+  devices: ${devices}
+  check_val_every_n_epoch: 1
+  # deterministic: True
+
+eval:
+  is_sanity_check: False
+  eval_first_n_examples:      # polytune_eval.sh --first-n K
+  eval_after_num_epoch: 400
+  eval_per_epoch: 1
+  eval_dataset: MAESTRO       # evaluate_errors.evaluate_main dispatches on this name; our layout is MAESTRO-E style
+  eval_dataset_old:
+  exp_tag_name:               # polytune_eval.sh --tag NAME -> predictions in <hydra run dir>/<exp_tag_name>/<track_id>/mix.mid
+  audio_dir:
+  midi_dir:
+  contiguous_inference:
+  batch_size: 1
+  max_length: ${event_length}   # decoder tokens generated per 2.048 s segment at inference; follows event_length. polytune_eval.sh --max-length N overrides
+  load_weights_strict:        # only for .pt/.pth weights; null -> strict=False (the .pt saved by train_polytune.py loads cleanly either way)
+
+defaults:
+  - model: polytune
+  - dataset: ALIGN
+  - _self_

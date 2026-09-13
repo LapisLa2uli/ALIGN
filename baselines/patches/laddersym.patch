@@ -1,0 +1,370 @@
+diff --git a/inference_error.py b/inference_error.py
+index e036ad3..8f6f03a 100755
+--- a/inference_error.py
++++ b/inference_error.py
+@@ -22,6 +22,16 @@ MIN_LOG_MEL = -12
+ MAX_LOG_MEL = 5
+ 
+ dataset = Dataset(skip_build=True)
++# The module-level Dataset keeps is_randomize_tokens=True, so decoder prompts are shuffled at
++# inference time (non-deterministic outputs).  Training never shuffles prompt tokens (only
++# targets; see dataset_2_random.py), so LADDERSYM_DETERMINISTIC_PROMPT=1 makes inference match.
++if os.environ.get("LADDERSYM_DETERMINISTIC_PROMPT", "") == "1":
++    dataset.is_randomize_tokens = False
++# The prompt padding length must match training (absolute decoder positions follow the
++# padded prompt).  test_laddersym.py / laddersym_test_inference.py set it from cfg.prompt_length;
++# LADDERSYM_PROMPT_LENGTH is the fallback for other callers.
++if os.environ.get("LADDERSYM_PROMPT_LENGTH", "").strip():
++    dataset.prompt_length = int(os.environ["LADDERSYM_PROMPT_LENGTH"])
+ 
+ 
+ class InferenceHandler:
+@@ -370,6 +380,21 @@ class InferenceHandler:
+                 prompt_event_end_indices_batch[start_padding:start_padding + score_slice_len] = prompt_event_end_indices[score_start_idx:score_start_idx + score_slice_len]
+                 prompt_state_event_indices_batch[start_padding:start_padding + score_slice_len] = prompt_state_event_indices[score_start_idx:score_start_idx + score_slice_len]
+ 
++                # These are event indices, not audio: zero-padding the final
++                # index makes extraction [:end_idx] drop the entire last prompt.
++                # Extend the valid boundaries over silence padding instead.
++                if score_slice_len:
++                    stop = start_padding + score_slice_len
++                    for index_batch in (prompt_event_start_indices_batch,
++                                        prompt_event_end_indices_batch,
++                                        prompt_state_event_indices_batch):
++                        index_batch[:start_padding] = index_batch[start_padding]
++                        index_batch[stop:] = index_batch[stop - 1]
++                else:
++                    prompt_event_start_indices_batch[:] = prompt_event_end_indices[-1]
++                    prompt_event_end_indices_batch[:] = prompt_event_end_indices[-1]
++                    prompt_state_event_indices_batch[:] = prompt_state_event_indices[-1]
++
+                 prompt_events_start_indices_batches.append(prompt_event_start_indices_batch)
+                 prompt_events_end_indices_batches.append(prompt_event_end_indices_batch)
+                 prompt_state_events_indices_batches.append(prompt_state_event_indices_batch)
+@@ -780,6 +805,14 @@ class InferenceHandler:
+ 
+             # Combine final results
+             event = self._to_event(results, mistake_frame_times_batch)
++            # Name the output tracks by error class (note.instrument 1/2/3) so consumers do not
++            # have to rely on track order, which shifts when a class is absent.  note_seq copies
++            # instrument_infos[].name onto pretty_midi.Instrument.name when writing the file.
++            event.ClearField("instrument_infos")
++            for error_class, name in ((1, "extra"), (2, "missing"), (3, "correct")):
++                info = event.instrument_infos.add()
++                info.instrument = error_class
++                info.name = name
+             reference_ns = self._mistake_reference_ns or self._prompt_reference_ns
+             if reference_ns is not None:
+                 # Copy tempo map and other global timing metadata from the
+@@ -800,8 +833,9 @@ class InferenceHandler:
+             os.makedirs(os.path.dirname(outpath), exist_ok=True)
+             note_seq.note_sequence_to_midi_file(event, outpath)
+ 
+-        except Exception as e:
+-            traceback.print_exc()
++        except Exception:
++            # Fail the run; a stale or partial MIDI must not pass evaluation.
++            raise
+     def _postprocess_batch(self, result):
+         after_eos = torch.cumsum(
+             (result == self.model.config.eos_token_id).float(), dim=-1
+@@ -822,9 +856,11 @@ class InferenceHandler:
+         predictions = []
+         for i, batch in enumerate(predictions_np):
+             for j, tokens in enumerate(batch):
+-                tokens = tokens[
+-                    : np.argmax(tokens == vocabularies.DECODED_EOS_ID)
+-                ]  # trim after EOS
++                # A length-capped generation need not contain EOS. np.argmax on
++                # an all-false mask is zero and used to erase the entire segment.
++                eos_positions = np.flatnonzero(tokens == vocabularies.DECODED_EOS_ID)
++                if eos_positions.size:
++                    tokens = tokens[:int(eos_positions[0])]
+                 start_time = frame_times[i][j][0]  # get start time of the frame
+                 start_time -= start_time % (
+                     1 / self.codec.steps_per_second
+diff --git a/laddersym_test_inference.py b/laddersym_test_inference.py
+index 3f6bca7..45d2197 100644
+--- a/laddersym_test_inference.py
++++ b/laddersym_test_inference.py
+@@ -10,8 +10,22 @@ from omegaconf import DictConfig
+ # system binaries in sanitized environments.
+ os.environ.setdefault("PATH", "/usr/local/bin:/usr/bin:/bin")
+ 
++import inference_error
+ from inference_error import InferenceHandler
+ 
++def _pick_device():
++    """cuda -> mps -> cpu, or whatever LADDERSYM_DEVICE names (e.g. 'cpu' to force CPU on a Mac)."""
++    forced = os.environ.get("LADDERSYM_DEVICE", "").strip()
++    if forced:
++        return torch.device(forced)
++    if torch.cuda.is_available():
++        return torch.device("cuda")
++    mps = getattr(torch.backends, "mps", None)
++    if mps is not None and mps.is_available():
++        return torch.device("mps")
++    return torch.device("cpu")
++
++
+ def load_audio(file_path, sr=16000):
+     audio, _ = librosa.load(file_path, sr=sr)
+     print(f"Loaded {file_path} with length {len(audio)/sr} seconds.")
+@@ -116,6 +130,8 @@ def collect_piece_paths(piece_dir: str, score_audio_name: str, mistake_audio_nam
+ 
+ @hydra.main(config_path=None, config_name=None, version_base="1.1")
+ def main(cfg: DictConfig):
++    # keep the inference prompt padding identical to training (cfg.prompt_length -> Dataset.prompt_length)
++    inference_error.dataset.prompt_length = int(cfg.get("prompt_length", inference_error.dataset.prompt_length))
+     assert cfg.path, "Model path must be specified in the config file"
+     print(torch.__version__, flush=True)
+     print("cfg.model:",cfg.model, flush=True)
+@@ -127,7 +143,9 @@ def main(cfg: DictConfig):
+     if cfg.path.endswith(".ckpt"):
+         # Load from a PyTorch Lightning checkpoint
+         model_cls = hydra.utils.get_class(cfg.model._target_)
+-        pl = model_cls.load_from_checkpoint(cfg.path, config=cfg.model.config, optim_cfg=cfg.optim)
++        pl = model_cls.load_from_checkpoint(
++            cfg.path, map_location="cpu", config=cfg.model.config, optim_cfg=cfg.optim
++        )
+         model = pl.model
+         
+         # Check if the model's state_dict is loaded correctly
+@@ -137,11 +155,10 @@ def main(cfg: DictConfig):
+         print("Only .ckpt file loading is supported in this script.")
+     
+     model.eval()
+-    
+-    if torch.cuda.is_available():
+-        model.cuda()
+-    
+-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
++
++    device = _pick_device()
++    print(f"Inference device: {device}", flush=True)
++    model.to(device)
+     handler = InferenceHandler(model=model, device=device)
+ 
+     model_label = resolve_model_label(cfg)
+diff --git a/tasks/laddersym_mt3_net.py b/tasks/laddersym_mt3_net.py
+index da67735..bfa4e59 100644
+--- a/tasks/laddersym_mt3_net.py
++++ b/tasks/laddersym_mt3_net.py
+@@ -1,3 +1,5 @@
++import os
++
+ from torch.optim import AdamW
+ from omegaconf import OmegaConf
+ import pytorch_lightning as pl
+@@ -7,6 +9,10 @@ from transformers import T5Config
+ from models.laddersym_t5 import T5ForConditionalGeneration
+ from utils import get_cosine_schedule_with_warmup
+ 
++# Per-step debug prints (whole target tensor + two .item() syncs per batch) are opt-in:
++# export LADDERSYM_DEBUG_PRINTS=1 to restore the original behaviour.
++_DEBUG_PRINTS = os.environ.get("LADDERSYM_DEBUG_PRINTS", "") == "1"
++
+ 
+ class laddersym_MT3Net(pl.LightningModule):
+ 
+@@ -61,9 +67,10 @@ class laddersym_MT3Net(pl.LightningModule):
+         pad_mask = targets_flat != -100  # Excludes padding tokens
+ 
+         # Debugging: Check targets and masks
+-        print(f"Batch {batch_idx} - Targets Flat: {targets_flat}")
+-        print(f"Batch {batch_idx} - Instrument Tokens Mask Sum: {instrument_tokens_mask.sum().item()}")
+-        print(f"Batch {batch_idx} - Pad Mask Sum: {pad_mask.sum().item()}")
++        if _DEBUG_PRINTS:
++            print(f"Batch {batch_idx} - Targets Flat: {targets_flat}")
++            print(f"Batch {batch_idx} - Instrument Tokens Mask Sum: {instrument_tokens_mask.sum().item()}")
++            print(f"Batch {batch_idx} - Pad Mask Sum: {pad_mask.sum().item()}")
+ 
+         # Compute losses
+         loss_instruments = torch.masked_select(loss_unmasked, instrument_tokens_mask)
+@@ -71,21 +78,24 @@ class laddersym_MT3Net(pl.LightningModule):
+ 
+         # Handle cases where certain token types are absent
+         if loss_instruments.numel() == 0:
+-            print(f"Batch {batch_idx} - No instrument tokens found. Setting loss_instruments to 0.")
++            if _DEBUG_PRINTS:
++                print(f"Batch {batch_idx} - No instrument tokens found. Setting loss_instruments to 0.")
+             loss_instruments_sum = 0.0
+         else:
+             loss_instruments_sum = loss_instruments.sum()
+ 
+         if loss_masked.numel() == 0:
+-            print(f"Batch {batch_idx} - No other tokens found. Setting loss_masked to 0.")
++            if _DEBUG_PRINTS:
++                print(f"Batch {batch_idx} - No other tokens found. Setting loss_masked to 0.")
+             loss_masked_sum = 0.0
+         else:
+             loss_masked_sum = loss_masked.sum()
+ 
+         # Reward model for correctly predicting nothing if both types of tokens are absent
+         if (loss_masked.numel() + loss_instruments.numel()) == 0:
+-            print(f"Batch {batch_idx} - No valid tokens found in targets. Rewarding model.")
+-            total_loss = torch.tensor(0.0, requires_grad=True)
++            if _DEBUG_PRINTS:
++                print(f"Batch {batch_idx} - No valid tokens found in targets. Rewarding model.")
++            total_loss = torch.tensor(0.0, requires_grad=True, device=lm_logits.device)
+         else:
+             total_loss = (
+                 loss_masked_sum + self.optim_cfg.error_loss_weight * loss_instruments_sum
+@@ -219,7 +229,7 @@ class laddersym_MT3Net(pl.LightningModule):
+             "scheduler": get_cosine_schedule_with_warmup(
+                 optimizer=optimizer,
+                 num_warmup_steps=warmup_step,
+-                num_training_steps=self.num_steps_per_epoch * self.optim_cfg.num_epochs,
++                num_training_steps=int(self.trainer.estimated_stepping_batches),
+                 min_lr=self.optim_cfg.min_lr,
+             ),
+             "interval": "step",
+diff --git a/test_laddersym.py b/test_laddersym.py
+index 6e157ab..b65a2ed 100644
+--- a/test_laddersym.py
++++ b/test_laddersym.py
+@@ -1,5 +1,7 @@
++from align_runtime import load_model_weights, validate_eval_dataset, select_eval_subset, write_eval_selection
+ import os
+ import torch
++import inference_error
+ from inference_error import InferenceHandler
+ from glob import glob
+ from tqdm import tqdm, tqdm as std_tqdm
+@@ -11,6 +13,19 @@ import json
+ from evaluate_errors import evaluate_main
+ 
+ 
++def _pick_device():
++    """cuda -> mps -> cpu, or whatever LADDERSYM_DEVICE names (e.g. 'cpu' to force CPU on a Mac)."""
++    forced = os.environ.get("LADDERSYM_DEVICE", "").strip()
++    if forced:
++        return torch.device(forced)
++    if torch.cuda.is_available():
++        return torch.device("cuda")
++    mps = getattr(torch.backends, "mps", None)
++    if mps is not None and mps.is_available():
++        return torch.device("mps")
++    return torch.device("cpu")
++
++
+ def _validate_eval_inputs(cfg):
+     help_msg = (
+         "Set dataset paths via env vars:\n"
+@@ -51,9 +66,15 @@ def get_scores(
+     batch_size=1,
+     max_length=1024,
+ ):
++    if os.path.exists(exp_tag_name):
++        raise FileExistsError(f"Prediction directory already exists: {exp_tag_name}; choose a new --tag")
++    os.makedirs(exp_tag_name)
++    write_eval_selection(exp_tag_name, ground_truth)
++    device = _pick_device()
++    print(f"Inference device: {device}", flush=True)
+     handler = InferenceHandler(
+         model=model,
+-        device=torch.device("cuda"),
++        device=device,
+         mel_norm=mel_norm,
+         contiguous_inference=contiguous_inference,
+     )
+@@ -206,6 +227,8 @@ def _build_dataset(root_dir, json_path, split):
+ 
+ @hydra.main(config_path="config", config_name="config", version_base="1.1")
+ def main(cfg):
++    # keep the inference prompt padding identical to training (cfg.prompt_length -> Dataset.prompt_length)
++    inference_error.dataset.prompt_length = int(cfg.get("prompt_length", inference_error.dataset.prompt_length))
+     _validate_eval_inputs(cfg)
+     assert (
+         cfg.path.endswith(".pt")
+@@ -226,6 +249,8 @@ def main(cfg):
+     prompt_dir = [entry["prompt"] for entry in dataset]
+ 
+     # Load model
++    validate_eval_dataset(dataset, cfg.dataset.test.root_dir,
++                          cfg.dataset.test.split_json_path, "test")
+     pl = hydra.utils.instantiate(cfg.model, optim_cfg=cfg.optim)
+     print(f"Loading weights from: {cfg.path}")
+     if cfg.path.endswith(".ckpt"):
+@@ -235,36 +260,30 @@ def main(cfg):
+ 
+         pl = model_cls.load_from_checkpoint(
+             cfg.path,
++            map_location="cpu",
+             config=cfg.model.config,
+             optim_cfg=cfg.optim,
+         )
+         model = pl.model
+-        model = torch.compile(model)
++        if os.environ.get("LADDERSYM_COMPILE", "") == "1":
++            print("Compiling the model with torch.compile (LADDERSYM_COMPILE=1)...", flush=True)
++            model = torch.compile(model)
+         def count_parameters(model):
+             return sum(p.numel() for p in model.parameters() if p.requires_grad)
+ 
+         num_params = count_parameters(model)
+         print(f"Trainable parameters: {num_params:,}", flush=True)
+     else:
+-        # Load weights for nn.Module
+         model = pl.model
+-        if cfg.eval.load_weights_strict is not None:
+-            model.load_state_dict(
+-                torch.load(cfg.path), strict=cfg.eval.load_weights_strict
+-            )
+-        else:
+-            model.load_state_dict(torch.load(cfg.path), strict=False)
++        load_model_weights(model, cfg.path)
+ 
+     model.eval()
+ 
+     # Subset selection
+-    if cfg.eval.eval_first_n_examples:
+-        random_offset = 0
+-        if len(mistakes_audio_dir) > cfg.eval.eval_first_n_examples:
+-            random_offset = np.random.randint(0, len(mistakes_audio_dir) - cfg.eval.eval_first_n_examples)
+-        mistakes_audio_dir = mistakes_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
+-        scores_audio_dir = scores_audio_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]
+-        prompt_dir = prompt_dir[random_offset: random_offset + cfg.eval.eval_first_n_examples]  # Subset ground truth as well
++    dataset = select_eval_subset(dataset, cfg.eval.eval_first_n_examples)
++    mistakes_audio_dir = [entry["mistake_audio"] for entry in dataset]
++    scores_audio_dir = [entry["score_audio"] for entry in dataset]
++    prompt_dir = [entry["prompt"] for entry in dataset]
+ 
+     mel_norm = True
+ 
+@@ -280,6 +299,9 @@ def main(cfg):
+         prompt_dir=prompt_dir,
+         contiguous_inference=cfg.eval.contiguous_inference,
+         batch_size=cfg.eval.batch_size,
++        # eval.max_length (absent upstream -> 1024): new decoder tokens per 2.048 s segment
++        # (on top of the prompt).  Smoke runs on CPU pass a small value; no KV cache is used.
++        max_length=int(cfg.eval.get("max_length", None) or 1024),
+     )
+ 
+ 
+diff --git a/train_laddersym.py b/train_laddersym.py
+index 2eed435..036d6be 100644
+--- a/train_laddersym.py
++++ b/train_laddersym.py
+@@ -1,3 +1,4 @@
++from align_runtime import load_model_weights
+ """Train LadderSym models with Hydra configuration files."""
+ 
+ from pathlib import Path
+@@ -63,15 +64,7 @@ def _fit_with_checkpoint_strategy(cfg, trainer, model, train_loader, val_loader)
+         return
+ 
+     if cfg.get("use_lightweight_checkpoint", False):
+-        print("Creating and using a lightweight checkpoint...")
+-        checkpoint = torch.load(checkpoint_path, map_location="cpu")
+-        state_dict = checkpoint.get("state_dict", checkpoint)
+-        lightweight_ckpt_path = checkpoint_path.replace(".ckpt", "_lightweight.ckpt")
+-        torch.save({"state_dict": state_dict}, lightweight_ckpt_path)
+-        print(f"Saved lightweight checkpoint to {lightweight_ckpt_path}")
+-        missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+-        print("Missing keys:", missing_keys, flush=True)
+-        print("Unexpected keys:", unexpected_keys, flush=True)
++        load_model_weights(model.model, checkpoint_path)
+         trainer.fit(model, train_loader, val_loader, ckpt_path=None)
+         return
+ 

@@ -1,0 +1,43 @@
+# ALIGN bundles exported to the MAESTRO-E layout (label/{extra,removed,correct}_notes/<id>/MIDI/<id>.mid,
+# mistake/<id>/mix.wav, score/<id>/mix.wav + mix.mid, split.json).  Same loader as MAESTRO.yaml; only the
+# env-var names differ so the same export can be shared with the Polytune wiring.
+data_root: ${oc.env:ALIGN_BASELINE_ROOT,''}
+split_json: ${oc.env:ALIGN_BASELINE_SPLIT_JSON,''}
+
+train:
+  _target_: dataset.dataset_2_random.Dataset # choosing which data class to use
+  root_dir: ${..data_root}
+  split: train
+  split_json_path: ${..split_json}
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix.wav   # informational only: the loader globs mistake/**/mix.* and score/**/mix.*
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: ${dataset_is_deterministic}
+  is_randomize_tokens: ${dataset_is_randomize_tokens}
+  is_random_alignment_shift_augmentation: ${dataset_is_random_alignment_shift_augmentation}
+  use_prompt: ${use_prompt}
+  prompt_length: ${prompt_length}   # decoder-prompt token budget (upstream ctor default 1024)
+val:
+  _target_: dataset.dataset_2_random.Dataset # choosing which data class to use
+  root_dir: ${..data_root}
+  split: validation
+  split_json_path: ${..split_json}
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix.wav
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: true
+  is_randomize_tokens: false
+  use_prompt: ${use_prompt}
+  prompt_length: ${prompt_length}
+test:
+  root_dir: ${..data_root}
+  split: test
+  split_json_path: ${..split_json}
+  use_prompt: ${use_prompt}
+collate_fn: dataset.dataset_2_random.collate_fn
