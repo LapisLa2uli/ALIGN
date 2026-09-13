@@ -131,6 +131,30 @@ alignment on the same 100 Basic Pitch clips. The checkpoint is retained under
 `candidates/contextual_note_aligner.pt`; it is intentionally absent from
 `weights/`, so production keeps the stronger deterministic aligner.
 
+The corrected `E:\outputRaw_sf_10k` experiment is isolated under
+`runs/contextual-aligner-outputRaw_sf-1k`. Basic Pitch was frozen; Layer 1 and
+the contextual aligner were retrained on exactly 1,000 bundles, calibrated on
+200 validation bundles, and evaluated on 200 separate test bundles. Contextual
+mapping reached 0.470 F1 versus 0.450 for deterministic alignment (8,902 versus
+8,728 exactly placed notes), so `weights/contextual_note_aligner.pt` remains
+active for that dataset-specific pipeline.
+
+The promoted aligner was then fine-tuned on the actual cached Basic Pitch +
+Layer 1 sequences with a monotonic sequence-level alignment loss. This raised
+200-clip mapping F1 from 0.470 to 0.503. Clarinet-range/harmonic filtering,
+weak-onset same-pitch merge, tied-score-note collapse, and a lower score-note
+deletion cost address spurious high notes, artificial splits, tied extensions,
+and missing-note cascade failures. On transcription alone, cleanup improves
+default F1 from 0.648 to 0.650 while reducing the note-count ratio from 1.077
+to 1.018; validation-calibrated thresholds raise F1 to 0.657 at a 1.024 count
+ratio. The calibrated decoder raises final mapping F1 to 0.509.
+
+Two recovery alternatives were evaluated on the same 200 clips after
+calibration: overlapping multi-start window consensus scored 0.463 F1 and
+conservative dynamic revision scored 0.506. Both remain available through
+`PipelineConfig.note_alignment_strategy`, but `contextual` remains the default
+because it scored best.
+
 ## Melody-first (Model B)
 
 A separate checkpoint family. It does **not** emit one label per DTW pair.

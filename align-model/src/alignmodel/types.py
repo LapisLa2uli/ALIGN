@@ -32,6 +32,8 @@ class GraphNote:
     ql_end: float
     measure: int | None = None
     is_rest: bool = False
+    tie_type: str | None = None
+    source_note_indices: list[int] | None = None
 
 
 @dataclass
@@ -157,6 +159,7 @@ class PipelineConfig:
     note_repetition_min_confidence: float = 0.80
     use_note_repetition_model: bool = True
     use_contextual_note_aligner: bool = True
+    note_alignment_strategy: str = "contextual"
     note_error_min_confidence: float = 0.60
     detect_intonation: bool = False
     use_dc_rhythm_alignment: bool = True

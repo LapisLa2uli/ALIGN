@@ -1,7 +1,9 @@
 import random
 
+from pathlib import Path
+
 from synthpipeline.config import SynthConfig
-from synthpipeline.scoregen import generate_score, snippet_score
+from synthpipeline.scoregen import generate_score, resolve_score_inputs, snippet_score
 
 
 def test_snippet_is_contiguous_window():
@@ -52,6 +54,17 @@ def test_snippet_skips_rest_only_prefix():
     snippet, meta = snippet_score(score, random.Random(0), cfg)
     assert meta["snippet_start_measure"] >= 8
     assert meta["snippet_notes"] >= 12
+
+
+def test_resolve_score_inputs_excludes_stems(tmp_path: Path):
+    (tmp_path / "001.musicxml").write_text("<score-partwise/>", encoding="utf-8")
+    (tmp_path / "MozartClConcertoA.musicxml").write_text(
+        "<score-partwise/>", encoding="utf-8"
+    )
+    (tmp_path / "WeberITAV.musicxml").write_text("<score-partwise/>", encoding="utf-8")
+    cfg = SynthConfig(paths={"score_exclude": ["001"]})
+    names = [path.stem for path in resolve_score_inputs(tmp_path, cfg)]
+    assert names == ["MozartClConcertoA", "WeberITAV"]
 
 
 def test_midi_export_is_written_minus_two(tmp_path):

@@ -13,7 +13,8 @@ from datacreate.models import Label
 from datacreate.stages.stage1_ingest import copy_verified_score
 from datacreate.stages.stage3_reference import synthesize_reference
 from datacreate.stages.stage4_performance import ingest_performance
-from datacreate.stages.stage5_alignment import run_alignment, write_candidates
+from datacreate.align_bridge import run_preferred_alignment
+from datacreate.stages.stage5_alignment import write_candidates
 from datacreate.stages.stage7_features import extract_mels
 from datacreate.stages.stage8_bundle import write_labels_template, write_metadata
 from datacreate.utils import write_json
@@ -62,7 +63,9 @@ def generate_synthetic_samples(
         render_score_to_wav(config, render_corrupted, perf_wav, logger)
         ingest_performance(perf_wav, sample_dir, config, logger)
 
-        alignment = run_alignment(perf_wav, ref_wav, sample_dir, config, logger)
+        alignment = run_preferred_alignment(
+            perf_wav, ref_wav, sample_dir, config, logger
+        )
         write_candidates(alignment.candidates, sample_dir, config.schema_version)
         extract_mels(perf_wav, ref_wav, sample_dir, config, logger)
 

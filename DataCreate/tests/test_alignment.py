@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 
 import numpy as np
-from music21 import converter, meter, note, stream, tempo
+from music21 import converter, duration, meter, note, spanner, stream, tempo, tie
 
 from datacreate.audio_utils import save_wav, sounding_span
 from datacreate.config import PipelineConfig
@@ -113,6 +113,84 @@ def test_score_events_use_hierarchy_offsets_not_measure_local(tmp_path):
     assert m3_start > m2_start
     g4 = next(ev for ev in events if ev["pitch"] == "G4")
     assert g4["offset_ql"] == 7.5
+
+
+def _write_score(path: Path, part: stream.Part) -> Path:
+    score = stream.Score()
+    score.insert(0, part)
+    score.write("musicxml", fp=str(path))
+    return path
+
+
+def test_extract_score_events_skips_grace_notes(tmp_path):
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=60))
+    part.insert(0, meter.TimeSignature("4/4"))
+    measure = stream.Measure(number=1)
+    grace = note.Note("D5")
+    grace.duration = duration.GraceDuration(0.25)
+    measure.append(grace)
+    measure.append(note.Note("C4", quarterLength=4.0))
+    part.append(measure)
+    events = _extract_score_events(_write_score(tmp_path / "grace.musicxml", part))
+    sounding = [ev for ev in events if not ev["is_rest"]]
+    assert [ev["pitch"] for ev in sounding] == ["C4"]
+    assert sounding[0]["duration_ql"] == 4.0
+
+
+def test_extract_score_events_folds_tied_notes(tmp_path):
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=60))
+    part.insert(0, meter.TimeSignature("4/4"))
+    first = stream.Measure(number=1)
+    start = note.Note("C4", quarterLength=2.0)
+    start.tie = tie.Tie("start")
+    first.append(note.Note("G4", quarterLength=2.0))
+    first.append(start)
+    second = stream.Measure(number=2)
+    stop = note.Note("C4", quarterLength=2.0)
+    stop.tie = tie.Tie("stop")
+    second.append(stop)
+    second.append(note.Note("E4", quarterLength=2.0))
+    part.append(first)
+    part.append(second)
+    events = _extract_score_events(_write_score(tmp_path / "tied.musicxml", part))
+    sounding = [ev for ev in events if not ev["is_rest"]]
+    assert [ev["pitch"] for ev in sounding] == ["G4", "C4", "E4"]
+    tied = next(ev for ev in sounding if ev["pitch"] == "C4")
+    assert tied["duration_ql"] == 4.0
+    assert tied["offset_ql"] == 2.0
+
+
+def test_extract_score_events_folds_slurred_same_pitch_extension(tmp_path):
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=60))
+    part.insert(0, meter.TimeSignature("4/4"))
+    measure = stream.Measure(number=1)
+    a = note.Note("C4", quarterLength=2.0)
+    b = note.Note("C4", quarterLength=2.0)
+    measure.append(a)
+    measure.append(b)
+    part.append(measure)
+    part.insert(0, spanner.Slur(a, b))
+    events = _extract_score_events(_write_score(tmp_path / "slur.musicxml", part))
+    sounding = [ev for ev in events if not ev["is_rest"]]
+    assert [ev["pitch"] for ev in sounding] == ["C4"]
+    assert sounding[0]["duration_ql"] == 4.0
+
+
+def test_extract_score_events_keeps_repeated_untied_notes(tmp_path):
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=60))
+    part.insert(0, meter.TimeSignature("4/4"))
+    measure = stream.Measure(number=1)
+    measure.append(note.Note("C4", quarterLength=2.0))
+    measure.append(note.Note("C4", quarterLength=2.0))
+    part.append(measure)
+    events = _extract_score_events(_write_score(tmp_path / "repeat.musicxml", part))
+    sounding = [ev for ev in events if not ev["is_rest"]]
+    assert [ev["pitch"] for ev in sounding] == ["C4", "C4"]
+    assert sounding[0]["duration_ql"] == 2.0
 
 
 def test_tempo_map_integrates_mid_score_change():

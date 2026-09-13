@@ -10,10 +10,12 @@ from typing import Any
 import torch
 
 from .basic_pitch import (
+    BasicPitchDecodeConfig,
     basic_pitch_cache_path as default_basic_cache_path,
-    decode_frozen_basic_pitch,
+    decode_basic_pitch_features,
     extract_basic_pitch_features,
     load_audio_metadata,
+    sanitize_basic_pitch_notes,
 )
 from .decode import DecodeConfig, infer_sample_notes, load_note_transcriber
 from .fine_pitch import (
@@ -111,7 +113,22 @@ def infer_note_decoder(
             source_metadata=metadata,
             cache_path=basic_cache_path,
         )
-        notes = decode_frozen_basic_pitch(basic)
+        decode_values = (
+            decoder.decode_config
+            if isinstance(decoder.decode_config, dict)
+            else {}
+        )
+        allowed = BasicPitchDecodeConfig.__dataclass_fields__
+        config = BasicPitchDecodeConfig(
+            **{
+                key: value
+                for key, value in decode_values.items()
+                if key in allowed
+            }
+        )
+        notes = sanitize_basic_pitch_notes(
+            decode_basic_pitch_features(basic, config), basic, config
+        )
         if decoder.extra.get("fine_pitch") == "pesto-2.0.1":
             if pesto_cache_path is None and decoder.extra.get("pesto_cache_root"):
                 pesto_cache_path = default_pesto_cache_path(

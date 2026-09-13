@@ -50,6 +50,18 @@ def load_alignment_sequence(path: Path, *, augment: bool = False) -> AlignmentSe
         document.get("rendered_notes") or [],
         key=lambda row: int(row["rendered_index"]),
     )
+    pitch_offsets = [
+        int(row["pitch_midi_written"]) - clean_pitch[int(row["primary_clean_index"])]
+        for row in rendered
+        if row.get("primary_clean_index") is not None
+        and int(row["primary_clean_index"]) in clean_pitch
+        and str(row.get("relationship")) in {"match", "copy"}
+    ]
+    rendered_pitch_correction = (
+        -int(round(float(np.median(pitch_offsets))))
+        if pitch_offsets
+        else 0
+    )
     observed = []
     targets = []
     for row in rendered:
@@ -63,7 +75,7 @@ def load_alignment_sequence(path: Path, *, augment: bool = False) -> AlignmentSe
         ):
             pitch = clean_pitch[int(target)]
         else:
-            pitch = int(row["pitch_midi_written"]) - 2
+            pitch = int(row["pitch_midi_written"]) + rendered_pitch_correction
         confidence = random.uniform(0.65, 1.0) if augment else 1.0
         if augment and random.random() < 0.08:
             pitch += random.choice((-12, -2, -1, 1, 2, 12))
@@ -158,7 +170,12 @@ def _paths(manifest: Path, split: str) -> list[Path]:
         row = dict(raw)
         if str(row.get("corpus") or row.get("root")) != "procedural12k":
             raise ValueError("Contextual aligner rejected non-procedural row")
-        path = Path(str(row["note_map"]))
+        path = Path(
+            str(
+                row.get("note_map")
+                or Path(str(row["sample_dir"])) / "note_map.json"
+            )
+        )
         if path.is_file():
             paths.append(path)
     return paths

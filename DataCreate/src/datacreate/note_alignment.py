@@ -7,9 +7,17 @@ from typing import Any
 import numpy as np
 from music21 import chord, converter, note, stream, tempo
 
+from datacreate.score_notes import (
+    collapse_tied_records,
+    element_tie_type,
+    is_decorative_element,
+    slur_adjacent_ids,
+    voice_key,
+)
 from datacreate.utils import read_json
 
 _PITCH_TYPES = (note.Note, note.Rest, note.Unpitched, chord.Chord)
+_PC_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 
 
 def _seconds_per_quarter(score) -> float:
@@ -78,6 +86,62 @@ def _pitch_label(el) -> str | None:
     return None
 
 
+def _optional_int(value: Any) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _midi_pitch_name(midi: int | None) -> str | None:
+    if midi is None:
+        return None
+    pitch = int(midi)
+    if pitch < 0 or pitch > 127:
+        return None
+    return f"{_PC_NAMES[pitch % 12]}{pitch // 12 - 1}"
+
+
+def _normalize_transcribed_notes(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """GUI-ready transcription notes plus the score index each one maps to."""
+    mapping = payload.get("note_mapping") or []
+    notes: list[dict[str, Any]] = []
+    for index, raw in enumerate(payload.get("transcribed_notes") or []):
+        midi = raw.get("midi")
+        if midi is None:
+            midi = raw.get("pitch") if isinstance(raw.get("pitch"), int) else None
+        midi_i = _optional_int(midi)
+        start = float(raw.get("start") or 0.0)
+        end = float(raw.get("end") or start + 0.05)
+        if end < start + 0.001:
+            end = start + 0.001
+        score_index = None
+        if index < len(mapping):
+            score_index = _optional_int(mapping[index])
+        elif raw.get("score_index") is not None:
+            score_index = _optional_int(raw.get("score_index"))
+        notes.append(
+            {
+                "id": f"trans_{index:04d}",
+                "index": index,
+                "midi": midi_i,
+                "pitch": _midi_pitch_name(midi_i),
+                "start": round(start, 4),
+                "end": round(end, 4),
+                "perf_start": round(start, 4),
+                "perf_end": round(end, 4),
+                "confidence": float(raw.get("confidence") or 1.0),
+                "cents": float(raw.get("cents") or 0.0),
+                "score_index": score_index,
+                "is_rest": False,
+                "duration_ql": round(max(0.0625, (end - start) * 2.0), 4),
+            }
+        )
+    return notes
+
+
 def _midi_value(el) -> int | None:
     if isinstance(el, note.Rest):
         return None
@@ -94,13 +158,14 @@ def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
         return []
 
     tempo_map = _tempo_map(score)
-    events: list[dict[str, Any]] = []
-    event_idx = 0
+    slur_pairs = slur_adjacent_ids(score)
+    records: list[dict[str, Any]] = []
 
     for part_idx, part in enumerate(score.parts):
-        flat = part.flatten()
-        for el in flat.notesAndRests:
+        for el in part.recurse().notesAndRests:
             if not isinstance(el, _PITCH_TYPES):
+                continue
+            if is_decorative_element(el):
                 continue
             # Hierarchy offset before getContextByClass: that call can change
             # activeSite so el.offset becomes measure-relative.
@@ -110,26 +175,42 @@ def _extract_score_events(score_path: Path) -> list[dict[str, Any]]:
             measure_num = int(measure.number) if measure and measure.number is not None else None
             ref_start = _ql_to_sec(offset_ql, tempo_map)
             ref_end = _ql_to_sec(offset_ql + duration_ql, tempo_map)
-            events.append(
+            records.append(
                 {
-                    "id": f"note_{event_idx:04d}",
                     "part": part_idx,
+                    "voice": voice_key(el, part_idx),
+                    "el_id": id(el),
                     "measure": measure_num,
-                    "offset_ql": round(offset_ql, 4),
-                    "duration_ql": round(duration_ql, 4),
+                    "offset_ql": offset_ql,
+                    "duration_ql": duration_ql,
                     "is_rest": isinstance(el, note.Rest),
                     "pitch": _pitch_label(el),
                     "midi": _midi_value(el),
-                    "ref_start": round(ref_start, 4),
-                    "ref_end": round(max(ref_end, ref_start + 0.001), 4),
+                    "tie_type": element_tie_type(el),
+                    "ref_start": ref_start,
+                    "ref_end": max(ref_end, ref_start + 0.001),
                 }
             )
-            event_idx += 1
 
+    events = collapse_tied_records(records, slur_pairs)
     events.sort(key=lambda ev: (int(ev["part"]), float(ev["offset_ql"]), float(ev["duration_ql"])))
+    cleaned: list[dict[str, Any]] = []
     for i, ev in enumerate(events):
-        ev["id"] = f"note_{i:04d}"
-    return events
+        cleaned.append(
+            {
+                "id": f"note_{i:04d}",
+                "part": ev["part"],
+                "measure": ev["measure"],
+                "offset_ql": round(float(ev["offset_ql"]), 4),
+                "duration_ql": round(float(ev["duration_ql"]), 4),
+                "is_rest": bool(ev["is_rest"]),
+                "pitch": ev["pitch"],
+                "midi": ev["midi"],
+                "ref_start": round(float(ev["ref_start"]), 4),
+                "ref_end": round(max(float(ev["ref_end"]), float(ev["ref_start"]) + 0.001), 4),
+            }
+        )
+    return cleaned
 
 
 def _fill_ref_to_perf(mapping: np.ndarray) -> np.ndarray:
@@ -774,6 +855,34 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
     from datacreate.sample_prep import ensure_full_score
 
     logger = logger or logging.getLogger(__name__)
+    note_first_path = sample_dir / "note_alignment_v2.json"
+    if note_first_path.exists():
+        payload = read_json(note_first_path)
+        if payload.get("engine") != "align-note-first":
+            raise ValueError(f"Unknown note alignment engine in {note_first_path}")
+        summary = dict(payload.get("summary") or {})
+        summary.setdefault("engine", "align-note-first")
+        summary.setdefault("event_count", len(payload.get("events") or []))
+        summary["alignment_path"] = str(note_first_path)
+        transcribed = _normalize_transcribed_notes(payload)
+        mapping = [_optional_int(value) for value in (payload.get("note_mapping") or [])]
+        summary.setdefault("transcribed_note_count", len(transcribed))
+        summary.setdefault(
+            "mapped_note_count",
+            sum(value is not None for value in mapping),
+        )
+        logger.info(
+            "Loaded note-first alignment for %s: %d events, %d transcribed",
+            sample_dir.name,
+            summary["event_count"],
+            len(transcribed),
+        )
+        return {
+            "events": list(payload.get("events") or []),
+            "transcribed_notes": transcribed,
+            "note_mapping": mapping,
+            "summary": summary,
+        }
     align_path = sample_dir / "alignment.npz"
     if not align_path.exists():
         raise FileNotFoundError(f"Alignment not found: {align_path}")
@@ -854,7 +963,12 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
         len(aligned_events),
         summary["onset_refine"],
     )
-    return {"events": aligned_events, "summary": summary}
+    return {
+        "events": aligned_events,
+        "transcribed_notes": [],
+        "note_mapping": [],
+        "summary": summary,
+    }
 
 
 def _wav_duration_sec(path: Path) -> float:

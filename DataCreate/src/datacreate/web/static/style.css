@@ -193,6 +193,9 @@ header {
   box-shadow: inset 0 0 0 1px #fff;
   background: #1a4a9e;
 }
+.renderer-status[data-state="ready"] { color: #7dca8c; }
+.renderer-status[data-state="loading"] { color: #e0b35a; }
+.renderer-status[data-state="error"] { color: #e07070; }
 .staff-strip {
   min-height: 0;
   background: #f8f8f8;
@@ -210,6 +213,93 @@ header {
   max-width: none;
   height: auto;
   overflow: visible;
+}
+.score-compare {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: #1c1c1c;
+  border-top: 1px solid #444;
+}
+.score-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 4px 8px 2px;
+  background: #1c1c1c;
+  color: #ddd;
+  font-size: 12px;
+}
+.score-row-head .hint {
+  color: #888;
+  font-weight: normal;
+}
+.score-compare-legend {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-left: auto;
+  color: #bbb;
+  font-size: 11px;
+}
+.score-compare-legend .swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 3px;
+}
+.score-compare-legend .swatch.match { background: #2d6cdf; }
+.score-compare-legend .swatch.sub { background: #e07a2f; }
+.score-compare-legend .swatch.extra { background: #c0392b; }
+.score-compare-legend .swatch.miss { background: #888; }
+.transcription-strip {
+  background: #eef4fb;
+  border-bottom: none;
+}
+.score-align-overlay {
+  height: 44px;
+  background: #1a1a1a;
+  position: relative;
+  overflow: visible;
+  flex-shrink: 0;
+}
+.score-align-overlay svg {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: 44px;
+  overflow: visible;
+}
+.score-align-overlay path.pair-link {
+  fill: none;
+  stroke-width: 1.8;
+  opacity: 0.72;
+}
+.score-align-overlay path.pair-link.match { stroke: #6af; }
+.score-align-overlay path.pair-link.sub { stroke: #e07a2f; }
+.score-align-overlay path.pair-link.hover,
+.score-align-overlay path.pair-link.active {
+  stroke-width: 3.2;
+  opacity: 1;
+}
+.trans-hit {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 2;
+}
+.trans-hit.hover,
+.melody-hit.pair-hover {
+  background: rgba(255, 220, 80, 0.28);
 }
 .note-boundaries {
   position: absolute;
@@ -285,6 +375,10 @@ header {
 .melody-hit.pad {
   background: rgba(46, 184, 90, 0.24);
   box-shadow: inset 0 0 0 1px rgba(30, 140, 70, 0.7);
+}
+.melody-hit.miss {
+  box-shadow: inset 0 0 0 1px rgba(136, 136, 136, 0.85);
+  background: rgba(120, 120, 120, 0.18);
 }
 .melody-hit:hover {
   background: rgba(255, 180, 40, 0.18);

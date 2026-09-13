@@ -9,7 +9,7 @@ from datacreate.audio_utils import load_audio, save_wav
 from datacreate.config import PipelineConfig
 from datacreate.score_segment import extract_measure_range, get_score_info
 from datacreate.stages.stage3_reference import synthesize_reference
-from datacreate.stages.stage5_alignment import run_alignment
+from datacreate.align_bridge import run_preferred_alignment
 from datacreate.stages.stage8_bundle import write_labels_template, write_metadata
 from datacreate.utils import read_json, write_json
 
@@ -152,12 +152,12 @@ def reprocess_alignment(
     config: PipelineConfig,
     logger: logging.Logger,
 ) -> dict[str, Any]:
-    """Re-run DTW only. Does not infer or write candidates."""
+    """Re-run the canonical note-first alignment without rewriting candidates."""
     perf = sample_dir / "performance_audio.wav"
     ref = sample_dir / "reference_audio.wav"
     if not perf.exists() or not ref.exists():
         raise FileNotFoundError("performance_audio.wav or reference_audio.wav missing")
-    result = run_alignment(
+    result = run_preferred_alignment(
         perf, ref, sample_dir, config, logger, detect_candidates=False
     )
     return {
@@ -167,7 +167,7 @@ def reprocess_alignment(
 
 def _invalidate_alignment_artifacts(sample_dir: Path, logger: logging.Logger) -> None:
     """Drop DTW/candidates so a segment or trim does not keep a stale map."""
-    for name in ("alignment.npz", "candidates.json"):
+    for name in ("alignment.npz", "note_alignment_v2.json", "candidates.json"):
         path = sample_dir / name
         if path.exists():
             path.unlink()

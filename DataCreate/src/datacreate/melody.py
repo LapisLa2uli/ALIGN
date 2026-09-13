@@ -7,6 +7,14 @@ from typing import Any, Iterable
 
 from music21 import converter, note, stream, tempo
 
+from datacreate.score_notes import (
+    collapse_tied_records,
+    element_tie_type,
+    is_decorative_element,
+    slur_adjacent_ids,
+    voice_key,
+)
+
 
 @dataclass(frozen=True)
 class ScoreSoundingNote:
@@ -58,9 +66,10 @@ def parse_sounding_notes(score_or_path) -> list[ScoreSoundingNote]:
         parsed = score_or_path
     bpm = score_bpm(parsed)
     sec_per_ql = 60.0 / bpm
-    raw: list[tuple[float, int, float, float, int | None]] = []
+    slur_pairs = slur_adjacent_ids(parsed)
+    raw: list[dict] = []
     for n in parsed.recurse().getElementsByClass(note.Note):
-        if n.duration.isGrace:
+        if is_decorative_element(n):
             continue
         try:
             start_ql = float(n.getOffsetInHierarchy(parsed))
@@ -73,19 +82,39 @@ def parse_sounding_notes(score_or_path) -> list[ScoreSoundingNote]:
             end = start + 0.05
         measure = n.getContextByClass(stream.Measure)
         measure_num = int(measure.number) if measure and measure.number is not None else None
-        raw.append((start_ql, int(n.pitch.midi), start, end, measure_num))
-    raw.sort(key=lambda item: (item[0], item[1]))
+        raw.append(
+            {
+                "voice": voice_key(n, 0),
+                "el_id": id(n),
+                "offset_ql": start_ql,
+                "duration_ql": dur_ql,
+                "midi": int(n.pitch.midi),
+                "is_rest": False,
+                "tie_type": element_tie_type(n),
+                "start": start,
+                "end": end,
+                "measure": measure_num,
+            }
+        )
+    collapsed = collapse_tied_records(raw, slur_pairs)
+    collapsed.sort(key=lambda item: (float(item["offset_ql"]), int(item["midi"])))
     notes: list[ScoreSoundingNote] = []
-    for i, (ql0, pitch, start, end, measure) in enumerate(raw):
+    for i, item in enumerate(collapsed):
+        ql0 = float(item["offset_ql"])
+        dur_ql = float(item["duration_ql"])
+        start = float(item["start"])
+        end = start + dur_ql * sec_per_ql
+        if end <= start:
+            end = start + 0.05
         notes.append(
             ScoreSoundingNote(
                 index=i,
-                pitch=pitch,
+                pitch=int(item["midi"]),
                 start=start,
                 end=end,
                 ql_start=ql0,
-                ql_end=ql0 + max(end - start, 0.05) / sec_per_ql,
-                measure=measure,
+                ql_end=ql0 + dur_ql,
+                measure=item["measure"],
                 note_id=f"note_{i:04d}",
             )
         )

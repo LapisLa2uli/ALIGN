@@ -18,7 +18,7 @@ class ContextualAlignerConfig:
     hidden_dim: int = 64
     layers: int = 2
     dropout: float = 0.10
-    deletion_cost: float = 2.0
+    deletion_cost: float = 0.90
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -155,16 +155,35 @@ class ContextualNoteAligner(nn.Module):
         back = np.zeros((n + 1, m + 1), np.int8)
         dp[0, 0] = 0.0
         for i in range(1, n + 1):
-            dp[i, 0] = dp[i - 1, 0] - probabilities[i - 1, m]
+            dp[i, 0] = (
+                dp[i - 1, 0] - 0.45 * probabilities[i - 1, m] + 0.55
+            )
             back[i, 0] = 1
         for j in range(1, m + 1):
             dp[0, j] = dp[0, j - 1] + self.config.deletion_cost
             back[0, j] = 2
         for i in range(1, n + 1):
             for j in range(1, m + 1):
+                delta = abs(
+                    int(observed_notes[i - 1].pitch)
+                    - int(score_notes[j - 1].pitch)
+                )
+                pitch_cost = (
+                    0.0 if delta == 0 else 1.05 + min(delta, 12) / 60.0
+                )
                 choices = (
-                    (dp[i - 1, j - 1] - probabilities[i - 1, j - 1], 0),
-                    (dp[i - 1, j] - probabilities[i - 1, m], 1),
+                    (
+                        dp[i - 1, j - 1]
+                        - 0.45 * probabilities[i - 1, j - 1]
+                        + pitch_cost,
+                        0,
+                    ),
+                    (
+                        dp[i - 1, j]
+                        - 0.45 * probabilities[i - 1, m]
+                        + 0.55,
+                        1,
+                    ),
                     (dp[i, j - 1] + self.config.deletion_cost, 2),
                 )
                 dp[i, j], back[i, j] = min(choices, key=lambda item: item[0])

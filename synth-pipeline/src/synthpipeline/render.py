@@ -126,17 +126,43 @@ def render_midi_clarinet(
     note_transpose: int = 0,
 ) -> None:
     try:
+        import tinysoundfont
         from tinysoundfont.midi import load
+        from tinysoundfont.sequencer import Sequencer
     except ImportError as exc:
         raise RuntimeError(
             "tinysoundfont is required. Install with: pip install tinysoundfont"
         ) from exc
 
-    from synthpipeline.midi_player import render_midi_events
+    soundfont = find_soundfont(config)
+    if soundfont is None:
+        raise RuntimeError(
+            "No SoundFont found. Set render.soundfont or paths.soundfont."
+        )
 
     sample_rate = config.sample_rate()
-    tail_seconds = min(0.4, float(config.musescore.get("tail_seconds", 0.35)))
+    gain_db = float(config.musescore.get("synthesizer_gain_db", -6))
+    tail_seconds = float(config.musescore.get("tail_seconds", 2.0))
+    chunk_size = int(config.musescore.get("render_chunk_size", 4096))
 
+    synth = _cached_synth(tinysoundfont, soundfont, sample_rate, gain_db, logger)
+    try:
+        synth.sounds_off()
+        synth.notes_off()
+    except Exception:
+        pass
+    for channel in range(16):
+        if channel == 9:
+            synth.program_change(channel, 0, True)
+        else:
+            synth.program_change(channel, clarinet_program, False)
+        try:
+            synth.pitchbend(channel, PITCH_BEND_CENTER)
+            synth.pitchbend_range(channel, PITCH_BEND_RANGE_SEMITONES)
+        except Exception:
+            pass
+
+    sequencer = Sequencer(synth)
     events = load(str(midi_path), persistent=False)
     if not events:
         raise RuntimeError(f"No MIDI events found in {midi_path}")
@@ -146,13 +172,27 @@ def render_midi_clarinet(
     if pitch_bends:
         n_added = _inject_pitch_bends(events, pitch_bends, bpm or 120.0)
         logger.info("Injected %d pitch-bend events for intonation", n_added)
+    sequencer.add(events)
+    duration = max(event.t for event in events) + tail_seconds
     logger.info(
-        "Rendering clarinet MIDI via oscillator (%s): %d events, program %d",
-        midi_path.name,
+        "Rendering clarinet MIDI via SoundFont (%s): %.2fs, %d events, program %d",
+        soundfont.name,
+        duration,
         len(events),
         clarinet_program,
     )
-    mono = render_midi_events(events, sample_rate, tail_seconds=tail_seconds)
+
+    chunks: list[np.ndarray] = []
+    remaining = int(duration * sample_rate)
+    while remaining > 0:
+        count = min(chunk_size, remaining)
+        buffer = synth.generate(count)
+        stereo = np.frombuffer(buffer, dtype=np.float32).reshape(-1, 2)
+        chunks.append(stereo)
+        remaining -= count
+
+    stereo = np.concatenate(chunks, axis=0)
+    mono = stereo.mean(axis=1)
     save_wav(output_wav, mono, sample_rate)
     logger.info("Wrote clarinet audio %s (%d samples)", output_wav, mono.size)
 

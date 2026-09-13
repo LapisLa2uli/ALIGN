@@ -11,7 +11,8 @@ from datacreate.stages.stage1_ingest import ingest_verified_score, validate_scor
 from datacreate.stages.stage2_omr import process_pdf
 from datacreate.stages.stage3_reference import synthesize_reference
 from datacreate.stages.stage4_performance import ingest_performance
-from datacreate.stages.stage5_alignment import run_alignment, write_candidates
+from datacreate.stages.stage5_alignment import write_candidates
+from datacreate.align_bridge import run_preferred_alignment
 from datacreate.stages.stage7_features import extract_mels
 from datacreate.stages.stage8_bundle import write_labels_template, write_metadata
 from datacreate.utils import ensure_dir, setup_sample_logger
@@ -112,7 +113,9 @@ class DataCreatePipeline:
         ref = job.sample_dir / "reference_audio.wav"
         if not perf.exists() or not ref.exists():
             raise FileNotFoundError("Both performance and reference audio required")
-        result = run_alignment(perf, ref, job.sample_dir, self.config, logger)
+        result = run_preferred_alignment(
+            perf, ref, job.sample_dir, self.config, logger
+        )
         write_candidates(result.candidates, job.sample_dir, self.config.schema_version)
         job.state["alignment"] = True
         return job.sample_dir / "candidates.json"

@@ -34,7 +34,7 @@ Set `paths.musescore`, `paths.audiveris`, and `paths.soundfont` in `config/defau
 | 2 | `stage2_omr` | Audiveris PDF → draft MusicXML + manual correction |
 | 3 | `stage3_reference` | MuseScore MIDI export + SoundFont render → `reference_audio.wav` |
 | 4 | `stage4_performance` | Ingest/record performance audio |
-| 5 | `stage5_alignment` | Chroma/CQT DTW + candidate error detection |
+| 5 | ALIGN note-first bridge | Basic Pitch transcription → note repetitions → contextual score mapping |
 | 6 | Web UI | NLE-style annotation (`datacreate serve`) |
 | 7 | `stage7_features` | Log-mel spectrograms + alignment.npz |
 | 8 | `stage8_bundle` | Final sample directory layout |
@@ -82,6 +82,7 @@ sample_<id>/
 ├── performance_mel_preview.png
 ├── reference_mel_preview.png
 ├── alignment.npz
+├── note_alignment_v2.json
 ├── candidates.json
 ├── labels.json
 └── metadata.json
@@ -94,6 +95,12 @@ datacreate serve
 ```
 
 Open http://127.0.0.1:8765 — zoomable waveform with draggable regions (wavesurfer.js), score view (OpenSheetMusicDisplay), candidate confirm/reject workflow.
+
+The annotation GUI now uses ALIGN's note-first program for every new/re-run
+alignment. The first request creates `note_alignment_v2.json` plus a small
+legacy-compatible `alignment.npz`; later GUI requests read the note alignment
+directly. Configure the isolated Python and promoted weights through
+`paths.note_alignment_python` and `paths.note_alignment_weights`.
 
 Use the **Batch process** bar to run an ID range (e.g. 1–14) against the shared score, then pick any **Sample ID** from the dropdown to segment, trim, and label that take.
 
@@ -124,7 +131,7 @@ datacreate serve
 All tunables live in `config/default.yaml`:
 
 - **taxonomy** — closed label enum (add types here, no code change needed)
-- **alignment** — DTW band, cents threshold, rhythm EWMA/far-window, onset refine, feature type
+- **alignment** — note-first runtime/device/timeout plus legacy DTW fallback settings
 - **mel** — spectrogram parameters stored in `metadata.json`
 - **paths** — binary locations, sample roots
 - **review.sampling_rate** — inter-annotator review fraction
@@ -139,7 +146,11 @@ The score-part melody is a contiguous run of notes on `verified_score.musicxml`:
 
 `source` values: `auto`, `auto_confirmed`, `auto_edited`, `auto_rejected`, `manual`, `synthetic`.
 
-Stage 5 DTW auto-candidates can be any of: `wrong_note`, `intonation_error`, `rhythm_error`, `missed_note`, `extra_note` (not rhythm-only). Rhythm errors come from score note/rest duration ratios (`perf_dur/ref_dur`) after DTW mapping and **onset refine** (snap `perf_start` to the first energy rise so leading silence is not counted as the note). Sudden jumps vs an EWMA of recent ratios, plus gradual drift vs a lagged far-window median, become `rhythm_error`. Missed/extra are unmatched DTW frames. Soft onsets may still flag as rhythm (acceptable for clarinet labeling); rubato/ornaments may FP and are cleaned in human review.
+The note-first bridge emits repetition-aware note mappings and automatic
+`wrong_note`, `missed_note`, `extra_note`, `repetition`, and rhythm candidates.
+Intonation detection is currently disabled. Legacy DTW code remains available
+for old artifact compatibility, but GUI alignment and re-alignment do not call
+it.
 
 ## Adding a new error type
 

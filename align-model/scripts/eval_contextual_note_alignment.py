@@ -6,23 +6,52 @@ import argparse
 import json
 from pathlib import Path
 
+import numpy as np
+
 from alignmodel.pipeline import run_pipeline
 from alignmodel.transcription import match_notes
 from alignmodel.types import PipelineConfig
 
 
 def _gold(row: dict):
-    document = json.loads(Path(row["note_map"]).read_text(encoding="utf-8"))
+    from alignmodel.stages.score_graph import build_score_graph
+
+    sample = Path(str(row["sample_dir"]))
+    path = Path(
+        str(
+            row.get("note_map")
+            or Path(str(row["sample_dir"])) / "note_map.json"
+        )
+    )
+    document = json.loads(path.read_text(encoding="utf-8"))
+    graph = build_score_graph(sample / "verified_score.musicxml")
+    target_index_map = {
+        source_index: graph_note.index
+        for graph_note in graph.notes
+        for source_index in (
+            graph_note.source_note_indices or [graph_note.index]
+        )
+    }
     clean_pitch = {
         int(note["clean_index"]): int(note["pitch_midi"])
         for note in document.get("clean_notes") or []
     }
-    notes = []
-    targets = []
-    for note in sorted(
+    rendered = sorted(
         document.get("rendered_notes") or [],
         key=lambda value: int(value["rendered_index"]),
-    ):
+    )
+    offsets = [
+        int(note["pitch_midi_written"])
+        - clean_pitch[int(note["primary_clean_index"])]
+        for note in rendered
+        if note.get("primary_clean_index") is not None
+        and int(note["primary_clean_index"]) in clean_pitch
+        and str(note.get("relationship")) in {"match", "copy"}
+    ]
+    correction = -int(round(float(np.median(offsets)))) if offsets else 0
+    notes = []
+    targets = []
+    for note in rendered:
         target = note.get("primary_clean_index")
         if (
             target is not None
@@ -31,7 +60,7 @@ def _gold(row: dict):
         ):
             pitch = clean_pitch[int(target)]
         else:
-            pitch = int(note["pitch_midi_written"]) - 2
+            pitch = int(note["pitch_midi_written"]) + correction
         notes.append(
             {
                 "pitch": pitch,
@@ -39,7 +68,11 @@ def _gold(row: dict):
                 "end": float(note["end_sec"]),
             }
         )
-        targets.append(int(target) if target is not None else None)
+        targets.append(
+            target_index_map.get(int(target))
+            if target is not None
+            else None
+        )
     return notes, targets
 
 
@@ -51,10 +84,18 @@ def main() -> None:
     parser.add_argument("--max-samples", type=int, default=100)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--disable-contextual-aligner", action="store_true")
+    parser.add_argument(
+        "--strategy",
+        choices=("contextual", "deterministic", "multi_start", "revision"),
+        default="contextual",
+    )
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
     document = json.loads(args.manifest.read_text(encoding="utf-8"))
+    dataset_root = str(
+        (document.get("roots") or {}).get("procedural12k") or ""
+    )
     rows = list(document.get(args.split) or [])
     if args.max_samples:
         rows = rows[: args.max_samples]
@@ -72,6 +113,11 @@ def main() -> None:
                 alignment_weights_dir=str(args.alignment_weights),
                 detect_intonation=False,
                 use_contextual_note_aligner=not args.disable_contextual_aligner,
+                note_alignment_strategy=(
+                    "deterministic"
+                    if args.disable_contextual_aligner
+                    else args.strategy
+                ),
             ),
             device=args.device,
             weights_dir=None,
@@ -113,9 +159,15 @@ def main() -> None:
     precision = total_correct / max(total_assigned, 1)
     recall = total_correct / max(total_positive, 1)
     report = {
-        "procedural_only": True,
-        "raw_derived_data_used": False,
+        "dataset_root": dataset_root,
+        "exclusive_manifest_dataset": True,
+        "raw_derived_data_used": "raw" in dataset_root.lower(),
         "contextual_aligner_enabled": not args.disable_contextual_aligner,
+        "alignment_strategy": (
+            "deterministic"
+            if args.disable_contextual_aligner
+            else args.strategy
+        ),
         "n_clips": len(rows),
         "precision": precision,
         "recall": recall,

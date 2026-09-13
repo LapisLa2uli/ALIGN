@@ -4,14 +4,28 @@ import logging
 import os
 import platform
 import subprocess
+import threading
+import time
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
 from datacreate.audio_utils import save_wav
 from datacreate.config import PipelineConfig
 from datacreate.utils import resolve_binary
+
+# tinysoundfont.sfload of MS Basic.sf3 is ~20-30s; keep one Synth per process.
+_synth_cache: dict[tuple, object] = {}
+_synth_lock = threading.RLock()
+_status_lock = threading.Lock()
+_synth_status: dict[str, Any] = {
+    "state": "idle",
+    "error": None,
+    "soundfont": None,
+    "loaded_sec": None,
+}
 
 
 def find_musescore(config: PipelineConfig) -> Path | None:
@@ -259,6 +273,84 @@ def export_score_to_midi(
         raise RuntimeError(f"MuseScore did not produce {output_midi}")
 
 
+def renderer_status() -> dict[str, Any]:
+    """Snapshot of the standby SoundFont renderer (safe to expose over HTTP)."""
+    with _status_lock:
+        return dict(_synth_status)
+
+
+def _set_status(**kwargs: Any) -> None:
+    with _status_lock:
+        _synth_status.update(kwargs)
+
+
+def _cached_synth(
+    tinysoundfont,
+    soundfont: Path,
+    sample_rate: int,
+    gain_db: float,
+    logger: logging.Logger,
+):
+    key = (str(soundfont.resolve()), int(sample_rate), float(gain_db))
+    with _synth_lock:
+        synth = _synth_cache.get(key)
+        if synth is not None:
+            _set_status(state="ready", soundfont=soundfont.name, error=None)
+            return synth
+        logger.info("Loading SoundFont %s (once per process)...", soundfont)
+        started = time.perf_counter()
+        _set_status(state="loading", soundfont=soundfont.name, error=None)
+        synth = tinysoundfont.Synth(samplerate=sample_rate, gain=gain_db)
+        synth.sfload(str(soundfont))
+        elapsed = time.perf_counter() - started
+        logger.info("SoundFont loaded in %.2fs", elapsed)
+        _synth_cache[key] = synth
+        _set_status(state="ready", error=None, loaded_sec=round(elapsed, 2))
+        return synth
+
+
+def warmup_synth(config: PipelineConfig, logger: logging.Logger | None = None) -> dict[str, Any]:
+    """Load the SoundFont now so later reference renders skip the cold start."""
+    logger = logger or logging.getLogger("datacreate.renderer")
+    status = renderer_status()
+    if status["state"] == "ready" and _synth_cache:
+        return status
+    try:
+        import tinysoundfont
+    except ImportError as exc:
+        _set_status(state="error", error=f"tinysoundfont is not installed: {exc}")
+        logger.warning("%s", renderer_status()["error"])
+        return renderer_status()
+    soundfont = find_soundfont(config)
+    if soundfont is None:
+        _set_status(state="error", error="No SoundFont found. Set paths.soundfont in config.")
+        logger.warning("%s", renderer_status()["error"])
+        return renderer_status()
+    sample_rate = config.sample_rate()
+    gain_db = float(config.musescore.get("synthesizer_gain_db", -6))
+    try:
+        _cached_synth(tinysoundfont, soundfont, sample_rate, gain_db, logger)
+    except Exception as exc:  # noqa: BLE001
+        _set_status(state="error", error=str(exc))
+        logger.warning("WAV renderer warmup failed: %s", exc)
+    return renderer_status()
+
+
+def warmup_synth_background(config: PipelineConfig) -> None:
+    """Start SoundFont load on a daemon thread; safe to call more than once."""
+    with _status_lock:
+        if _synth_status["state"] in ("loading", "ready"):
+            return
+        _synth_status["state"] = "loading"
+    thread = threading.Thread(
+        target=warmup_synth,
+        args=(config,),
+        daemon=True,
+        name="wav-renderer-warmup",
+    )
+    thread.start()
+
+
 def render_midi_to_wav(
     midi_path: Path,
     output_wav: Path,
@@ -287,32 +379,42 @@ def render_midi_to_wav(
     tail_seconds = float(config.musescore.get("tail_seconds", 2.0))
     chunk_size = int(config.musescore.get("render_chunk_size", 4096))
 
-    synth = tinysoundfont.Synth(samplerate=sample_rate, gain=gain_db)
-    synth.sfload(str(soundfont))
-    for channel in range(16):
-        synth.program_change(channel, 0, channel == 9)
+    with _synth_lock:
+        synth = _cached_synth(tinysoundfont, soundfont, sample_rate, gain_db, logger)
+        try:
+            synth.sounds_off()
+            synth.notes_off()
+        except Exception:
+            pass
+        for channel in range(16):
+            synth.program_change(channel, 0, channel == 9)
 
-    sequencer = Sequencer(synth)
-    events = load(str(midi_path), persistent=False)
-    if not events:
-        raise RuntimeError(f"No MIDI events found in {midi_path}")
-    sequencer.add(events)
-    duration = max(event.t for event in events) + tail_seconds
-    logger.info(
-        "Rendering MIDI via SoundFont (%s): %.2fs, %d events",
-        soundfont.name,
-        duration,
-        len(events),
-    )
+        sequencer = Sequencer(synth)
+        events = load(str(midi_path), persistent=False)
+        if not events:
+            raise RuntimeError(f"No MIDI events found in {midi_path}")
+        sequencer.add(events)
+        duration = max(event.t for event in events) + tail_seconds
+        logger.info(
+            "Rendering MIDI via SoundFont (%s): %.2fs, %d events",
+            soundfont.name,
+            duration,
+            len(events),
+        )
 
-    chunks: list[np.ndarray] = []
-    remaining = int(duration * sample_rate)
-    while remaining > 0:
-        count = min(chunk_size, remaining)
-        buffer = synth.generate(count)
-        stereo = np.frombuffer(buffer, dtype=np.float32).reshape(-1, 2)
-        chunks.append(stereo)
-        remaining -= count
+        chunks: list[np.ndarray] = []
+        remaining = int(duration * sample_rate)
+        while remaining > 0:
+            count = min(chunk_size, remaining)
+            buffer = synth.generate(count)
+            stereo = np.frombuffer(buffer, dtype=np.float32).reshape(-1, 2)
+            chunks.append(stereo)
+            remaining -= count
+        try:
+            synth.sounds_off()
+            synth.notes_off()
+        except Exception:
+            pass
 
     stereo = np.concatenate(chunks, axis=0)
     mono = stereo.mean(axis=1)

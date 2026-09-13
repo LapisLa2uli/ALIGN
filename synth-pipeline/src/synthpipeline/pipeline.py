@@ -422,7 +422,7 @@ def _build_sample(
             midi_space="sounding",
             audio_space="sounding",
             effective_audio_shift=-sounding,
-            audio_render="oscillator_v1",
+            audio_render="soundfont_v1",
         ),
         logger,
     )

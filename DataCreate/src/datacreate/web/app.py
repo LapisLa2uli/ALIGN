@@ -7,6 +7,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -24,6 +26,7 @@ from datacreate.sample_prep import (
     reprocess_alignment,
 )
 from datacreate.score_segment import extract_measure_range
+from datacreate.tools.musescore import renderer_status, warmup_synth_background
 from datacreate.utils import read_json, setup_sample_logger, write_json
 from datacreate.validation import validate_labels_file
 from datacreate.web.compare_eval import default_eval_dir, load_summary, sample_payload
@@ -90,7 +93,13 @@ def _resolve_score_path(config: PipelineConfig, override: str | None) -> Path:
 def create_app(config: PipelineConfig | None = None) -> FastAPI:
     config = config or PipelineConfig.load()
     samples_root = config.resolved_path("samples_root") or Path("samples")
-    app = FastAPI(title="MusicEval Annotator", version="0.1.0")
+
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        warmup_synth_background(config)
+        yield
+
+    app = FastAPI(title="MusicEval Annotator", version="0.1.0", lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
     @app.get("/", response_class=HTMLResponse)
@@ -151,6 +160,10 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             "score_path": score_file,
             "available_audio_ids": available,
         }
+
+    @app.get("/api/renderer/status")
+    def get_renderer_status() -> dict[str, Any]:
+        return renderer_status()
 
     @app.post("/api/batch/range")
     def batch_range(payload: BatchRangePayload) -> dict[str, Any]:
@@ -312,6 +325,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             raise HTTPException(404, "Sample not found")
         logger = setup_sample_logger(sample_dir, name="prep")
         try:
+            if not (sample_dir / "note_alignment_v2.json").exists():
+                reprocess_alignment(sample_dir, config, logger)
             return build_note_alignment(sample_dir, logger)
         except FileNotFoundError as exc:
             raise HTTPException(404, str(exc)) from exc

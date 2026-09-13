@@ -32,6 +32,18 @@ def _row_sequence(note_map_path: Path):
         document.get("rendered_notes") or [],
         key=lambda row: int(row["rendered_index"]),
     )
+    pitch_offsets = [
+        int(row["pitch_midi_written"]) - clean[int(row["primary_clean_index"])]
+        for row in rendered
+        if row.get("primary_clean_index") is not None
+        and int(row["primary_clean_index"]) in clean
+        and str(row.get("relationship")) in {"match", "copy"}
+    ]
+    rendered_pitch_correction = (
+        -int(round(float(np.median(pitch_offsets))))
+        if pitch_offsets
+        else 0
+    )
     notes = []
     primary = []
     relationships = []
@@ -43,7 +55,7 @@ def _row_sequence(note_map_path: Path):
         pitch = (
             clean[int(clean_index)]
             if clean_index is not None and int(clean_index) in clean
-            else int(row["pitch_midi_written"]) - 2
+            else int(row["pitch_midi_written"]) + rendered_pitch_correction
         )
         notes.append(
             TranscribedNote(
@@ -111,7 +123,12 @@ def _manifest_maps(
         row: dict[str, Any] = dict(raw)
         if str(row.get("corpus") or row.get("root")) != "procedural12k":
             raise ValueError("Repetition training rejected non-procedural row")
-        path = Path(str(row["note_map"]))
+        path = Path(
+            str(
+                row.get("note_map")
+                or Path(str(row["sample_dir"])) / "note_map.json"
+            )
+        )
         if path.is_file():
             selected.append(path)
         if maximum and len(selected) >= maximum:

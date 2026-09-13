@@ -18,6 +18,7 @@
       </label>
       <label>Annotator ID <input id="annotatorId" type="text" placeholder="annotator_01" /></label>
       <button id="saveBtn">Save labels</button>
+      <span id="rendererStatus" class="hint renderer-status" title="SoundFont WAV renderer">Renderer: starting…</span>
       <a class="header-link" href="/compare">Gold vs Model A</a>
     </div>
   </header>
@@ -75,7 +76,6 @@
     </div>
     <div id="waveformScroll" class="waveform-scroll">
       <div id="alignmentStack" class="alignment-stack">
-        <div id="staffStrip" class="staff-strip hidden" aria-hidden="true"></div>
         <div id="scrubber" class="scrubber" title="Click or drag to move playhead">
           <div id="scrubberProgress" class="scrubber-progress"></div>
           <div id="playhead" class="playhead"></div>
@@ -84,7 +84,25 @@
         <div class="waveform-wrap">
           <div id="waveform"></div>
         </div>
-        <div id="melodyStrip" class="melody-strip" title="Drag on the reference score to mark erred notes/rests"></div>
+        <div id="scoreCompare" class="score-compare">
+          <div class="score-row-head">
+            <strong>Transcription</strong>
+            <span class="hint">notes detected from the performance audio</span>
+            <span class="score-compare-legend">
+              <span class="swatch match"></span> aligned
+              <span class="swatch sub"></span> pitch mismatch
+              <span class="swatch extra"></span> extra
+              <span class="swatch miss"></span> missed
+            </span>
+          </div>
+          <div id="transcriptionStrip" class="staff-strip transcription-strip" aria-label="Transcribed notes"></div>
+          <div id="scoreAlignOverlay" class="score-align-overlay" aria-hidden="true"></div>
+          <div class="score-row-head">
+            <strong>Reference</strong>
+            <span class="hint">written score — drag to mark erred notes</span>
+          </div>
+          <div id="melodyStrip" class="melody-strip" title="Drag on the reference score to mark erred notes/rests"></div>
+        </div>
         <div id="ewmaStrip" class="ewma-strip hidden" aria-hidden="true" title="EWMA of performance/score duration ratio"></div>
       </div>
     </div>
@@ -149,6 +167,7 @@
       <li>Ctrl+drag on waveform: select multiple regions</li>
       <li>Shift+right-drag: rectangle-select labels</li>
       <li>Staff highlight: blue = erred core, green = auto pad (2 notes per side)</li>
+      <li>Two score rows: transcription (from audio) above reference; colored links show the alignment</li>
       <li>Repetition labels: original-passage link is optional</li>
       <li>Ctrl+wheel on waveform: zoom; wheel: scroll horizontally</li>
     </ul>

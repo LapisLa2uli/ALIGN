@@ -100,3 +100,9 @@ class SynthConfig:
         cfg.audio["mono"] = bool(self.audio.get("mono", True))
         cfg.schema_version = self.schema_version
         return cfg
+
+    def score_exclude_stems(self) -> set[str]:
+        raw = self.paths.get("score_exclude") or self.generation.get("score_exclude") or []
+        if isinstance(raw, str):
+            raw = [raw]
+        return {Path(str(name)).stem.lower() for name in raw}

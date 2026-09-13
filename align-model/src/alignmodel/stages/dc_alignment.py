@@ -174,10 +174,31 @@ def pairs_from_learned_alignment(
     first_pass = [observed[index] for index in first_pass_indices]
     mapping: list[int | None] = [None] * len(observed)
     contextual = getattr(learned, "contextual_note_aligner", None)
-    if contextual is not None and bool(
+    strategy = str(
+        getattr(state.config, "note_alignment_strategy", "contextual")
+    )
+    if strategy == "multi_start":
+        from alignmodel.stages.alignment_strategies import multi_start_mapping
+
+        first_mapping = multi_start_mapping(first_pass, state.score.notes)
+    elif strategy == "deterministic":
+        first_mapping = _monotonic_pitch_mapping(
+            first_pass, state.score.notes
+        )
+    elif contextual is not None and bool(
         getattr(state.config, "use_contextual_note_aligner", True)
     ):
         first_mapping = contextual.align(first_pass, state.score.notes)
+        if strategy == "revision":
+            from alignmodel.stages.alignment_strategies import (
+                dynamic_revision_mapping,
+            )
+
+            first_mapping = dynamic_revision_mapping(
+                first_pass,
+                state.score.notes,
+                first_mapping,
+            )
     else:
         first_mapping = _monotonic_pitch_mapping(
             first_pass, state.score.notes

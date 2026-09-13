@@ -2,7 +2,7 @@
 
 MusicXML and transcriber outputs are written pitch. Rendered WAV is sounding
 pitch: written minus two semitones. MIDI files may be either written (legacy
-``soundfont_rerender``) or sounding (current generation / ``oscillator_v1``).
+``soundfont_rerender``) or sounding (``soundfont_v1``, ``oscillator_v1``).
 """
 
 from __future__ import annotations
@@ -14,7 +14,9 @@ from typing import Any
 
 DEFAULT_SOUNDING_TRANSPOSE = -2
 WRITTEN_MIDI_RENDERS = frozenset({"soundfont_rerender"})
-SOUNDING_MIDI_RENDERS = frozenset({"oscillator_v1", "current", None, ""})
+SOUNDING_MIDI_RENDERS = frozenset(
+    {"soundfont_v1", "oscillator_v1", "oscillator_v1_bare", "current", None, ""}
+)
 _STEP = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 
 

@@ -1,3 +1,7 @@
+from pathlib import Path
+
+from music21 import duration, meter, note, stream, tempo, tie
+
 from datacreate.melody import (
     ScoreSoundingNote,
     WeakMelody,
@@ -7,6 +11,7 @@ from datacreate.melody import (
     match_melodies_detail,
     melody_similarity,
     padded_melody,
+    parse_sounding_notes,
 )
 
 
@@ -149,3 +154,27 @@ def test_exclusive_one_gold_one_pred():
     f1, precision = match_melodies(gold, pred)
     assert precision == 0.5
     assert abs(f1 - (2 * 0.5 * 1.0) / 1.5) < 1e-9
+
+
+def test_parse_sounding_notes_skips_grace_and_folds_ties(tmp_path: Path):
+    part = stream.Part()
+    part.insert(0, tempo.MetronomeMark(number=60))
+    part.insert(0, meter.TimeSignature("4/4"))
+    measure = stream.Measure(number=1)
+    grace = note.Note("D5")
+    grace.duration = duration.GraceDuration(0.25)
+    start = note.Note("C4", quarterLength=2.0)
+    start.tie = tie.Tie("start")
+    stop = note.Note("C4", quarterLength=2.0)
+    stop.tie = tie.Tie("stop")
+    measure.append(grace)
+    measure.append(start)
+    measure.append(stop)
+    part.append(measure)
+    score = stream.Score()
+    score.insert(0, part)
+    path = tmp_path / "sounding.musicxml"
+    score.write("musicxml", fp=str(path))
+    notes = parse_sounding_notes(path)
+    assert [n.pitch for n in notes] == [60]
+    assert abs(notes[0].ql_end - notes[0].ql_start - 4.0) < 1e-6

@@ -48,6 +48,11 @@ class BasicPitchDecodeConfig:
     infer_onsets: bool = True
     melodia_trick: bool = True
     multiple_pitch_bends: bool = True
+    written_midi_min: int = 50
+    written_midi_max: int = 96
+    merge_same_pitch_gap_sec: float = 0.10
+    merge_onset_threshold: float = 0.60
+    harmonic_overlap_ratio: float = 0.55
 
 
 FROZEN_DECODE_CONFIG = BasicPitchDecodeConfig()
@@ -484,14 +489,112 @@ def decode_frozen_basic_pitch(
     return decode_basic_pitch_features(features, FROZEN_DECODE_CONFIG)
 
 
+def sanitize_basic_pitch_notes(
+    notes: list[Any],
+    features: BasicPitchFeatures,
+    config: BasicPitchDecodeConfig = FROZEN_DECODE_CONFIG,
+) -> list[Any]:
+    """Enforce monophonic clarinet range and merge weak artificial splits."""
+
+    from .decode import TransNote
+
+    ranged = [
+        note
+        for note in notes
+        if config.written_midi_min <= int(note.pitch) <= config.written_midi_max
+    ]
+    # Drop overlapping upper harmonics and resolve other impossible polyphony.
+    selected: list[Any] = []
+    for note in sorted(
+        ranged, key=lambda value: (value.start, -value.confidence, value.pitch)
+    ):
+        conflict = None
+        for index, other in enumerate(selected):
+            overlap = min(note.end, other.end) - max(note.start, other.start)
+            if overlap <= 0:
+                continue
+            if abs(float(note.start) - float(other.start)) > 0.08:
+                continue
+            ratio = overlap / max(
+                min(note.end - note.start, other.end - other.start), 1e-6
+            )
+            if ratio >= config.harmonic_overlap_ratio:
+                conflict = index
+                break
+        if conflict is None:
+            selected.append(note)
+            continue
+        other = selected[conflict]
+        delta = int(note.pitch) - int(other.pitch)
+        if abs(delta) in {12, 19, 24}:
+            preferred = (
+                other
+                if other.pitch < note.pitch
+                and other.confidence >= note.confidence - 0.20
+                else note
+            )
+        else:
+            preferred = (
+                other if other.confidence >= note.confidence else note
+            )
+        selected[conflict] = preferred
+
+    merged: list[Any] = []
+    for note in sorted(selected, key=lambda value: (value.start, value.pitch)):
+        if not merged:
+            merged.append(note)
+            continue
+        previous = merged[-1]
+        gap = float(note.start) - float(previous.end)
+        frame = int(np.argmin(np.abs(features.frame_times - float(note.start))))
+        axis = int(note.pitch) - MIDI_OFFSET
+        onset_strength = (
+            float(features.onset[frame, axis])
+            if 0 <= frame < len(features.frame_times)
+            and 0 <= axis < features.onset.shape[1]
+            else 1.0
+        )
+        if (
+            int(note.pitch) == int(previous.pitch)
+            and gap <= config.merge_same_pitch_gap_sec
+            and onset_strength < config.merge_onset_threshold
+        ):
+            duration_previous = max(previous.end - previous.start, 1e-6)
+            duration_note = max(note.end - note.start, 1e-6)
+            cents = (
+                previous.cents * duration_previous + note.cents * duration_note
+            ) / (duration_previous + duration_note)
+            merged[-1] = TransNote(
+                pitch=int(previous.pitch),
+                start=float(previous.start),
+                end=max(float(previous.end), float(note.end)),
+                confidence=max(
+                    float(previous.confidence), float(note.confidence)
+                ),
+                cents=round(float(cents), 2),
+                pitch_candidates=tuple(
+                    dict.fromkeys(
+                        (
+                            *(previous.pitch_candidates or (previous.pitch,)),
+                            *(note.pitch_candidates or (note.pitch,)),
+                        )
+                    )
+                )[:3],
+            )
+        else:
+            merged.append(note)
+    return merged
+
+
 def transcribe_with_basic_pitch(
     sample_dir: Path | str,
     *,
     cache_path: Path | str | None = None,
     force: bool = False,
 ) -> list[Any]:
-    return decode_frozen_basic_pitch(
-        extract_sample_basic_pitch_features(
-            sample_dir, cache_path=cache_path, force=force
-        )
+    features = extract_sample_basic_pitch_features(
+        sample_dir, cache_path=cache_path, force=force
+    )
+    return sanitize_basic_pitch_notes(
+        decode_frozen_basic_pitch(features), features
     )

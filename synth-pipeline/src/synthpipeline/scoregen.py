@@ -170,12 +170,27 @@ def resolve_score_inputs(
         for pattern in ("*.musicxml", "*.xml", "*.mxl"):
             files.extend(sorted(score_arg.rglob(pattern)))
         files = sorted({p.resolve() for p in files})
+        files = _exclude_scores(files, config)
         if not files:
             raise FileNotFoundError(f"No MusicXML files in {score_arg}")
         return files
     if not score_arg.exists():
         raise FileNotFoundError(score_arg)
-    return [score_arg]
+    return _exclude_scores([score_arg], config)
+
+
+def _exclude_scores(files: list[Path], config: SynthConfig | None) -> list[Path]:
+    if config is None:
+        return files
+    blocked = config.score_exclude_stems()
+    if not blocked:
+        return files
+    kept = [path for path in files if path.stem.lower() not in blocked]
+    if files and not kept:
+        raise FileNotFoundError(
+            f"All MusicXML scores were excluded ({sorted(blocked)})"
+        )
+    return kept
 
 
 def snippet_score(

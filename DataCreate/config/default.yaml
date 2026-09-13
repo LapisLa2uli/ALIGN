@@ -10,6 +10,8 @@ paths:
   work_dir: ./work
   raw_data_score: ../RawData/Score
   raw_data_audio: ../RawData/Audio
+  note_alignment_python: ../align-model/.venv-amt-bench/Scripts/python.exe
+  note_alignment_weights: ../align-model/runs/contextual-aligner-outputRaw_sf-1k/weights
 
 audio:
   sample_rate: 22050
@@ -23,6 +25,9 @@ mel:
   fmax: null
 
 alignment:
+  engine: note_first
+  note_alignment_device: cuda
+  note_alignment_timeout_sec: 900
   feature: chroma          # chroma | cqt
   cqt_bins: 84
   dtw_band_ratio: 0.1      # Sakoe-Chiba band as fraction of sequence length
