@@ -858,10 +858,11 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
     note_first_path = sample_dir / "note_alignment_v2.json"
     if note_first_path.exists():
         payload = read_json(note_first_path)
-        if payload.get("engine") != "align-note-first":
+        engine = str(payload.get("engine") or "")
+        if engine not in {"align-note-first", "align-joint"}:
             raise ValueError(f"Unknown note alignment engine in {note_first_path}")
         summary = dict(payload.get("summary") or {})
-        summary.setdefault("engine", "align-note-first")
+        summary.setdefault("engine", engine)
         summary.setdefault("event_count", len(payload.get("events") or []))
         summary["alignment_path"] = str(note_first_path)
         transcribed = _normalize_transcribed_notes(payload)
@@ -872,7 +873,8 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
             sum(value is not None for value in mapping),
         )
         logger.info(
-            "Loaded note-first alignment for %s: %d events, %d transcribed",
+            "Loaded %s alignment for %s: %d events, %d transcribed",
+            engine,
             sample_dir.name,
             summary["event_count"],
             len(transcribed),

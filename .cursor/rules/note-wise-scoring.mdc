@@ -1,0 +1,17 @@
+---
+description: Require note-wise metrics for every official model evaluation
+alwaysApply: true
+---
+
+# Note-wise Scoring
+
+- Use score-note/event identity as the official evaluation unit.
+- Match predictions and gold exclusively one-to-one; never let one item satisfy multiple items.
+- A correct note location and correct label type receives 1.0 credit.
+- A correct note location with a different label type receives 0.5 credit.
+- A wrong note location receives 0 credit.
+- Derive error locations from canonical score-event indices or schema 1.2 score ranges/pitch lists.
+- Treat timestamp IoU and onset-tolerance scores as optional diagnostics only. Never use them for checkpoint selection, promotion, or headline F1.
+- Schema 1.1 labels without a reliable score-note projection are formally unevaluable under the official metric; do not substitute a timestamp score.
+- Report note-wise precision, recall, F1, per-type F1, supports, and the exact matching policy.
+- Keep historical timestamp metrics under explicitly named legacy fields for reproducibility.

@@ -12,12 +12,15 @@ from datacreate.note_alignment import build_note_alignment
 from datacreate.sample_prep import _invalidate_alignment_artifacts
 
 
-def _config(python: Path, weights: Path) -> PipelineConfig:
+def _config(python: Path, weights: Path, checkpoint: Path | None = None) -> PipelineConfig:
+    paths = {
+        "note_alignment_python": str(python),
+        "note_alignment_weights": str(weights),
+    }
+    if checkpoint is not None:
+        paths["note_alignment_checkpoint"] = str(checkpoint)
     return PipelineConfig(
-        paths={
-            "note_alignment_python": str(python),
-            "note_alignment_weights": str(weights),
-        },
+        paths=paths,
         audio={"sample_rate": 22050},
         mel={"hop_length": 512},
         alignment={"note_alignment_device": "cpu"},
@@ -83,6 +86,73 @@ def test_bridge_writes_compatibility_and_gui_alignment(tmp_path):
     assert payload["transcribed_notes"][0]["pitch"] == "C4"
     assert payload["transcribed_notes"][0]["score_index"] == 0
     assert payload["note_mapping"] == [0]
+
+
+def test_bridge_prefers_joint_checkpoint(tmp_path):
+    python = tmp_path / "python.exe"
+    python.write_bytes(b"x")
+    weights = tmp_path / "weights"
+    weights.mkdir()
+    checkpoint = tmp_path / "joint_decoder.pt"
+    checkpoint.write_bytes(b"ckpt")
+    sample = tmp_path / "sample"
+    sample.mkdir()
+    perf = sample / "performance_audio.wav"
+    ref = sample / "reference_audio.wav"
+    perf.write_bytes(b"wav")
+    ref.write_bytes(b"wav")
+    seen = {}
+
+    def fake_run(command, **_kwargs):
+        seen["command"] = [str(item) for item in command]
+        output = Path(command[command.index("--out") + 1])
+        output.write_text(
+            json.dumps(
+                {
+                    "engine": "align-joint",
+                    "events": [
+                        {
+                            "id": "aligned_00000",
+                            "score_index": 0,
+                            "is_rest": False,
+                            "midi": 60,
+                            "pitch": "C4",
+                            "ref_start": 0.0,
+                            "ref_end": 0.5,
+                            "perf_start": 0.1,
+                            "perf_end": 0.6,
+                        }
+                    ],
+                    "labels": [],
+                    "transcribed_notes": [
+                        {"pitch": 60, "start": 0.1, "end": 0.6, "confidence": 0.9}
+                    ],
+                    "note_mapping": [0],
+                    "summary": {
+                        "engine": "align-joint",
+                        "backend": "joint-path-crf",
+                        "event_count": 1,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        return subprocess.CompletedProcess(command, 0, "ok", "")
+
+    with patch("datacreate.align_bridge.subprocess.run", side_effect=fake_run):
+        run_preferred_alignment(
+            perf,
+            ref,
+            sample,
+            _config(python, weights, checkpoint),
+            logging.getLogger("test"),
+        )
+    assert "--checkpoint" in seen["command"]
+    assert str(checkpoint) in seen["command"]
+    payload = build_note_alignment(sample)
+    assert payload["summary"]["engine"] == "align-joint"
+    assert payload["summary"]["backend"] == "joint-path-crf"
+    assert payload["transcribed_notes"][0]["score_index"] == 0
 
 
 def test_invalidation_removes_note_first_artifact(tmp_path):

@@ -4,6 +4,7 @@ from alignmodel.melody import (
     gold_melodies_from_labels,
     match_melodies,
     match_melodies_detail,
+    parse_sounding_notes,
     pred_melodies_from_labels,
 )
 from alignmodel.melody_model import decode_note_runs
@@ -17,6 +18,7 @@ from alignmodel.types import (
     labels_document,
 )
 from datacreate.melody import ScoreSoundingNote
+from music21 import note, spanner, stream
 
 
 def test_gold_skips_repeated_pass_and_dedupes():
@@ -167,6 +169,19 @@ def test_pred_extra_maps_to_neighbors_plus_pad():
     )
     assert len(pred) == 1
     assert pred[0].pitches == [61, 62, 63, 64]
+
+
+def test_schema_score_index_does_not_collapse_slurred_notes():
+    score = stream.Score()
+    part = stream.Part()
+    first = note.Note(60, quarterLength=1.0)
+    second = note.Note(60, quarterLength=1.0)
+    part.append(first)
+    part.append(second)
+    part.insert(0, spanner.Slur(first, second))
+    score.insert(0, part)
+    sounding = parse_sounding_notes(score)
+    assert [value.pitch for value in sounding] == [60, 60]
 
 
 def test_first_pass_drops_repeated_pass():

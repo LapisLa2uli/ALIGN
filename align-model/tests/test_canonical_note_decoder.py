@@ -41,7 +41,11 @@ class CanonicalNoteDecoderTests(unittest.TestCase):
                     return_value=object(),
                 ) as extract,
                 patch(
-                    "alignmodel.transcription.canonical.decode_frozen_basic_pitch",
+                    "alignmodel.transcription.canonical.decode_basic_pitch_features",
+                    return_value=expected,
+                ),
+                patch(
+                    "alignmodel.transcription.canonical.sanitize_basic_pitch_notes",
                     return_value=expected,
                 ),
             ):

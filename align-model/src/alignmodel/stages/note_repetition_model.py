@@ -9,7 +9,7 @@ import numpy as np
 import torch
 from torch import nn
 
-FEATURE_NAMES = (
+FEATURE_NAMES_V1 = (
     "pitch_exact_fraction",
     "pitch_class_fraction",
     "interval_exact_fraction",
@@ -22,6 +22,12 @@ FEATURE_NAMES = (
     "repeat_extra_fraction",
     "source_extra_fraction",
     "duration_ratio_error",
+)
+FEATURE_NAMES = (
+    *FEATURE_NAMES_V1,
+    "continuation_pitch_fraction",
+    "continuation_alignment_score",
+    "restart_gap_strength",
 )
 
 
@@ -43,6 +49,10 @@ class NoteRepetitionModelConfig:
     max_sources_per_note: int = 32
     max_notes: int = 64
     max_repetitions: int = 2
+    feature_version: int = 2
+    continuation_lookahead_notes: int = 3
+    continuation_candidate_skips: int = 1
+    continuation_source_skips: int = 1
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -52,8 +62,13 @@ class NoteRepetitionScorer(nn.Module):
     def __init__(self, config: NoteRepetitionModelConfig | None = None) -> None:
         super().__init__()
         self.config = config or NoteRepetitionModelConfig()
+        self.feature_names = (
+            FEATURE_NAMES_V1
+            if int(self.config.feature_version) <= 1
+            else FEATURE_NAMES
+        )
         self.net = nn.Sequential(
-            nn.Linear(len(FEATURE_NAMES), self.config.hidden_dim),
+            nn.Linear(len(self.feature_names), self.config.hidden_dim),
             nn.SiLU(),
             nn.Dropout(self.config.dropout),
             nn.Linear(self.config.hidden_dim, self.config.hidden_dim),
@@ -62,6 +77,13 @@ class NoteRepetitionScorer(nn.Module):
         )
 
     def forward(self, features: torch.Tensor) -> torch.Tensor:
+        expected = len(self.feature_names)
+        if features.shape[-1] < expected:
+            features = torch.nn.functional.pad(
+                features, (0, expected - features.shape[-1])
+            )
+        elif features.shape[-1] > expected:
+            features = features[..., :expected]
         return self.net(features).squeeze(-1)
 
 
@@ -71,6 +93,60 @@ def _value(note: Any, name: str, default: float = 0.0) -> float:
     return float(getattr(note, name, default))
 
 
+def continuation_similarity(
+    notes: list[Any],
+    source_i0: int,
+    repeat_i0: int,
+    length: int,
+    *,
+    lookahead_notes: int = 3,
+    candidate_skips: int = 1,
+    source_skips: int = 1,
+) -> tuple[float, float]:
+    """Compare post-replay notes to the source phrase's expected continuation."""
+
+    source_start = source_i0 + length
+    repeat_start = repeat_i0 + length
+    expected = [
+        int(_value(note, "pitch"))
+        for note in notes[
+            source_start : min(
+                repeat_i0,
+                source_start + lookahead_notes + source_skips,
+            )
+        ]
+    ]
+    observed = [
+        int(_value(note, "pitch"))
+        for note in notes[
+            repeat_start : repeat_start + lookahead_notes + candidate_skips
+        ]
+    ]
+    target = min(max(1, lookahead_notes), len(expected))
+    if target < 2 or len(observed) < 2:
+        return 0.5, 0.0
+    active: dict[tuple[int, int, int, int], int] = {(0, 0, 0, 0): 0}
+    best = 0
+    while active:
+        following: dict[tuple[int, int, int, int], int] = {}
+        for (obs_i, exp_i, obs_skips, exp_skips), matches in active.items():
+            best = max(best, matches)
+            if obs_i >= len(observed) or exp_i >= len(expected):
+                continue
+            if observed[obs_i] == expected[exp_i]:
+                key = (obs_i + 1, exp_i + 1, obs_skips, exp_skips)
+                following[key] = max(following.get(key, -1), matches + 1)
+            if obs_skips < candidate_skips:
+                key = (obs_i + 1, exp_i, obs_skips + 1, exp_skips)
+                following[key] = max(following.get(key, -1), matches)
+            if exp_skips < source_skips:
+                key = (obs_i, exp_i + 1, obs_skips, exp_skips + 1)
+                following[key] = max(following.get(key, -1), matches)
+        active = following
+    fraction = best / max(target, 1)
+    return float(fraction), float(2.0 * fraction - 1.0)
+
+
 def repetition_features(
     notes: list[Any],
     source_i0: int,
@@ -78,6 +154,9 @@ def repetition_features(
     length: int,
     *,
     extra_mask: list[bool] | None = None,
+    continuation_lookahead_notes: int = 3,
+    continuation_candidate_skips: int = 1,
+    continuation_source_skips: int = 1,
 ) -> np.ndarray:
     source = notes[source_i0 : source_i0 + length]
     repeated = notes[repeat_i0 : repeat_i0 + length]
@@ -129,6 +208,28 @@ def repetition_features(
     source_extra = float(
         np.mean(extra[source_i0 : source_i0 + length])
     )
+    continuation_fraction, continuation_score = continuation_similarity(
+        notes,
+        source_i0,
+        repeat_i0,
+        length,
+        lookahead_notes=continuation_lookahead_notes,
+        candidate_skips=continuation_candidate_skips,
+        source_skips=continuation_source_skips,
+    )
+    preceding_end = (
+        _value(notes[repeat_i0 - 1], "end")
+        if repeat_i0 > 0
+        else _value(notes[repeat_i0], "start")
+    )
+    restart_gap = max(
+        0.0,
+        _value(notes[repeat_i0], "start") - preceding_end,
+    )
+    reference_duration = float(np.median(source_duration))
+    restart_gap_strength = min(
+        1.0, restart_gap / max(0.20, reference_duration)
+    )
     return np.asarray(
         [
             exact,
@@ -143,6 +244,9 @@ def repetition_features(
             target_extra,
             source_extra,
             min(1.0, abs(np.log(max(duration_center, 1e-6))) / 1.5),
+            continuation_fraction,
+            continuation_score,
+            restart_gap_strength,
         ],
         dtype=np.float32,
     )
@@ -154,6 +258,9 @@ def propose_note_repeat_candidates(
     extra_mask: list[bool] | None = None,
     max_notes: int = 64,
     max_sources_per_note: int = 32,
+    continuation_lookahead_notes: int = 3,
+    continuation_candidate_skips: int = 1,
+    continuation_source_skips: int = 1,
 ) -> list[NoteRepeatCandidate]:
     """Propose one-note and longer repeats, using same-pitch starts as seeds."""
 
@@ -190,6 +297,9 @@ def propose_note_repeat_candidates(
                     repeat_i0,
                     length,
                     extra_mask=extra_mask,
+                    continuation_lookahead_notes=continuation_lookahead_notes,
+                    continuation_candidate_skips=continuation_candidate_skips,
+                    continuation_source_skips=continuation_source_skips,
                 )
                 confidence = float(
                     0.72 * features[0]
@@ -217,7 +327,7 @@ def save_note_repetition_model(
         {
             "model": model.state_dict(),
             "model_config": model.config.to_dict(),
-            "feature_names": FEATURE_NAMES,
+            "feature_names": model.feature_names,
             "extra": dict(extra or {}),
         },
         path,
@@ -226,7 +336,15 @@ def save_note_repetition_model(
 
 def load_note_repetition_model(path, device="cpu"):
     payload = torch.load(path, map_location=device, weights_only=False)
-    config = NoteRepetitionModelConfig(**payload.get("model_config", {}))
+    values = dict(payload.get("model_config", {}))
+    if "feature_version" not in values:
+        values["feature_version"] = (
+            1
+            if len(payload.get("feature_names") or FEATURE_NAMES_V1)
+            <= len(FEATURE_NAMES_V1)
+            else 2
+        )
+    config = NoteRepetitionModelConfig(**values)
     model = NoteRepetitionScorer(config)
     model.load_state_dict(payload["model"])
     model.to(device).eval()

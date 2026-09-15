@@ -22,6 +22,7 @@ from .refiner import (
     save_note_refiner,
 )
 from .refiner_data import (
+    RefinerAugmentConfig,
     RefinerCropDataset,
     collate_refiner_batch,
     load_cached_refiner_features,
@@ -54,6 +55,9 @@ class RefinerTrainConfig:
     early_stop_patience: int = 4
     early_stop_min_epochs: int = 4
     min_f1_delta: float = 0.002
+    augment: RefinerAugmentConfig = field(
+        default_factory=RefinerAugmentConfig
+    )
     model: NoteRefinerConfig = field(
         default_factory=lambda: NoteRefinerConfig(
             pesto_pitch_unit="midi",
@@ -228,6 +232,7 @@ def train_note_refiner(config: RefinerTrainConfig) -> Path:
         midi_max=config.model.midi_max,
         training=True,
         crops_per_clip=config.crops_per_clip,
+        augment_config=config.augment,
     )
     loader_args = {
         "batch_size": config.batch_size,
@@ -297,6 +302,9 @@ def train_note_refiner(config: RefinerTrainConfig) -> Path:
                         "pitch",
                         "cents",
                         "frame_mask",
+                        "frame_weight",
+                        "onset_weight",
+                        "offset_weight",
                         "intervals",
                     )
                 }

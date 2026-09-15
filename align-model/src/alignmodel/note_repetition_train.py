@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import random
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 import numpy as np
 import torch
@@ -20,10 +20,15 @@ from alignmodel.stages.note_repetition_model import (
     save_note_repetition_model,
 )
 from alignmodel.types import TranscribedNote
+from alignmodel.validated_targets import target_note_map
 
 
-def _row_sequence(note_map_path: Path):
-    document = json.loads(note_map_path.read_text(encoding="utf-8"))
+def _row_sequence(note_map_path: Path | Mapping[str, Any]):
+    document = (
+        target_note_map(note_map_path)
+        if isinstance(note_map_path, Mapping)
+        else json.loads(note_map_path.read_text(encoding="utf-8"))
+    )
     clean = {
         int(row["clean_index"]): int(row["pitch_midi"])
         for row in document.get("clean_notes") or []
@@ -70,7 +75,9 @@ def _row_sequence(note_map_path: Path):
     return notes, primary, relationships
 
 
-def candidate_rows(note_map_path: Path, *, seed: int) -> tuple[list[np.ndarray], list[float]]:
+def candidate_rows(
+    note_map_path: Path | Mapping[str, Any], *, seed: int
+) -> tuple[list[np.ndarray], list[float]]:
     notes, primary, relationships = _row_sequence(note_map_path)
     if len(notes) < 2:
         return [], []
@@ -104,7 +111,26 @@ def candidate_rows(note_map_path: Path, *, seed: int) -> tuple[list[np.ndarray],
     rng.shuffle(positives)
     rng.shuffle(negatives)
     positives = positives[:24]
-    negatives = negatives[: max(24, 3 * len(positives))]
+    continuation_fraction = FEATURE_NAMES.index(
+        "continuation_pitch_fraction"
+    )
+    continuation_score = FEATURE_NAMES.index("continuation_alignment_score")
+    divergent_hard_negatives = []
+    for row in positives:
+        if float(row[continuation_fraction]) <= 0.5:
+            continue
+        divergent = row.copy()
+        # Preserve the source/replay prefix and restart evidence while making
+        # only the expected post-replay continuation deliberately unrelated.
+        divergent[continuation_fraction] = 0.0
+        divergent[continuation_score] = -1.0
+        divergent_hard_negatives.append(divergent)
+    rng.shuffle(divergent_hard_negatives)
+    natural_limit = max(24, 2 * len(positives))
+    negatives = (
+        negatives[:natural_limit]
+        + divergent_hard_negatives[: len(positives)]
+    )
     return (
         positives + negatives,
         [1.0] * len(positives) + [0.0] * len(negatives),
@@ -115,12 +141,17 @@ def _manifest_maps(
     manifest: Path,
     split: str,
     maximum: int,
-) -> list[Path]:
+) -> list[Any]:
     document = json.loads(manifest.read_text(encoding="utf-8"))
     rows = list(document.get(split) or [])
     selected = []
     for raw in rows:
         row: dict[str, Any] = dict(raw)
+        if row.get("target_db") is not None and row.get("target_record") is not None:
+            selected.append(row)
+            if maximum and len(selected) >= maximum:
+                break
+            continue
         if str(row.get("corpus") or row.get("root")) != "procedural12k":
             raise ValueError("Repetition training rejected non-procedural row")
         path = Path(
@@ -188,7 +219,7 @@ def _select_candidates(candidates, probabilities, threshold: float):
 @torch.no_grad()
 def calibrate_span_threshold(
     model: NoteRepetitionScorer,
-    note_maps: list[Path],
+    note_maps: list[Any],
     *,
     device: str,
 ) -> tuple[float, dict]:
@@ -405,7 +436,7 @@ def train_note_repetition_model(
         output,
         model,
         extra={
-            "format_version": 1,
+            "format_version": 2,
             "train_samples": train_samples,
             "val_samples": val_samples,
             "train_rows": len(train_y),
@@ -417,6 +448,11 @@ def train_note_repetition_model(
             },
             "history": history,
             "feature_names": FEATURE_NAMES,
+            "hard_negatives": {
+                "kind": "matching-prefix-divergent-continuation",
+                "maximum_per_positive": 1,
+                "natural_negative_ratio": 2,
+            },
         },
     )
     output.with_suffix(".history.json").write_text(

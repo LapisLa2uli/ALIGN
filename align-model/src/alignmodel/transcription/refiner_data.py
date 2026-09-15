@@ -20,6 +20,26 @@ from .fine_pitch import pesto_cache_path
 
 
 @dataclass(frozen=True)
+class RefinerAugmentConfig:
+    """Cached-map approximations of difficult microphone/timbre conditions."""
+
+    probability: float = 0.75
+    band_attenuation_probability: float = 0.45
+    band_attenuation_min: float = 0.25
+    band_attenuation_max: float = 0.70
+    filtered_timbre_probability: float = 0.45
+    breath_noise_std: float = 0.018
+    short_note_max_frames: int = 12
+    short_note_attenuation_probability: float = 0.70
+    short_note_attenuation_min: float = 0.25
+    short_note_attenuation_max: float = 0.60
+    same_pitch_split_probability: float = 0.45
+    short_note_positive_weight: float = 2.0
+    hard_negative_ratio: float = 1.0
+    hard_negative_weight: float = 2.0
+
+
+@dataclass(frozen=True)
 class RefinerExample:
     sample_dir: Path
     note_map: Path
@@ -232,6 +252,171 @@ def rasterize_refiner_targets(
     }
 
 
+def augment_cached_refiner_maps(
+    note: np.ndarray,
+    onset_map: np.ndarray,
+    contour: np.ndarray,
+    pesto: np.ndarray,
+    *,
+    intervals: Sequence[tuple[int, int, int]],
+    voiced_target: np.ndarray,
+    midi_offset: int = 21,
+    config: RefinerAugmentConfig = RefinerAugmentConfig(),
+    rng: np.random.Generator | None = None,
+) -> tuple[
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    np.ndarray,
+    dict[str, np.ndarray | int],
+]:
+    """Degrade positives and add equally weighted onset-like hard negatives."""
+
+    generator = rng or np.random.default_rng()
+    frames = int(note.shape[0])
+    frame_weight = np.ones(frames, dtype=np.float32)
+    onset_weight = np.ones(frames, dtype=np.float32)
+    split_weight = np.ones(frames, dtype=np.float32)
+    if frames == 0 or generator.random() >= config.probability:
+        return note, onset_map, contour, pesto, {
+            "frame_weight": frame_weight,
+            "onset_weight": onset_weight,
+            "offset_weight": split_weight,
+            "short_positive_count": 0,
+            "hard_negative_count": 0,
+            "artificial_split_count": 0,
+        }
+
+    if generator.random() < config.band_attenuation_probability:
+        width = int(generator.integers(4, min(19, note.shape[1] + 1)))
+        first = int(generator.integers(0, max(1, note.shape[1] - width + 1)))
+        scale = float(
+            generator.uniform(
+                config.band_attenuation_min,
+                config.band_attenuation_max,
+            )
+        )
+        note[:, first : first + width] *= scale
+        onset_map[:, first : first + width] *= scale
+        contour[:, first * 3 : (first + width) * 3] *= scale
+
+    if generator.random() < config.filtered_timbre_probability:
+        if frames > 2:
+            note[1:-1] = (
+                0.20 * note[:-2] + 0.60 * note[1:-1] + 0.20 * note[2:]
+            )
+            contour[1:-1] = (
+                0.20 * contour[:-2]
+                + 0.60 * contour[1:-1]
+                + 0.20 * contour[2:]
+            )
+        breath = generator.normal(
+            0.0, config.breath_noise_std, contour.shape
+        ).astype(np.float32)
+        contour[:] = np.clip(contour + breath, 0.0, 1.0)
+        pesto[:, 1] *= float(generator.uniform(0.65, 0.92))
+
+    short_positives: list[tuple[int, int, int]] = []
+    artificial_splits = 0
+    for first, last, midi in intervals:
+        first = max(0, int(first))
+        last = min(frames, int(last))
+        axis = int(midi) - int(midi_offset)
+        if last <= first or not 0 <= axis < note.shape[1]:
+            continue
+        length = last - first
+        if (
+            length <= config.short_note_max_frames
+            and generator.random()
+            < config.short_note_attenuation_probability
+        ):
+            scale = float(
+                generator.uniform(
+                    config.short_note_attenuation_min,
+                    config.short_note_attenuation_max,
+                )
+            )
+            note[first:last, axis] *= scale
+            onset_map[first : min(last, first + 2), axis] *= scale
+            contour[first:last, axis * 3 : axis * 3 + 3] *= scale
+            frame_weight[first:last] = np.maximum(
+                frame_weight[first:last],
+                config.short_note_positive_weight,
+            )
+            onset_weight[first] = max(
+                onset_weight[first],
+                config.short_note_positive_weight,
+            )
+            short_positives.append((first, last, axis))
+        elif (
+            length >= 8
+            and generator.random() < config.same_pitch_split_probability
+        ):
+            boundary = int(generator.integers(first + 3, last - 3))
+            note[max(first, boundary - 1) : min(last, boundary + 1), axis] *= 0.30
+            onset_map[boundary, axis] = max(
+                float(onset_map[boundary, axis]), 0.70
+            )
+            contour[
+                max(first, boundary - 1) : min(last, boundary + 2),
+                axis * 3 : axis * 3 + 3,
+            ] *= 0.65
+            onset_weight[boundary] = max(
+                onset_weight[boundary],
+                config.hard_negative_weight,
+            )
+            split_weight[boundary] = max(
+                split_weight[boundary],
+                config.hard_negative_weight,
+            )
+            artificial_splits += 1
+
+    requested_negatives = int(
+        round(len(short_positives) * config.hard_negative_ratio)
+    )
+    available = np.flatnonzero(np.asarray(voiced_target)[:frames] < 0.5)
+    hard_negative_count = min(requested_negatives, len(available))
+    if hard_negative_count:
+        chosen = generator.choice(
+            available, size=hard_negative_count, replace=False
+        )
+        for frame in np.asarray(chosen, dtype=np.int64):
+            axis = int(generator.integers(0, note.shape[1]))
+            onset_map[frame, axis] = max(
+                float(onset_map[frame, axis]),
+                float(generator.uniform(0.28, 0.48)),
+            )
+            note[frame, axis] = max(
+                float(note[frame, axis]),
+                float(generator.uniform(0.12, 0.25)),
+            )
+            contour[frame, axis * 3 : axis * 3 + 3] = np.maximum(
+                contour[frame, axis * 3 : axis * 3 + 3],
+                generator.uniform(0.08, 0.18, 3),
+            )
+            frame_weight[frame] = max(
+                frame_weight[frame], config.hard_negative_weight
+            )
+            onset_weight[frame] = max(
+                onset_weight[frame], config.hard_negative_weight
+            )
+
+    return (
+        np.clip(note, 0.0, 1.0),
+        np.clip(onset_map, 0.0, 1.0),
+        np.clip(contour, 0.0, 1.0),
+        pesto,
+        {
+            "frame_weight": frame_weight,
+            "onset_weight": onset_weight,
+            "offset_weight": split_weight,
+            "short_positive_count": len(short_positives),
+            "hard_negative_count": hard_negative_count,
+            "artificial_split_count": artificial_splits,
+        },
+    )
+
+
 class RefinerCropDataset(Dataset):
     def __init__(
         self,
@@ -245,6 +430,7 @@ class RefinerCropDataset(Dataset):
         training: bool = True,
         crops_per_clip: int = 2,
         augment_probability: float = 0.5,
+        augment_config: RefinerAugmentConfig | None = None,
     ) -> None:
         self.examples = examples
         self.basic_cache_root = Path(basic_cache_root)
@@ -257,6 +443,9 @@ class RefinerCropDataset(Dataset):
             1, int(crops_per_clip if training else 1)
         )
         self.augment_probability = float(augment_probability)
+        self.augment_config = augment_config or RefinerAugmentConfig(
+            probability=self.augment_probability
+        )
 
     def __len__(self) -> int:
         return len(self.examples) * self.crops_per_clip
@@ -288,17 +477,6 @@ class RefinerCropDataset(Dataset):
         onset_map = crop(basic.onset, 88)
         contour = crop(basic.contour, 264)
         pesto_crop = crop(pesto, 2)
-        if self.training and random.random() < self.augment_probability:
-            scale = random.uniform(0.85, 1.12)
-            note = np.clip(note * scale, 0.0, 1.0)
-            onset_map = np.clip(
-                onset_map * random.uniform(0.85, 1.15), 0.0, 1.0
-            )
-            noise = np.random.normal(0.0, 0.01, contour.shape).astype(
-                np.float32
-            )
-            contour = np.clip(contour + noise, 0.0, 1.0)
-            pesto_crop[:, 1] *= random.uniform(0.85, 1.0)
 
         targets = rasterize_refiner_targets(
             load_rendered_target_notes(example),
@@ -311,6 +489,33 @@ class RefinerCropDataset(Dataset):
             for first, last, midi in targets["intervals"]  # type: ignore[index]
             if start <= first and last <= start + self.crop_frames
         ]
+        augmentation: dict[str, np.ndarray | int] = {
+            "frame_weight": np.ones(self.crop_frames, np.float32),
+            "onset_weight": np.ones(self.crop_frames, np.float32),
+            "offset_weight": np.ones(self.crop_frames, np.float32),
+            "short_positive_count": 0,
+            "hard_negative_count": 0,
+            "artificial_split_count": 0,
+        }
+        if self.training:
+            (
+                note,
+                onset_map,
+                contour,
+                pesto_crop,
+                augmentation,
+            ) = augment_cached_refiner_maps(
+                note,
+                onset_map,
+                contour,
+                pesto_crop,
+                intervals=intervals,
+                voiced_target=np.pad(
+                    np.asarray(targets["voiced"])[start:stop],
+                    (0, self.crop_frames - valid_frames),
+                ),
+                config=self.augment_config,
+            )
         frame_mask = np.zeros(self.crop_frames, dtype=np.bool_)
         frame_mask[:valid_frames] = True
         result: dict[str, Any] = {
@@ -323,6 +528,16 @@ class RefinerCropDataset(Dataset):
             "crop_start": start,
             "intervals": intervals,
         }
+        for key in ("frame_weight", "onset_weight", "offset_weight"):
+            result[key] = torch.from_numpy(
+                np.asarray(augmentation[key], dtype=np.float32)
+            )
+        for key in (
+            "short_positive_count",
+            "hard_negative_count",
+            "artificial_split_count",
+        ):
+            result[key] = int(augmentation[key])
         for key in ("voiced", "onset", "offset", "pitch", "cents"):
             values = np.asarray(targets[key])[start:stop]
             padded = np.zeros(

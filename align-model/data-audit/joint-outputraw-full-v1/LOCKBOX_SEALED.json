@@ -1,0 +1,54 @@
+{
+  "artifacts": {
+    "audit_report.json": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\audit_report.json",
+      "sha256": "01e1905c4f19bc2cc7caf2a8365d66b1b0c391cf6b532205d9de39d2630ce40a",
+      "size": 18976
+    },
+    "bundle_index.jsonl": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\bundle_index.jsonl",
+      "sha256": "08b07bd3f8ec2dac5944290b5197436900bbcbff7411c187a501b8850d5e605c",
+      "size": 22895569
+    },
+    "canonical_dev_targets.sqlite": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\canonical_dev_targets.sqlite",
+      "sha256": "137d6069c2909e111ef663f87bb193801e79f056916c695d343b1a641bf61584",
+      "size": 47263744
+    },
+    "hash_cache.json": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\hash_cache.json",
+      "sha256": "19319285dd575125042ffc937febd7ac8cd8c8b8868c2b71ea4f52fe70bfd864",
+      "size": 46624308
+    },
+    "historical_lockbox_exclusions.json": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\historical_lockbox_exclusions.json",
+      "sha256": "9f7dca28d1fe929de87a111bfd70bca369f7f6ccec7727d1ec8ab7e5e7dc01ea",
+      "size": 92144
+    },
+    "split.json": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\split.json",
+      "sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+      "size": 17259694
+    }
+  },
+  "locked_split": "test",
+  "release": "joint-outputraw-full-v1",
+  "rules": [
+    "Never materialize test features or targets before model freeze.",
+    "Never inspect test audio-derived features after this seal.",
+    "Use train/val only for thresholds, calibration, and model selection.",
+    "A final test evaluation requires verifying every artifact hash."
+  ],
+  "schema_version": "align-outputraw-lockbox-v1",
+  "sealed_utc": "2026-09-14T17:30:51.197036+00:00",
+  "split_counts": {
+    "test": 4022,
+    "train": 4544,
+    "val": 358
+  },
+  "success_target": {
+    "metric": "combined_full_joint_micro_f1",
+    "status": "target_not_demonstrated",
+    "threshold": 0.8
+  }
+}

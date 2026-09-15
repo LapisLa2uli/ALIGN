@@ -1,6 +1,6 @@
 # MusicEval / ALIGN — Methodology
 
-This document describes the ALIGN / MusicEval methodology: how score + performance audio become labeled training bundles, how **synthetic** gold is planted, and how model output is scored. The current focus is **clarinet** practice against notated MusicXML (or PDF→OMR). Real takes use human review as ground truth. Synth volume comes from `synth-pipeline` (schema **1.2** score-part melodies). Official synth eval is contiguous pitch-list **containment F1**, not timestamp IoU.
+This document describes the ALIGN / MusicEval methodology: how score + performance audio become labeled training bundles, how **synthetic** gold is planted, and how model output is scored. The current focus is **clarinet** practice against notated MusicXML (or PDF→OMR). Real takes use human review as ground truth. Synth volume comes from `synth-pipeline` (schema **1.2** score-part melodies). Official evaluation is exclusive one-to-one canonical score-event identity F1. Pitch coincidence and timestamps do not establish location.
 
 ---
 
@@ -42,9 +42,9 @@ Score (.musicxml / .mxl / .pdf)
           │                               │
           └───────────────┬───────────────┘
                           │
-              Chroma/CQT DTW alignment
+        Basic Pitch note transcription
                           │
-         Score-event mapping + onset refine
+       Repetition-aware note-to-score mapping
                           │
               Auto candidates (pitch / rhythm / miss / extra)
                           │
@@ -63,7 +63,7 @@ Score (.musicxml / .mxl / .pdf)
 | 2 | OMR (Audiveris) + manual correction gate |
 | 3 | Reference audio synthesis |
 | 4 | Performance audio ingest |
-| 5 | DTW alignment + candidate detection |
+| 5 | Basic Pitch transcription + repetition-aware note alignment + candidate detection |
 | 6 | Web annotation UI (`datacreate serve`) |
 | 7 | Log-mel feature extraction |
 | 8 | Bundle metadata / labels template |
@@ -141,7 +141,9 @@ Optional **self-reported** marks (performer’s own suspected mistake regions) a
 
 ## 7. Alignment and candidate detection (Stage 5)
 
-This stage produces (1) a warping path and residuals, (2) score-event ↔ performance time mapping, and (3) auto candidates. It is **not** ground truth.
+The current path transcribes performance notes once, detects repeated note phrases, aligns the first pass to the clean score, reapplies repeat links, and derives note-error candidates. It writes `note_alignment_v2.json` and a compact compatibility `alignment.npz`. These are **not** ground truth. ALIGN can subsequently run Layer 3 rhythm detection, but the current DataCreate subprocess bridge requests Layers 1–2 only.
+
+The DTW method below is the legacy fallback retained for old bundles and UI compatibility. New DataCreate alignment and re-alignment requests use the note-first bridge.
 
 ### 7.1 Features for alignment
 
@@ -291,17 +293,17 @@ Then expand `[core_i0, core_i1)` by `pad_notes` ∈ `{1, 2}` on each side and st
 
 **Repeated-pass copies are not gold.** Labels whose comment contains `repeated pass` or `(pass N)` for N > 1 are skipped at eval. The first pass and the single `repetition` label are kept.
 
-### 10.3 Melody evaluation
+### 10.3 Official note-wise evaluation
 
 Official synth metric: `align-model eval-melodies` (also the headline of `align-model smoke`).
 
-Matching is **exclusive** (Hungarian 1-1) on pitch-list similarity. A pair is a **range hit** if the predicted list **equals** gold, or LCS-Dice ≥ 0.80 with length ratio ≥ 0.60. A contiguous slice of gold, or a prediction that contains gold, does **not** match. After a range hit: the same error type scores 1; a different type scores 0.5.
+Matching is **exclusive** (Hungarian 1-1) on canonical score-event identity. Canonical event indices, tied spans, repeated-pass/copy identity, and audited EXTRA identity define location. Equal pitch lists at different score locations never match. At the same canonical location the same error type scores 1 and a different type scores 0.5; a different location scores 0.
 
 - Precision = sum of pair credits / number of predictions
 - Recall = sum of pair credits / number of golds
 - Headline = F1 of those two
 
-Empty gold and empty prediction scores 1. Mapping a timestamp-only prediction onto the clean score uses the same core-plus-pad rules (extras still expand to the neighbors).
+Empty gold and empty prediction scores 1. Schema 1.1 labels without a validated score-event projection are officially unavailable. Timestamp IoU and 20/50/100 ms onset scores are retained only under `legacy_*` or `diagnostic_*` fields and cannot select checkpoints or pass promotion gates. Historical timestamp and pitch-similarity headlines remain historical diagnostics; they require recomputation and are never reinterpreted as note-wise results.
 
 ---
 
@@ -329,7 +331,7 @@ Procedural clarinet etudes (or `--score` to corrupt existing MusicXML): 8–16 m
 
 | Type | What is planted |
 |------|-----------------|
-| `wrong_note` | Shift ±1 or ±2 semitones inside the written range, **or** (with `squeak.prob`, default 0.22 in the 10k config) replace the pitch with a high squeak MIDI **C6–A7**. |
+| `wrong_note` | Shift ±1 or ±2 semitones inside the written range, **or** (when `squeak.prob` is enabled; it is 0 in the current checked-in configs) replace the pitch with a high squeak MIDI **C6–A7**. |
 | `extra_note` | Split a note and insert a neighbor (±1–2 semitones) **or** a C6–A7 squeak in the second half. Gold core is the clean notes before and after that insert. |
 | `missed_note` | Replace a written note with a rest of the same duration. |
 | `intonation_error` | Keep the written pitch class; detune the render with MIDI pitch bend, 40–80 cents, sometimes a run of up to 4 notes. |
@@ -392,7 +394,7 @@ Current design accepts these tradeoffs (see also `SHORTPLANS.md`):
 ## 14. Intended use of outputs
 
 - **Annotator / crop trainers:** `start_time` / `end_time` on `performance_audio.wav`.
-- **Melody eval and score-informed training:** `pitches` / `score_part` on the clean `verified_score.musicxml`. Official synth score is containment F1 (`align-model eval-melodies`), not timestamp IoU and not LCS subsequence similarity.
+- **Note-wise eval and score-informed training:** canonical `score_part` event indices on the clean `verified_score.musicxml`. Official scoring is exclusive one-to-one identity F1 (`align-model eval-melodies`) with 1.0 exact-type and 0.5 wrong-type credit at the same location. `pitches` validate a range but never identify it.
 - Alignment NPZ and `candidates.json` are intermediate. Real takes should still be human-reviewed; synth labels are known by construction.
 
 ---

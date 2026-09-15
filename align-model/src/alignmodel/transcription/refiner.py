@@ -362,11 +362,19 @@ ClarinetIntervalRefiner = NoteRefiner
 RefinerConfig = NoteRefinerConfig
 
 
-def _masked_bce(logits: Tensor, target: Tensor, valid: Tensor) -> Tensor:
+def _masked_bce(
+    logits: Tensor,
+    target: Tensor,
+    valid: Tensor,
+    weight: Tensor | None = None,
+) -> Tensor:
     value = F.binary_cross_entropy_with_logits(
         logits, target.float(), reduction="none"
     )
-    return (value * valid).sum() / valid.sum().clamp_min(1)
+    effective = valid.float()
+    if weight is not None:
+        effective = effective * weight.float()
+    return (value * effective).sum() / effective.sum().clamp_min(1)
 
 
 def note_refiner_loss(
@@ -392,9 +400,27 @@ def note_refiner_loss(
         voiced_target, onset_target, offset_target
     )):
         raise TypeError("frame targets must be tensors")
-    voiced = _masked_bce(outputs["voiced_logits"], voiced_target, valid)
-    onset = _masked_bce(outputs["onset_logits"], onset_target, valid)
-    offset = _masked_bce(outputs["offset_logits"], offset_target, valid)
+    frame_weight = targets.get("frame_weight")
+    onset_weight = targets.get("onset_weight")
+    offset_weight = targets.get("offset_weight")
+    voiced = _masked_bce(
+        outputs["voiced_logits"],
+        voiced_target,
+        valid,
+        frame_weight if torch.is_tensor(frame_weight) else None,
+    )
+    onset = _masked_bce(
+        outputs["onset_logits"],
+        onset_target,
+        valid,
+        onset_weight if torch.is_tensor(onset_weight) else None,
+    )
+    offset = _masked_bce(
+        outputs["offset_logits"],
+        offset_target,
+        valid,
+        offset_weight if torch.is_tensor(offset_weight) else None,
+    )
 
     pitch_target = targets["pitch"]
     if not torch.is_tensor(pitch_target):
@@ -409,12 +435,16 @@ def note_refiner_loss(
         local_pitch = local_pitch - cfg.midi_min
     pitch_mask = valid & nonnegative & (voiced_target > 0)  # type: ignore[operator]
     local_pitch = local_pitch.masked_fill(~pitch_mask, -1)
-    pitch = F.cross_entropy(
+    pitch_values = F.cross_entropy(
         outputs["pitch_logits"].transpose(1, 2),
         local_pitch,
         ignore_index=-1,
-        reduction="sum",
-    ) / pitch_mask.sum().clamp_min(1)
+        reduction="none",
+    )
+    pitch_weights = pitch_mask.float()
+    if torch.is_tensor(frame_weight):
+        pitch_weights = pitch_weights * frame_weight.float()
+    pitch = (pitch_values * pitch_weights).sum() / pitch_weights.sum().clamp_min(1)
 
     zero = outputs["voiced_logits"].sum() * 0.0
     cents = zero
@@ -447,6 +477,7 @@ def note_refiner_loss(
         outputs["confidence_logits"],
         confidence_target if torch.is_tensor(confidence_target) else voiced_target,
         valid,
+        frame_weight if torch.is_tensor(frame_weight) else None,
     )
 
     interval = zero

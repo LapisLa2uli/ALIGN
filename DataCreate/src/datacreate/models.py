@@ -27,6 +27,7 @@ class Label(BaseModel):
         "auto_confirmed",
         "auto_edited",
         "auto_rejected",
+        "agent",
         "manual",
         "synthetic",
     ]

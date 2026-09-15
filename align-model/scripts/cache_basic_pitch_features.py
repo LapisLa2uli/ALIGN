@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -12,6 +13,7 @@ from alignmodel.transcription.basic_pitch import (
     basic_pitch_cache_path,
     extract_basic_pitch_features,
     load_audio_metadata,
+    sha256_file,
 )
 
 
@@ -76,12 +78,19 @@ def _resolve_sample_dir(
     return root / sample
 
 
-def _worker(task: tuple[int, str, str, str, str]) -> dict[str, Any]:
-    index, sample_text, corpus, cache_text, metadata_text = task
+def _worker(task: tuple[int, str, str, str, str, str]) -> dict[str, Any]:
+    index, sample_text, corpus, cache_text, metadata_text, expected_wav_hash = task
     sample = Path(sample_text)
+    wav = sample / "performance_audio.wav"
+    actual_wav_hash = sha256_file(wav)
+    if actual_wav_hash != expected_wav_hash:
+        raise ValueError(
+            f"Manifest WAV hash mismatch for {sample}: "
+            f"{actual_wav_hash} != {expected_wav_hash}"
+        )
     destination = basic_pitch_cache_path(Path(cache_text), sample, corpus)
     features = extract_basic_pitch_features(
-        sample / "performance_audio.wav",
+        wav,
         source_metadata=json.loads(metadata_text),
         cache_path=destination,
     )
@@ -117,7 +126,7 @@ def _default_splits(document: dict[str, Any]) -> list[str]:
 
 
 def _run_tasks(
-    tasks: list[tuple[int, str, str, str, str]], workers: int
+    tasks: list[tuple[int, str, str, str, str, str]], workers: int
 ) -> Iterable[tuple[dict[str, Any] | None, str | None]]:
     if workers <= 1:
         for task in tasks:
@@ -147,6 +156,11 @@ def main() -> None:
     )
     parser.add_argument("--cache-root", type=Path, required=True)
     parser.add_argument(
+        "--protocol",
+        type=Path,
+        help="Heldout protocol; defaults beside the manifest when present.",
+    )
+    parser.add_argument(
         "--max-samples",
         type=int,
         default=None,
@@ -165,11 +179,40 @@ def main() -> None:
     split_names = _flatten_splits(args.split) or _default_splits(document)
     if not split_names:
         raise ValueError("No list-valued splits found in manifest")
+    forbidden = [
+        split
+        for split in split_names
+        if split not in {"train", "val"}
+    ]
+    if forbidden:
+        raise ValueError(
+            "Frontend cache extraction is restricted to admitted train/val; "
+            f"refusing {forbidden}"
+        )
+    protocol_path = args.protocol
+    if protocol_path is None:
+        candidate = args.manifest.parent / "heldout_protocol.json"
+        protocol_path = candidate if candidate.is_file() else None
+    manifest_sha256 = hashlib.sha256(args.manifest.read_bytes()).hexdigest()
+    if protocol_path is not None:
+        protocol = _read_manifest(protocol_path)
+        expected_manifest_hash = protocol.get("manifest_sha256")
+        if expected_manifest_hash != manifest_sha256:
+            raise ValueError(
+                "Manifest hash does not match heldout protocol: "
+                f"{manifest_sha256} != {expected_manifest_hash}"
+            )
 
     args.cache_root.mkdir(parents=True, exist_ok=True)
     summary: dict[str, Any] = {
         "frontend": "basic-pitch-0.4.0",
         "manifest": str(args.manifest),
+        "manifest_sha256": manifest_sha256,
+        "protocol": str(protocol_path) if protocol_path is not None else None,
+        "stale_cache_policy": (
+            "Every cache is validated against WAV hash, frontend version, "
+            "and written-pitch policy; all stale entries are rejected and rebuilt."
+        ),
         "cache_root": str(args.cache_root),
         "splits": {},
     }
@@ -183,6 +226,11 @@ def main() -> None:
         raw2k_skipped = 0
         for value in rows:
             row = dict(value) if isinstance(value, dict) else {"sample": value}
+            if row.get("target_db") is None or row.get("target_record") is None:
+                raise ValueError(
+                    f"Split {split!r} contains a non-admitted row without "
+                    "an audited SQLite target reference"
+                )
             if args.procedural_only and _is_raw2k(row):
                 raw2k_skipped += 1
                 continue
@@ -190,20 +238,14 @@ def main() -> None:
         if args.max_samples is not None:
             selected = selected[: max(0, args.max_samples)]
 
-        tasks: list[tuple[int, str, str, str, str]] = []
+        tasks: list[tuple[int, str, str, str, str, str]] = []
         for row in selected:
             sample = _resolve_sample_dir(row, roots)
+            source_hashes = row.get("source_hashes") or {}
+            expected_wav_hash = source_hashes.get("performance_audio.wav")
+            if not expected_wav_hash:
+                raise ValueError(f"Audited WAV hash missing for {sample}")
             metadata = load_audio_metadata(sample)
-            metadata.update(
-                {
-                    key: row[key]
-                    for key in (
-                        "audio_pitch_space",
-                        "effective_audio_transpose",
-                    )
-                    if key in row
-                }
-            )
             tasks.append(
                 (
                     task_index,
@@ -211,6 +253,7 @@ def main() -> None:
                     _corpus(row),
                     str(args.cache_root),
                     json.dumps(metadata, sort_keys=True),
+                    str(expected_wav_hash),
                 )
             )
             task_index += 1
@@ -244,6 +287,11 @@ def main() -> None:
         }
 
     summary["failures"] = failures
+    summary_path = args.cache_root / "cache_report.json"
+    summary_path.write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps(summary, indent=2), flush=True)
     if failures:
         raise RuntimeError(f"Basic Pitch caching failed for {len(failures)} row(s)")

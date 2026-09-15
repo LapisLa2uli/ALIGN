@@ -11,7 +11,6 @@ from datacreate.score_notes import (
     collapse_tied_records,
     element_tie_type,
     is_decorative_element,
-    slur_adjacent_ids,
     voice_key,
 )
 
@@ -66,7 +65,6 @@ def parse_sounding_notes(score_or_path) -> list[ScoreSoundingNote]:
         parsed = score_or_path
     bpm = score_bpm(parsed)
     sec_per_ql = 60.0 / bpm
-    slur_pairs = slur_adjacent_ids(parsed)
     raw: list[dict] = []
     for n in parsed.recurse().getElementsByClass(note.Note):
         if is_decorative_element(n):
@@ -96,7 +94,10 @@ def parse_sounding_notes(score_or_path) -> list[ScoreSoundingNote]:
                 "measure": measure_num,
             }
         )
-    collapsed = collapse_tied_records(raw, slur_pairs)
+    # Schema score indices represent sounding notes: collapse explicit tie
+    # chains only. A slur is articulation/phrasing and must never alter the
+    # note index space.
+    collapsed = collapse_tied_records(raw)
     collapsed.sort(key=lambda item: (float(item["offset_ql"]), int(item["midi"])))
     notes: list[ScoreSoundingNote] = []
     for i, item in enumerate(collapsed):
@@ -354,6 +355,189 @@ def _exclusive_pairs(scores: list[list[float]]) -> list[tuple[int, int, float]]:
 
 
 TYPE_MISMATCH_SCALE = 0.5
+NOTE_WISE_METRIC_SCHEMA = "align-note-wise-score-event-metric-v1"
+_NOTE_ID = re.compile(r"^note_(\d+)$")
+
+
+def canonical_note_location(
+    label: dict[str, Any],
+    *,
+    score_event_count: int | None = None,
+) -> tuple[Any, ...] | None:
+    """Return a stable canonical score-event identity, never a pitch proxy.
+
+    Score ranges are inclusive in label documents. Explicit event-index sets
+    are accepted for non-contiguous canonical locations. Extras without clean
+    neighbours require an audited rendered/extra identity. Repetition identity
+    includes source range and copy count.
+    """
+
+    explicit = label.get("score_event_indices")
+    indices: tuple[int, ...] = ()
+    if isinstance(explicit, list) and explicit:
+        indices = tuple(sorted({int(value) for value in explicit}))
+    part = label.get("score_part")
+    if not indices and isinstance(part, dict):
+        try:
+            first = int(part["start_note_index"])
+            last = int(part["end_note_index"])
+        except (KeyError, TypeError, ValueError):
+            return None
+        if first < 0 or last < first:
+            return None
+        indices = tuple(range(first, last + 1))
+    if not indices:
+        note_ids = label.get("note_ids")
+        if isinstance(note_ids, list) and note_ids:
+            parsed = []
+            for value in note_ids:
+                match = _NOTE_ID.fullmatch(str(value))
+                if match is None:
+                    return None
+                parsed.append(int(match.group(1)))
+            indices = tuple(sorted(set(parsed)))
+    if indices:
+        if (
+            score_event_count is not None
+            and indices[-1] >= int(score_event_count)
+        ):
+            return None
+        copies = label.get("extra_copies")
+        if str(label.get("type")) == "repetition":
+            if copies is None:
+                return None
+            return ("score_events_with_copies", indices, int(copies))
+        copy_pass = int(label.get("copy_pass") or 0)
+        return ("score_events", indices, copy_pass)
+
+    extra_identity = label.get("extra_identity")
+    if extra_identity is None:
+        extra_identity = label.get("performed_event_id")
+    if extra_identity is None:
+        extra_identity = label.get("rendered_index")
+    if extra_identity is not None:
+        return ("extra", str(extra_identity))
+    return None
+
+
+def match_note_wise_labels_detail(
+    gold: list[dict[str, Any]],
+    pred: list[dict[str, Any]],
+    *,
+    score_event_count: int | None = None,
+    type_mismatch_credit: float = TYPE_MISMATCH_SCALE,
+) -> dict[str, Any]:
+    """Official exclusive score-event identity metric with fractional type credit."""
+
+    mismatch_credit = float(type_mismatch_credit)
+    if not 0.0 <= mismatch_credit <= 1.0:
+        raise ValueError("type_mismatch_credit must be within [0, 1]")
+    gold_locations = [
+        canonical_note_location(value, score_event_count=score_event_count)
+        for value in gold
+    ]
+    missing_gold = [
+        index for index, location in enumerate(gold_locations) if location is None
+    ]
+    if missing_gold:
+        return {
+            "schema_version": NOTE_WISE_METRIC_SCHEMA,
+            "status": "unavailable",
+            "reason": "gold labels lack validated canonical score-event identity",
+            "unevaluable_gold_indices": missing_gold,
+            "type_mismatch_credit": mismatch_credit,
+        }
+    pred_locations = [
+        canonical_note_location(value, score_event_count=score_event_count)
+        for value in pred
+    ]
+    if not gold and not pred:
+        return {
+            "schema_version": NOTE_WISE_METRIC_SCHEMA,
+            "status": "available",
+            "type_mismatch_credit": mismatch_credit,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "credit": 0.0,
+            "predicted": 0,
+            "gold": 0,
+            "pair_counts": {"full_credit": 0, "half_credit": 0, "zero_credit": 0},
+            "pairs": [],
+        }
+    scores = [
+        [
+            (
+                1.0
+                if str(prediction.get("type")) == str(target.get("type"))
+                else mismatch_credit
+            )
+            if pred_locations[pred_index] is not None
+            and pred_locations[pred_index] == gold_locations[gold_index]
+            else 0.0
+            for gold_index, target in enumerate(gold)
+        ]
+        for pred_index, prediction in enumerate(pred)
+    ]
+    if scores and scores[0]:
+        import numpy as np
+        from scipy.optimize import linear_sum_assignment
+
+        matrix = np.asarray(scores, dtype=np.float64)
+        rows, columns = linear_sum_assignment(-matrix)
+        pairs = [
+            (int(row), int(column), float(matrix[row, column]))
+            for row, column in zip(rows, columns)
+        ]
+    else:
+        pairs = []
+    credited = [
+        {
+            "prediction_index": pred_index,
+            "gold_index": gold_index,
+            "credit": credit,
+            "location": pred_locations[pred_index],
+            "type_match": (
+                str(pred[pred_index].get("type"))
+                == str(gold[gold_index].get("type"))
+            ),
+        }
+        for pred_index, gold_index, credit in pairs
+    ]
+    credit = float(sum(value["credit"] for value in credited))
+    precision = credit / len(pred) if pred else 0.0
+    recall = credit / len(gold) if gold else 0.0
+    f1 = (
+        2.0 * precision * recall / (precision + recall)
+        if precision + recall
+        else 0.0
+    )
+    full = sum(value["credit"] == 1.0 for value in credited)
+    half = sum(
+        value["credit"] > 0.0 and value["credit"] != 1.0 for value in credited
+    )
+    return {
+        "schema_version": NOTE_WISE_METRIC_SCHEMA,
+        "status": "available",
+        "type_mismatch_credit": mismatch_credit,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "credit": credit,
+        "predicted": len(pred),
+        "gold": len(gold),
+        "pair_counts": {
+            "full_credit": full,
+            "half_credit": half,
+            "zero_credit": len(credited) - full - half,
+        },
+        "unevaluable_prediction_indices": [
+            index
+            for index, location in enumerate(pred_locations)
+            if location is None
+        ],
+        "pairs": credited,
+    }
 
 
 def _types_agree(pred: WeakMelody, gold: WeakMelody) -> bool:

@@ -4,6 +4,7 @@ let osmdInstance = null;
 let taxonomy = [];
 let currentSample = null;
 let sampleData = null;
+let labelSource = "human";
 let selectedRegions = [];
 /** Sole selection when exactly one region is selected; null when empty or multi. */
 let selectedRegion = null;
@@ -1829,7 +1830,7 @@ function renderTranscriptionStrip() {
     container.dataset.renderKey = "";
     container.innerHTML =
       `<p class="melody-empty">No audio transcription for this sample yet. ` +
-      `Apply a score segment (or Re-align) so the note-first pipeline can transcribe the take.</p>`;
+      `Apply a score segment (or Re-align) so Basic Pitch and the joint decoder can transcribe the take.</p>`;
     return;
   }
   const refByIndex = referenceByScoreIndex();
@@ -2550,12 +2551,13 @@ function renderAlignmentInfo(data) {
         `Use <strong>Apply &amp; regenerate</strong> on the measure range so the pickup ` +
         `and reference audio stay in score order, then alignment will rematch.</div>`
       : "";
+  const engine = s.backend || s.engine || "alignment";
   el.innerHTML =
     `<div class="summary">` +
-    `DTW path: ${s.warping_path_length ?? "?"} steps · ` +
-    `mean residual ${s.mean_residual ?? "?"} · ` +
-    `max ${s.max_residual ?? "?"} · ` +
-    `${s.event_count ?? 0} score events` +
+    `${escapeXml(String(engine))} · ` +
+    `${s.transcribed_note_count ?? "?"} transcribed · ` +
+    `${s.mapped_note_count ?? "?"} mapped · ` +
+    `${s.event_count ?? 0} aligned events` +
     `</div>` +
     orderWarn +
     `<table><thead><tr>` +
@@ -2828,6 +2830,10 @@ async function init() {
   };
   document.getElementById("speedSelect").onchange = (e) => {
     wavesurfer.setPlaybackRate(parseFloat(e.target.value));
+  };
+  document.getElementById("labelSourceSelect").onchange = async (event) => {
+    labelSource = event.target.value === "agent" ? "agent" : "human";
+    if (currentSample) await loadSample(currentSample);
   };
   document.getElementById("saveBtn").onclick = saveLabels;
   document.getElementById("applyLabelBtn").onclick = () => applyLabelToSelection();
@@ -3141,7 +3147,8 @@ async function loadSampleList() {
   sel.innerHTML = samples
     .map((s) => {
       const tags = [];
-      if (s.label_count) tags.push(`${s.label_count} labels`);
+      if (s.label_count) tags.push(`${s.label_count} yours`);
+      if (s.agent_label_count) tags.push(`${s.agent_label_count} agent`);
       const suffix = tags.length ? ` (${tags.join(", ")})` : "";
       return `<option value="${s.id}">${s.id}${suffix}</option>`;
     })
@@ -3171,10 +3178,17 @@ async function loadSample(sampleId) {
   cachedScoreXml = null;
   cachedScoreMeta = null;
 
-  const res = await fetch(`/api/samples/${sampleId}`);
+  const sourceQuery = new URLSearchParams({ label_source: labelSource });
+  const res = await fetch(`/api/samples/${sampleId}?${sourceQuery}`);
   const data = await res.json();
   if (loadId !== scoreLoadId) return;
   sampleData = data;
+  labelSource = data.label_source === "agent" ? "agent" : "human";
+  document.getElementById("labelSourceSelect").value = labelSource;
+  document.getElementById("labelTrack").textContent =
+    labelSource === "agent" ? "Agent labels" : "Your labels";
+  document.getElementById("saveBtn").textContent =
+    labelSource === "agent" ? "Save agent labels" : "Save your labels";
   taxonomy = data.taxonomy;
   populateTypeSelect();
   document.getElementById("annotatorId").value = data.annotator_id || "";
@@ -3430,7 +3444,7 @@ async function applyScoreSegment() {
     });
     if (!res.ok) throw new Error(await res.text());
     await loadSample(currentSample);
-    alert("Score segment applied. Reference audio updated. Use Re-align if you need DTW again.");
+    alert("Score segment applied. Reference audio updated. Use Re-align to transcribe and map notes again.");
   } catch (err) {
     alert(err.message || String(err));
   } finally {
@@ -3441,7 +3455,7 @@ async function applyScoreSegment() {
 
 async function reAlignSample() {
   if (!currentSample) return;
-  if (!confirm("Re-run DTW alignment on the current performance and reference?")) return;
+  if (!confirm("Re-run Basic Pitch transcription and joint alignment on the current performance?")) return;
   const btn = document.getElementById("realignBtn");
   btn.disabled = true;
   btn.textContent = "Aligning…";
@@ -3449,7 +3463,7 @@ async function reAlignSample() {
     const res = await fetch(`/api/samples/${currentSample}/re-align`, { method: "POST" });
     if (!res.ok) throw new Error(await res.text());
     await loadSample(currentSample);
-    alert("DTW alignment updated.");
+    alert("Transcription and alignment updated.");
   } catch (err) {
     alert(err.message || String(err));
   } finally {
@@ -3510,7 +3524,8 @@ async function saveLabels() {
     self_reported: [],
     annotator_id: document.getElementById("annotatorId").value || null,
   };
-  const res = await fetch(`/api/samples/${currentSample}/labels`, {
+  const sourceQuery = new URLSearchParams({ label_source: labelSource });
+  const res = await fetch(`/api/samples/${currentSample}/labels?${sourceQuery}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -3519,7 +3534,7 @@ async function saveLabels() {
     alert(await res.text());
     return;
   }
-  alert("Labels saved.");
+  alert(labelSource === "agent" ? "Agent labels saved." : "Your labels saved.");
 }
 
 async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat, loadId = null) {

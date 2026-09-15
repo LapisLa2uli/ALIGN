@@ -47,6 +47,16 @@ def main() -> None:
         "serve",
         help="Launch annotation web UI (also /compare for gold vs Model A)",
     )
+    realign = sub.add_parser(
+        "realign-corpus",
+        help="Re-align all samples; relocate unlabeled score excerpts from transcription",
+    )
+    realign.add_argument("--limit", type=int)
+    realign.add_argument(
+        "--keep-segments",
+        action="store_true",
+        help="Do not change unlabeled score regions",
+    )
 
     args = parser.parse_args()
     config = PipelineConfig.load(_config_path(args.config))
@@ -96,6 +106,29 @@ def main() -> None:
         for item in batch.results:
             if item.status == "error":
                 print(f"  ERROR {item.sample_id}: {item.error}", file=sys.stderr)
+    elif args.command == "realign-corpus":
+        from datacreate.corpus_realign import realign_corpus
+        from datacreate.utils import setup_sample_logger
+
+        samples_root = config.resolved_path("samples_root") or Path("samples")
+        logger = setup_sample_logger(samples_root, name="realign-corpus")
+        rows = realign_corpus(
+            samples_root,
+            config,
+            logger,
+            relocate_unlabeled=not args.keep_segments,
+            limit=args.limit,
+        )
+        failed = [row for row in rows if row.get("status") != "ok"]
+        moved = [row for row in rows if row.get("relocated")]
+        print(
+            f"Re-aligned {len(rows) - len(failed)}/{len(rows)} samples; "
+            f"{len(moved)} unlabeled score regions updated; {len(failed)} failed"
+        )
+        for row in failed:
+            print(f"  ERROR {row.get('sample')}: {row.get('error')}", file=sys.stderr)
+        if failed:
+            raise SystemExit(1)
     elif args.command == "serve":
         serve_main(config)
 

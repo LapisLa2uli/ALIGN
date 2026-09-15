@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "release": "align-data-audit-v2",
+  "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\split.json",
+  "manifest_sha256": "b6e34d9d170c0d7715064b15e2a0c21aa191d772e8738dd7b386ab7b27396e11",
+  "target_cache": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\validated_targets.jsonl.gz",
+  "target_cache_sha256": "e017af65f978479797b2dd92dc866808b0c0ac9d1ef9ea83ae38279440a67fbd",
+  "locked_split": "test_id",
+  "rules": [
+    "Develop models and all thresholds using train and val only.",
+    "Do not inspect per-sample test_id outputs before freezing the model, decoder, and thresholds.",
+    "Verify manifest and target-cache SHA-256 values before every final evaluation.",
+    "Report micro note mapping precision/recall/F1 and macro F1 across source_group.",
+    "Use written-pitch note matching and the repository's frozen onset/offset tolerances.",
+    "Report transcription F1 and end-to-end transcription-to-score alignment F1 separately.",
+    "Report error-class F1 and repetition-span F1 as secondary metrics.",
+    "Do not score unverified synthetic intonation labels; report acoustic intonation only on acoustically verified targets.",
+    "Use external_eval only as a separately named real-audio sanity set, never for model selection.",
+    "Any test_id-driven change creates a new release and requires a new untouched source-group holdout."
+  ],
+  "success_target": {
+    "metric": "end_to_end_transcription_to_score_alignment_micro_f1",
+    "threshold": 0.8,
+    "status": "target_not_yet_demonstrated"
+  },
+  "split_counts": {
+    "train": 14718,
+    "val": 1871,
+    "test_id": 6644
+  },
+  "integrity": {
+    "source_group_overlap": {
+      "train:val": [],
+      "train:test_id": [],
+      "val:test_id": []
+    },
+    "content_fingerprint_overlap": {
+      "train:val": [],
+      "train:test_id": [],
+      "val:test_id": []
+    },
+    "all_overlaps_empty": true
+  },
+  "target_db": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\validated_targets.sqlite",
+  "target_db_sha256": "a685f5c48a718d2ddb82c10684f52585945025bfd40cd8c17d56277bd0e9874c"
+}

@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from alignmodel.melody import (
+    match_note_wise_labels_detail,
     gold_melodies_from_labels,
     load_bundle_notes,
     match_melodies_detail,
@@ -16,6 +17,25 @@ from alignmodel.types import PipelineConfig, pipeline_label_to_dict
 
 def _label_dicts_from_pipeline(state) -> list[dict[str, Any]]:
     return [pipeline_label_to_dict(lab) for lab in state.labels]
+
+
+def _note_per_type_rows(
+    gold: list[dict[str, Any]],
+    pred: list[dict[str, Any]],
+    *,
+    score_event_count: int,
+) -> dict[str, dict[str, Any]]:
+    output = {}
+    for kind in sorted(
+        {str(value.get("type")) for value in [*gold, *pred]}
+    ):
+        detail = match_note_wise_labels_detail(
+            [value for value in gold if str(value.get("type")) == kind],
+            [value for value in pred if str(value.get("type")) == kind],
+            score_event_count=score_event_count,
+        )
+        output[kind] = detail
+    return output
 
 
 def _per_type_rows(gold, pred, *, soft: bool, ignore_type: bool) -> dict[str, dict[str, Any]]:
@@ -75,6 +95,7 @@ def eval_sample(
 ) -> dict[str, Any]:
     sample_dir = Path(sample_dir)
     gold_doc = json.loads((sample_dir / "labels.json").read_text(encoding="utf-8"))
+    gold_labels = [dict(value) for value in gold_doc.get("labels") or []]
     gold = gold_melodies_from_labels(gold_doc.get("labels") or [])
     notes = load_bundle_notes(sample_dir)
     if not gold:
@@ -84,47 +105,77 @@ def eval_sample(
         state = run_pipeline(sample_dir, device=device, weights_dir=weights_dir)
         pred_labels = _label_dicts_from_pipeline(state)
     pred_labels = pred_labels or []
+    if types:
+        gold_labels = [
+            value for value in gold_labels if value.get("type") in types
+        ]
+        pred_labels = [
+            value for value in pred_labels if value.get("type") in types
+        ]
+    official = match_note_wise_labels_detail(
+        gold_labels,
+        pred_labels,
+        score_event_count=len(notes),
+        type_mismatch_credit=1.0 if ignore_type else 0.5,
+    )
     pred = pred_melodies_from_labels(pred_labels, notes, pad_notes=pad_notes)
     if types:
         gold = [item for item in gold if item.type in types]
         pred = [item for item in pred if item.type in types]
     detail = match_melodies_detail(gold, pred, soft=soft, ignore_type=ignore_type)
-    f1 = round(detail["f1"], 4)
-    precision = round(detail["precision"], 4)
-    recall = round(detail["recall"], 4)
+    available = official["status"] == "available"
+    f1 = round(float(official["f1"]), 4) if available else None
+    precision = round(float(official["precision"]), 4) if available else None
+    recall = round(float(official["recall"]), 4) if available else None
     return {
         "sample": sample_dir.name,
-        "n_gold": len(gold),
-        "n_pred": len(pred),
-        "n_matched": round(float(detail.get("n_matched", detail["n_pred_correct"])), 4),
+        "metric_schema": "align-note-wise-score-event-metric-v1",
+        "official_note_wise": official,
+        "n_gold": len(gold_labels),
+        "n_pred": len(pred_labels),
+        "n_matched": round(float(official.get("credit", 0.0)), 4),
         "melody_f1": f1,
         "melody_precision": precision,
         "melody_recall": recall,
-        "melody_similarity": f1,
-        "note_set_iou": precision,
+        "legacy_pitch_similarity_f1": round(detail["f1"], 4),
+        "legacy_pitch_similarity_precision": round(detail["precision"], 4),
+        "legacy_pitch_similarity_recall": round(detail["recall"], 4),
+        "melody_similarity": round(detail["f1"], 4),
+        "note_set_iou": round(detail["precision"], 4),
         "soft": soft,
         "ignore_type": ignore_type,
         "similarity_sum": round(float(detail.get("similarity_sum") or 0.0), 4),
         "gold_types": [g.type for g in gold],
         "pred_types": [p.type for p in pred],
-        "per_type": _per_type_rows(gold, pred, soft=soft, ignore_type=ignore_type),
+        "per_type": (
+            _note_per_type_rows(
+                gold_labels, pred_labels, score_event_count=len(notes)
+            )
+            if available
+            else {}
+        ),
     }
 
 
 def summarize_eval_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    n = max(len(rows), 1)
+    available = [
+        row for row in rows if row["official_note_wise"]["status"] == "available"
+    ]
+    n = max(len(available), 1)
     return {
         "n_samples": len(rows),
-        "mean_melody_f1": round(sum(r["melody_f1"] for r in rows) / n, 4) if rows else 0.0,
-        "mean_melody_precision": round(sum(r["melody_precision"] for r in rows) / n, 4)
-        if rows
-        else 0.0,
-        "mean_melody_recall": round(sum(r["melody_recall"] for r in rows) / n, 4)
-        if rows
-        else 0.0,
-        "mean_n_gold": round(sum(r["n_gold"] for r in rows) / n, 3) if rows else 0.0,
-        "mean_n_pred": round(sum(r["n_pred"] for r in rows) / n, 3) if rows else 0.0,
-        "per_type": _summarize_per_type(rows),
+        "official_note_wise_available": len(available),
+        "official_note_wise_unavailable": len(rows) - len(available),
+        "mean_melody_f1": round(sum(r["melody_f1"] for r in available) / n, 4) if available else None,
+        "mean_melody_precision": round(sum(r["melody_precision"] for r in available) / n, 4)
+        if available
+        else None,
+        "mean_melody_recall": round(sum(r["melody_recall"] for r in available) / n, 4)
+        if available
+        else None,
+        "mean_n_gold": round(sum(r["n_gold"] for r in available) / n, 3) if available else 0.0,
+        "mean_n_pred": round(sum(r["n_pred"] for r in available) / n, 3) if available else 0.0,
+        "per_type": _summarize_per_type(available),
         "samples": rows,
     }
 
@@ -218,20 +269,25 @@ def eval_root(
             weights_dir=weights_dir,
         )
         rows.append(row)
-    n = max(len(rows), 1)
-    mean_f1 = sum(r["melody_f1"] for r in rows) / n if rows else 0.0
-    mean_prec = sum(r["melody_precision"] for r in rows) / n if rows else 0.0
-    mean_rec = sum(r["melody_recall"] for r in rows) / n if rows else 0.0
+    available = [
+        row for row in rows if row["official_note_wise"]["status"] == "available"
+    ]
+    n = max(len(available), 1)
+    mean_f1 = sum(r["melody_f1"] for r in available) / n if available else None
+    mean_prec = sum(r["melody_precision"] for r in available) / n if available else None
+    mean_rec = sum(r["melody_recall"] for r in available) / n if available else None
     return {
         "root": str(root),
         "n_samples": len(rows),
-        "mean_melody_f1": round(mean_f1, 4),
-        "mean_melody_precision": round(mean_prec, 4),
-        "mean_melody_recall": round(mean_rec, 4),
-        "mean_melody_similarity": round(mean_f1, 4),
-        "mean_note_set_iou": round(mean_prec, 4),
-        "mean_n_gold": round(sum(r["n_gold"] for r in rows) / n, 3) if rows else 0.0,
-        "mean_n_pred": round(sum(r["n_pred"] for r in rows) / n, 3) if rows else 0.0,
+        "official_note_wise_available": len(available),
+        "official_note_wise_unavailable": len(rows) - len(available),
+        "mean_melody_f1": round(mean_f1, 4) if mean_f1 is not None else None,
+        "mean_melody_precision": round(mean_prec, 4) if mean_prec is not None else None,
+        "mean_melody_recall": round(mean_rec, 4) if mean_rec is not None else None,
+        "mean_melody_similarity": None,
+        "mean_note_set_iou": None,
+        "mean_n_gold": round(sum(r["n_gold"] for r in available) / n, 3) if available else 0.0,
+        "mean_n_pred": round(sum(r["n_pred"] for r in available) / n, 3) if available else 0.0,
         "soft": soft,
         "ignore_type": ignore_type,
         "samples": rows,

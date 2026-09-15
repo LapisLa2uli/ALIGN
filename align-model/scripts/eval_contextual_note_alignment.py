@@ -86,7 +86,13 @@ def main() -> None:
     parser.add_argument("--disable-contextual-aligner", action="store_true")
     parser.add_argument(
         "--strategy",
-        choices=("contextual", "deterministic", "multi_start", "revision"),
+        choices=(
+            "contextual",
+            "contextual_continuation",
+            "deterministic",
+            "multi_start",
+            "revision",
+        ),
         default="contextual",
     )
     parser.add_argument("--out", type=Path, required=True)

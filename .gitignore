@@ -1,6 +1,7 @@
 RawData/
 *.log
 align-model/runs/
+align-model/data-packed/
 align-model/wheels/
 align-model/.venv-amt-bench/
 hftoken.txt
@@ -10,3 +11,11 @@ _overleaf_tmp/
 hf_upload_staging/
 __pycache__/
 *.py[cod]
+~$*
+align-model/data-audit/**/*.sqlite
+align-model/data-audit/**/*.sqlite-journal
+align-model/data-audit/**/*.jsonl.gz
+align-model/data-audit/**/bundle_index.json
+align-model/data-audit/**/bundle_index.jsonl
+align-model/data-audit/**/hash_cache.json
+align-model/data-audit/**/split.json

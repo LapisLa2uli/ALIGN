@@ -16,6 +16,12 @@
       <label>Sample ID
         <select id="sampleSelect"></select>
       </label>
+      <label>Label set
+        <select id="labelSourceSelect">
+          <option value="human">Your labels</option>
+          <option value="agent">Agent labels</option>
+        </select>
+      </label>
       <label>Annotator ID <input id="annotatorId" type="text" placeholder="annotator_01" /></label>
       <button id="saveBtn">Save labels</button>
       <span id="rendererStatus" class="hint renderer-status" title="SoundFont WAV renderer">Renderer: starting…</span>
@@ -67,7 +73,7 @@
       <strong>View</strong>
       <button id="viewNormalBtn" type="button" class="mode-btn active">Normal</button>
       <button id="viewAlignmentBtn" type="button" class="mode-btn">Alignment</button>
-      <button id="realignBtn" type="button" title="Re-run DTW on the current performance and reference (no candidate inference)">Re-align</button>
+      <button id="realignBtn" type="button" title="Re-run Basic Pitch transcription and joint alignment on the current performance">Re-align</button>
       <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide confirmed label regions">Labels</button>
       <label class="zoom-control">Zoom
         <input id="zoomSlider" type="range" min="0" max="100" value="50" title="Zoom level" />

@@ -21,3 +21,33 @@ synth-pipeline generate --count 5 --soundfont freepats
 synth-pipeline generate --count 5 --soundfont u220
 synth-pipeline generate --count 5 --soundfont mcb
 ```
+
+## Renderer settings and dataset use
+
+All banks are driven by the same renderer so timbre, not synthesis logic, is the intended variable:
+
+| Parameter | Value |
+|---|---|
+| MIDI writer | `music21` |
+| Audio engine | `tinysoundfont` |
+| Sample rate | 22,050 Hz mono |
+| Synth gain | -6 dB |
+| Render tail | 2.0 s |
+| Chunk size | 4,096 samples |
+| Bb-clarinet convention | sounding MIDI = written MIDI - 2 semitones |
+| Current render marker | `soundfont_v1` |
+
+The synth is cached once per worker process and keyed by resolved SoundFont path, sample rate, and gain. The pipeline sends explicit note transpose and pitch-bend events; changing the SoundFont must not change `labels.json` written pitches or `note_map.json` clean indices.
+
+Known corpus versions:
+
+| Corpus | Bank | Size |
+|---|---|---:|
+| `output_10k_multi` | FreePats by documented command | 10,000 requested; configured root is not currently present |
+| `output_2k_rawdata` | FreePats by config | 2,000 requested |
+| `outputRaw_sf_10k` | FreePats, `soundfont_v1` | 10,000 accepted |
+| Small default/soundfont comparison runs | `freepats`, `u220`, `mcb`, or `msbasic` selected by CLI | User-selected |
+
+No model is trained in this directory. Model datasets, training counts, and hyperparameters are listed in [`../../align-model/README.md`](../../align-model/README.md); generation settings are listed in [`../README.md`](../README.md).
+
+When adding a bank, record its license and source URL here, add its path/program to `src/synthpipeline/soundfonts.py`, and regenerate a small deterministic seed before producing a corpus. Do not mix banks inside a model split unless `audio_render` and soundfont identity are included in the split stratification.

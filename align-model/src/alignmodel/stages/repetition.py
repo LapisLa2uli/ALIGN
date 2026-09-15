@@ -255,6 +255,67 @@ def _note_sequence_score(
     return exact_fraction, timing_score
 
 
+def consolidate_note_repetitions(
+    repetitions: list[NoteRepetition],
+    *,
+    max_gap_notes: int = 1,
+    diagonal_tolerance: int = 2,
+) -> list[NoteRepetition]:
+    """Join overlapping/adjacent fragments from one replay event."""
+
+    merged: list[NoteRepetition] = []
+    for item in sorted(
+        repetitions,
+        key=lambda value: (
+            value.repeat_i0,
+            value.source_i0,
+            -value.repeat_i1,
+        ),
+    ):
+        target = None
+        for index, other in enumerate(merged):
+            repeat_gap = max(
+                0,
+                item.repeat_i0 - other.repeat_i1,
+                other.repeat_i0 - item.repeat_i1,
+            )
+            source_gap = max(
+                0,
+                item.source_i0 - other.source_i1,
+                other.source_i0 - item.source_i1,
+            )
+            diagonal_delta = abs(
+                (item.repeat_i0 - item.source_i0)
+                - (other.repeat_i0 - other.source_i0)
+            )
+            source_end = max(item.source_i1, other.source_i1)
+            repeat_start = min(item.repeat_i0, other.repeat_i0)
+            if (
+                repeat_gap <= max_gap_notes
+                and source_gap <= max_gap_notes
+                and diagonal_delta <= diagonal_tolerance
+                and source_end <= repeat_start
+            ):
+                target = index
+                break
+        if target is None:
+            merged.append(item)
+            continue
+        other = merged[target]
+        merged[target] = NoteRepetition(
+            source_i0=min(other.source_i0, item.source_i0),
+            source_i1=max(other.source_i1, item.source_i1),
+            repeat_i0=min(other.repeat_i0, item.repeat_i0),
+            repeat_i1=max(other.repeat_i1, item.repeat_i1),
+            source_start=min(other.source_start, item.source_start),
+            source_end=max(other.source_end, item.source_end),
+            repeat_start=min(other.repeat_start, item.repeat_start),
+            repeat_end=max(other.repeat_end, item.repeat_end),
+            confidence=max(other.confidence, item.confidence),
+        )
+    return sorted(merged, key=lambda value: value.repeat_i0)
+
+
 def find_note_sequence_repetitions(
     notes: list[Any],
     *,
@@ -331,6 +392,7 @@ def find_note_sequence_repetitions(
                     )
                 )
 
+    proposals = consolidate_note_repetitions(proposals)
     proposals.sort(
         key=lambda value: (
             -(value.repeat_i1 - value.repeat_i0),
@@ -369,6 +431,15 @@ def _model_note_repetitions(
         extra_mask=extra_mask,
         max_notes=int(model.config.max_notes),
         max_sources_per_note=int(model.config.max_sources_per_note),
+        continuation_lookahead_notes=int(
+            model.config.continuation_lookahead_notes
+        ),
+        continuation_candidate_skips=int(
+            model.config.continuation_candidate_skips
+        ),
+        continuation_source_skips=int(
+            model.config.continuation_source_skips
+        ),
     )
     # The learned scorer is used for the ambiguous one-note case. Longer
     # phrases remain substantially more reliable under deterministic sequence
@@ -436,6 +507,105 @@ def _model_note_repetitions(
     return sorted(kept, key=lambda value: value.repeat_i0)
 
 
+def filter_repetitions_by_score_continuation(
+    notes: list[Any],
+    score_notes: list[Any],
+    repetitions: list[NoteRepetition],
+    *,
+    aligner=None,
+    continuation_notes: int = 3,
+    minimum_confirmed_notes: int = 2,
+) -> list[NoteRepetition]:
+    """Keep replays that resume immediately after their source score span.
+
+    Each candidate is removed from the performance sequence, the remaining
+    notes are aligned to the score, and the notes after the replay must map to
+    the score continuation directly following the mapped source phrase.  This
+    rejects isolated or naturally recurring motifs that do not behave like a
+    stop/replay/resume event.
+    """
+
+    if not notes or not score_notes or not repetitions:
+        return []
+    continuation_notes = max(1, int(continuation_notes))
+    minimum_confirmed_notes = max(1, int(minimum_confirmed_notes))
+    kept: list[NoteRepetition] = []
+    for repetition in repetitions:
+        if (
+            repetition.source_i0 < 0
+            or repetition.source_i1 <= repetition.source_i0
+            or repetition.repeat_i0 < repetition.source_i1
+            or repetition.repeat_i1 <= repetition.repeat_i0
+            or repetition.repeat_i1 >= len(notes)
+        ):
+            continue
+        original_indices = [
+            index
+            for index in range(len(notes))
+            if not (repetition.repeat_i0 <= index < repetition.repeat_i1)
+        ]
+        collapsed = [notes[index] for index in original_indices]
+        if aligner is not None:
+            collapsed_mapping = aligner.align(collapsed, score_notes)
+        else:
+            from alignmodel.stages.dc_alignment import _monotonic_pitch_mapping
+
+            collapsed_mapping = _monotonic_pitch_mapping(
+                collapsed, score_notes
+            )
+        mapping = {
+            original_index: score_index
+            for original_index, score_index in zip(
+                original_indices, collapsed_mapping
+            )
+        }
+        source_mapping = [
+            mapping.get(index)
+            for index in range(
+                repetition.source_i0, repetition.source_i1
+            )
+        ]
+        source_mapping = [
+            int(value) for value in source_mapping if value is not None
+        ]
+        if not source_mapping or any(
+            right <= left
+            for left, right in zip(source_mapping, source_mapping[1:])
+        ):
+            continue
+        expected = source_mapping[-1] + 1
+        if expected >= len(score_notes):
+            continue
+        post_indices = range(
+            repetition.repeat_i1,
+            min(
+                len(notes),
+                repetition.repeat_i1 + continuation_notes,
+            ),
+        )
+        post_mapping = [
+            int(mapping[index])
+            for index in post_indices
+            if mapping.get(index) is not None
+        ]
+        if len(post_mapping) < minimum_confirmed_notes:
+            continue
+        confirmed = 0
+        cursor = expected
+        for score_index in post_mapping:
+            if score_index < cursor:
+                continue
+            # Permit one missing transcribed score note, but no unrelated jump.
+            if score_index > cursor + 1:
+                break
+            confirmed += 1
+            cursor = score_index + 1
+            if confirmed >= minimum_confirmed_notes:
+                kept.append(repetition)
+                break
+    return kept
+
+
 def apply_note_repetitions(state: PipelineState, learned=None) -> None:
     """Layer 1: detect and label repetitions from the shared transcription."""
 
@@ -457,6 +627,20 @@ def apply_note_repetitions(state: PipelineState, learned=None) -> None:
         )
         if learned_singletons:
             repetitions.append(learned_singletons[0])
+    repetitions = consolidate_note_repetitions(repetitions)
+    if str(
+        getattr(state.config, "note_alignment_strategy", "contextual")
+    ) == "contextual_continuation":
+        repetitions = filter_repetitions_by_score_continuation(
+            state.transcribed_notes,
+            state.score.notes,
+            repetitions,
+            aligner=(
+                getattr(learned, "contextual_note_aligner", None)
+                if learned is not None
+                else None
+            ),
+        )
     state.note_repetitions = repetitions
     state.segments = [
         UnfoldedSegment(

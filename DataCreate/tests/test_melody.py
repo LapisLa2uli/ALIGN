@@ -9,10 +9,22 @@ from datacreate.melody import (
     is_contiguous_part,
     match_melodies,
     match_melodies_detail,
+    match_note_wise_labels_detail,
     melody_similarity,
     padded_melody,
     parse_sounding_notes,
 )
+
+
+def _located(kind: str, first: int, last: int, **extra):
+    return {
+        "type": kind,
+        "score_part": {
+            "start_note_index": first,
+            "end_note_index": last,
+        },
+        **extra,
+    }
 
 
 def _notes(n: int, start_measure: int = 1) -> list[ScoreSoundingNote]:
@@ -178,3 +190,75 @@ def test_parse_sounding_notes_skips_grace_and_folds_ties(tmp_path: Path):
     notes = parse_sounding_notes(path)
     assert [n.pitch for n in notes] == [60]
     assert abs(notes[0].ql_end - notes[0].ql_start - 4.0) < 1e-6
+
+
+def test_note_wise_exact_location_and_fractional_type_credit():
+    exact = match_note_wise_labels_detail(
+        [_located("wrong_note", 2, 2)],
+        [_located("wrong_note", 2, 2)],
+    )
+    wrong_type = match_note_wise_labels_detail(
+        [_located("wrong_note", 2, 2)],
+        [_located("rhythm_error", 2, 2)],
+    )
+    assert exact["f1"] == 1.0
+    assert wrong_type["f1"] == 0.5
+
+
+def test_note_wise_same_pitch_wrong_location_is_zero():
+    gold = _located("wrong_note", 1, 1, pitches=[60])
+    pred = _located("wrong_note", 8, 8, pitches=[60])
+    assert match_note_wise_labels_detail([gold], [pred])["f1"] == 0.0
+
+
+def test_note_wise_duplicate_is_exclusive_and_global():
+    duplicate = match_note_wise_labels_detail(
+        [_located("wrong_note", 1, 1)],
+        [
+            _located("wrong_note", 1, 1),
+            _located("wrong_note", 1, 1),
+        ],
+    )
+    assert duplicate["credit"] == 1.0
+    assert duplicate["precision"] == 0.5
+    global_result = match_note_wise_labels_detail(
+        [
+            _located("a", 1, 1),
+            _located("b", 1, 1),
+        ],
+        [
+            _located("a", 1, 1),
+            _located("a", 1, 1),
+        ],
+    )
+    assert global_result["credit"] == 1.5
+
+
+def test_note_wise_extras_ties_repetition_and_empty():
+    extra = match_note_wise_labels_detail(
+        [{"type": "extra_note", "rendered_index": 0}],
+        [{"type": "extra_note", "rendered_index": 0}],
+    )
+    tied = match_note_wise_labels_detail(
+        [_located("wrong_note", 2, 4)],
+        [_located("wrong_note", 2, 4)],
+    )
+    repetition = match_note_wise_labels_detail(
+        [_located("repetition", 3, 6, extra_copies=2)],
+        [_located("repetition", 3, 6, extra_copies=2)],
+    )
+    wrong_copy_count = match_note_wise_labels_detail(
+        [_located("repetition", 3, 6, extra_copies=2)],
+        [_located("repetition", 3, 6, extra_copies=1)],
+    )
+    empty = match_note_wise_labels_detail([], [])
+    assert extra["f1"] == tied["f1"] == repetition["f1"] == empty["f1"] == 1.0
+    assert wrong_copy_count["f1"] == 0.0
+
+
+def test_schema_1_1_without_projection_is_unavailable():
+    result = match_note_wise_labels_detail(
+        [{"type": "wrong_note", "start_time": 1.0, "end_time": 2.0}],
+        [],
+    )
+    assert result["status"] == "unavailable"

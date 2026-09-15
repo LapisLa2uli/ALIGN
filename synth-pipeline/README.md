@@ -45,7 +45,7 @@ pip install -e ./DataCreate
 pip install -e ./synth-pipeline
 ```
 
-MIDI is written with **music21**. Audio is rendered with an **oscillator MIDI player** so every MIDI key sounds (including C6–A7 squeaks the SoundFont cannot play) and hanging tremolo/ornament note-ons are clipped. Quality is simpler than a SoundFont. See [`soundfonts/README.md`](soundfonts/README.md) for the old sample banks.
+MIDI is written with **music21**. Current generation renders it with **tinysoundfont** and the configured clarinet SoundFont, clips hanging tremolo/ornament note-ons, and records `audio_render: soundfont_v1`. See [`soundfonts/README.md`](soundfonts/README.md) for the available banks and their provenance.
 
 Bb clarinet audio is **sounding pitch** (`render.sounding_transpose: -2`): written C sounds Bb. MusicXML and `labels.json` `pitches` stay **written**. New renders transpose only the MIDI sent to the SoundFont. Existing bundles can be shifted in place (duration preserved; `performance_audio_original` is left alone):
 
@@ -78,7 +78,7 @@ synth-pipeline generate --count 5 --soundfont mcb
 synth-pipeline generate --count 20 --seed 42 --output ../DataCreate/samples/synthetic
 ```
 
-**10,000 multi-error clips** (1–8 errors, equal type weights, squeaks, rhythm kinds, after-error and standalone repetition, 0.2–1 s restart gap):
+**10,000 multi-error clips** (1–8 errors, equal type weights, all rhythm kinds, after-error and standalone repetition, 0.2–1 s restart gap):
 
 ```powershell
 cd "D:\stuff\Audio Evaluation\ALIGN\synth-pipeline"
@@ -106,7 +106,9 @@ synth-pipeline generate --score ../RawData/Score --count 8
 | File | Role |
 |------|------|
 | `config/default.yaml` | One content error per clip; repetition 35%; no squeaks; no standalone repeat; no restart gap |
-| `config/multi_error_10k.yaml` | 1–8 errors; equal weights; `squeak.prob` 0.22 (C6–A7); `repetition_prob` 0.80; `standalone_repetition_prob` 0.20; `repeat_gap_seconds` `[0.2, 1.0]` |
+| `config/multi_error_10k.yaml` | Procedural scores; 1–8 errors; equal weights; `squeak.prob` 0; repetition 0.80; standalone repetition 0.20; restart gap 0.2–1.0 s |
+| `config/rawdata_snippets_2k.yaml` | Uploaded-score snippets; 2,000 requested clips; 8–16 measures, at least 12 notes; otherwise the same multi-error settings |
+| `config/rawdata_sf_10k.yaml` | Uploaded-score snippets rendered to `E:/outputRaw_sf_10k`; score `001` excluded; 10,000 requested clips; otherwise the same multi-error settings |
 
 Existing 1.1 bundles (or 1.2 extras that still have a single-note core) can be rewritten onto the current gold rules:
 
@@ -166,6 +168,72 @@ output/synth_gen_0010/
 
 `labels.json` fields beyond schema 1.1: `score_part` (`start_note_index`, `end_note_index`, `start_measure`, `end_measure`, `pad_notes`), `pitches`, `note_ids`, and on `repetition` `extra_copies`.
 
-Eval (`align-model eval-melodies`) treats a predicted melody as correct if either pitch list is a **contiguous part** of the other (or they are equal). One gold can validate several predictions and the reverse. Headline is F1. Repeated-pass labels are ignored.
+Eval (`align-model eval-melodies`) uses exclusive one-to-one matching. Equal pitch lists match; near lists match when LCS-Dice is at least 0.80 and the shorter/longer length ratio is at least 0.60. A short contiguous slice of a long list does not match. A range hit receives full credit for the correct error type and half credit for the wrong type. Headline is F1. Repeated-pass labels are ignored.
 
 Open the output root in the DataCreate annotator (`datacreate serve`) like any other sample directory if you copy or generate into `DataCreate/samples/`.
+
+## Dataset version registry
+
+The YAML config and CLI `--count` define a requested corpus. The final accepted count can be smaller when score parsing, rendering, or exact-lineage validation rejects a bundle. Frozen manifests under `align-model/runs/` are authoritative for model training.
+
+| Dataset/version | Score source and methodology | Render/pitch metadata | Requested or accepted size | Known model use |
+|---|---|---|---:|---|
+| Default procedural | Newly generated monophonic melodies, 8–16 measures, one planted content error, optional one-measure replay | Current generation writes `audio_render: soundfont_v1`; written MIDI is rendered at sounding transpose -2 | User-selected | Fixtures and smoke tests |
+| `1000dataexport` | Earlier procedural one-error corpus | Historical mixed render metadata; audit before reuse | 1,000 | Early RUMAA-lite and Model A |
+| `procedural12k` / `E:/output` | Procedural multi-error score generation with exact note lineage | Historical bundles include pitch-space corrections; strict refiner policy records effective transpose explicitly | 12,000 in the full manifest; strict subset 11,488: 9,197 train / 1,138 val / 1,153 test-ID | Model A/B, NoteFrameNet, Basic Pitch/refiner, aligner experiments |
+| `output_10k_multi` | `multi_error_10k.yaml`; procedural scores, 1–8 equally weighted content errors, repetition policy below | FreePats SoundFont, sounding -2 | 10,000 requested by the documented command; this root is not currently present on disk | Configured large procedural training option |
+| `output_2k_rawdata` / `raw2k` | `rawdata_snippets_2k.yaml`; random 8–16-measure windows from uploaded scores | FreePats, sounding -2 | Config requests 2,000 per generation command; frozen full manifest contains 2,100: 1,268 train / 140 val / 692 test-OOD | Training and OOD/generalization evaluation |
+| `outputRaw_sf_10k` | `rawdata_sf_10k.yaml`; uploaded-score snippets, score `001` excluded, exact lineage | `soundfont_v1`, FreePats, sounding -2 | 10,000 accepted: 8,004 train / 999 val / 997 test-ID | Current Layer 1 and contextual aligner; Basic Pitch calibration |
+
+### Shared generation hyperparameters
+
+| Parameter | Default procedural | Multi-error / raw-score configs |
+|---|---:|---:|
+| Sample rate / channels | 22,050 Hz / mono | Same |
+| Measures | 8–16 | 8–16; raw snippets also require at least 12 notes |
+| Tempo | 72–112 BPM | Same |
+| Written pitch range | E3–C6 | Same |
+| Meters | 4/4, 3/4, 2/4, 6/8 | Same |
+| Rest probability | 0.08 | 0.12 |
+| Syncopation probability | 0.12 | 0.12 |
+| Content errors per clip | 1 | 1–8 |
+| Error weights | 1.0 for wrong/missed/extra/rhythm/intonation | Same |
+| Error overlap | Disallowed | Disallowed |
+| Repetition after content errors | 0.35 | 0.80 |
+| Standalone repetition | 0 | 0.20 |
+| Restart silence | 0 s | Uniform 0.2–1.0 s |
+| Extra replay copies | 1 with weight 0.7; 2 with weight 0.3 | Same |
+| Melody padding | Random 1–2 clean-score notes per side | Same |
+| Squeak injection | Disabled (`prob=0`) | Disabled in current checked-in configs |
+| Intonation | 40–80 cents; grouped run probability 0.45; max run 4 | Same |
+
+### Rhythm corruption hyperparameters
+
+- `late_start`: inserts a rest before a note while preserving its original offset.
+- `early_start`: steals time from a preceding rest.
+- `late_end`: steals time from a following rest.
+- `early_end`: shortens the note and fills the tail with rest.
+- `tempo_change`: changes 1–2 measures to 0.68–0.82× or 1.2–1.4× tempo, then restores it.
+- `uneven`: reweights 3–4 note durations while preserving the bar total.
+
+### Render versions
+
+| Marker | Meaning |
+|---|---|
+| `soundfont_v1` | Current generation path: music21 MIDI, `tinysoundfont`, selected clarinet bank, explicit sounding-pitch metadata |
+| `oscillator_v1` / `oscillator_v1_bare` | Historical re-render marker retained by `regenerate-audio`; despite the name, the current implementation resolves and renders a SoundFont. `bare` strips ornaments. |
+| `soundfont_rerender` | Legacy written-MIDI re-render marker understood by pitch-policy compatibility code |
+
+Do not rewrite these markers manually. Use `synth-pipeline regenerate-audio` or the shared pitch-convention helpers so `midi_pitch_space`, `audio_pitch_space`, `sounding_transpose`, and `effective_audio_transpose` stay consistent.
+
+## Reproducibility and lineage
+
+Each generated bundle records enough information to distinguish:
+
+1. **Clean written score** — `verified_score.musicxml`.
+2. **Errored render score/MIDI** — training supervision only.
+3. **Audio-facing notes** — `rendered_notes`, including tied-note `clean_indices`.
+4. **Performed-to-clean identity** — relationship, primary clean index, copy pass, and deleted notes.
+5. **Acoustic pitch policy** — explicit written/sounding spaces and transposition.
+
+Model training must use `note_map.json` or a signature-validated backfill cache. A filename match or approximate DTW path is not exact synthetic supervision.

@@ -1,0 +1,1454 @@
+{
+  "schema_version": 2,
+  "release": "align-data-audit-v2",
+  "created_utc": "2026-09-13T20:00:31.426160+00:00",
+  "repository": "D:\\stuff\\Audio Evaluation\\ALIGN",
+  "scope": {
+    "rawsf10k": {
+      "root": "E:\\outputRaw_sf_10k",
+      "mounted": true,
+      "bundles_discovered": 10000
+    },
+    "procedural12k": {
+      "root": "E:\\output",
+      "mounted": true,
+      "bundles_discovered": 12000
+    },
+    "raw2k_e": {
+      "root": "E:\\output_2k_rawdata",
+      "mounted": true,
+      "bundles_discovered": 2100
+    },
+    "raw2k_local": {
+      "root": "D:\\stuff\\Audio Evaluation\\ALIGN\\synth-pipeline\\output_2k_rawdata",
+      "mounted": true,
+      "bundles_discovered": 2100
+    },
+    "datacreate_real": {
+      "root": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples",
+      "mounted": true,
+      "bundles_discovered": 94
+    }
+  },
+  "summary": {
+    "bundles_discovered": 26294,
+    "synthetic_bundles": 26200,
+    "eligible_before_dedup": 23233,
+    "eligible_after_dedup": 23233,
+    "split_sizes": {
+      "train": 14718,
+      "val": 1871,
+      "test_id": 6644
+    },
+    "issue_counts_by_severity": {
+      "critical": 6657,
+      "high": 15783,
+      "info": 25552,
+      "warning": 4
+    },
+    "issue_codes": 16
+  },
+  "issues": [
+    {
+      "code": "performed_map_xml_mismatch",
+      "severity": "critical",
+      "count": 2319,
+      "examples": [
+        {
+          "sample": "synth_MozartClConcertoA_0138",
+          "detail": "map=63 XML=65 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0138\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0368",
+          "detail": "map=149 XML=152 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0368\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0394",
+          "detail": "map=44 XML=47 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0394\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0418",
+          "detail": "map=78 XML=80 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0418\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0845",
+          "detail": "map=110 XML=112 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0845\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0909",
+          "detail": "map=15 XML=17 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0909\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_1059",
+          "detail": "map=43 XML=45 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1059\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_1091",
+          "detail": "map=59 XML=61 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1091\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_1189",
+          "detail": "map=225 XML=228 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1189\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_1310",
+          "detail": "map=116 XML=118 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1310\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_1328",
+          "detail": "map=89 XML=91 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1328\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_1362",
+          "detail": "map=80 XML=83 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1362\\note_map.json"
+        }
+      ]
+    },
+    {
+      "code": "clean_map_xml_mismatch",
+      "severity": "critical",
+      "count": 2036,
+      "examples": [
+        {
+          "sample": "synth_001_0042",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-smoke\\targets\\raw2k\\synth_001_0042\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0045",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-smoke\\targets\\raw2k\\synth_001_0045\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0048",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0048\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0051",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0051\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0054",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0054\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0057",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0057\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0060",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0060\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0063",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0063\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0066",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0066\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0069",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0069\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0072",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0072\\note_map.json"
+        },
+        {
+          "sample": "synth_001_0075",
+          "detail": "map=49 XML=49 or pitches differ",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\targets\\raw2k\\synth_001_0075\\note_map.json"
+        }
+      ]
+    },
+    {
+      "code": "label_time_invalid",
+      "severity": "critical",
+      "count": 1640,
+      "examples": [
+        {
+          "sample": "synth_MozartClConcertoA_0142",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0142\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0146",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0146\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0168",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0168\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0212",
+          "detail": "2 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0212\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0288",
+          "detail": "2 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0288\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0390",
+          "detail": "4 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0390\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0400",
+          "detail": "2 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0400\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0410",
+          "detail": "3 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0410\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0444",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0444\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0492",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0492\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0524",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0524\\labels.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0624",
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0624\\labels.json"
+        }
+      ]
+    },
+    {
+      "code": "exact_note_map_missing",
+      "severity": "critical",
+      "count": 640,
+      "examples": [
+        {
+          "sample": "synth_gen_0046",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0046"
+        },
+        {
+          "sample": "synth_gen_0063",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0063"
+        },
+        {
+          "sample": "synth_gen_0080",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0080"
+        },
+        {
+          "sample": "synth_gen_0099",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0099"
+        },
+        {
+          "sample": "synth_gen_0114",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0114"
+        },
+        {
+          "sample": "synth_gen_0213",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0213"
+        },
+        {
+          "sample": "synth_gen_0257",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0257"
+        },
+        {
+          "sample": "synth_gen_0265",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0265"
+        },
+        {
+          "sample": "synth_gen_0280",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0280"
+        },
+        {
+          "sample": "synth_gen_0338",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0338"
+        },
+        {
+          "sample": "synth_gen_0347",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0347"
+        },
+        {
+          "sample": "synth_gen_0356",
+          "detail": "no in-bundle or frozen validated note_map.json",
+          "path": "E:\\output\\synth_gen_0356"
+        }
+      ]
+    },
+    {
+      "code": "rendered_map_midi_mismatch",
+      "severity": "critical",
+      "count": 8,
+      "examples": [
+        {
+          "sample": "synth_WeberITAV_1675",
+          "detail": "162 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1675\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_2168",
+          "detail": "84 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_2168\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4067",
+          "detail": "192 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4067\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4690",
+          "detail": "270 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4690\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4794",
+          "detail": "48 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4794\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_5311",
+          "detail": "42 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_5311\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_6613",
+          "detail": "48 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6613\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_8877",
+          "detail": "56 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_8877\\note_map.json"
+        }
+      ]
+    },
+    {
+      "code": "rendered_notes_missing",
+      "severity": "critical",
+      "count": 8,
+      "examples": [
+        {
+          "sample": "synth_WeberITAV_1675",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1675\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_2168",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_2168\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4067",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4067\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4690",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4690\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4794",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4794\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_5311",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_5311\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_6613",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6613\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_8877",
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_8877\\note_map.json"
+        }
+      ]
+    },
+    {
+      "code": "frozen_manifest_prefix_source_concentration",
+      "severity": "critical",
+      "count": 3,
+      "examples": [
+        {
+          "sample": "basic-pitch-refiner-procedural-s365",
+          "detail": "a commonly used first-N subset is >=80% one source",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\split.json"
+        },
+        {
+          "sample": "contextual-aligner-outputRaw_sf-1k",
+          "detail": "a commonly used first-N subset is >=80% one source",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\contextual-aligner-outputRaw_sf-1k\\split.json"
+        },
+        {
+          "sample": "note-align-full-e-s365",
+          "detail": "a commonly used first-N subset is >=80% one source",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\split.json"
+        }
+      ]
+    },
+    {
+      "code": "frozen_manifest_source_leakage",
+      "severity": "critical",
+      "count": 3,
+      "examples": [
+        {
+          "sample": "contextual-aligner-outputRaw_sf-1k",
+          "detail": "2 source groups occur in multiple splits",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\contextual-aligner-outputRaw_sf-1k\\split.json"
+        },
+        {
+          "sample": "note-align-full-e-s365",
+          "detail": "2 source groups occur in multiple splits",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\split.json"
+        },
+        {
+          "sample": "note-align-smoke",
+          "detail": "1 source groups occur in multiple splits",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-smoke\\split.json"
+        }
+      ]
+    },
+    {
+      "code": "intonation_midi_mismatch",
+      "severity": "high",
+      "count": 15274,
+      "examples": [
+        {
+          "sample": "synth_MozartClConcertoA_0044",
+          "detail": "4/4 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0044"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0048",
+          "detail": "1/1 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0048"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0050",
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0050"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0052",
+          "detail": "2/2 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0052"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0054",
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0054"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0060",
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0060"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0064",
+          "detail": "2/2 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0064"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0066",
+          "detail": "6/6 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0066"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0068",
+          "detail": "6/6 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0068"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0070",
+          "detail": "4/4 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0070"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0074",
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0074"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0082",
+          "detail": "6/6 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0082"
+        }
+      ]
+    },
+    {
+      "code": "intonation_acoustic_mismatch",
+      "severity": "high",
+      "count": 203,
+      "examples": [
+        {
+          "sample": "synth_gen_0042",
+          "detail": "3/3 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0042"
+        },
+        {
+          "sample": "synth_gen_0043",
+          "detail": "1/1 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0043"
+        },
+        {
+          "sample": "synth_gen_0045",
+          "detail": "1/1 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0045"
+        },
+        {
+          "sample": "synth_gen_0047",
+          "detail": "2/2 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0047"
+        },
+        {
+          "sample": "synth_gen_0049",
+          "detail": "1/1 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0049"
+        },
+        {
+          "sample": "synth_gen_0050",
+          "detail": "4/4 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0050"
+        },
+        {
+          "sample": "synth_gen_0051",
+          "detail": "2/2 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0051"
+        },
+        {
+          "sample": "synth_gen_0052",
+          "detail": "2/2 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0052"
+        },
+        {
+          "sample": "synth_gen_0053",
+          "detail": "2/2 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0053"
+        },
+        {
+          "sample": "synth_gen_0054",
+          "detail": "2/2 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0054"
+        },
+        {
+          "sample": "synth_gen_0056",
+          "detail": "9/9 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0056"
+        },
+        {
+          "sample": "synth_gen_0058",
+          "detail": "2/2 measured labels differ by >20 cents",
+          "path": "E:\\output\\synth_gen_0058"
+        }
+      ]
+    },
+    {
+      "code": "basic_pitch_cache_pitch_policy_stale",
+      "severity": "high",
+      "count": 100,
+      "examples": [
+        {
+          "sample": "synth_gen_0059",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0059.npz"
+        },
+        {
+          "sample": "synth_gen_0084",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0084.npz"
+        },
+        {
+          "sample": "synth_gen_0086",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0086.npz"
+        },
+        {
+          "sample": "synth_gen_0092",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0092.npz"
+        },
+        {
+          "sample": "synth_gen_0097",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0097.npz"
+        },
+        {
+          "sample": "synth_gen_0098",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0098.npz"
+        },
+        {
+          "sample": "synth_gen_0133",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0133.npz"
+        },
+        {
+          "sample": "synth_gen_0148",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0148.npz"
+        },
+        {
+          "sample": "synth_gen_0153",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0153.npz"
+        },
+        {
+          "sample": "synth_gen_0183",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0183.npz"
+        },
+        {
+          "sample": "synth_gen_0185",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0185.npz"
+        },
+        {
+          "sample": "synth_gen_0189",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-cache\\procedural12k\\synth_gen_0189.npz"
+        }
+      ]
+    },
+    {
+      "code": "pesto_cache_pitch_policy_stale",
+      "severity": "high",
+      "count": 100,
+      "examples": [
+        {
+          "sample": "synth_gen_0059",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0059.npz"
+        },
+        {
+          "sample": "synth_gen_0084",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0084.npz"
+        },
+        {
+          "sample": "synth_gen_0086",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0086.npz"
+        },
+        {
+          "sample": "synth_gen_0092",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0092.npz"
+        },
+        {
+          "sample": "synth_gen_0097",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0097.npz"
+        },
+        {
+          "sample": "synth_gen_0098",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0098.npz"
+        },
+        {
+          "sample": "synth_gen_0133",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0133.npz"
+        },
+        {
+          "sample": "synth_gen_0148",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0148.npz"
+        },
+        {
+          "sample": "synth_gen_0153",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0153.npz"
+        },
+        {
+          "sample": "synth_gen_0183",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0183.npz"
+        },
+        {
+          "sample": "synth_gen_0185",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0185.npz"
+        },
+        {
+          "sample": "synth_gen_0189",
+          "detail": "cache transpose=2; bundle values=[4]",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\pesto-cache\\procedural12k\\synth_gen_0189.npz"
+        }
+      ]
+    },
+    {
+      "code": "repeat_metadata_map_mismatch",
+      "severity": "high",
+      "count": 65,
+      "examples": [
+        {
+          "sample": "synth_WeberITAV_1357",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1357\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_1675",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1675\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_2168",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_2168\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4067",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4067\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4217",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4217\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4265",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4265\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4608",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4608\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4690",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4690\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4794",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4794\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_4836",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4836\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_6613",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6613\\note_map.json"
+        },
+        {
+          "sample": "synth_WeberITAV_7086",
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_7086\\note_map.json"
+        }
+      ]
+    },
+    {
+      "code": "wav_midi_duration_mismatch",
+      "severity": "high",
+      "count": 41,
+      "examples": [
+        {
+          "sample": "synth_gen_6172",
+          "detail": "wav=12.854s midi=13.211s tail=-0.357s",
+          "path": "E:\\output\\synth_gen_6172"
+        },
+        {
+          "sample": "synth_gen_9384",
+          "detail": "wav=15.976s midi=16.370s tail=-0.394s",
+          "path": "E:\\output\\synth_gen_9384"
+        },
+        {
+          "sample": "synth_001_0102",
+          "detail": "wav=30.430s midi=31.200s tail=-0.770s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0102"
+        },
+        {
+          "sample": "synth_001_0278",
+          "detail": "wav=24.266s midi=24.399s tail=-0.133s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0278"
+        },
+        {
+          "sample": "synth_001_0292",
+          "detail": "wav=30.430s midi=31.200s tail=-0.770s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0292"
+        },
+        {
+          "sample": "synth_001_0347",
+          "detail": "wav=38.170s midi=38.399s tail=-0.229s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0347"
+        },
+        {
+          "sample": "synth_001_0359",
+          "detail": "wav=13.630s midi=14.400s tail=-0.770s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0359"
+        },
+        {
+          "sample": "synth_001_0413",
+          "detail": "wav=10.400s midi=10.533s tail=-0.133s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0413"
+        },
+        {
+          "sample": "synth_001_0445",
+          "detail": "wav=26.132s midi=26.265s tail=-0.133s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0445"
+        },
+        {
+          "sample": "synth_001_0666",
+          "detail": "wav=30.430s midi=31.200s tail=-0.770s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0666"
+        },
+        {
+          "sample": "synth_001_0756",
+          "detail": "wav=20.830s midi=21.600s tail=-0.770s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0756"
+        },
+        {
+          "sample": "synth_001_0884",
+          "detail": "wav=20.830s midi=21.600s tail=-0.770s",
+          "path": "E:\\output_2k_rawdata\\synth_001_0884"
+        }
+      ]
+    },
+    {
+      "code": "performance_reference_duration_ratio",
+      "severity": "warning",
+      "count": 4,
+      "examples": [
+        {
+          "sample": "synth_MozartClConcertoA_3040",
+          "detail": "performance/reference=4.008",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_3040"
+        },
+        {
+          "sample": "synth_WeberITAV_4019",
+          "detail": "performance/reference=4.115",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4019"
+        },
+        {
+          "sample": "synth_WeberITAV_6445",
+          "detail": "performance/reference=4.124",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6445"
+        },
+        {
+          "sample": "053",
+          "detail": "performance/reference=0.230",
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\053"
+        }
+      ]
+    },
+    {
+      "code": "rendered_map_repaired_in_sidecar",
+      "severity": "info",
+      "count": 25552,
+      "examples": [
+        {
+          "sample": "synth_MozartClConcertoA_0042",
+          "detail": "old=113 raw=111 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0042\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0044",
+          "detail": "old=42 raw=46 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0044\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0046",
+          "detail": "old=50 raw=50 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0046\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0048",
+          "detail": "old=144 raw=144 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0048\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0050",
+          "detail": "old=194 raw=184 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0050\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0052",
+          "detail": "old=50 raw=105 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0052\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0054",
+          "detail": "old=54 raw=52 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0054\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0056",
+          "detail": "old=161 raw=156 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0056\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0058",
+          "detail": "old=139 raw=135 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0058\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0060",
+          "detail": "old=79 raw=79 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0060\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0062",
+          "detail": "old=99 raw=126 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0062\\note_map.json"
+        },
+        {
+          "sample": "synth_MozartClConcertoA_0064",
+          "detail": "old=404 raw=404 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0064\\note_map.json"
+        }
+      ]
+    }
+  ],
+  "corpus_distribution_all": {
+    "rawsf10k": {
+      "n": 10000,
+      "corpus": {
+        "rawsf10k": 10000
+      },
+      "source_groups": 2,
+      "top_sources": {
+        "MozartClConcertoA": 5008,
+        "WeberITAV": 4992
+      },
+      "error_type_counts": {
+        "extra_note": 5640,
+        "intonation_error": 5860,
+        "missed_note": 5838,
+        "repetition": 8417,
+        "rhythm_error": 5942,
+        "wrong_note": 6100
+      },
+      "error_type_fraction": {
+        "extra_note": 0.564,
+        "intonation_error": 0.586,
+        "missed_note": 0.5838,
+        "repetition": 0.8417,
+        "rhythm_error": 0.5942,
+        "wrong_note": 0.61
+      },
+      "render": {
+        "soundfont_v1": 10000
+      },
+      "pitch_space": {
+        "sounding:2": 10000
+      },
+      "repeated_fraction": 0.8408,
+      "duration_sec": {
+        "total": 398666.152,
+        "min": 4.625,
+        "median": 35.987,
+        "max": 175.871,
+        "buckets": {
+          "15-30": 3205,
+          "30-60": 5114,
+          "<15": 334,
+          ">=60": 1347
+        }
+      }
+    },
+    "procedural12k": {
+      "n": 12000,
+      "corpus": {
+        "procedural12k": 12000
+      },
+      "source_groups": 12000,
+      "top_sources": {
+        "gen": 12000
+      },
+      "error_type_counts": {
+        "extra_note": 7080,
+        "intonation_error": 6964,
+        "missed_note": 6948,
+        "repetition": 10050,
+        "rhythm_error": 7054,
+        "wrong_note": 7001
+      },
+      "error_type_fraction": {
+        "extra_note": 0.59,
+        "intonation_error": 0.580333,
+        "missed_note": 0.579,
+        "repetition": 0.8375,
+        "rhythm_error": 0.587833,
+        "wrong_note": 0.583417
+      },
+      "render": {
+        "oscillator_v1": 12000
+      },
+      "pitch_space": {
+        "sounding:4": 11488,
+        "undeclared:2": 512
+      },
+      "repeated_fraction": 0.834583,
+      "duration_sec": {
+        "total": 481849.997,
+        "min": 8.971,
+        "median": 36.044,
+        "max": 159.096,
+        "buckets": {
+          "15-30": 3888,
+          "30-60": 6046,
+          "<15": 332,
+          ">=60": 1734
+        }
+      }
+    },
+    "raw2k_e": {
+      "n": 2100,
+      "corpus": {
+        "raw2k_e": 2100
+      },
+      "source_groups": 3,
+      "top_sources": {
+        "001": 706,
+        "MozartClConcertoA": 702,
+        "WeberITAV": 692
+      },
+      "error_type_counts": {
+        "extra_note": 1147,
+        "intonation_error": 1225,
+        "missed_note": 1213,
+        "repetition": 1770,
+        "rhythm_error": 1203,
+        "wrong_note": 1310
+      },
+      "error_type_fraction": {
+        "extra_note": 0.54619,
+        "intonation_error": 0.583333,
+        "missed_note": 0.577619,
+        "repetition": 0.842857,
+        "rhythm_error": 0.572857,
+        "wrong_note": 0.62381
+      },
+      "render": {
+        "oscillator_v1_bare": 2100
+      },
+      "pitch_space": {
+        "sounding:2": 2100
+      },
+      "repeated_fraction": 0.842857,
+      "duration_sec": {
+        "total": 69105.348,
+        "min": 3.4,
+        "median": 27.791,
+        "max": 172.939,
+        "buckets": {
+          "15-30": 934,
+          "30-60": 749,
+          "<15": 224,
+          ">=60": 193
+        }
+      }
+    },
+    "raw2k_local": {
+      "n": 2100,
+      "corpus": {
+        "raw2k_local": 2100
+      },
+      "source_groups": 3,
+      "top_sources": {
+        "001": 706,
+        "MozartClConcertoA": 702,
+        "WeberITAV": 692
+      },
+      "error_type_counts": {
+        "extra_note": 1147,
+        "intonation_error": 1225,
+        "missed_note": 1213,
+        "repetition": 1770,
+        "rhythm_error": 1203,
+        "wrong_note": 1310
+      },
+      "error_type_fraction": {
+        "extra_note": 0.54619,
+        "intonation_error": 0.583333,
+        "missed_note": 0.577619,
+        "repetition": 0.842857,
+        "rhythm_error": 0.572857,
+        "wrong_note": 0.62381
+      },
+      "render": {
+        "soundfont_rerender": 2100
+      },
+      "pitch_space": {
+        "undeclared:2": 2100
+      },
+      "repeated_fraction": 0.841429,
+      "duration_sec": {
+        "total": 69716.772,
+        "min": 5.0,
+        "median": 28.253,
+        "max": 171.727,
+        "buckets": {
+          "15-30": 932,
+          "30-60": 765,
+          "<15": 213,
+          ">=60": 190
+        }
+      }
+    },
+    "datacreate_real": {
+      "n": 94,
+      "corpus": {
+        "datacreate_real": 94
+      },
+      "source_groups": 94,
+      "top_sources": {
+        "001": 1,
+        "002": 1,
+        "003": 1,
+        "004": 1,
+        "005": 1,
+        "006": 1,
+        "007": 1,
+        "008": 1,
+        "009": 1,
+        "010": 1,
+        "011": 1,
+        "012": 1,
+        "013": 1,
+        "014": 1,
+        "015": 1,
+        "016": 1,
+        "017": 1,
+        "018": 1,
+        "019": 1,
+        "020": 1
+      },
+      "error_type_counts": {
+        "bad_start": 4,
+        "bad_timbre": 4,
+        "click": 1,
+        "extra_note": 9,
+        "missed_note": 5,
+        "repetition": 1,
+        "rhythm_error": 5,
+        "sliding": 2,
+        "squeak": 2,
+        "wrong_note": 6
+      },
+      "error_type_fraction": {
+        "bad_start": 0.042553,
+        "bad_timbre": 0.042553,
+        "click": 0.010638,
+        "extra_note": 0.095745,
+        "missed_note": 0.053191,
+        "repetition": 0.010638,
+        "rhythm_error": 0.053191,
+        "sliding": 0.021277,
+        "squeak": 0.021277,
+        "wrong_note": 0.06383
+      },
+      "render": {
+        "unknown": 94
+      },
+      "pitch_space": {
+        "undeclared:2": 94
+      },
+      "repeated_fraction": 0.010638,
+      "duration_sec": {
+        "total": 3171.061,
+        "min": 9.191,
+        "median": 30.203,
+        "max": 141.847,
+        "buckets": {
+          "15-30": 33,
+          "30-60": 37,
+          "<15": 13,
+          ">=60": 11
+        }
+      }
+    }
+  },
+  "note_map_totals": {
+    "valid": 23233,
+    "invalid_or_missing": 2967,
+    "clean_notes": 1338715,
+    "rendered_notes": 2264269,
+    "tied_notes_folded": 130839,
+    "copy_events": 763451
+  },
+  "cache_audit": {
+    "files_inspected": 2278,
+    "basic_pitch": {
+      "valid": 1741,
+      "pitch_policy_stale": 100,
+      "orphan": 1
+    },
+    "pesto": {
+      "valid": 336,
+      "pitch_policy_stale": 100
+    }
+  },
+  "intonation_audit": {
+    "all_corpora_labels_total": 47965,
+    "focused_hash_matched_pesto_audit": {
+      "procedural_only": true,
+      "n_measured": 752,
+      "label_cents_median_abs": 60.2,
+      "measured_cents_median_abs": 0.0,
+      "cents_mae": 94.17455064286577,
+      "correlation": 0.06492599599315715,
+      "measured_within_20_cents_of_zero_fraction": 0.9800531914893617,
+      "source": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\intonation-audit.json",
+      "source_sha256": "92f6ed2e9af07cc8335a33d7837da12fd6691109b8f34d9a86bede055e39701b",
+      "label_matches_within_20_cents": 0,
+      "label_match_within_20_cents_fraction": 0.0
+    },
+    "training_policy": "no intonation label is usable without acoustic verification"
+  },
+  "existing_frozen_manifests": [
+    {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\basic-pitch-refiner-procedural-s365\\split.json",
+      "split_sizes": {
+        "train": 9197,
+        "val": 1138,
+        "test_id": 1153
+      },
+      "source_groups_crossing_splits": 0,
+      "exact_paths_crossing_splits": 0,
+      "exact_fingerprints_crossing_splits": 0,
+      "source_leak_examples": {},
+      "prefix_distributions": {
+        "train": {
+          "n": 1000,
+          "unique_sources": 1,
+          "top_source": "gen",
+          "top_source_count": 1000,
+          "top_source_fraction": 1.0
+        },
+        "val": {
+          "n": 200,
+          "unique_sources": 1,
+          "top_source": "gen",
+          "top_source_count": 200,
+          "top_source_fraction": 1.0
+        },
+        "test_id": {
+          "n": 200,
+          "unique_sources": 1,
+          "top_source": "gen",
+          "top_source_count": 200,
+          "top_source_fraction": 1.0
+        }
+      }
+    },
+    {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\contextual-aligner-outputRaw_sf-1k\\split.json",
+      "split_sizes": {
+        "train": 8004,
+        "val": 999,
+        "test_id": 997
+      },
+      "source_groups_crossing_splits": 2,
+      "exact_paths_crossing_splits": 0,
+      "exact_fingerprints_crossing_splits": 0,
+      "source_leak_examples": {
+        "score:mozartclconcertoa": [
+          "test_id",
+          "train",
+          "val"
+        ],
+        "score:weberitav": [
+          "test_id",
+          "train",
+          "val"
+        ]
+      },
+      "prefix_distributions": {
+        "train": {
+          "n": 1000,
+          "unique_sources": 1,
+          "top_source": "MozartClConcertoA",
+          "top_source_count": 1000,
+          "top_source_fraction": 1.0
+        },
+        "val": {
+          "n": 200,
+          "unique_sources": 1,
+          "top_source": "MozartClConcertoA",
+          "top_source_count": 200,
+          "top_source_fraction": 1.0
+        },
+        "test_id": {
+          "n": 200,
+          "unique_sources": 1,
+          "top_source": "MozartClConcertoA",
+          "top_source_count": 200,
+          "top_source_fraction": 1.0
+        }
+      }
+    },
+    {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-full-e-s365\\split.json",
+      "split_sizes": {
+        "train": 10871,
+        "val": 1338,
+        "test_id": 1199,
+        "test_ood": 692
+      },
+      "source_groups_crossing_splits": 2,
+      "exact_paths_crossing_splits": 0,
+      "exact_fingerprints_crossing_splits": 0,
+      "source_leak_examples": {
+        "score:001": [
+          "train",
+          "val"
+        ],
+        "score:mozartclconcertoa": [
+          "train",
+          "val"
+        ]
+      },
+      "prefix_distributions": {
+        "train": {
+          "n": 1000,
+          "unique_sources": 1,
+          "top_source": "gen",
+          "top_source_count": 1000,
+          "top_source_fraction": 1.0
+        },
+        "val": {
+          "n": 200,
+          "unique_sources": 1,
+          "top_source": "gen",
+          "top_source_count": 200,
+          "top_source_fraction": 1.0
+        },
+        "test_id": {
+          "n": 200,
+          "unique_sources": 1,
+          "top_source": "gen",
+          "top_source_count": 200,
+          "top_source_fraction": 1.0
+        }
+      }
+    },
+    {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\note-align-smoke\\split.json",
+      "split_sizes": {
+        "train": 1,
+        "val": 1
+      },
+      "source_groups_crossing_splits": 1,
+      "exact_paths_crossing_splits": 0,
+      "exact_fingerprints_crossing_splits": 0,
+      "source_leak_examples": {
+        "score:001": [
+          "train",
+          "val"
+        ]
+      },
+      "prefix_distributions": {
+        "train": {
+          "n": 1,
+          "unique_sources": 1,
+          "top_source": "001",
+          "top_source_count": 1,
+          "top_source_fraction": 1.0
+        },
+        "val": {
+          "n": 1,
+          "unique_sources": 1,
+          "top_source": "001",
+          "top_source_count": 1,
+          "top_source_fraction": 1.0
+        }
+      }
+    }
+  ],
+  "new_manifest_integrity": {
+    "source_group_overlap": {
+      "train:val": [],
+      "train:test_id": [],
+      "val:test_id": []
+    },
+    "content_fingerprint_overlap": {
+      "train:val": [],
+      "train:test_id": [],
+      "val:test_id": []
+    },
+    "all_overlaps_empty": true
+  },
+  "artifacts": {
+    "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\split.json",
+    "manifest_sha256": "b6e34d9d170c0d7715064b15e2a0c21aa191d772e8738dd7b386ab7b27396e11",
+    "target_cache": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\validated_targets.jsonl.gz",
+    "target_cache_sha256": "e017af65f978479797b2dd92dc866808b0c0ac9d1ef9ea83ae38279440a67fbd",
+    "heldout_protocol": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\heldout_protocol.json",
+    "target_db": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\2026-09-14-v2\\validated_targets.sqlite",
+    "target_db_sha256": "a685f5c48a718d2ddb82c10684f52585945025bfd40cd8c17d56277bd0e9874c"
+  },
+  "limitations": [
+    "WAV duration uses headers only; audio is never loaded by this audit.",
+    "MIDI pitch-bend checks validate render control, not acoustic output.",
+    "Acoustic intonation is accepted only when a valid hash-matched Basic Pitch and PESTO cache exists.",
+    "A target F1 >= 0.80 is a model goal, not a result established by a data audit."
+  ],
+  "deduplication": {
+    "eligible_before_dedup": 23233,
+    "eligible_after_dedup": 23233,
+    "duplicate_rows_excluded": 0,
+    "symbolic_duplicate_rows_excluded": 0,
+    "duplicate_examples": [],
+    "source_groups": 11491,
+    "locked_test_sources": [
+      "score:weberitav"
+    ],
+    "locked_val_sources": [
+      "score:001"
+    ]
+  }
+}

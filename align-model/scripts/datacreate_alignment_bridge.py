@@ -1,4 +1,4 @@
-"""Run the note-first ALIGN pipeline and emit DataCreate-compatible JSON."""
+"""Run ALIGN joint transcription/alignment and emit DataCreate JSON."""
 
 from __future__ import annotations
 
@@ -6,29 +6,26 @@ import argparse
 import json
 from pathlib import Path
 
+from alignmodel.joint.infer import (
+    build_gui_alignment_payload,
+    infer_joint_sample,
+)
 from alignmodel.pipeline import run_pipeline
 from alignmodel.types import PipelineConfig, pipeline_label_to_dict
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--sample", type=Path, required=True)
-    parser.add_argument("--weights", type=Path, required=True)
-    parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--device", default="cuda")
-    args = parser.parse_args()
-
+def _note_first_payload(sample: Path, weights: Path, device: str) -> dict:
     state = run_pipeline(
-        args.sample,
+        sample,
         stages={1, 2},
         config=PipelineConfig(
             weights_dir=None,
-            alignment_weights_dir=str(args.weights),
+            alignment_weights_dir=str(weights),
             detect_intonation=False,
         ),
-        device=args.device,
+        device=device,
         weights_dir=None,
-        alignment_weights_dir=args.weights,
+        alignment_weights_dir=weights,
     )
     events = []
     for event_index, pair in enumerate(
@@ -65,7 +62,7 @@ def main() -> None:
         item = pipeline_label_to_dict(label)
         item["source"] = "auto"
         labels.append(item)
-    payload = {
+    return {
         "format_version": 2,
         "engine": "align-note-first",
         "sample_id": state.sample_id,
@@ -97,6 +94,7 @@ def main() -> None:
         ],
         "summary": {
             "engine": "align-note-first",
+            "backend": "contextual-note-aligner",
             "event_count": len(events),
             "transcribed_note_count": len(state.transcribed_notes),
             "mapped_note_count": sum(
@@ -108,6 +106,70 @@ def main() -> None:
             "hop_length": state.config.hop_length,
         },
     }
+
+
+def _transcription_payload(sample: Path) -> dict:
+    from alignmodel.transcription.basic_pitch import (
+        decode_frozen_basic_pitch,
+        extract_sample_basic_pitch_features,
+        sanitize_basic_pitch_notes,
+    )
+
+    cache = sample / "basic_pitch_cache.npz"
+    features = extract_sample_basic_pitch_features(sample, cache_path=cache)
+    notes = sanitize_basic_pitch_notes(
+        decode_frozen_basic_pitch(features), features
+    )
+    return {
+        "engine": "basic-pitch-frozen",
+        "sample_id": sample.name,
+        "transcribed_notes": [
+            {
+                "pitch": int(note.pitch),
+                "start": float(note.start),
+                "end": float(note.end),
+                "confidence": float(note.confidence),
+            }
+            for note in notes
+        ],
+        "summary": {
+            "engine": "basic-pitch-frozen",
+            "transcribed_note_count": len(notes),
+            "cache_path": str(cache),
+        },
+    }
+
+
+def _joint_payload(sample: Path, checkpoint: Path, device: str) -> dict:
+    result = infer_joint_sample(sample, checkpoint, device=device)
+    from datacreate.melody import parse_sounding_notes
+
+    return build_gui_alignment_payload(
+        result, parse_sounding_notes(sample / "verified_score.musicxml")
+    )
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--sample", type=Path, required=True)
+    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--device", default="cuda")
+    parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--weights", type=Path)
+    parser.add_argument(
+        "--transcribe-only",
+        action="store_true",
+        help="Dump frozen Basic Pitch notes without score alignment",
+    )
+    args = parser.parse_args()
+    if args.transcribe_only:
+        payload = _transcription_payload(args.sample)
+    elif args.checkpoint is not None:
+        payload = _joint_payload(args.sample, args.checkpoint, args.device)
+    elif args.weights is not None:
+        payload = _note_first_payload(args.sample, args.weights, args.device)
+    else:
+        raise SystemExit("Provide --checkpoint (joint), --weights (legacy), or --transcribe-only")
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     print(f"Wrote {args.out}")

@@ -1,0 +1,494 @@
+{
+  "bundles_discovered": 10000,
+  "created_utc": "2026-09-14T17:30:50.882003+00:00",
+  "eligible": 9736,
+  "fingerprint_groups": 3668,
+  "historical_ids_discovered": 788,
+  "historical_lockbox_groups_excluded": 102,
+  "historical_lockbox_rows_excluded": 812,
+  "ineligible": 264,
+  "intonation_targets_usable": 0,
+  "issue_counts": {
+    "intonation_midi_mismatch": 5860,
+    "label_time_invalid": 780,
+    "performance_reference_duration_ratio": 3,
+    "performed_map_xml_mismatch": 256,
+    "rendered_map_midi_mismatch": 8,
+    "rendered_map_repaired_in_sidecar": 9992,
+    "rendered_notes_missing": 8,
+    "repeat_metadata_map_mismatch": 15
+  },
+  "issues": [
+    {
+      "code": "label_time_invalid",
+      "count": 780,
+      "examples": [
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0142\\labels.json",
+          "sample": "synth_MozartClConcertoA_0142"
+        },
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0146\\labels.json",
+          "sample": "synth_MozartClConcertoA_0146"
+        },
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0168\\labels.json",
+          "sample": "synth_MozartClConcertoA_0168"
+        },
+        {
+          "detail": "2 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0212\\labels.json",
+          "sample": "synth_MozartClConcertoA_0212"
+        },
+        {
+          "detail": "2 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0288\\labels.json",
+          "sample": "synth_MozartClConcertoA_0288"
+        },
+        {
+          "detail": "4 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0390\\labels.json",
+          "sample": "synth_MozartClConcertoA_0390"
+        },
+        {
+          "detail": "2 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0400\\labels.json",
+          "sample": "synth_MozartClConcertoA_0400"
+        },
+        {
+          "detail": "3 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0410\\labels.json",
+          "sample": "synth_MozartClConcertoA_0410"
+        },
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0444\\labels.json",
+          "sample": "synth_MozartClConcertoA_0444"
+        },
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0492\\labels.json",
+          "sample": "synth_MozartClConcertoA_0492"
+        },
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0524\\labels.json",
+          "sample": "synth_MozartClConcertoA_0524"
+        },
+        {
+          "detail": "1 label spans are invalid or outside WAV",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0624\\labels.json",
+          "sample": "synth_MozartClConcertoA_0624"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "code": "performed_map_xml_mismatch",
+      "count": 256,
+      "examples": [
+        {
+          "detail": "map=63 XML=65 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0138\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0138"
+        },
+        {
+          "detail": "map=149 XML=152 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0368\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0368"
+        },
+        {
+          "detail": "map=44 XML=47 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0394\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0394"
+        },
+        {
+          "detail": "map=78 XML=80 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0418\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0418"
+        },
+        {
+          "detail": "map=110 XML=112 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0845\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0845"
+        },
+        {
+          "detail": "map=15 XML=17 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0909\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0909"
+        },
+        {
+          "detail": "map=43 XML=45 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1059\\note_map.json",
+          "sample": "synth_MozartClConcertoA_1059"
+        },
+        {
+          "detail": "map=59 XML=61 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1091\\note_map.json",
+          "sample": "synth_MozartClConcertoA_1091"
+        },
+        {
+          "detail": "map=225 XML=228 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1189\\note_map.json",
+          "sample": "synth_MozartClConcertoA_1189"
+        },
+        {
+          "detail": "map=116 XML=118 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1310\\note_map.json",
+          "sample": "synth_MozartClConcertoA_1310"
+        },
+        {
+          "detail": "map=89 XML=91 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1328\\note_map.json",
+          "sample": "synth_MozartClConcertoA_1328"
+        },
+        {
+          "detail": "map=80 XML=83 or pitches differ",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_1362\\note_map.json",
+          "sample": "synth_MozartClConcertoA_1362"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "code": "rendered_map_midi_mismatch",
+      "count": 8,
+      "examples": [
+        {
+          "detail": "162 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1675\\note_map.json",
+          "sample": "synth_WeberITAV_1675"
+        },
+        {
+          "detail": "84 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_2168\\note_map.json",
+          "sample": "synth_WeberITAV_2168"
+        },
+        {
+          "detail": "192 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4067\\note_map.json",
+          "sample": "synth_WeberITAV_4067"
+        },
+        {
+          "detail": "270 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4690\\note_map.json",
+          "sample": "synth_WeberITAV_4690"
+        },
+        {
+          "detail": "48 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4794\\note_map.json",
+          "sample": "synth_WeberITAV_4794"
+        },
+        {
+          "detail": "42 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_5311\\note_map.json",
+          "sample": "synth_WeberITAV_5311"
+        },
+        {
+          "detail": "48 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6613\\note_map.json",
+          "sample": "synth_WeberITAV_6613"
+        },
+        {
+          "detail": "56 count/pitch/time discrepancies",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_8877\\note_map.json",
+          "sample": "synth_WeberITAV_8877"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "code": "rendered_notes_missing",
+      "count": 8,
+      "examples": [
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1675\\note_map.json",
+          "sample": "synth_WeberITAV_1675"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_2168\\note_map.json",
+          "sample": "synth_WeberITAV_2168"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4067\\note_map.json",
+          "sample": "synth_WeberITAV_4067"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4690\\note_map.json",
+          "sample": "synth_WeberITAV_4690"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4794\\note_map.json",
+          "sample": "synth_WeberITAV_4794"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_5311\\note_map.json",
+          "sample": "synth_WeberITAV_5311"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6613\\note_map.json",
+          "sample": "synth_WeberITAV_6613"
+        },
+        {
+          "detail": "no rendered target events",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_8877\\note_map.json",
+          "sample": "synth_WeberITAV_8877"
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "code": "intonation_midi_mismatch",
+      "count": 5860,
+      "examples": [
+        {
+          "detail": "4/4 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0044",
+          "sample": "synth_MozartClConcertoA_0044"
+        },
+        {
+          "detail": "1/1 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0048",
+          "sample": "synth_MozartClConcertoA_0048"
+        },
+        {
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0050",
+          "sample": "synth_MozartClConcertoA_0050"
+        },
+        {
+          "detail": "2/2 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0052",
+          "sample": "synth_MozartClConcertoA_0052"
+        },
+        {
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0054",
+          "sample": "synth_MozartClConcertoA_0054"
+        },
+        {
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0060",
+          "sample": "synth_MozartClConcertoA_0060"
+        },
+        {
+          "detail": "2/2 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0064",
+          "sample": "synth_MozartClConcertoA_0064"
+        },
+        {
+          "detail": "6/6 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0066",
+          "sample": "synth_MozartClConcertoA_0066"
+        },
+        {
+          "detail": "6/6 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0068",
+          "sample": "synth_MozartClConcertoA_0068"
+        },
+        {
+          "detail": "4/4 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0070",
+          "sample": "synth_MozartClConcertoA_0070"
+        },
+        {
+          "detail": "3/3 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0074",
+          "sample": "synth_MozartClConcertoA_0074"
+        },
+        {
+          "detail": "6/6 labels lack matching MIDI bend",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0082",
+          "sample": "synth_MozartClConcertoA_0082"
+        }
+      ],
+      "severity": "high"
+    },
+    {
+      "code": "repeat_metadata_map_mismatch",
+      "count": 15,
+      "examples": [
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1357\\note_map.json",
+          "sample": "synth_WeberITAV_1357"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_1675\\note_map.json",
+          "sample": "synth_WeberITAV_1675"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_2168\\note_map.json",
+          "sample": "synth_WeberITAV_2168"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4067\\note_map.json",
+          "sample": "synth_WeberITAV_4067"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4217\\note_map.json",
+          "sample": "synth_WeberITAV_4217"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4265\\note_map.json",
+          "sample": "synth_WeberITAV_4265"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4608\\note_map.json",
+          "sample": "synth_WeberITAV_4608"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4690\\note_map.json",
+          "sample": "synth_WeberITAV_4690"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4794\\note_map.json",
+          "sample": "synth_WeberITAV_4794"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4836\\note_map.json",
+          "sample": "synth_WeberITAV_4836"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6613\\note_map.json",
+          "sample": "synth_WeberITAV_6613"
+        },
+        {
+          "detail": "metadata=True rendered_copy_events=0",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_7086\\note_map.json",
+          "sample": "synth_WeberITAV_7086"
+        }
+      ],
+      "severity": "high"
+    },
+    {
+      "code": "performance_reference_duration_ratio",
+      "count": 3,
+      "examples": [
+        {
+          "detail": "performance/reference=4.008",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_3040",
+          "sample": "synth_MozartClConcertoA_3040"
+        },
+        {
+          "detail": "performance/reference=4.115",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_4019",
+          "sample": "synth_WeberITAV_4019"
+        },
+        {
+          "detail": "performance/reference=4.124",
+          "path": "E:\\outputRaw_sf_10k\\synth_WeberITAV_6445",
+          "sample": "synth_WeberITAV_6445"
+        }
+      ],
+      "severity": "warning"
+    },
+    {
+      "code": "rendered_map_repaired_in_sidecar",
+      "count": 9992,
+      "examples": [
+        {
+          "detail": "old=113 raw=111 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0042\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0042"
+        },
+        {
+          "detail": "old=42 raw=46 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0044\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0044"
+        },
+        {
+          "detail": "old=50 raw=50 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0046\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0046"
+        },
+        {
+          "detail": "old=144 raw=144 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0048\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0048"
+        },
+        {
+          "detail": "old=194 raw=184 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0050\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0050"
+        },
+        {
+          "detail": "old=50 raw=105 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0052\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0052"
+        },
+        {
+          "detail": "old=54 raw=52 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0054\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0054"
+        },
+        {
+          "detail": "old=161 raw=156 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0056\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0056"
+        },
+        {
+          "detail": "old=139 raw=135 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0058\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0058"
+        },
+        {
+          "detail": "old=79 raw=79 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0060\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0060"
+        },
+        {
+          "detail": "old=99 raw=126 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0062\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0062"
+        },
+        {
+          "detail": "old=404 raw=404 shift=2",
+          "path": "E:\\outputRaw_sf_10k\\synth_MozartClConcertoA_0064\\note_map.json",
+          "sample": "synth_MozartClConcertoA_0064"
+        }
+      ],
+      "severity": "info"
+    }
+  ],
+  "release": "joint-outputraw-full-v1",
+  "schema_version": "align-outputraw-joint-audit-v1",
+  "source_counts": {
+    "test": {
+      "WeberITAV": 4022
+    },
+    "train": {
+      "MozartClConcertoA": 4544
+    },
+    "val": {
+      "MozartClConcertoA": 358
+    }
+  },
+  "source_root": "E:\\outputRaw_sf_10k",
+  "split_counts": {
+    "test": 4022,
+    "train": 4544,
+    "val": 358
+  },
+  "tie_projection": "MusicXML tie elements are projected later by ScoreEventIndex; slur spanners are never treated as ties."
+}

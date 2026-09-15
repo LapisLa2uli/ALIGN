@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from alignmodel.transcription.refiner import NoteRefinerConfig
+from alignmodel.transcription.refiner_data import RefinerAugmentConfig
 from alignmodel.transcription.refiner_train import (
     RefinerTrainConfig,
     train_note_refiner,
@@ -27,6 +28,12 @@ def main() -> None:
     parser.add_argument("--max-train-samples", type=int, default=0)
     parser.add_argument("--max-val-samples", type=int, default=80)
     parser.add_argument("--interval-weight", type=float, default=0.20)
+    parser.add_argument("--augment-probability", type=float, default=0.75)
+    parser.add_argument("--short-note-weight", type=float, default=2.0)
+    parser.add_argument("--hard-negative-ratio", type=float, default=1.0)
+    parser.add_argument(
+        "--same-pitch-split-probability", type=float, default=0.45
+    )
     parser.add_argument("--channels", type=int, default=96)
     parser.add_argument("--temporal-blocks", type=int, default=6)
     parser.add_argument("--midi-min", type=int, default=36)
@@ -58,6 +65,17 @@ def main() -> None:
             max_train_samples=max(0, args.max_train_samples),
             max_val_samples=max(0, args.max_val_samples),
             interval_weight=max(0.0, args.interval_weight),
+            augment=RefinerAugmentConfig(
+                probability=max(0.0, min(1.0, args.augment_probability)),
+                short_note_positive_weight=max(
+                    1.0, args.short_note_weight
+                ),
+                hard_negative_ratio=max(0.0, args.hard_negative_ratio),
+                same_pitch_split_probability=max(
+                    0.0,
+                    min(1.0, args.same_pitch_split_probability),
+                ),
+            ),
             device=args.device,
             seed=args.seed,
             resume_from=args.resume,

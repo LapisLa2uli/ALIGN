@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from dataclasses import asdict
 from pathlib import Path
 
+import numpy as np
 import torch
 
 from alignmodel.transcription.decode import TransNote
@@ -20,6 +22,10 @@ from alignmodel.transcription.semi_crf import (
     semi_crf_log_partition,
     semi_crf_nll,
     weighted_interval_decode,
+)
+from alignmodel.transcription.refiner_data import (
+    RefinerAugmentConfig,
+    augment_cached_refiner_maps,
 )
 
 
@@ -65,12 +71,17 @@ class NoteRefinerModelTests(unittest.TestCase):
             "pitch": torch.full((2, 24), -1, dtype=torch.long),
             "cents": torch.zeros(2, 24),
             "frame_mask": torch.ones(2, 24, dtype=torch.bool),
+            "frame_weight": torch.ones(2, 24),
+            "onset_weight": torch.ones(2, 24),
+            "offset_weight": torch.ones(2, 24),
             "intervals": [[(4, 16, 60)], [(4, 16, 60)]],
         }
         targets["voiced"][:, 4:16] = 1
         targets["onset"][:, 4] = 1
         targets["offset"][:, 16] = 1
         targets["pitch"][:, 4:16] = 60  # written MIDI, not a local class
+        targets["frame_weight"][:, 4:16] = 2.0
+        targets["onset_weight"][:, 4] = 2.0
         loss, parts = note_refiner_loss(outputs, targets, cfg)
         self.assertTrue(torch.isfinite(loss))
         self.assertTrue(all(torch.isfinite(value) for value in parts.values()))
@@ -114,6 +125,44 @@ class NoteRefinerModelTests(unittest.TestCase):
         self.assertEqual(
             set(loaded.state_dict()),
             set(model.state_dict()),
+        )
+
+    def test_difficult_timbre_augmentation_balances_short_notes(self) -> None:
+        frames = 32
+        note = np.full((frames, 88), 0.40, np.float32)
+        onset = np.zeros((frames, 88), np.float32)
+        contour = np.full((frames, 264), 0.30, np.float32)
+        pesto = np.ones((frames, 2), np.float32)
+        voiced = np.zeros(frames, np.float32)
+        voiced[2:8] = 1.0
+        voiced[10:26] = 1.0
+        config = RefinerAugmentConfig(
+            probability=1.0,
+            band_attenuation_probability=1.0,
+            filtered_timbre_probability=0.0,
+            short_note_attenuation_probability=1.0,
+            same_pitch_split_probability=1.0,
+            hard_negative_ratio=1.0,
+        )
+        _note, _onset, _contour, _pesto, metadata = (
+            augment_cached_refiner_maps(
+                note,
+                onset,
+                contour,
+                pesto,
+                intervals=[(2, 8, 60), (10, 26, 60)],
+                voiced_target=voiced,
+                config=config,
+                rng=np.random.default_rng(7),
+            )
+        )
+        self.assertEqual(metadata["short_positive_count"], 1)
+        self.assertEqual(metadata["hard_negative_count"], 1)
+        self.assertEqual(metadata["artificial_split_count"], 1)
+        self.assertGreater(float(np.max(metadata["frame_weight"])), 1.0)
+        self.assertEqual(
+            RefinerAugmentConfig(**asdict(config)),
+            config,
         )
 
 

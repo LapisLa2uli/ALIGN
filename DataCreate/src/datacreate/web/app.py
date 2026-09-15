@@ -5,7 +5,7 @@ import os
 import re
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from contextlib import asynccontextmanager
 
@@ -17,6 +17,7 @@ from pydantic import BaseModel
 from datacreate.batch_audio import list_available_audio_ids, run_batch_range
 from datacreate.config import PipelineConfig
 from datacreate.models import LabelsDocument
+from datacreate.melody import match_note_wise_labels_detail
 from datacreate.note_alignment import build_note_alignment, build_score_events
 from datacreate.sample_prep import (
     apply_performance_trim,
@@ -35,6 +36,15 @@ from datacreate.web.compare_eval import default_eval_dir, load_summary, sample_p
 WEB_DIR = Path(__file__).resolve().parent
 STATIC_DIR = WEB_DIR / "static"
 TEMPLATES_DIR = WEB_DIR / "templates"
+LabelSource = Literal["human", "agent"]
+LABEL_SOURCE_FILES: dict[LabelSource, str] = {
+    "human": "labels.json",
+    "agent": "labels_agent.json",
+}
+
+
+def _labels_path(sample_dir: Path, label_source: LabelSource) -> Path:
+    return sample_dir / LABEL_SOURCE_FILES[label_source]
 
 
 class LabelsPayload(BaseModel):
@@ -132,14 +142,19 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         for d in samples_root.iterdir():
             if not d.is_dir() or not (d / "performance_audio.wav").exists():
                 continue
-            label_count = 0
-            labels_path = d / "labels.json"
-            if labels_path.exists():
-                label_count = len(read_json(labels_path).get("labels", []))
+            counts = {}
+            for source, filename in LABEL_SOURCE_FILES.items():
+                labels_path = d / filename
+                counts[source] = (
+                    len(read_json(labels_path).get("labels", []))
+                    if labels_path.exists()
+                    else 0
+                )
             items.append(
                 {
                     "id": d.name,
-                    "label_count": label_count,
+                    "label_count": counts["human"],
+                    "agent_label_count": counts["agent"],
                 }
             )
         items.sort(key=lambda x: _sample_sort_key(x["id"]))
@@ -193,11 +208,19 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         }
 
     @app.get("/api/samples/{sample_id}")
-    def get_sample(sample_id: str) -> dict[str, Any]:
+    def get_sample(
+        sample_id: str,
+        label_source: LabelSource = Query("human"),
+    ) -> dict[str, Any]:
         sample_dir = samples_root / sample_id
         if not sample_dir.exists():
             raise HTTPException(404, "Sample not found")
-        labels = read_json(sample_dir / "labels.json") if (sample_dir / "labels.json").exists() else {"labels": [], "self_reported": []}
+        labels_path = _labels_path(sample_dir, label_source)
+        labels = (
+            read_json(labels_path)
+            if labels_path.exists()
+            else {"labels": [], "self_reported": []}
+        )
         prep = get_prep_state(sample_dir, config)
         full_score = sample_dir / "full_score.musicxml"
         if not full_score.exists():
@@ -210,6 +233,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         align_path = sample_dir / "alignment.npz"
         return {
             "sample_id": sample_id,
+            "label_source": label_source,
+            "label_source_available": labels_path.exists(),
             "taxonomy": config.taxonomy,
             "schema_version": config.schema_version,
             "has_alignment": align_path.exists(),
@@ -364,22 +389,34 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         return {"status": "ok", "performance_trim": info}
 
     @app.put("/api/samples/{sample_id}/labels")
-    def save_labels(sample_id: str, payload: LabelsPayload) -> dict[str, str]:
+    def save_labels(
+        sample_id: str,
+        payload: LabelsPayload,
+        label_source: LabelSource = Query("human"),
+    ) -> dict[str, str]:
         sample_dir = samples_root / sample_id
         if not sample_dir.exists():
             raise HTTPException(404, "Sample not found")
         doc = LabelsDocument(
-            schema_version=config.schema_version,
+            schema_version="1.2" if label_source == "agent" else config.schema_version,
             annotator_id=payload.annotator_id,
             labels=payload.labels,  # type: ignore[arg-type]
             self_reported=payload.self_reported,  # type: ignore[arg-type]
         )
-        path = sample_dir / "labels.json"
-        write_json(path, doc.model_dump())
+        path = _labels_path(sample_dir, label_source)
+        document = doc.model_dump()
+        if label_source == "agent" and path.exists():
+            metadata = read_json(path).get("agent_labeling")
+            if metadata is not None:
+                document["agent_labeling"] = {
+                    **metadata,
+                    "edited_in_gui": True,
+                }
+        write_json(path, document)
         errors = validate_labels_file(path, config)
         if errors:
             raise HTTPException(400, "; ".join(errors))
-        return {"status": "saved"}
+        return {"status": "saved", "label_source": label_source}
 
     @app.get("/api/compare/summary")
     def compare_summary() -> dict[str, Any]:
@@ -446,29 +483,38 @@ def _diff_labels(a: list[dict], b: list[dict]) -> dict[str, Any]:
         union = max(x["end_time"], y["end_time"]) - min(x["start_time"], y["start_time"])
         return inter / union if union > 0 else 0.0
 
-    matched, type_mismatch, only_a, only_b = [], [], list(a), list(b)
-    for la in a:
-        best = None
-        best_iou = 0.0
-        for lb in b:
-            score = iou(la, lb)
-            if score > best_iou:
-                best_iou = score
-                best = lb
-        if best and best_iou >= 0.3:
-            only_b.remove(best)
-            if la.get("type") == best.get("type"):
-                matched.append({"a": la, "b": best, "iou": best_iou})
-            else:
-                type_mismatch.append({"a": la, "b": best, "iou": best_iou})
-        else:
-            only_a.append(la)
-
-    agreement = len(matched) / max(1, len(a) + len(b) - len(matched))
+    detail = match_note_wise_labels_detail(a, b)
+    if detail["status"] != "available":
+        return {
+            "official_note_wise": "unavailable",
+            "reason": detail["reason"],
+            "diagnostic_timestamp_iou": True,
+            "matched": [],
+            "type_mismatch": [],
+            "only_a": list(a),
+            "only_b": list(b),
+            "agreement_score": None,
+        }
+    matched, type_mismatch = [], []
+    paired_a, paired_b = set(), set()
+    for pair in detail["pairs"]:
+        b_index = int(pair["prediction_index"])
+        a_index = int(pair["gold_index"])
+        if float(pair["credit"]) <= 0.0:
+            continue
+        paired_a.add(a_index)
+        paired_b.add(b_index)
+        row = {
+            "a": a[a_index],
+            "b": b[b_index],
+            "diagnostic_iou": iou(a[a_index], b[b_index]),
+        }
+        (matched if pair["type_match"] else type_mismatch).append(row)
     return {
+        "official_note_wise": "available",
         "matched": matched,
         "type_mismatch": type_mismatch,
-        "only_a": only_a,
-        "only_b": only_b,
-        "agreement_score": round(agreement, 4),
+        "only_a": [value for index, value in enumerate(a) if index not in paired_a],
+        "only_b": [value for index, value in enumerate(b) if index not in paired_b],
+        "agreement_score": round(float(detail["f1"]), 4),
     }

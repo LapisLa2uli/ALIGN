@@ -52,7 +52,21 @@ class BasicPitchDecodeConfig:
     written_midi_max: int = 96
     merge_same_pitch_gap_sec: float = 0.10
     merge_onset_threshold: float = 0.60
+    merge_unconditional_gap_sec: float = 0.025
+    merge_frame_continuity_threshold: float = 0.18
+    merge_contour_continuity_threshold: float = 0.20
+    merge_boundary_window_frames: int = 2
     harmonic_overlap_ratio: float = 0.55
+    adaptive_short_note_rescue: bool = False
+    rescue_min_note_length_ms: float = 20.0
+    rescue_max_note_length_ms: float = 110.0
+    rescue_onset_threshold: float = 0.28
+    rescue_frame_threshold: float = 0.18
+    rescue_contour_threshold: float = 0.20
+    rescue_combined_threshold: float = 0.31
+    rescue_pitch_margin_threshold: float = -0.08
+    rescue_overlap_ratio: float = 0.35
+    rescue_confidence_floor: float = 0.65
 
 
 FROZEN_DECODE_CONFIG = BasicPitchDecodeConfig()
@@ -489,6 +503,196 @@ def decode_frozen_basic_pitch(
     return decode_basic_pitch_features(features, FROZEN_DECODE_CONFIG)
 
 
+def _pitch_contour_support(
+    features: BasicPitchFeatures,
+    axis: int,
+) -> np.ndarray:
+    first = axis * CONTOUR_BINS_PER_SEMITONE
+    last = min(
+        first + CONTOUR_BINS_PER_SEMITONE,
+        features.contour.shape[1],
+    )
+    if first < 0 or last <= first:
+        return np.zeros(len(features.frame_times), dtype=np.float32)
+    return np.max(features.contour[:, first:last], axis=1)
+
+
+def _adaptive_short_note_rescues(
+    notes: list[Any],
+    features: BasicPitchFeatures,
+    config: BasicPitchDecodeConfig,
+) -> list[Any]:
+    """Recover compact events only when three independent maps agree."""
+
+    from .decode import TransNote
+
+    if (
+        not config.adaptive_short_note_rescue
+        or len(features.frame_times) < 2
+    ):
+        return []
+    hop = float(np.median(np.diff(features.frame_times)))
+    if not np.isfinite(hop) or hop <= 0:
+        return []
+    min_frames = max(
+        1,
+        int(np.ceil(config.rescue_min_note_length_ms / (1000.0 * hop))),
+    )
+    max_frames = max(
+        min_frames,
+        int(np.ceil(config.rescue_max_note_length_ms / (1000.0 * hop))),
+    )
+    rescues: list[Any] = []
+    frames = len(features.frame_times)
+    for pitch in range(config.written_midi_min, config.written_midi_max + 1):
+        axis = pitch - MIDI_OFFSET
+        if not 0 <= axis < features.note.shape[1]:
+            continue
+        note_map = features.note[:, axis]
+        onset_map = features.onset[:, axis]
+        contour_map = _pitch_contour_support(features, axis)
+        for peak in np.flatnonzero(onset_map >= config.rescue_onset_threshold):
+            peak = int(peak)
+            lo = max(0, peak - 1)
+            hi = min(frames, peak + 2)
+            if float(onset_map[peak]) < float(np.max(onset_map[lo:hi])):
+                continue
+            support = (
+                (note_map >= config.rescue_frame_threshold)
+                | (contour_map >= config.rescue_contour_threshold)
+            )
+            left = peak
+            while (
+                left > 0
+                and peak - left < max_frames
+                and bool(support[left - 1])
+            ):
+                left -= 1
+            right = peak + 1
+            while (
+                right < frames
+                and right - left < max_frames
+                and bool(support[right])
+            ):
+                right += 1
+            if right - left < min_frames:
+                relaxed = (
+                    (note_map >= 0.70 * config.rescue_frame_threshold)
+                    & (contour_map >= 0.70 * config.rescue_contour_threshold)
+                )
+                while (
+                    right - left < min_frames
+                    and right < frames
+                    and bool(relaxed[right])
+                ):
+                    right += 1
+                while (
+                    right - left < min_frames
+                    and left > 0
+                    and bool(relaxed[left - 1])
+                ):
+                    left -= 1
+            length = right - left
+            if length < min_frames or length > max_frames:
+                continue
+            note_peak = float(np.max(note_map[left:right]))
+            note_mean = float(np.mean(note_map[left:right]))
+            contour_peak = float(np.max(contour_map[left:right]))
+            contour_mean = float(np.mean(contour_map[left:right]))
+            competing = np.max(
+                np.concatenate(
+                    (
+                        features.note[left:right, :axis],
+                        features.note[left:right, axis + 1 :],
+                    ),
+                    axis=1,
+                ),
+                axis=1,
+            )
+            pitch_margin = float(np.mean(note_map[left:right] - competing))
+            combined = (
+                0.40 * float(onset_map[peak])
+                + 0.30 * note_mean
+                + 0.20 * contour_mean
+                + 0.10 * max(0.0, pitch_margin)
+            )
+            # An isolated onset spike is a common breath/click failure mode.
+            if (
+                note_peak < config.rescue_frame_threshold
+                or contour_peak < config.rescue_contour_threshold
+                or pitch_margin < config.rescue_pitch_margin_threshold
+                or combined < config.rescue_combined_threshold
+            ):
+                continue
+            start = float(features.frame_times[left])
+            end = float(features.frame_times[min(right - 1, frames - 1)] + hop)
+            overlap = max(
+                (
+                    min(end, float(other.end))
+                    - max(start, float(other.start))
+                    for other in (*notes, *rescues)
+                ),
+                default=0.0,
+            )
+            if overlap > config.rescue_overlap_ratio * max(end - start, hop):
+                continue
+            rescues.append(
+                TransNote(
+                    pitch=pitch,
+                    start=start,
+                    end=end,
+                    confidence=max(
+                        config.rescue_confidence_floor,
+                        min(1.0, combined),
+                    ),
+                    cents=0.0,
+                    pitch_candidates=(pitch,),
+                )
+            )
+    return rescues
+
+
+def _same_pitch_boundary_evidence(
+    previous: Any,
+    note: Any,
+    features: BasicPitchFeatures,
+    config: BasicPitchDecodeConfig,
+) -> tuple[float, float, float]:
+    axis = int(note.pitch) - MIDI_OFFSET
+    if not 0 <= axis < features.note.shape[1] or not len(features.frame_times):
+        return 1.0, 0.0, 0.0
+    frame = int(np.argmin(np.abs(features.frame_times - float(note.start))))
+    window = max(1, int(config.merge_boundary_window_frames))
+    onset_lo = max(0, frame - 1)
+    onset_hi = min(len(features.frame_times), frame + 2)
+    onset_strength = float(
+        np.max(features.onset[onset_lo:onset_hi, axis])
+    )
+    gap_lo = int(
+        np.searchsorted(
+            features.frame_times, float(previous.end), side="left"
+        )
+    )
+    gap_hi = int(
+        np.searchsorted(
+            features.frame_times, float(note.start), side="right"
+        )
+    )
+    bridge_lo = max(0, gap_lo - window)
+    bridge_hi = min(len(features.frame_times), max(gap_hi, gap_lo + 1) + window)
+    frame_continuity = float(
+        np.mean(features.note[bridge_lo:bridge_hi, axis])
+    )
+    contour = _pitch_contour_support(features, axis)
+    left = contour[max(0, gap_lo - window) : max(1, gap_lo)]
+    right = contour[gap_hi : min(len(contour), gap_hi + window)]
+    contour_continuity = min(
+        float(np.mean(left)) if len(left) else 0.0,
+        float(np.mean(right)) if len(right) else 0.0,
+    )
+    return onset_strength, frame_continuity, contour_continuity
+
+
 def sanitize_basic_pitch_notes(
     notes: list[Any],
     features: BasicPitchFeatures,
@@ -498,6 +702,10 @@ def sanitize_basic_pitch_notes(
 
     from .decode import TransNote
 
+    notes = [
+        *notes,
+        *_adaptive_short_note_rescues(notes, features, config),
+    ]
     ranged = [
         note
         for note in notes
@@ -546,18 +754,24 @@ def sanitize_basic_pitch_notes(
             continue
         previous = merged[-1]
         gap = float(note.start) - float(previous.end)
-        frame = int(np.argmin(np.abs(features.frame_times - float(note.start))))
-        axis = int(note.pitch) - MIDI_OFFSET
-        onset_strength = (
-            float(features.onset[frame, axis])
-            if 0 <= frame < len(features.frame_times)
-            and 0 <= axis < features.onset.shape[1]
-            else 1.0
+        (
+            onset_strength,
+            frame_continuity,
+            contour_continuity,
+        ) = _same_pitch_boundary_evidence(
+            previous, note, features, config
+        )
+        boundary_is_continuous = (
+            gap <= config.merge_unconditional_gap_sec
+            or frame_continuity >= config.merge_frame_continuity_threshold
+            or contour_continuity
+            >= config.merge_contour_continuity_threshold
         )
         if (
             int(note.pitch) == int(previous.pitch)
             and gap <= config.merge_same_pitch_gap_sec
             and onset_strength < config.merge_onset_threshold
+            and boundary_is_continuous
         ):
             duration_previous = max(previous.end - previous.start, 1e-6)
             duration_note = max(note.end - note.start, 1e-6)

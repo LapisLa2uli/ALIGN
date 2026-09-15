@@ -152,7 +152,7 @@ def reprocess_alignment(
     config: PipelineConfig,
     logger: logging.Logger,
 ) -> dict[str, Any]:
-    """Re-run the canonical note-first alignment without rewriting candidates."""
+    """Re-run joint transcription and alignment without rewriting candidates."""
     perf = sample_dir / "performance_audio.wav"
     ref = sample_dir / "reference_audio.wav"
     if not perf.exists() or not ref.exists():

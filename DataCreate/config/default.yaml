@@ -11,6 +11,7 @@ paths:
   raw_data_score: ../RawData/Score
   raw_data_audio: ../RawData/Audio
   note_alignment_python: ../align-model/.venv-amt-bench/Scripts/python.exe
+  note_alignment_checkpoint: ../align-model/runs/joint-audit-v2/path-1000-v4-interval/joint_decoder.pt
   note_alignment_weights: ../align-model/runs/contextual-aligner-outputRaw_sf-1k/weights
 
 audio:
@@ -25,7 +26,7 @@ mel:
   fmax: null
 
 alignment:
-  engine: note_first
+  engine: joint
   note_alignment_device: cuda
   note_alignment_timeout_sec: 900
   feature: chroma          # chroma | cqt

@@ -15,6 +15,7 @@ from alignmodel.stages.edits import run_stage2
 from alignmodel.stages.note_align import AlignmentOperation, AlignmentResult
 from alignmodel.stages.repetition import (
     apply_note_repetitions,
+    filter_repetitions_by_score_continuation,
     find_note_sequence_repetitions,
 )
 from alignmodel.stages.note_repetition_model import NoteRepetitionModelConfig
@@ -145,6 +146,53 @@ class NoteFirstPipelineTests(unittest.TestCase):
         self.assertEqual(len(state.note_repetitions), 1)
         repeat = state.note_repetitions[0]
         self.assertEqual((repeat.source_i0, repeat.repeat_i0), (0, 2))
+
+    def test_continuation_rule_keeps_replay_that_resumes_score(self) -> None:
+        score = _score([60, 62, 64, 65, 67])
+        notes = [
+            TranscribedNote(pitch, index * 0.5, index * 0.5 + 0.4)
+            for index, pitch in enumerate(
+                [60, 62, 64, 60, 62, 64, 65, 67]
+            )
+        ]
+        repeat = NoteRepetition(0, 3, 3, 6, 0.0, 1.4, 1.5, 2.9, 0.98)
+        self.assertEqual(
+            filter_repetitions_by_score_continuation(
+                notes, score.notes, [repeat]
+            ),
+            [repeat],
+        )
+
+    def test_continuation_rule_rejects_nonadjacent_motif(self) -> None:
+        pitches = [60, 62, 64, 65, 67, 60, 62, 64, 69, 71]
+        score = _score(pitches)
+        notes = [
+            TranscribedNote(pitch, index * 0.5, index * 0.5 + 0.4)
+            for index, pitch in enumerate(pitches)
+        ]
+        repeat = NoteRepetition(0, 3, 5, 8, 0.0, 1.4, 2.5, 3.9, 0.98)
+        self.assertEqual(
+            filter_repetitions_by_score_continuation(
+                notes, score.notes, [repeat]
+            ),
+            [],
+        )
+
+    def test_continuation_rule_rejects_replay_at_audio_end(self) -> None:
+        score = _score([60, 62, 64, 65, 67])
+        notes = [
+            TranscribedNote(pitch, index * 0.5, index * 0.5 + 0.4)
+            for index, pitch in enumerate(
+                [60, 62, 64, 60, 62, 64]
+            )
+        ]
+        repeat = NoteRepetition(0, 3, 3, 6, 0.0, 1.4, 1.5, 2.9, 0.98)
+        self.assertEqual(
+            filter_repetitions_by_score_continuation(
+                notes, score.notes, [repeat]
+            ),
+            [],
+        )
 
     def test_repeat_notes_reuse_source_score_mapping(self) -> None:
         phrase = [60, 62, 64, 65, 67, 69]

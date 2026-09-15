@@ -6,6 +6,7 @@ import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Mapping
 
 import numpy as np
 import torch
@@ -18,6 +19,7 @@ from alignmodel.stages.contextual_note_aligner import (
     save_contextual_aligner,
 )
 from alignmodel.types import TranscribedNote
+from alignmodel.validated_targets import target_note_map
 
 
 @dataclass
@@ -27,8 +29,14 @@ class AlignmentSequence:
     targets: np.ndarray
 
 
-def load_alignment_sequence(path: Path, *, augment: bool = False) -> AlignmentSequence:
-    document = json.loads(path.read_text(encoding="utf-8"))
+def load_alignment_sequence(
+    source: Path | Mapping[str, Any], *, augment: bool = False
+) -> AlignmentSequence:
+    document = (
+        target_note_map(source)
+        if isinstance(source, Mapping)
+        else json.loads(source.read_text(encoding="utf-8"))
+    )
     clean_rows = sorted(
         document.get("clean_notes") or [],
         key=lambda row: int(row["clean_index"]),
@@ -125,7 +133,7 @@ def load_alignment_sequence(path: Path, *, augment: bool = False) -> AlignmentSe
 
 
 class AlignmentDataset(Dataset):
-    def __init__(self, paths: list[Path], *, augment: bool) -> None:
+    def __init__(self, paths: list[Any], *, augment: bool) -> None:
         self.paths = paths
         self.augment = augment
 
@@ -163,11 +171,14 @@ def collate_alignment(rows: list[AlignmentSequence]):
     return observed, score, observed_mask, score_mask, targets
 
 
-def _paths(manifest: Path, split: str) -> list[Path]:
+def _paths(manifest: Path, split: str) -> list[Any]:
     document = json.loads(manifest.read_text(encoding="utf-8"))
     paths = []
     for raw in document.get(split) or []:
         row = dict(raw)
+        if row.get("target_db") is not None and row.get("target_record") is not None:
+            paths.append(row)
+            continue
         if str(row.get("corpus") or row.get("root")) != "procedural12k":
             raise ValueError("Contextual aligner rejected non-procedural row")
         path = Path(

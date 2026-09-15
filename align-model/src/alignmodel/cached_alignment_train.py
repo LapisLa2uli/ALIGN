@@ -6,6 +6,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any, Mapping
 
 import numpy as np
 import torch
@@ -34,6 +35,7 @@ from alignmodel.types import (
     ScoreGraph,
     TranscribedNote,
 )
+from alignmodel.validated_targets import target_note_map
 
 
 @dataclass
@@ -59,8 +61,14 @@ def _pitch_correction(document: dict) -> int:
     return -int(round(float(np.median(offsets)))) if offsets else 0
 
 
-def _gold_and_score(note_map: Path, score_path: Path | None = None):
-    document = json.loads(note_map.read_text(encoding="utf-8"))
+def _gold_and_score(
+    note_map: Path | Mapping[str, Any], score_path: Path | None = None
+):
+    document = (
+        target_note_map(note_map)
+        if isinstance(note_map, Mapping)
+        else json.loads(note_map.read_text(encoding="utf-8"))
+    )
     clean_rows = sorted(
         document.get("clean_notes") or [],
         key=lambda note: int(note["clean_index"]),
@@ -142,7 +150,11 @@ def build_cached_alignment_sequence(
     predicted = sanitize_basic_pitch_notes(
         decode_frozen_basic_pitch(basic_features), basic_features
     )
-    note_map = Path(str(row.get("note_map") or sample / "note_map.json"))
+    note_map = (
+        row
+        if row.get("target_db") is not None and row.get("target_record") is not None
+        else Path(str(row.get("note_map") or sample / "note_map.json"))
+    )
     gold_notes, gold_targets, score_notes = _gold_and_score(
         note_map, sample / "verified_score.musicxml"
     )

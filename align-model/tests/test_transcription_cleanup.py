@@ -51,6 +51,59 @@ class TranscriptionCleanupTests(unittest.TestCase):
         self.assertEqual(len(cleaned), 1)
         self.assertEqual((cleaned[0].start, cleaned[0].end), (0.0, 0.38))
 
+    def test_rescues_short_note_with_joint_activation_evidence(self) -> None:
+        features = self._features()
+        axis = 60 - 21
+        features.onset[10, axis] = 0.40
+        features.note[10:14, axis] = 0.30
+        features.contour[10:14, axis * 3 : axis * 3 + 3] = 0.30
+        cleaned = sanitize_basic_pitch_notes(
+            [],
+            features,
+            BasicPitchDecodeConfig(adaptive_short_note_rescue=True),
+        )
+        self.assertEqual(len(cleaned), 1)
+        self.assertEqual(cleaned[0].pitch, 60)
+        self.assertAlmostEqual(cleaned[0].start, 0.10)
+        self.assertAlmostEqual(cleaned[0].end, 0.14)
+
+    def test_does_not_rescue_isolated_onset_noise(self) -> None:
+        features = self._features()
+        axis = 60 - 21
+        features.onset[10, axis] = 0.90
+        features.note[10, axis] = 0.05
+        cleaned = sanitize_basic_pitch_notes(
+            [],
+            features,
+            BasicPitchDecodeConfig(adaptive_short_note_rescue=True),
+        )
+        self.assertEqual(cleaned, [])
+
+    def test_merges_contour_continuous_weak_boundary(self) -> None:
+        features = self._features(frames=60)
+        axis = 60 - 21
+        features.note[16:26, axis] = 0.30
+        features.contour[16:26, axis * 3 : axis * 3 + 3] = 0.35
+        notes = [
+            TransNote(60, 0.0, 0.18, 0.8),
+            TransNote(60, 0.23, 0.38, 0.75),
+        ]
+        cleaned = sanitize_basic_pitch_notes(notes, features)
+        self.assertEqual(len(cleaned), 1)
+
+    def test_preserves_strong_same_pitch_rearticulation(self) -> None:
+        features = self._features(frames=60)
+        axis = 60 - 21
+        features.note[16:26, axis] = 0.40
+        features.contour[16:26, axis * 3 : axis * 3 + 3] = 0.40
+        features.onset[23, axis] = 0.90
+        notes = [
+            TransNote(60, 0.0, 0.18, 0.8),
+            TransNote(60, 0.23, 0.38, 0.75),
+        ]
+        cleaned = sanitize_basic_pitch_notes(notes, features)
+        self.assertEqual(len(cleaned), 2)
+
     def test_missing_note_resynchronizes_next_notes(self) -> None:
         score = [
             GraphNote(i, pitch, float(i), float(i + 1), 1.0, float(i), float(i + 1))

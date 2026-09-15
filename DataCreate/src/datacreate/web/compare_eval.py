@@ -12,6 +12,7 @@ from datacreate.melody import (
     TYPE_MISMATCH_SCALE,
     WeakMelody,
     _exclusive_pairs,
+    match_note_wise_labels_detail,
     melody_label_score,
     melody_pair_score,
 )
@@ -91,7 +92,7 @@ def _credit(pred: dict[str, Any], gold: dict[str, Any], range_score: float) -> t
 def pair_labels(
     gold: list[dict[str, Any]], pred: list[dict[str, Any]]
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Annotate copies of gold/pred with exclusive match status."""
+    """Annotate copies using official note identity; clocks are diagnostics."""
     gold_out = [dict(lab) for lab in gold]
     pred_out = [dict(lab) for lab in pred]
     for i, lab in enumerate(gold_out):
@@ -103,6 +104,7 @@ def pair_labels(
             "pair_index": None,
             "credit": 0.0,
             "range_score": 0.0,
+            "official_note_wise": "available",
         }
     for i, lab in enumerate(pred_out):
         lab["compare"] = {
@@ -113,16 +115,24 @@ def pair_labels(
             "pair_index": None,
             "credit": 0.0,
             "range_score": 0.0,
+            "official_note_wise": "available",
         }
     if not gold_out or not pred_out:
         return gold_out, pred_out
-    scores = [
-        [_range_score(p, g) for g in gold_out] for p in pred_out
-    ]
-    for i, j, raw in _exclusive_pairs(scores):
-        match, credit = _credit(pred_out[i], gold_out[j], raw)
-        if match == "unmatched":
+    detail = match_note_wise_labels_detail(gold_out, pred_out)
+    if detail["status"] != "available":
+        for label in [*gold_out, *pred_out]:
+            label["compare"]["official_note_wise"] = "unavailable"
+            label["compare"]["unavailable_reason"] = detail["reason"]
+        return gold_out, pred_out
+    for pair in detail["pairs"]:
+        i = int(pair["prediction_index"])
+        j = int(pair["gold_index"])
+        credit = float(pair["credit"])
+        if credit <= 0.0:
             continue
+        match = "full" if credit == 1.0 else "type_mismatch"
+        raw = 1.0
         pred_id = pred_out[i].get("id")
         gold_id = gold_out[j].get("id")
         gold_out[j]["compare"].update(
@@ -132,6 +142,9 @@ def pair_labels(
                 "pair_index": i,
                 "credit": credit,
                 "range_score": round(float(raw), 4),
+                "diagnostic_time_iou": round(
+                    _time_iou(pred_out[i], gold_out[j]), 4
+                ),
             }
         )
         pred_out[i]["compare"].update(
@@ -141,6 +154,9 @@ def pair_labels(
                 "pair_index": j,
                 "credit": credit,
                 "range_score": round(float(raw), 4),
+                "diagnostic_time_iou": round(
+                    _time_iou(pred_out[i], gold_out[j]), 4
+                ),
             }
         )
     return gold_out, pred_out
