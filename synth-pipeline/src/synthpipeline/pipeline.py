@@ -326,14 +326,21 @@ def _build_sample(
     from datacreate.stages.stage7_features import extract_mels
     from datacreate.stages.stage8_bundle import write_metadata
     from datacreate.utils import write_json
+    from synthpipeline.scoregen import assert_playable_clarinet_range
+
+    keep_ornaments = bool(config.generation.get("keep_ornaments", False))
+    if bool(config.generation.get("require_playable_range", False)):
+        assert_playable_clarinet_range(clean, config, "clean score")
 
     verified_path = sample_dir / "verified_score.musicxml"
-    write_musicxml(clean, verified_path)
+    write_musicxml(clean, verified_path, strip_ornaments=not keep_ornaments)
 
     tag_clean_notes(clean)
     result = inject_error(copy.deepcopy(clean), rng, config)
+    if bool(config.generation.get("require_playable_range", False)):
+        assert_playable_clarinet_range(result.score, config, "performance score")
     performance_path = sample_dir / "performance_score.musicxml"
-    write_musicxml(result.score, performance_path)
+    write_musicxml(result.score, performance_path, strip_ornaments=not keep_ornaments)
     # Capture lineage before MIDI export strips ornaments or otherwise
     # normalizes the in-memory score.
     note_map = build_note_map(clean, result.score)
@@ -355,6 +362,7 @@ def _build_sample(
         midi_backend=midi_backend,
         score=clean,
         sounding_transpose=sounding,
+        keep_ornaments=keep_ornaments,
     )
     render_score_as_clarinet(
         dc_config,
@@ -367,6 +375,7 @@ def _build_sample(
         pitch_bends=result.extra.get("pitch_bends"),
         bpm=result.bpm,
         sounding_transpose=sounding,
+        keep_ornaments=keep_ornaments,
     )
     attach_rendered_events(
         note_map,

@@ -562,7 +562,6 @@ class FullJointPipelineModel(nn.Module):
                 "layer2_head",
                 "layer3_rhythm_head",
                 "layer3_duration_head",
-                "shared",
             },
             "joint": {name.split(".", 1)[0] for name, _ in self.named_parameters()},
         }

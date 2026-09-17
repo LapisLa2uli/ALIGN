@@ -636,6 +636,7 @@ def evaluate_packed_validation(
                     candidate_rescorer,
                     example.candidates,
                     threshold=candidate_threshold,
+                    score=example.score,
                 ),
             )
         phase_seconds["target_reconstruction"] += (

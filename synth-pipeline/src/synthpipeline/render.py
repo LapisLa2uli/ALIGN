@@ -35,6 +35,7 @@ def render_score_as_clarinet(
     pitch_bends: list[dict] | None = None,
     bpm: float | None = None,
     sounding_transpose: int = -2,
+    keep_ornaments: bool = False,
 ) -> Path:
     """Export MIDI (music21 or MuseScore), then render with GM clarinet.
 
@@ -46,7 +47,12 @@ def render_score_as_clarinet(
     backend = (midi_backend or "music21").lower()
     if backend == "music21":
         export_score_to_midi_music21(
-            score, score_path, midi_path, logger, sounding_transpose=sounding_transpose
+            score,
+            score_path,
+            midi_path,
+            logger,
+            sounding_transpose=sounding_transpose,
+            keep_ornaments=keep_ornaments,
         )
     elif backend == "musescore":
         export_score_to_midi(dc_config, score_path, midi_path, logger)
@@ -92,14 +98,18 @@ def export_score_to_midi_music21(
     output_midi: Path,
     logger: logging.Logger,
     sounding_transpose: int = -2,
+    keep_ornaments: bool = False,
 ) -> Path:
     if score is None:
         score = converter.parse(str(score_path))
     else:
         score = copy.deepcopy(score)
-    from synthpipeline.midi_player import strip_ornaments
+    from synthpipeline.midi_player import realize_ornament_marks, strip_ornaments
 
-    strip_ornaments(score)
+    if keep_ornaments:
+        realize_ornament_marks(score)
+    else:
+        strip_ornaments(score)
     if sounding_transpose:
         transpose_notes_chromatic(score, int(sounding_transpose))
         logger.info(

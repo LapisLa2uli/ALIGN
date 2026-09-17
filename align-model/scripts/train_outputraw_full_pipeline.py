@@ -17,7 +17,11 @@ import numpy as np
 import psutil
 import torch
 
-from alignmodel.joint.candidate_rescorer import load_candidate_rescorer
+from alignmodel.joint.candidate_rescorer import (
+    CandidateRescorer,
+    load_candidate_rescorer,
+    rescore_candidates_with_indices,
+)
 from alignmodel.joint.lattice import LatticeConfig, SparseJointLattice
 from alignmodel.joint.outputraw_full import (
     FullJointPipelineModel,
@@ -461,6 +465,8 @@ def _train_structured_path(
     resume_payload: Mapping[str, Any] | None,
     resume_progress: Mapping[str, Any] | None,
     checkpoint_every: int,
+    candidate_rescorer: CandidateRescorer | None,
+    candidate_threshold: float,
 ) -> None:
     if epochs <= 0:
         return
@@ -531,17 +537,31 @@ def _train_structured_path(
                 break
             reconstruction_started = time.perf_counter()
             example = packed.training_example()
+            candidates = example.candidates
+            gold_spans = example.gold_spans
+            gold_keep_unlinked = example.gold_keep_unlinked
+            if candidate_rescorer is not None:
+                candidates, kept_indices = rescore_candidates_with_indices(
+                    candidate_rescorer,
+                    candidates,
+                    threshold=candidate_threshold,
+                    score=example.score,
+                )
+                gold_spans = tuple(gold_spans[index] for index in kept_indices)
+                gold_keep_unlinked = tuple(
+                    gold_keep_unlinked[index] for index in kept_indices
+                )
             add_phase(
                 "target_reconstruction",
                 time.perf_counter() - reconstruction_started,
             )
             forward_started = time.perf_counter()
             loss = lattice.nll(
-                example.candidates,
+                candidates,
                 example.score,
-                example.gold_spans,
-                example.gold_keep_unlinked,
-            ).float() / max(len(example.candidates), 1)
+                gold_spans,
+                gold_keep_unlinked,
+            ).float() / max(len(candidates), 1)
             add_phase("structured_forward", time.perf_counter() - forward_started)
             if not torch.isfinite(loss) or float(loss.detach()) < -1e-4:
                 raise FloatingPointError(
@@ -1180,6 +1200,8 @@ def main() -> None:
                 if args.path_checkpoint_every is not None
                 else args.checkpoint_every,
             ),
+            candidate_rescorer=candidate_rescorer,
+            candidate_threshold=candidate_threshold,
         )
         model.to("cpu")
         validation = evaluate_packed_validation(

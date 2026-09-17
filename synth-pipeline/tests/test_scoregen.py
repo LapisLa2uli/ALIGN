@@ -67,7 +67,75 @@ def test_resolve_score_inputs_excludes_stems(tmp_path: Path):
     assert names == ["MozartClConcertoA", "WeberITAV"]
 
 
-def test_midi_export_is_written_minus_two(tmp_path):
+def test_generated_notes_stay_in_clarinet_range():
+    from music21 import note, pitch
+
+    from synthpipeline.scoregen import clarinet_midi_bounds, generate_score
+
+    cfg = SynthConfig(
+        generation={
+            "measures_min": 8,
+            "measures_max": 8,
+            "pitch_min": "E3",
+            "pitch_max": "G6",
+            "ornament_prob": 1.0,
+            "keep_ornaments": True,
+            "tempo_min": 96,
+            "tempo_max": 96,
+        }
+    )
+    score = generate_score(random.Random(9), cfg)
+    lo, hi = clarinet_midi_bounds(cfg)
+    midis = [int(n.pitch.midi) for n in score.recurse().getElementsByClass(note.Note)]
+    assert midis
+    assert min(midis) >= lo
+    assert max(midis) <= hi
+    graces = [n for n in score.recurse().getElementsByClass(note.Note) if n.duration.isGrace]
+    mordents = [
+        n
+        for n in score.recurse().getElementsByClass(note.Note)
+        if any(type(e).__name__ == "Mordent" for e in (n.expressions or []))
+    ]
+    assert graces or mordents
+    assert lo == pitch.Pitch("E3").midi
+    assert hi == pitch.Pitch("G6").midi
+
+
+def test_snippet_rejects_out_of_range_window():
+    from music21 import meter, note, stream, tempo
+
+    from synthpipeline.scoregen import snippet_score
+
+    score = stream.Score()
+    part = stream.Part()
+    part.partName = "Clarinet"
+    part.append(tempo.MetronomeMark(number=96))
+    part.append(meter.TimeSignature("4/4"))
+    for i in range(8):
+        measure = stream.Measure(number=i + 1)
+        for _ in range(4):
+            measure.append(note.Note("C8", quarterLength=1.0))
+        part.append(measure)
+    score.append(part)
+    cfg = SynthConfig(
+        generation={
+            "snippet_measures_min": 8,
+            "snippet_measures_max": 8,
+            "snippet_min_notes": 12,
+            "pitch_min": "E3",
+            "pitch_max": "G6",
+            "require_playable_range": True,
+        }
+    )
+    try:
+        snippet_score(score, random.Random(0), cfg)
+    except ValueError as exc:
+        assert "playable" in str(exc).lower() or "range" in str(exc).lower()
+    else:
+        raise AssertionError("expected out-of-range snippet to fail")
+
+
+def test_midi_export_is_written_minus_two(tmp_path: Path) -> None:
     import logging
 
     from music21 import note

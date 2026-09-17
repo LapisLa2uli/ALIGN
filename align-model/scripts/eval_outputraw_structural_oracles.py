@@ -318,6 +318,7 @@ def main() -> None:
                 rescorer,
                 example.candidates,
                 threshold=threshold,
+                score=example.score,
             )
             prediction = infer_full_pipeline(
                 model,

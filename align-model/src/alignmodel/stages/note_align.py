@@ -369,7 +369,9 @@ class NoteAligner:
     ) -> tuple[dict[str, np.ndarray], np.ndarray | None]:
         n, m = len(observed), len(score.notes)
         pair_h = np.empty((n, m), dtype=np.float32)
-        pair_features: list[np.ndarray] = []
+        pair_features: list[np.ndarray] | None = (
+            [] if self.scorer is not None else None
+        )
         ospan, sspan = _observed_span(observed), _score_span(score)
         for i, obs in enumerate(observed):
             for j, snote in enumerate(score.notes):
@@ -379,16 +381,17 @@ class NoteAligner:
                 st = (snote.start - sspan[0]) / max(sspan[1] - sspan[0], 0.001)
                 timing = abs(ot - st)
                 pair_h[i, j] = pitch_cost + self.config.timing_weight * timing
-                pair_features.append(
-                    note_features(
-                        obs,
-                        snote,
-                        observed_span=ospan,
-                        score_span=sspan,
-                        observed_order=i / max(n - 1, 1),
-                        score_order=j / max(m - 1, 1),
+                if pair_features is not None:
+                    pair_features.append(
+                        note_features(
+                            obs,
+                            snote,
+                            observed_span=ospan,
+                            score_span=sspan,
+                            observed_order=i / max(n - 1, 1),
+                            score_order=j / max(m - 1, 1),
+                        )
                     )
-                )
         extra_h = np.asarray(
             [self.config.extra_cost + 0.08 * (1.0 - x.confidence) for x in observed],
             dtype=np.float32,
@@ -396,6 +399,7 @@ class NoteAligner:
         delete_h = np.full(m, self.config.deletion_cost, dtype=np.float32)
         learned_probs: np.ndarray | None = None
         if self.scorer is not None:
+            assert pair_features is not None
             feature_rows = pair_features
             feature_rows += [
                 note_features(

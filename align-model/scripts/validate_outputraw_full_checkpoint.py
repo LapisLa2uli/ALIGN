@@ -632,6 +632,7 @@ def freeze(args: argparse.Namespace) -> None:
                             candidate_rescorer,
                             candidates,
                             threshold=candidate_threshold,
+                            score=score,
                         )
                     inference_started = time.perf_counter()
                     prediction = infer_full_pipeline(

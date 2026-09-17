@@ -23,6 +23,8 @@ class ScoreEvent:
     ql_end: float
     source_indices: tuple[int, ...]
     measure: int | None = None
+    part: str | None = None
+    voice: str | None = None
 
 
 @dataclass(frozen=True)
@@ -158,7 +160,15 @@ class ScoreEventIndex:
         }
         events: list[ScoreEvent] = []
         source_to_event = [-1] * len(source_notes)
-        for source_index, element, ql_start, ql_end, measure in source_notes:
+        for (
+            source_index,
+            element,
+            ql_start,
+            ql_end,
+            measure,
+            part,
+            voice,
+        ) in source_notes:
             tie_type = _tie_type(element)
             previous = events[-1] if events else None
             previous_element = (
@@ -191,6 +201,8 @@ class ScoreEventIndex:
                     ql_end=ql_end,
                     source_indices=(source_index,),
                     measure=measure,
+                    part=part,
+                    voice=voice,
                 )
             )
             source_to_event[source_index] = event_index
@@ -381,8 +393,28 @@ def _tie_channel(element: note.Note | None) -> tuple[str | None, str | None]:
 
 def _ordered_source_notes(
     score: stream.Score,
-) -> list[tuple[int, note.Note, float, float, int | None]]:
-    rows: list[tuple[int, note.Note, float, float, int | None]] = []
+) -> list[
+    tuple[
+        int,
+        note.Note,
+        float,
+        float,
+        int | None,
+        str | None,
+        str | None,
+    ]
+]:
+    rows: list[
+        tuple[
+            int,
+            note.Note,
+            float,
+            float,
+            int | None,
+            str | None,
+            str | None,
+        ]
+    ] = []
     for source_index, element in enumerate(
         item
         for item in score.recurse().getElementsByClass(note.Note)
@@ -403,6 +435,7 @@ def _ordered_source_notes(
             if measure is not None and measure.number is not None
             else None
         )
+        part, voice = _tie_channel(element)
         rows.append(
             (
                 source_index,
@@ -410,6 +443,8 @@ def _ordered_source_notes(
                 ql_start,
                 ql_start + duration,
                 measure_number,
+                part,
+                voice,
             )
         )
     rows.sort(key=lambda value: (value[2], int(value[1].pitch.midi), value[0]))

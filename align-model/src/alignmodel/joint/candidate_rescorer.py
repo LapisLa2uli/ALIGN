@@ -20,12 +20,13 @@ from torch.nn import functional as F
 
 from .data import JointTrainingExample
 from .example_cache import CachedExampleSequence, JointExampleCache
-from .index import JointEvent
+from .index import JointEvent, ScoreEvent
 from .lattice import JointCandidate
 from .metrics import pair_exact_pitch_onset
 
 
 FEATURE_DIM = 17
+CANONICAL_FEATURE_DIM = 22
 SCHEMA_VERSION = "align-candidate-rescorer-v1"
 MID_EPOCH_SCHEMA_VERSION = "align-candidate-rescorer-mid-epoch-v1"
 PACKED_ROWS_SCHEMA_VERSION = "align-candidate-rescorer-packed-rows-v1"
@@ -109,10 +110,12 @@ class CandidateRescorer(nn.Module):
         self,
         hidden_dim: int = 64,
         dropout: float = 0.05,
+        feature_dim: int = FEATURE_DIM,
     ) -> None:
         super().__init__()
+        self.feature_dim = int(feature_dim)
         self.network = nn.Sequential(
-            nn.Linear(FEATURE_DIM, hidden_dim),
+            nn.Linear(self.feature_dim, hidden_dim),
             nn.GELU(),
             nn.Dropout(dropout),
             nn.Linear(hidden_dim, hidden_dim),
@@ -131,6 +134,9 @@ class CandidateRescorer(nn.Module):
 
 def candidate_features(
     candidates: Sequence[JointCandidate],
+    score: Sequence[ScoreEvent] | None = None,
+    *,
+    feature_dim: int = FEATURE_DIM,
 ) -> np.ndarray:
     rows = []
     for index, candidate in enumerate(candidates):
@@ -144,8 +150,7 @@ def candidate_features(
             following.start - candidate.end if following is not None else 1.0
         )
         acoustic = tuple(candidate.acoustic_features) or (0.0,) * 5
-        rows.append(
-            (
+        row = (
                 candidate.confidence,
                 min(duration / 1.5, 2.0),
                 max(-2.0, min(2.0, math.log(duration / 0.12))),
@@ -168,9 +173,43 @@ def candidate_features(
                 float(following is not None and following.start < candidate.end),
                 candidate.confidence * candidate.confidence,
             )
-        )
+        if feature_dim == CANONICAL_FEATURE_DIM:
+            if score is None:
+                raise ValueError("Canonical candidate features require a score")
+            duration = max(
+                max((value.end for value in candidates), default=1.0),
+                1e-3,
+            )
+            expected = (
+                candidate.start / duration * max(len(score) - 1, 0)
+            )
+            exact = [
+                value.index for value in score if value.pitch == candidate.pitch
+            ]
+            nearest_index_error = (
+                min(abs(value - expected) for value in exact)
+                / max(len(score), 1)
+                if exact
+                else 1.0
+            )
+            local_exact = sum(abs(value - expected) <= 8 for value in exact)
+            pitch_distance = min(
+                (abs(value.pitch - candidate.pitch) for value in score),
+                default=12,
+            )
+            row = (
+                *row,
+                expected / max(len(score), 1),
+                float(bool(exact)),
+                nearest_index_error,
+                min(local_exact / 8.0, 1.0),
+                min(pitch_distance / 12.0, 1.0),
+            )
+        elif feature_dim != FEATURE_DIM:
+            raise ValueError(f"Unsupported candidate feature dimension: {feature_dim}")
+        rows.append(row)
     result = np.asarray(rows, dtype=np.float32)
-    if result.shape != (len(candidates), FEATURE_DIM):
+    if result.shape != (len(candidates), feature_dim):
         raise RuntimeError(
             f"Candidate feature shape mismatch: {result.shape}"
         )
@@ -810,27 +849,64 @@ def rescore_candidates(
     candidates: Sequence[JointCandidate],
     *,
     threshold: float,
+    score: Sequence[ScoreEvent] | None = None,
 ) -> tuple[JointCandidate, ...]:
     """Apply a validated candidate gate without changing candidate content."""
 
+    rescored, _indices = rescore_candidates_with_indices(
+        model,
+        candidates,
+        threshold=threshold,
+        score=score,
+    )
+    return rescored
+
+
+@torch.inference_mode()
+def rescore_candidates_with_indices(
+    model: CandidateRescorer,
+    candidates: Sequence[JointCandidate],
+    *,
+    threshold: float,
+    score: Sequence[ScoreEvent] | None = None,
+) -> tuple[tuple[JointCandidate, ...], tuple[int, ...]]:
+    """Apply the gate and retain exact source indices for aligned targets."""
+
     if not candidates:
-        return ()
+        return (), ()
     device = next(model.parameters()).device
     probabilities = (
-        model(torch.from_numpy(candidate_features(candidates)).to(device))
+        model(
+            torch.from_numpy(
+                candidate_features(
+                    candidates,
+                    score,
+                    feature_dim=model.feature_dim,
+                )
+            ).to(device)
+        )
         .sigmoid()
         .cpu()
         .tolist()
     )
-    return tuple(
-        JointCandidate(
-            pitch=candidate.pitch,
-            start=candidate.start,
-            end=candidate.end,
-            confidence=float(probability),
-            score_hints=candidate.score_hints,
-            acoustic_features=candidate.acoustic_features,
+    kept = [
+        (
+            JointCandidate(
+                pitch=candidate.pitch,
+                start=candidate.start,
+                end=candidate.end,
+                confidence=float(probability),
+                score_hints=candidate.score_hints,
+                acoustic_features=candidate.acoustic_features,
+            ),
+            index,
         )
-        for candidate, probability in zip(candidates, probabilities)
+        for index, (candidate, probability) in enumerate(
+            zip(candidates, probabilities)
+        )
         if probability >= threshold
+    ]
+    return (
+        tuple(candidate for candidate, _index in kept),
+        tuple(index for _candidate, index in kept),
     )

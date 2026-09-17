@@ -47,12 +47,49 @@ def clarinet_instrument() -> instrument.Instrument:
     return inst
 
 
-def write_musicxml(score: stream.Score, path: Path) -> Path:
-    from synthpipeline.midi_player import strip_ornaments
+def clarinet_midi_bounds(config: SynthConfig) -> tuple[int, int]:
+    """Written Bb-clarinet range used for generation and snippet validation."""
+    gen = config.generation
+    lo = pitch.Pitch(str(gen.get("pitch_min", "E3"))).midi
+    hi = pitch.Pitch(str(gen.get("pitch_max", "C6"))).midi
+    if hi < lo:
+        lo, hi = hi, lo
+    return int(lo), int(hi)
 
-    strip_ornaments(score)
+
+def notes_outside_clarinet_range(score: stream.Score, lo: int, hi: int) -> list[note.Note]:
+    bad: list[note.Note] = []
+    for item in score.recurse().getElementsByClass(note.Note):
+        midi = int(item.pitch.midi)
+        if midi < lo or midi > hi:
+            bad.append(item)
+    return bad
+
+
+def assert_playable_clarinet_range(
+    score: stream.Score, config: SynthConfig, where: str = "score"
+) -> None:
+    lo, hi = clarinet_midi_bounds(config)
+    bad = notes_outside_clarinet_range(score, lo, hi)
+    if not bad:
+        return
+    sample = ", ".join(
+        f"{item.pitch.nameWithOctave}({int(item.pitch.midi)})" for item in bad[:8]
+    )
+    raise ValueError(
+        f"{where} has {len(bad)} note(s) outside clarinet written range "
+        f"{pitch.Pitch(midi=lo).nameWithOctave}–{pitch.Pitch(midi=hi).nameWithOctave}: {sample}"
+    )
+
+
+def write_musicxml(score: stream.Score, path: Path, strip_ornaments: bool = True) -> Path:
+    payload = copy.deepcopy(score)
+    if strip_ornaments:
+        from synthpipeline.midi_player import strip_ornaments as _strip
+
+        _strip(payload)
     # music21's MusicXML writer can mutate clarinet pitches in-place.
-    return _write_score(copy.deepcopy(score), path, "musicxml")
+    return _write_score(payload, path, "musicxml")
 
 
 def write_midi(score: stream.Score, path: Path) -> Path:
@@ -129,7 +166,43 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
         part.append(measure)
 
     score.insert(0, part)
+    add_decorative_notes(score, rng, config)
+    assert_playable_clarinet_range(score, config, "generated score")
     return score
+
+
+def add_decorative_notes(score: stream.Score, rng: random.Random, config: SynthConfig) -> int:
+    """Attach grace notes and mordents to a subset of principal notes."""
+    prob = float(config.generation.get("ornament_prob", 0.0))
+    if prob <= 0:
+        return 0
+    from music21 import duration, expressions
+
+    lo, hi = clarinet_midi_bounds(config)
+    added = 0
+    for item in list(score.recurse().getElementsByClass(note.Note)):
+        if bool(getattr(item.duration, "isGrace", False)):
+            continue
+        if rng.random() >= prob:
+            continue
+        site = item.activeSite
+        if site is None:
+            continue
+        kind = rng.choice(("grace", "grace", "mordent"))
+        if kind == "grace":
+            neighbor = int(item.pitch.midi) + rng.choice((-2, -1, 1, 2))
+            neighbor = max(lo, min(hi, neighbor))
+            if neighbor == int(item.pitch.midi):
+                continue
+            grace = note.Note(pitch.Pitch(midi=neighbor))
+            grace.duration = duration.GraceDuration(0.25)
+            grace.duration.slash = True
+            site.insert(item.offset, grace)
+            added += 1
+        else:
+            item.expressions.append(expressions.Mordent())
+            added += 1
+    return added
 
 
 def load_score(path: Path, config: SynthConfig) -> stream.Score:
@@ -150,9 +223,10 @@ def load_score(path: Path, config: SynthConfig) -> stream.Score:
         score.insert(0, metadata.Metadata())
     if not score.metadata.title:
         score.metadata.title = path.stem
-    from synthpipeline.midi_player import strip_ornaments
+    if not bool(config.generation.get("keep_ornaments", False)):
+        from synthpipeline.midi_player import strip_ornaments
 
-    strip_ornaments(score)
+        strip_ornaments(score)
     return score
 
 
@@ -207,7 +281,17 @@ def snippet_score(
     lo = max(1, int(gen.get("snippet_measures_min", gen.get("measures_min", 8))))
     hi = max(lo, int(gen.get("snippet_measures_max", gen.get("measures_max", 16))))
     min_notes = max(1, int(gen.get("snippet_min_notes", 12)))
-    start, length = _pick_note_window(measures, rng, lo, hi, min_notes)
+    pitch_lo, pitch_hi = clarinet_midi_bounds(config)
+    start, length = _pick_note_window(
+        measures,
+        rng,
+        lo,
+        hi,
+        min_notes,
+        pitch_lo=pitch_lo,
+        pitch_hi=pitch_hi,
+        require_range=bool(gen.get("require_playable_range", False)),
+    )
     chosen = [copy.deepcopy(m) for m in measures[start : start + length]]
     _stamp_context(part, measures, start, chosen[0])
     new_part = stream.Part(id=part.id)
@@ -226,6 +310,8 @@ def snippet_score(
         out.insert(0, copy.deepcopy(score.metadata))
     _ensure_clarinet(out)
     _ensure_tempo(out, config)
+    if bool(config.generation.get("require_playable_range", False)):
+        assert_playable_clarinet_range(out, config, "snippet")
     return out, {
         "snippet_start_measure": int(orig_start) if orig_start else start + 1,
         "snippet_end_measure": int(orig_end) if orig_end else start + length,
@@ -250,26 +336,55 @@ def _measure_sounding_notes(measure: stream.Measure) -> int:
     )
 
 
+def _measure_in_clarinet_range(measure: stream.Measure, lo: int, hi: int) -> bool:
+    for item in measure.recurse().getElementsByClass(note.Note):
+        midi = int(item.pitch.midi)
+        if midi < lo or midi > hi:
+            return False
+    return True
+
+
 def _pick_note_window(
     measures: list[stream.Measure],
     rng: random.Random,
     lo: int,
     hi: int,
     min_notes: int,
+    pitch_lo: int | None = None,
+    pitch_hi: int | None = None,
+    require_range: bool = False,
 ) -> tuple[int, int]:
     n = len(measures)
     length = min(n, rng.randint(lo, hi))
     counts = [_measure_sounding_notes(m) for m in measures]
+    in_range = [
+        (
+            True
+            if not require_range or pitch_lo is None or pitch_hi is None
+            else _measure_in_clarinet_range(m, pitch_lo, pitch_hi)
+        )
+        for m in measures
+    ]
     starts = list(range(0, max(1, n - length + 1)))
     rng.shuffle(starts)
+
+    def window_ok(start: int, win_len: int) -> bool:
+        if sum(counts[start : start + win_len]) < min_notes:
+            return False
+        if require_range and not all(in_range[start : start + win_len]):
+            return False
+        return True
+
     for start in starts:
-        if sum(counts[start : start + length]) >= min_notes:
+        if window_ok(start, length):
             return start, length
     for alt_len in range(hi, lo - 1, -1):
         alt_len = min(n, alt_len)
         best = None
         best_notes = -1
         for start in range(0, n - alt_len + 1):
+            if require_range and not all(in_range[start : start + alt_len]):
+                continue
             total = sum(counts[start : start + alt_len])
             if total > best_notes:
                 best_notes = total
@@ -278,9 +393,13 @@ def _pick_note_window(
             return best, alt_len
     if max(counts, default=0) <= 0:
         raise ValueError("Selected part has no sounding notes")
+    if require_range and not any(in_range):
+        raise ValueError("Selected part has no notes inside the clarinet playable range")
     peak = max(range(n), key=lambda i: counts[i])
     length = min(length, n)
     start = max(0, min(n - length, peak - length // 2))
+    if require_range and not window_ok(start, length):
+        raise ValueError("Could not find a snippet inside the clarinet playable range")
     return start, length
 
 

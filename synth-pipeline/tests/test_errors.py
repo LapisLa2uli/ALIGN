@@ -258,3 +258,27 @@ def test_gap_and_uneven_durations_are_musicxml_legal():
         for seed in range(12):
             result = inject_error(_etude(n_measures=8), random.Random(seed), cfg)
             write_musicxml(result.score, out)
+
+
+def test_zero_intonation_weight_never_plants_intonation_or_squeak():
+    cfg = _cfg(
+        weights={
+            "wrong_note": 1.0,
+            "missed_note": 1.0,
+            "extra_note": 1.0,
+            "rhythm_error": 1.0,
+            "intonation_error": 0.0,
+        },
+        per_clip_min=4,
+        per_clip_max=8,
+        repetition_prob=0.0,
+        squeak={"prob": 0.0, "pitch_min": "C6", "pitch_max": "A7"},
+    )
+    types = set()
+    for seed in range(30):
+        result = inject_error(_etude(n_measures=8), random.Random(seed), cfg)
+        types.update(lab.type for lab in result.labels)
+        assert all("squeak" not in (lab.comment or "") for lab in result.labels)
+        assert not result.extra.get("pitch_bends")
+    assert "intonation_error" not in types
+    assert types <= {"wrong_note", "missed_note", "extra_note", "rhythm_error"}

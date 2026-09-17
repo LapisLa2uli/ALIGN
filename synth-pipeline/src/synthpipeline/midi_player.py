@@ -248,3 +248,72 @@ def strip_ornaments(score) -> int:
             el.expressions = kept
             removed += 1
     return removed
+
+
+def realize_ornament_marks(score) -> int:
+    """Keep grace notes; replace trill/mordent/turn marks with finite notes.
+
+    tinysoundfont hangs on unresolved trill/tremolo marks. MusicXML keeps the
+    marks; MIDI used for SoundFont rendering gets a short written-out figure.
+    """
+    from music21 import note, pitch
+
+    changed = 0
+    for item in list(score.recurse().getElementsByClass(note.Note)):
+        if bool(getattr(item.duration, "isGrace", False)):
+            continue
+        exprs = list(item.expressions or [])
+        marks = [expr for expr in exprs if type(expr).__name__ in _ORNAMENT_MARKS]
+        if not marks:
+            continue
+        item.expressions = [expr for expr in exprs if type(expr).__name__ not in _ORNAMENT_MARKS]
+        changed += 1
+        site = item.activeSite
+        if site is None:
+            continue
+        kind = type(marks[0]).__name__
+        total = float(item.quarterLength)
+        if total <= 0:
+            continue
+        midi0 = int(item.pitch.midi)
+        upper = min(127, midi0 + 1)
+        lower = max(0, midi0 - 1)
+        if kind in {"Trill", "Shake"}:
+            steps = max(4, min(12, int(round(total / 0.125))))
+            if steps % 2:
+                steps += 1
+            ql = total / steps
+            item.duration.quarterLength = ql
+            offset = float(item.offset) + ql
+            for i in range(1, steps):
+                midi = upper if i % 2 else midi0
+                extra = note.Note(pitch.Pitch(midi=midi), quarterLength=ql)
+                site.insert(offset, extra)
+                offset += ql
+        elif kind in {"Mordent", "InvertedMordent"}:
+            aux = lower if kind == "Mordent" else upper
+            ql = total / 3.0
+            item.duration.quarterLength = ql
+            site.insert(
+                float(item.offset) + ql,
+                note.Note(pitch.Pitch(midi=aux), quarterLength=ql),
+            )
+            site.insert(
+                float(item.offset) + 2 * ql,
+                note.Note(pitch.Pitch(midi=midi0), quarterLength=ql),
+            )
+        elif kind in {"Turn", "InvertedTurn"}:
+            seq = (
+                [upper, midi0, lower, midi0]
+                if kind == "Turn"
+                else [lower, midi0, upper, midi0]
+            )
+            ql = total / 4.0
+            item.duration.quarterLength = ql
+            item.pitch = pitch.Pitch(midi=seq[0])
+            for i, midi in enumerate(seq[1:], start=1):
+                site.insert(
+                    float(item.offset) + i * ql,
+                    note.Note(pitch.Pitch(midi=midi), quarterLength=ql),
+                )
+    return changed

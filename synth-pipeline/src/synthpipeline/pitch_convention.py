@@ -15,7 +15,15 @@ from typing import Any
 DEFAULT_SOUNDING_TRANSPOSE = -2
 WRITTEN_MIDI_RENDERS = frozenset({"soundfont_rerender"})
 SOUNDING_MIDI_RENDERS = frozenset(
-    {"soundfont_v1", "oscillator_v1", "oscillator_v1_bare", "current", None, ""}
+    {
+        "soundfont_v1",
+        "oscillator_v1",
+        "oscillator_v1_bare",
+        "musesounds_v1",
+        "current",
+        None,
+        "",
+    }
 )
 _STEP = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 

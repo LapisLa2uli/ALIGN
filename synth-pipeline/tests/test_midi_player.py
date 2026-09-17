@@ -76,3 +76,26 @@ def test_strip_ornaments_keeps_principal_notes_only() -> None:
     assert [n.pitch.nameWithOctave for n in notes] == ["C5", "G4"]
     assert all(not n.duration.isGrace for n in notes)
     assert all(not any(type(e).__name__ == "Trill" for e in n.expressions) for n in notes)
+
+
+def test_realize_ornament_marks_writes_finite_trill() -> None:
+    from music21 import expressions, meter, note, stream
+
+    from synthpipeline.midi_player import realize_ornament_marks
+
+    score = stream.Score()
+    part = stream.Part()
+    measure = stream.Measure(number=1)
+    measure.append(meter.TimeSignature("4/4"))
+    trilled = note.Note("G4", quarterLength=1.0)
+    trilled.expressions.append(expressions.Trill())
+    measure.append(trilled)
+    part.append(measure)
+    score.append(part)
+
+    changed = realize_ornament_marks(score)
+    notes = list(score.flatten().getElementsByClass(note.Note))
+    assert changed == 1
+    assert len(notes) >= 4
+    assert all(not any(type(e).__name__ == "Trill" for e in n.expressions) for n in notes)
+    assert abs(sum(float(n.quarterLength) for n in notes) - 1.0) < 1e-6

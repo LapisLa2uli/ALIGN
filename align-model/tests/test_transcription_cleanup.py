@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
 from music21 import duration, note, spanner, stream, tie
+from scipy.io import wavfile
 
 from alignmodel.stages.dc_alignment import _monotonic_pitch_mapping
 from alignmodel.stages.score_graph import build_score_graph
@@ -15,6 +17,11 @@ from alignmodel.transcription.basic_pitch import (
     sanitize_basic_pitch_notes,
 )
 from alignmodel.transcription.decode import TransNote
+from alignmodel.transcription.track_a import (
+    TrackAPreprocessConfig,
+    preprocess_audio,
+    preprocessing_identity,
+)
 from alignmodel.types import GraphNote, TranscribedNote
 
 
@@ -78,6 +85,29 @@ class TranscriptionCleanupTests(unittest.TestCase):
             BasicPitchDecodeConfig(adaptive_short_note_rescue=True),
         )
         self.assertEqual(cleaned, [])
+
+    def test_track_a_preprocessing_is_non_destructive_and_versioned(self) -> None:
+        audio = np.sin(np.linspace(0, 8 * np.pi, 2205)).astype(np.float32) * 0.02
+        original = audio.copy()
+        processed = preprocess_audio(audio, TrackAPreprocessConfig())
+        self.assertTrue(np.array_equal(audio, original))
+        self.assertFalse(np.array_equal(processed, original))
+        self.assertLessEqual(float(np.max(np.abs(processed))), 0.97)
+        with tempfile.TemporaryDirectory() as temporary:
+            wav = Path(temporary) / "source.wav"
+            wavfile.write(wav, 22050, audio)
+            first = preprocessing_identity(wav, TrackAPreprocessConfig(), {})
+            changed = preprocessing_identity(
+                wav, TrackAPreprocessConfig(pre_emphasis=0.75), {}
+            )
+        self.assertNotEqual(first["config_sha256"], changed["config_sha256"])
+        self.assertFalse(first["source_wav_mutated"])
+
+    def test_track_a_preprocess_config_roundtrip(self) -> None:
+        config = TrackAPreprocessConfig(
+            pre_emphasis=0.75, target_rms_dbfs=-24.0, peak_limit=0.9
+        )
+        self.assertEqual(TrackAPreprocessConfig(**asdict(config)), config)
 
     def test_merges_contour_continuous_weak_boundary(self) -> None:
         features = self._features(frames=60)

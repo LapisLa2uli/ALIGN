@@ -221,6 +221,7 @@ The YAML config and CLI `--count` define a requested corpus. The final accepted 
 | Marker | Meaning |
 |---|---|
 | `soundfont_v1` | Current generation path: music21 MIDI, `tinysoundfont`, selected clarinet bank, explicit sounding-pitch metadata |
+| `musesounds_v1` | Re-render of bundle MusicXML through MuseScore `--sound-profile MuseSounds` (Muse Woodwinds Bb clarinet), MP3→WAV. Scores, MIDI, and labels are unchanged. |
 | `oscillator_v1` / `oscillator_v1_bare` | Historical re-render marker retained by `regenerate-audio`; despite the name, the current implementation resolves and renders a SoundFont. `bare` strips ornaments. |
 | `soundfont_rerender` | Legacy written-MIDI re-render marker understood by pitch-policy compatibility code |
 
