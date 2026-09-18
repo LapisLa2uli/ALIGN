@@ -6,7 +6,11 @@ import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
-from datacreate.align_bridge import run_preferred_alignment
+from datacreate.align_bridge import (
+    apply_alignment_overrides,
+    dump_transcription,
+    run_preferred_alignment,
+)
 from datacreate.config import PipelineConfig
 from datacreate.note_alignment import build_note_alignment
 from datacreate.sample_prep import _invalidate_alignment_artifacts
@@ -153,6 +157,82 @@ def test_bridge_prefers_joint_checkpoint(tmp_path):
     assert payload["summary"]["engine"] == "align-joint"
     assert payload["summary"]["backend"] == "joint-path-crf"
     assert payload["transcribed_notes"][0]["score_index"] == 0
+
+
+def test_transcription_dump_uses_configured_joint_candidate_version(tmp_path):
+    python = tmp_path / "python.exe"
+    python.write_bytes(b"x")
+    weights = tmp_path / "weights"
+    weights.mkdir()
+    checkpoint = tmp_path / "joint_decoder.pt"
+    checkpoint.write_bytes(b"ckpt")
+    sample = tmp_path / "sample"
+    sample.mkdir()
+    seen = {}
+
+    def fake_run(command, **_kwargs):
+        seen["command"] = [str(item) for item in command]
+        output = Path(command[command.index("--out") + 1])
+        output.write_text('{"transcribed_notes": []}', encoding="utf-8")
+        return subprocess.CompletedProcess(command, 0, "ok", "")
+
+    with patch("datacreate.align_bridge.subprocess.run", side_effect=fake_run):
+        dump_transcription(
+            sample,
+            _config(python, weights, checkpoint),
+            logging.getLogger("test"),
+        )
+    assert "--transcribe-only" in seen["command"]
+    assert "--checkpoint" in seen["command"]
+    assert str(checkpoint) in seen["command"]
+
+
+def test_manual_alignment_override_survives_model_rerun(tmp_path):
+    (tmp_path / "note_alignment_overrides.json").write_text(
+        json.dumps(
+            {
+                "format_version": 1,
+                "overrides": [
+                    {
+                        "pitch": 90,
+                        "performance_start": 7.4,
+                        "score_index": 22,
+                        "relationship": "copy",
+                        "source_performance_start": 5.4,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    payload = {
+        "transcribed_notes": [
+            {"pitch": 90, "start": 5.4, "end": 5.8, "confidence": 0.9},
+            {"pitch": 90, "start": 7.4, "end": 8.1, "confidence": 0.8},
+        ],
+        "note_mapping": [22, None],
+        "events": [
+            {
+                "id": "aligned_0",
+                "score_index": 22,
+                "perf_start": 5.4,
+                "perf_end": 5.8,
+                "alignment_kind": "match",
+            }
+        ],
+        "repetitions": [],
+        "summary": {},
+    }
+    corrected = apply_alignment_overrides(payload, tmp_path)
+    assert corrected["note_mapping"] == [22, 22]
+    repeated = next(
+        event
+        for event in corrected["events"]
+        if event["id"] == "manual_override_00001"
+    )
+    assert repeated["alignment_kind"] == "copy"
+    assert repeated["is_repetition"] is True
+    assert corrected["summary"]["manual_override_count"] == 1
 
 
 def test_invalidation_removes_note_first_artifact(tmp_path):

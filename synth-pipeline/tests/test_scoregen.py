@@ -101,6 +101,35 @@ def test_generated_notes_stay_in_clarinet_range():
     assert hi == pitch.Pitch("G6").midi
 
 
+def test_fast_sixteenths_near_500_notes_per_minute():
+    from music21 import tempo as m21tempo
+
+    from synthpipeline.scoregen import generate_score, sounding_note_count
+
+    cfg = SynthConfig(
+        generation={
+            "measures_min": 8,
+            "measures_max": 8,
+            "meters": [[4, 4]],
+            "duration_units": [1],
+            "tempo_min": 125,
+            "tempo_max": 125,
+            "rest_probability": 0.0,
+            "syncopation_prob": 0.0,
+            "ornament_prob": 0.0,
+            "pitch_min": "E3",
+            "pitch_max": "G6",
+        }
+    )
+    score = generate_score(random.Random(3), cfg)
+    n_notes = sounding_note_count(score)
+    assert n_notes == 128
+    mark = next(score.recurse().getElementsByClass(m21tempo.MetronomeMark))
+    minutes = (8 * 4.0) / float(mark.number)
+    rate = n_notes / minutes
+    assert 490 <= rate <= 510
+
+
 def test_snippet_rejects_out_of_range_window():
     from music21 import meter, note, stream, tempo
 

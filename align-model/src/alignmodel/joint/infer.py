@@ -9,6 +9,7 @@ from typing import Any, Sequence
 from .candidates import (
     CANDIDATE_GENERATION_VERSION,
     HIGH_RECALL_DECODE_CONFIGS,
+    LEGACY_CANDIDATE_GENERATION_VERSION,
     LEGACY_HIGH_RECALL_DECODE_CONFIGS,
     add_score_repeat_hints,
     basic_pitch_candidate_union,
@@ -35,6 +36,8 @@ class JointSampleResult:
     checkpoint: Path
     minimum_candidate_confidence: float
     cache_path: Path
+    candidate_generation: str = LEGACY_CANDIDATE_GENERATION_VERSION
+    checkpoint_schema: str = "unknown"
 
 
 def _training_confidence(payload: dict[str, Any], fallback: float) -> float:
@@ -45,14 +48,22 @@ def _training_confidence(payload: dict[str, Any], fallback: float) -> float:
     return float(value)
 
 
-def _training_candidate_configs(payload: dict[str, Any]):
+def candidate_generation_for_checkpoint(payload: dict[str, Any]) -> str:
     training = payload.get("training") or {}
     frontend = training.get("frontend") or {}
     version = (
         frontend.get("candidate_generation")
         or training.get("candidate_generation")
     )
-    if version == CANDIDATE_GENERATION_VERSION:
+    return (
+        CANDIDATE_GENERATION_VERSION
+        if version == CANDIDATE_GENERATION_VERSION
+        else LEGACY_CANDIDATE_GENERATION_VERSION
+    )
+
+
+def candidate_configs_for_checkpoint(payload: dict[str, Any]):
+    if candidate_generation_for_checkpoint(payload) == CANDIDATE_GENERATION_VERSION:
         return HIGH_RECALL_DECODE_CONFIGS
     return LEGACY_HIGH_RECALL_DECODE_CONFIGS
 
@@ -86,6 +97,7 @@ def infer_joint_sample(
     features = extract_sample_basic_pitch_features(sample, cache_path=cache)
     index = ScoreEventIndex.from_musicxml(score_path)
     model, lattice_config, payload = load_joint_model(ckpt, device=device)
+    candidate_generation = candidate_generation_for_checkpoint(payload)
     confidence = (
         float(minimum_candidate_confidence)
         if minimum_candidate_confidence is not None
@@ -95,7 +107,7 @@ def infer_joint_sample(
         add_score_repeat_hints(
             basic_pitch_candidate_union(
                 features,
-                configs=_training_candidate_configs(payload),
+                configs=candidate_configs_for_checkpoint(payload),
                 minimum_confidence=confidence,
             ),
             index.events,
@@ -113,6 +125,8 @@ def infer_joint_sample(
         checkpoint=ckpt,
         minimum_candidate_confidence=confidence,
         cache_path=cache,
+        candidate_generation=candidate_generation,
+        checkpoint_schema=str(payload.get("schema_version") or "unknown"),
     )
 
 
@@ -209,6 +223,8 @@ def build_gui_alignment_payload(
             "engine": "align-joint",
             "backend": "joint-path-crf",
             "checkpoint": str(result.checkpoint),
+            "checkpoint_schema": result.checkpoint_schema,
+            "candidate_generation": result.candidate_generation,
             "event_count": len(events),
             "transcribed_note_count": len(transcribed),
             "mapped_note_count": sum(value is not None for value in mapping),

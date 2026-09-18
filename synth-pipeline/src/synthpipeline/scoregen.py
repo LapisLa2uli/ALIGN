@@ -38,6 +38,14 @@ DEFAULT_METERS = [(4, 4), (3, 4), (2, 4), (6, 8)]
 DURATION_UNITS = [1, 2, 3, 4, 6, 8]
 
 
+def _duration_units(config: SynthConfig | None = None) -> list[int]:
+    raw = (config.generation if config is not None else {}).get("duration_units")
+    if not raw:
+        return list(DURATION_UNITS)
+    units = [max(1, int(u)) for u in raw]
+    return units or list(DURATION_UNITS)
+
+
 def clarinet_instrument() -> instrument.Instrument:
     """Clarinet timbre (GM 71). Written MusicXML stays as written; audio MIDI is transposed separately."""
     inst = instrument.Clarinet()
@@ -162,6 +170,7 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
             phrase_end=phrase_end,
             beat_units=beat_units,
             syncopation_prob=syncopation_prob,
+            duration_units=_duration_units(config),
         )
         part.append(measure)
 
@@ -546,10 +555,12 @@ def _fill_measure(
     phrase_end: bool,
     beat_units: int = 4,
     syncopation_prob: float = 0.12,
+    duration_units: list[int] | None = None,
 ) -> int:
     units = int(round(measure_ql / 0.25))
     remaining = units
     offset_units = 0
+    allowed = list(duration_units or DURATION_UNITS)
     while remaining > 0:
         dur_units = _pick_duration(
             rng,
@@ -558,6 +569,7 @@ def _fill_measure(
             beat_units,
             phrase_end=phrase_end,
             syncopation_prob=syncopation_prob,
+            duration_units=allowed,
         )
         ql = dur_units * 0.25
         offset = offset_units * 0.25
@@ -580,8 +592,10 @@ def _pick_duration(
     beat_units: int,
     phrase_end: bool,
     syncopation_prob: float,
+    duration_units: list[int] | None = None,
 ) -> int:
-    fits = [u for u in DURATION_UNITS if u <= remaining]
+    allowed = list(duration_units or DURATION_UNITS)
+    fits = [u for u in allowed if u <= remaining]
     if not fits:
         return remaining
     if phrase_end and remaining in fits and remaining >= beat_units:

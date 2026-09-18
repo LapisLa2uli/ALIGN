@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import subprocess
+from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -41,6 +42,125 @@ def _joint_checkpoint(config: PipelineConfig, weights: Path) -> Path | None:
     if nested.is_file():
         return nested
     return None
+
+
+def _matching_transcribed_index(
+    notes: list[dict],
+    *,
+    pitch: int,
+    start: float,
+    tolerance: float = 0.15,
+) -> int | None:
+    matches = [
+        (abs(float(note.get("start") or 0.0) - start), index)
+        for index, note in enumerate(notes)
+        if int(note.get("pitch", note.get("midi", -1))) == pitch
+    ]
+    if not matches:
+        return None
+    distance, index = min(matches)
+    return index if distance <= tolerance else None
+
+
+def apply_alignment_overrides(payload: dict, sample_dir: Path) -> dict:
+    """Apply persistent human mapping corrections after model inference."""
+
+    path = sample_dir / "note_alignment_overrides.json"
+    if not path.exists():
+        return payload
+    document = json.loads(path.read_text(encoding="utf-8"))
+    notes = list(payload.get("transcribed_notes") or [])
+    mapping = list(payload.get("note_mapping") or [])
+    if len(mapping) < len(notes):
+        mapping.extend([None] * (len(notes) - len(mapping)))
+    events = list(payload.get("events") or [])
+    repetitions = list(payload.get("repetitions") or [])
+    for override in document.get("overrides") or []:
+        pitch = int(override["pitch"])
+        start = float(override["performance_start"])
+        score_index = int(override["score_index"])
+        transcribed_index = _matching_transcribed_index(
+            notes,
+            pitch=pitch,
+            start=start,
+            tolerance=float(override.get("onset_tolerance_sec", 0.15)),
+        )
+        if transcribed_index is None:
+            raise ValueError(
+                f"Could not find override note MIDI {pitch} near {start:.3f}s"
+            )
+        template = next(
+            (
+                event
+                for event in events
+                if int(event.get("score_index", -1)) == score_index
+            ),
+            None,
+        )
+        if template is None:
+            raise ValueError(
+                f"Could not find reference score event {score_index} for override"
+            )
+        mapping[transcribed_index] = score_index
+        note = notes[transcribed_index]
+        event = deepcopy(template)
+        event["id"] = f"manual_override_{transcribed_index:05d}"
+        event["perf_start"] = float(note["start"])
+        event["perf_end"] = float(note["end"])
+        relationship = str(override.get("relationship") or "match")
+        event["alignment_kind"] = relationship
+        event["is_repetition"] = relationship == "copy"
+        events = [
+            value
+            for value in events
+            if value.get("id") != event["id"]
+            and not (
+                abs(float(value.get("perf_start") or -1.0) - float(note["start"]))
+                <= 1e-5
+                and abs(float(value.get("perf_end") or -1.0) - float(note["end"]))
+                <= 1e-5
+            )
+        ]
+        events.append(event)
+        if relationship == "copy":
+            source_index = _matching_transcribed_index(
+                notes,
+                pitch=pitch,
+                start=float(override["source_performance_start"]),
+                tolerance=float(override.get("onset_tolerance_sec", 0.15)),
+            )
+            if source_index is None:
+                raise ValueError("Could not find repetition source note")
+            repetitions = [
+                value
+                for value in repetitions
+                if int(value.get("repeat_i0", -1)) != transcribed_index
+            ]
+            repetitions.append(
+                {
+                    "source_i0": source_index,
+                    "source_i1": source_index + 1,
+                    "repeat_i0": transcribed_index,
+                    "repeat_i1": transcribed_index + 1,
+                    "source_start": float(notes[source_index]["start"]),
+                    "source_end": float(notes[source_index]["end"]),
+                    "repeat_start": float(note["start"]),
+                    "repeat_end": float(note["end"]),
+                    "confidence": float(note.get("confidence") or 1.0),
+                    "source": "manual_override",
+                }
+            )
+    events.sort(key=lambda event: float(event.get("perf_start") or 0.0))
+    payload["events"] = events
+    payload["note_mapping"] = mapping
+    payload["repetitions"] = repetitions
+    summary = dict(payload.get("summary") or {})
+    summary["event_count"] = len(events)
+    summary["mapped_note_count"] = sum(value is not None for value in mapping)
+    summary["repetition_count"] = len(repetitions)
+    summary["manual_override_count"] = len(document.get("overrides") or [])
+    payload["summary"] = summary
+    return payload
 
 
 def _bridge_command_env(config: PipelineConfig) -> tuple[Path, dict[str, str]]:
@@ -86,6 +206,18 @@ def dump_transcription(
         "--device",
         str(config.alignment.get("note_alignment_device", "cuda")),
     ]
+    weights = _configured_path(
+        config,
+        "note_alignment_weights",
+        ROOT
+        / "align-model"
+        / "runs"
+        / "contextual-aligner-outputRaw_sf-1k"
+        / "weights",
+    )
+    checkpoint = _joint_checkpoint(config, weights)
+    if checkpoint is not None:
+        command.extend(["--checkpoint", str(checkpoint)])
     logger.info("Transcribing %s", sample_dir.name)
     completed = subprocess.run(
         command,
@@ -219,6 +351,8 @@ def run_preferred_alignment(
             + (completed.stderr.strip() or completed.stdout.strip())
         )
     payload = json.loads(output.read_text(encoding="utf-8"))
+    payload = apply_alignment_overrides(payload, sample_dir)
+    output.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     alignment_path, wp = _compatibility_alignment(payload, sample_dir, config)
     candidates = []
     if detect_candidates:

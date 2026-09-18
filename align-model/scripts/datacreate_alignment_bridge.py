@@ -8,6 +8,8 @@ from pathlib import Path
 
 from alignmodel.joint.infer import (
     build_gui_alignment_payload,
+    candidate_configs_for_checkpoint,
+    candidate_generation_for_checkpoint,
     infer_joint_sample,
 )
 from alignmodel.pipeline import run_pipeline
@@ -108,20 +110,45 @@ def _note_first_payload(sample: Path, weights: Path, device: str) -> dict:
     }
 
 
-def _transcription_payload(sample: Path) -> dict:
+def _transcription_payload(
+    sample: Path, checkpoint: Path | None = None
+) -> dict:
+    import torch
+
+    from alignmodel.joint.candidates import (
+        CANDIDATE_GENERATION_VERSION,
+        HIGH_RECALL_DECODE_CONFIGS,
+        basic_pitch_candidate_union,
+    )
     from alignmodel.transcription.basic_pitch import (
-        decode_frozen_basic_pitch,
         extract_sample_basic_pitch_features,
-        sanitize_basic_pitch_notes,
     )
 
     cache = sample / "basic_pitch_cache.npz"
     features = extract_sample_basic_pitch_features(sample, cache_path=cache)
-    notes = sanitize_basic_pitch_notes(
-        decode_frozen_basic_pitch(features), features
+    configs = HIGH_RECALL_DECODE_CONFIGS
+    candidate_generation = CANDIDATE_GENERATION_VERSION
+    minimum_confidence = 0.65
+    if checkpoint is not None:
+        checkpoint_payload = torch.load(
+            checkpoint, map_location="cpu", weights_only=False
+        )
+        configs = candidate_configs_for_checkpoint(checkpoint_payload)
+        candidate_generation = candidate_generation_for_checkpoint(
+            checkpoint_payload
+        )
+        minimum_confidence = float(
+            (checkpoint_payload.get("training") or {}).get(
+                "minimum_candidate_confidence", minimum_confidence
+            )
+        )
+    notes = basic_pitch_candidate_union(
+        features,
+        configs=configs,
+        minimum_confidence=minimum_confidence,
     )
     return {
-        "engine": "basic-pitch-frozen",
+        "engine": "basic-pitch-candidate-union",
         "sample_id": sample.name,
         "transcribed_notes": [
             {
@@ -133,7 +160,9 @@ def _transcription_payload(sample: Path) -> dict:
             for note in notes
         ],
         "summary": {
-            "engine": "basic-pitch-frozen",
+            "engine": "basic-pitch-candidate-union",
+            "candidate_generation": candidate_generation,
+            "minimum_candidate_confidence": minimum_confidence,
             "transcribed_note_count": len(notes),
             "cache_path": str(cache),
         },
@@ -163,7 +192,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     if args.transcribe_only:
-        payload = _transcription_payload(args.sample)
+        payload = _transcription_payload(args.sample, args.checkpoint)
     elif args.checkpoint is not None:
         payload = _joint_payload(args.sample, args.checkpoint, args.device)
     elif args.weights is not None:

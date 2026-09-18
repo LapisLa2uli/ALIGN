@@ -5,9 +5,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from alignmodel.joint.index import JointEvent, ScoreEvent
+from alignmodel.joint.candidates import (
+    CANDIDATE_GENERATION_VERSION,
+    LEGACY_CANDIDATE_GENERATION_VERSION,
+)
 from alignmodel.joint.infer import (
     JointSampleResult,
     build_gui_alignment_payload,
+    candidate_configs_for_checkpoint,
+    candidate_generation_for_checkpoint,
     match_sounding_index,
 )
 from alignmodel.joint.lattice import JointCandidate, LatticePath, LatticeStep, JointOperation
@@ -53,6 +59,29 @@ def _result(events: tuple[JointEvent, ...]) -> JointSampleResult:
 
 
 class JointInferGuiTests(unittest.TestCase):
+    def test_checkpoint_schema_selects_matching_candidate_logic(self) -> None:
+        v2 = {
+            "training": {
+                "frontend": {
+                    "candidate_generation": CANDIDATE_GENERATION_VERSION
+                }
+            }
+        }
+        self.assertEqual(
+            candidate_generation_for_checkpoint(v2),
+            CANDIDATE_GENERATION_VERSION,
+        )
+        self.assertTrue(
+            candidate_configs_for_checkpoint(v2)[0].adaptive_short_note_rescue
+        )
+        self.assertEqual(
+            candidate_generation_for_checkpoint({}),
+            LEGACY_CANDIDATE_GENERATION_VERSION,
+        )
+        self.assertFalse(
+            candidate_configs_for_checkpoint({})[0].adaptive_short_note_rescue
+        )
+
     def test_match_prefers_covering_sounding_note(self) -> None:
         sounding = [
             FakeSounding(0, 60, 0.0, 2.0, 0.0, 1.0),
@@ -82,6 +111,10 @@ class JointInferGuiTests(unittest.TestCase):
         self.assertEqual([ev["score_index"] for ev in payload["events"]], [0, 1])
         self.assertEqual(payload["events"][0]["pitch"], "C4")
         self.assertEqual(payload["summary"]["mapped_note_count"], 2)
+        self.assertEqual(
+            payload["summary"]["candidate_generation"],
+            LEGACY_CANDIDATE_GENERATION_VERSION,
+        )
 
 
 if __name__ == "__main__":

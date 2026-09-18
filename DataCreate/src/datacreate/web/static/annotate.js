@@ -2552,9 +2552,12 @@ function renderAlignmentInfo(data) {
         `and reference audio stay in score order, then alignment will rematch.</div>`
       : "";
   const engine = s.backend || s.engine || "alignment";
+  const version = s.candidate_generation
+    ? ` · ${escapeXml(String(s.candidate_generation))}`
+    : "";
   el.innerHTML =
     `<div class="summary">` +
-    `${escapeXml(String(engine))} · ` +
+    `${escapeXml(String(engine))}${version} · ` +
     `${s.transcribed_note_count ?? "?"} transcribed · ` +
     `${s.mapped_note_count ?? "?"} mapped · ` +
     `${s.event_count ?? 0} aligned events` +

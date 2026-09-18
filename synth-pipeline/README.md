@@ -109,6 +109,7 @@ synth-pipeline generate --score ../RawData/Score --count 8
 | `config/multi_error_10k.yaml` | Procedural scores; 1–8 errors; equal weights; `squeak.prob` 0; repetition 0.80; standalone repetition 0.20; restart gap 0.2–1.0 s |
 | `config/rawdata_snippets_2k.yaml` | Uploaded-score snippets; 2,000 requested clips; 8–16 measures, at least 12 notes; otherwise the same multi-error settings |
 | `config/rawdata_sf_10k.yaml` | Uploaded-score snippets rendered to `E:/outputRaw_sf_10k`; score `001` excluded; 10,000 requested clips; otherwise the same multi-error settings |
+| `config/fast_notes_1k.yaml` | Procedural sixteenth-note etudes at ~125 BPM (~500 notes/min) to `E:/outputRaw_fast_1k`; ornaments kept; no intonation/squeak |
 
 Existing 1.1 bundles (or 1.2 extras that still have a single-note core) can be rewritten onto the current gold rules:
 

@@ -96,9 +96,10 @@ datacreate serve
 
 Open http://127.0.0.1:8765 — zoomable waveform with draggable regions (wavesurfer.js), score view (OpenSheetMusicDisplay), candidate confirm/reject workflow.
 
-The annotation GUI now uses ALIGN's joint decoder for every new/re-run
-alignment: frozen Basic Pitch transcription, then the score-conditioned path
-CRF (`joint_decoder.pt`). The first request creates `note_alignment_v2.json`
+The annotation GUI now uses ALIGN's v2 joint decoder for every new/re-run
+alignment: the Basic Pitch v2 high-recall union with weak-short-note rescue,
+then the replay-continuation score-conditioned path CRF (`joint_decoder.pt`).
+The first request creates `note_alignment_v2.json`
 plus a small legacy-compatible `alignment.npz`; later GUI requests read the
 note alignment directly. Configure the isolated Python and checkpoint through
 `paths.note_alignment_python` and `paths.note_alignment_checkpoint`. The older
@@ -210,8 +211,8 @@ DataCreate has no trainable model of its own. It invokes the current ALIGN joint
 
 | Component | Methodology | Repository training data | Main hyperparameters |
 |---|---|---|---|
-| Basic Pitch 0.4.0 frontend | Frozen upstream onset/note/contour AMT, shifted to written Bb-clarinet pitch; high-recall decode union plus monophonic cleanup | No local weight training; candidate threshold 0.65 | union onsets 0.25/0.35/0.55, min note 35–55 ms, written MIDI 50–96 |
-| Joint path CRF | Sparse score-conditioned lattice over MATCH/SUBSTITUTE/EXTRA/NOISE/DELETE/REPEAT | 1,000 audited train rows from `data-audit/2026-09-14-v2`; val-100 joint F1 0.743 | hidden 64, max options 12, max states 48, delete 24, noise bias -6 |
+| Basic Pitch 0.4.0 frontend v2 | Frozen upstream onset/note/contour AMT, shifted to written Bb-clarinet pitch; high-recall decode union, weak-short-note rescue, and continuity-aware split merging | No local weight training; candidate threshold 0.65 | union onsets 0.25/0.35/0.50, min note 30–55 ms, written MIDI 50–96 |
+| Joint path CRF v2 | Sparse score-conditioned lattice over MATCH/SUBSTITUTE/EXTRA/NOISE/DELETE/REPEAT with soft replay-continuation evidence | Full 1,871-row validation: 50 ms note F1 0.864, mapping F1 0.774, joint F1 0.705 | hidden 64, continuation lookahead 3, one candidate/score skip, repeat-fragment penalty 0.25 |
 | Legacy contextual aligner | Fallback only: GRU + monotonic DP if no joint checkpoint is configured | `contextual-aligner-outputRaw_sf-1k` | See `align-model/README.md` |
 
 All model versions, rejected alternatives, training results, and complete hyperparameters are documented in [`../align-model/README.md`](../align-model/README.md).

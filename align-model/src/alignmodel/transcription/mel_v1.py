@@ -274,7 +274,9 @@ class MelNoteTranscriber(nn.Module):
         self.rearticulation_head = nn.Conv1d(temporal_output, 1, 1)
         self.confidence_head = nn.Conv1d(temporal_output, 1, 1)
 
-    def forward(self, mel: Tensor) -> dict[str, Tensor]:
+    def encode(self, mel: Tensor) -> Tensor:
+        """Return the shared high-resolution temporal representation."""
+
         if mel.ndim != 3 or mel.shape[1] != self.config.n_mels:
             raise ValueError(
                 f"Expected [B,{self.config.n_mels},T], got {tuple(mel.shape)}"
@@ -292,6 +294,10 @@ class MelNoteTranscriber(nn.Module):
             value = value.transpose(1, 2)
         else:
             value = self.temporal(value)
+        return value
+
+    def forward(self, mel: Tensor) -> dict[str, Tensor]:
+        value = self.encode(mel)
         return {
             "voiced_logits": self.voiced_head(value).squeeze(1),
             "pitch_logits": self.pitch_head(value).transpose(1, 2),
