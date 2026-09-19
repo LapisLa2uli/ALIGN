@@ -1,0 +1,807 @@
+{
+  "audit": {
+    "bundles_discovered": 1000,
+    "duplicate_rows_excluded": 0,
+    "eligible_unique_rows": 95,
+    "exclusion_reasons": {
+      "canonical_reconstruction_failed:ValueError:1 performed/tie units have no raw MIDI event": 120,
+      "canonical_reconstruction_failed:ValueError:2 performed/tie units have no raw MIDI event": 117,
+      "canonical_reconstruction_failed:ValueError:3 performed/tie units have no raw MIDI event": 62,
+      "canonical_reconstruction_failed:ValueError:4 performed/tie units have no raw MIDI event": 21,
+      "canonical_reconstruction_failed:ValueError:6 performed/tie units have no raw MIDI event": 7,
+      "canonical_reconstruction_failed:ValueError:9 performed/tie units have no raw MIDI event": 2,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=1 ornament_unmatched=1": 67,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=10 ornament_unmatched=10": 13,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=11 ornament_unmatched=11": 7,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=12 ornament_unmatched=12": 11,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=13 ornament_unmatched=13": 2,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=14 ornament_unmatched=14": 1,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=15 ornament_unmatched=15": 8,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=16 ornament_unmatched=16": 6,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=18 ornament_unmatched=18": 2,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=2 ornament_unmatched=2": 133,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=20 ornament_unmatched=20": 1,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=21 ornament_unmatched=21": 2,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=24 ornament_unmatched=24": 1,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=3 ornament_unmatched=3": 89,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=4 ornament_unmatched=4": 83,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=5 ornament_unmatched=5": 25,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=6 ornament_unmatched=6": 55,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=7 ornament_unmatched=7": 24,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=8 ornament_unmatched=8": 19,
+      "canonical_reconstruction_failed:ValueError:Generator ornament template does not exactly round-trip raw MIDI: raw_unmatched=9 ornament_unmatched=9": 16,
+      "canonical_reconstruction_failed:ValueError:Reconstructed canonical identity moves backward 3 times": 1,
+      "pitch_metadata_invalid:midi_pitch_space": 7,
+      "target_pitch_outside_track_b_range": 10
+    },
+    "fail_closed": true,
+    "global_monotonic_policy": true,
+    "manifest_sha256": "d4f09ce5589dcefdf21845923faa15c9341d555c0680845210ce1afe0e5eee5a",
+    "ornament_rows": 89,
+    "polyphonic_onset_rows": 81,
+    "repeat_rows": 82,
+    "schema_version": "align-fast-note-experiment-v1",
+    "split_counts": {
+      "benchmark50": 50,
+      "calibration": 8,
+      "excluded": 905,
+      "open_validation": 8,
+      "train": 29
+    },
+    "targets_sha256": "a52a9001edda8da60d269e1db02759e12bd6116bb945600dda164056b65f05ce"
+  },
+  "integrity": {
+    "active_fast_note_leases": {},
+    "artifacts": {
+      "FROZEN_CANDIDATE.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\FROZEN_CANDIDATE.json",
+        "sha256": "fd4e94ddc263b40876c1548316478cc6adacbc367185379618a98e5c9f8b3e66"
+      },
+      "FROZEN_PROTOCOL.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\FROZEN_PROTOCOL.json",
+        "sha256": "2c735e98c6c3459d1ee10da9d12c9b375547fc736949a251df110f837ec48750"
+      },
+      "audit-v1/audit_report.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\audit_report.json",
+        "sha256": "3a0f36947f766f642ed4f7b9bcc6ea8abea0f60fa3bd6e6952a37821475c0670"
+      },
+      "audit-v1/canonical_targets.jsonl.gz": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\canonical_targets.jsonl.gz",
+        "sha256": "a52a9001edda8da60d269e1db02759e12bd6116bb945600dda164056b65f05ce"
+      },
+      "audit-v1/split_manifest.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json",
+        "sha256": "d4f09ce5589dcefdf21845923faa15c9341d555c0680845210ce1afe0e5eee5a"
+      },
+      "cache-benchmark50/metadata.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-benchmark50\\metadata.json",
+        "sha256": "c12e86dd7db6ce5046c721bc5c426c7506fa8bcab2b659cb291a18b6f2707ad1"
+      },
+      "cache-open-validation/metadata.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-open-validation\\metadata.json",
+        "sha256": "60ecacfe425f85249c3ae5815a0f0f0866e1b8b2861a549c03cc3ff368935d59"
+      },
+      "cache-train-calibration/metadata.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-train-calibration\\metadata.json",
+        "sha256": "f071dad10eebe18d973c0c0c2d205d1a62a0bb32bce5f26865d9f74f47a928a1"
+      },
+      "open-validation/COMPARISON.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\COMPARISON.json",
+        "sha256": "1a840a620a507a8fbdc8411a74a4d8cfcfbcf3500b0ae49db2f9a0fa8d8c7739"
+      },
+      "open-validation/current/report.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\current\\report.json",
+        "sha256": "f91026dc0b4cc36e84424c7ee7e4037b59f08008d8aa05abdff1986375d7249f"
+      },
+      "open-validation/selected/report.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\selected\\report.json",
+        "sha256": "c699583a315150b8517cc2ded7432dea5837c3a7698c9bb29cd2deb11d2b832c"
+      },
+      "phase-a-current-benchmark50/report.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\phase-a-current-benchmark50\\report.json",
+        "sha256": "95566ce51eec95b7019b0e8460cbcd4ef19cb9f0427d62b6995f4d030f6b7265"
+      },
+      "training/from-scratch/best.pt": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\from-scratch\\best.pt",
+        "sha256": "3a5dbd47e4012c36a5e9ba2f224803a532f1f12fc5f54ee7e3c72108397e8bbe"
+      },
+      "training/from-scratch/history.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\from-scratch\\history.json",
+        "sha256": "6cb9427f266c8061240c6a3ed477f310d7f6de7041bf8736265e751d5f720803"
+      },
+      "training/track-b-initialized/best.pt": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt",
+        "sha256": "f534292bf3f46a5e2cdd2981e65f77b10c43cd36d3c6d1ba87cb776019435d85"
+      },
+      "training/track-b-initialized/history.json": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\history.json",
+        "sha256": "3c3031d556fa27d5ca1d0b440a1ca0f5b28f3ca82206bbc77ea9ad362d9df066"
+      }
+    },
+    "benchmark50_used_for_training_or_selection": false,
+    "code": {
+      "scripts\\fast_note_experiment_v1.py": "c854c812efcdec41a881b9639c6f3b1307004826f45123e86e1cf112c8adb81d",
+      "scripts\\run_with_resource_lease.py": "b0b164a29108d95479c82eac0359cdd6ab8ba33dd958246dfaf01e350184e530",
+      "scripts\\train_fast_note_multipitch_v1.py": "b4e73bba0d7b66f2305c54f667580def0e37029ea4dbb1647a0aa10c0edf2d41",
+      "src\\alignmodel\\transcription\\ornament_multipitch_v1.py": "f36b2f60d6c26f6c6c1a45971bc507eede3635b4b8de9aa6ea0b2baa88af417c"
+    },
+    "mapper_v6_lockbox_accessed": false,
+    "orn_v1_v2_lockboxes_accessed": false,
+    "production_config_written": false,
+    "production_weights_written": false,
+    "track_b_checkpoint_hash_unchanged": true
+  },
+  "phase_a": {
+    "canonical_transcriber": {
+      "bootstrap": {
+        "lower_95": 0.43999810377521115,
+        "median": 0.47309852507969685,
+        "replicates": 1000,
+        "upper_95": 0.5047765982615697
+      },
+      "credit": 2674.0,
+      "f1": 0.47360963513992205,
+      "gold": 8303,
+      "precision": 0.8946135831381733,
+      "predicted": 2989,
+      "recall": 0.3220522702637601,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "combined_mapper_v6": {
+      "bootstrap": {
+        "lower_95": 0.22075169877065576,
+        "median": 0.24482292227958136,
+        "replicates": 1000,
+        "upper_95": 0.2687477361868636
+      },
+      "credit": 1384.0,
+      "f1": 0.2441993824437583,
+      "gold": 8346,
+      "per_stratum": {
+        "20to30:ornament=0": {
+          "credit": 59.0,
+          "f1": 0.22097378277153557,
+          "gold": 410,
+          "precision": 0.47580645161290325,
+          "predicted": 124,
+          "recall": 0.14390243902439023,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "20to30:ornament=1": {
+          "credit": 526.5,
+          "f1": 0.2606435643564356,
+          "gold": 2976,
+          "precision": 0.4948308270676692,
+          "predicted": 1064,
+          "recall": 0.17691532258064516,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "30to45:ornament=1": {
+          "credit": 261.0,
+          "f1": 0.20535011801730924,
+          "gold": 1875,
+          "precision": 0.391304347826087,
+          "predicted": 667,
+          "recall": 0.1392,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "ge45:ornament=1": {
+          "credit": 121.5,
+          "f1": 0.23964497041420119,
+          "gold": 755,
+          "precision": 0.4691119691119691,
+          "predicted": 259,
+          "recall": 0.1609271523178808,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "lt20:ornament=0": {
+          "credit": 100.0,
+          "f1": 0.31201248049922,
+          "gold": 442,
+          "precision": 0.5025125628140703,
+          "predicted": 199,
+          "recall": 0.22624434389140272,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "lt20:ornament=1": {
+          "credit": 316.0,
+          "f1": 0.24648985959438377,
+          "gold": 1888,
+          "precision": 0.46745562130177515,
+          "predicted": 676,
+          "recall": 0.1673728813559322,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        }
+      },
+      "per_type": {
+        "copy": {
+          "credit": 87.0,
+          "f1": 0.0459830866807611,
+          "gold": 3691,
+          "precision": 0.9354838709677419,
+          "predicted": 93,
+          "recall": 0.023570848008669737,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "extra": {
+          "credit": 35.0,
+          "f1": 0.059625212947189095,
+          "gold": 488,
+          "precision": 0.05102040816326531,
+          "predicted": 686,
+          "recall": 0.07172131147540983,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "match": {
+          "credit": 1040.0,
+          "f1": 0.3640182009100455,
+          "gold": 3984,
+          "precision": 0.6011560693641619,
+          "predicted": 1730,
+          "recall": 0.26104417670682734,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "missed_note": {
+          "credit": 0.0,
+          "f1": 0.0,
+          "gold": 43,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        },
+        "substitute": {
+          "credit": 27.0,
+          "f1": 0.08709677419354839,
+          "gold": 140,
+          "precision": 0.05625,
+          "predicted": 480,
+          "recall": 0.19285714285714287,
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5
+        }
+      },
+      "precision": 0.46303111408497827,
+      "predicted": 2989,
+      "recall": 0.16582794152887612,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "count_ratio": 0.35999036492833913,
+    "oracle_note_mapper": {
+      "bootstrap": {
+        "lower_95": 0.9507150342494582,
+        "median": 0.9587272223246048,
+        "replicates": 1000,
+        "upper_95": 0.9661761034763234
+      },
+      "credit": 7981.5,
+      "f1": 0.9587963241035499,
+      "gold": 8346,
+      "precision": 0.9612790557629772,
+      "predicted": 8303,
+      "recall": 0.9563263838964774,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "pitch_sequence": {
+      "credit": 2916,
+      "f1": 0.5164718384697131,
+      "precision": 0.9755771160923385,
+      "predicted": 2989,
+      "recall": 0.3511983620378177,
+      "support": 8303
+    },
+    "rows": 50,
+    "short_note_recall": {
+      "120to180ms": {
+        "matched": 524,
+        "recall": 0.1864105300604767,
+        "support": 2811
+      },
+      "80to120ms": {
+        "matched": 671,
+        "recall": 0.15791951047305247,
+        "support": 4249
+      },
+      "ge180ms": {
+        "matched": 83,
+        "recall": 0.10863874345549739,
+        "support": 764
+      },
+      "lt80ms": {
+        "matched": 25,
+        "recall": 0.05219206680584551,
+        "support": 479
+      }
+    }
+  },
+  "phase_b": {
+    "architecture": {
+      "backbone": "Track B time-preserving spectral encoder + 8-block TCN",
+      "frontend": "22050 Hz, 128 mel, hop 256",
+      "output": "independent 49-pitch activity/onset/offset heads plus 0..8 polyphony head",
+      "pitch_space": "Bb written MIDI 52..100"
+    },
+    "comparison": {
+      "baseline": {
+        "canonical_transcriber_f1": 0.4043865661411926,
+        "combined_mapper_v6_f1": 0.2008168822328114,
+        "lt120ms": {
+          "matched": 141,
+          "recall": 0.17364532019704434,
+          "support": 812
+        },
+        "pitch_sequence_f1": 0.424948594928033
+      },
+      "baseline_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\current\\report.json",
+      "baseline_report_sha256": "f91026dc0b4cc36e84424c7ee7e4037b59f08008d8aa05abdff1986375d7249f",
+      "benchmark50_comparison_authorized": false,
+      "candidate": {
+        "canonical_transcriber_f1": 0.46497461928934014,
+        "combined_mapper_v6_f1": 0.35858585858585856,
+        "lt120ms": {
+          "matched": 89,
+          "recall": 0.10960591133004927,
+          "support": 812
+        },
+        "pitch_sequence_f1": 0.36142131979695435
+      },
+      "candidate_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\selected\\report.json",
+      "candidate_report_sha256": "c699583a315150b8517cc2ded7432dea5837c3a7698c9bb29cd2deb11d2b832c",
+      "deltas": {
+        "combined_canonical_f1": 0.15776897635304715,
+        "lt120ms_recall": -0.06403940886699508,
+        "pitch_sequence_f1": -0.06352727513107864
+      },
+      "gate_checks": {
+        "combined": true,
+        "pitch_sequence": false,
+        "short_note": false
+      },
+      "gate_met": false,
+      "population": "frozen open_validation",
+      "prespecified_gate": {
+        "combined_canonical_f1_regression_max": 0.02,
+        "open_validation_lt120ms_recall_delta_min": 0.05,
+        "standalone_open_validation_pitch_sequence_f1_delta_min": 0.02
+      },
+      "rows": 8,
+      "schema_version": "align-fast-note-experiment-v1",
+      "selection_changed_after_open_validation": false
+    },
+    "final_benchmark_comparison": "not run because the prespecified open-validation gate failed",
+    "open_validation": {
+      "canonical_transcriber": {
+        "bootstrap": {
+          "lower_95": 0.360705000015964,
+          "median": 0.45836185891428516,
+          "replicates": 1000,
+          "upper_95": 0.5904779477456372
+        },
+        "credit": 458.0,
+        "f1": 0.46497461928934014,
+        "gold": 1133,
+        "precision": 0.5471923536439666,
+        "predicted": 837,
+        "recall": 0.4042365401588703,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "combined_mapper_v6": {
+        "bootstrap": {
+          "lower_95": 0.2997083246411617,
+          "median": 0.35756972111553786,
+          "replicates": 1000,
+          "upper_95": 0.4389271776878737
+        },
+        "credit": 355.0,
+        "f1": 0.35858585858585856,
+        "gold": 1143,
+        "per_ornament": {
+          "ornament=1": {
+            "credit": 355.0,
+            "f1": 0.35858585858585856,
+            "gold": 1143,
+            "precision": 0.4241338112305854,
+            "predicted": 837,
+            "recall": 0.310586176727909,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          }
+        },
+        "per_source": {
+          "score:15a5003d1b15a10f629880a951a82fd4333f91099a9c94d18e84135bd1fbde5d": {
+            "credit": 40.5,
+            "f1": 0.2755102040816326,
+            "gold": 159,
+            "precision": 0.3,
+            "predicted": 135,
+            "recall": 0.25471698113207547,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:2e68ae7dc8c6b040758704a9b45a69e7707afb912dccd17e063bfb16cb99fe64": {
+            "credit": 68.5,
+            "f1": 0.5436507936507936,
+            "gold": 129,
+            "precision": 0.556910569105691,
+            "predicted": 123,
+            "recall": 0.5310077519379846,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:5ba3eea7eb940098e46673981c9eff12855409b120fb053e5d62d6533b1d9176": {
+            "credit": 48.5,
+            "f1": 0.5843373493975904,
+            "gold": 70,
+            "precision": 0.5052083333333334,
+            "predicted": 96,
+            "recall": 0.6928571428571428,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:a3c39192040257992f5382e09be58379947edbaba2b8e46decae12df7af9ed78": {
+            "credit": 29.5,
+            "f1": 0.3371428571428572,
+            "gold": 111,
+            "precision": 0.4609375,
+            "predicted": 64,
+            "recall": 0.26576576576576577,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:b33f079e150722b1ac7fd54d4389367a813fae82fe8c7b1d3d377c95b387e222": {
+            "credit": 42.5,
+            "f1": 0.2842809364548495,
+            "gold": 215,
+            "precision": 0.5059523809523809,
+            "predicted": 84,
+            "recall": 0.19767441860465115,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:c17069130179064eeced714fad349da4a39a5b032b7022602838099f57cb32be": {
+            "credit": 40.5,
+            "f1": 0.3432203389830508,
+            "gold": 108,
+            "precision": 0.31640625,
+            "predicted": 128,
+            "recall": 0.375,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:d82684221ececb4b0bb210b0f5c55473164ca19bdbf8a36e586b7ecf0ce50b4b": {
+            "credit": 48.5,
+            "f1": 0.3108974358974359,
+            "gold": 179,
+            "precision": 0.36466165413533835,
+            "predicted": 133,
+            "recall": 0.2709497206703911,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "score:e0bd6d6ac394b32f47f773a46e3f9f14ecd9e7d2411a0a8bfa48000e8f8c5eaf": {
+            "credit": 36.5,
+            "f1": 0.2967479674796748,
+            "gold": 172,
+            "precision": 0.49324324324324326,
+            "predicted": 74,
+            "recall": 0.21220930232558138,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          }
+        },
+        "per_stratum": {
+          "20to30:ornament=1": {
+            "credit": 168.0,
+            "f1": 0.29192006950477845,
+            "gold": 725,
+            "precision": 0.39436619718309857,
+            "predicted": 426,
+            "recall": 0.2317241379310345,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "lt20:ornament=1": {
+            "credit": 187.0,
+            "f1": 0.451145958986731,
+            "gold": 418,
+            "precision": 0.45498783454987834,
+            "predicted": 411,
+            "recall": 0.4473684210526316,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          }
+        },
+        "per_type": {
+          "copy": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "gold": 440,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "extra": {
+            "credit": 13.0,
+            "f1": 0.06770833333333333,
+            "gold": 73,
+            "precision": 0.04180064308681672,
+            "predicted": 311,
+            "recall": 0.1780821917808219,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "match": {
+            "credit": 208.0,
+            "f1": 0.4865497076023392,
+            "gold": 601,
+            "precision": 0.8188976377952756,
+            "predicted": 254,
+            "recall": 0.34608985024958405,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "gold": 10,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "substitute": {
+            "credit": 6.0,
+            "f1": 0.04123711340206186,
+            "gold": 19,
+            "precision": 0.022058823529411766,
+            "predicted": 272,
+            "recall": 0.3157894736842105,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          }
+        },
+        "precision": 0.4241338112305854,
+        "predicted": 837,
+        "recall": 0.310586176727909,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "count_ratio": 0.7387466902030009,
+      "oracle_note_mapper": {
+        "bootstrap": {
+          "lower_95": 0.9381416537431271,
+          "median": 0.9547848990342407,
+          "replicates": 1000,
+          "upper_95": 0.9670940494200706
+        },
+        "credit": 1086.5,
+        "f1": 0.9547451669595781,
+        "gold": 1143,
+        "precision": 0.9589585172109444,
+        "predicted": 1133,
+        "recall": 0.9505686789151356,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "pitch_sequence": {
+        "credit": 356,
+        "f1": 0.36142131979695435,
+        "precision": 0.4253285543608124,
+        "predicted": 837,
+        "recall": 0.3142100617828773,
+        "support": 1133
+      },
+      "short_note_recall": {
+        "120to180ms": {
+          "matched": 34,
+          "recall": 0.13178294573643412,
+          "support": 258
+        },
+        "80to120ms": {
+          "matched": 88,
+          "recall": 0.11748998664886515,
+          "support": 749
+        },
+        "ge180ms": {
+          "matched": 3,
+          "recall": 0.047619047619047616,
+          "support": 63
+        },
+        "lt80ms": {
+          "matched": 1,
+          "recall": 0.015873015873015872,
+          "support": 63
+        }
+      }
+    },
+    "selection": {
+      "benchmark50_accessed_for_selection": false,
+      "candidates": [
+        {
+          "calibration": {
+            "count_ratio": 0.8648648648648649,
+            "decode": {
+              "activity_off": 0.35,
+              "activity_on": 0.65,
+              "min_confidence": 0.3,
+              "min_note_sec": 0.03,
+              "offset_threshold": 0.55,
+              "onset_threshold": 0.6,
+              "release_frames": 2,
+              "use_polyphony_gate": true
+            },
+            "f1": 0.3550724637681159,
+            "gold": 1036,
+            "matched": 343,
+            "precision": 0.3828125,
+            "predicted": 896,
+            "rank": 0.35071700347278095,
+            "recall": 0.3310810810810811,
+            "variant": 2
+          },
+          "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt",
+          "checkpoint_sha256": "f534292bf3f46a5e2cdd2981e65f77b10c43cd36d3c6d1ba87cb776019435d85",
+          "name": "track_b_initialized",
+          "rank": 0.349265183374336
+        },
+        {
+          "calibration": {
+            "count_ratio": 1.084942084942085,
+            "decode": {
+              "activity_off": 0.3,
+              "activity_on": 0.55,
+              "min_confidence": 0.25,
+              "min_note_sec": 0.03,
+              "offset_threshold": 0.5,
+              "onset_threshold": 0.5,
+              "release_frames": 2,
+              "use_polyphony_gate": true
+            },
+            "f1": 0.33888888888888885,
+            "gold": 1036,
+            "matched": 366,
+            "precision": 0.32562277580071175,
+            "predicted": 1124,
+            "rank": 0.3364430906598626,
+            "recall": 0.3532818532818533,
+            "variant": 1
+          },
+          "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\from-scratch\\best.pt",
+          "checkpoint_sha256": "3a5dbd47e4012c36a5e9ba2f224803a532f1f12fc5f54ee7e3c72108397e8bbe",
+          "name": "from_scratch",
+          "rank": 0.33562782458352053
+        }
+      ],
+      "chosen": {
+        "calibration": {
+          "count_ratio": 0.8648648648648649,
+          "decode": {
+            "activity_off": 0.35,
+            "activity_on": 0.65,
+            "min_confidence": 0.3,
+            "min_note_sec": 0.03,
+            "offset_threshold": 0.55,
+            "onset_threshold": 0.6,
+            "release_frames": 2,
+            "use_polyphony_gate": true
+          },
+          "f1": 0.3550724637681159,
+          "gold": 1036,
+          "matched": 343,
+          "precision": 0.3828125,
+          "predicted": 896,
+          "rank": 0.35071700347278095,
+          "recall": 0.3310810810810811,
+          "variant": 2
+        },
+        "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt",
+        "checkpoint_sha256": "f534292bf3f46a5e2cdd2981e65f77b10c43cd36d3c6d1ba87cb776019435d85",
+        "name": "track_b_initialized",
+        "rank": 0.349265183374336
+      },
+      "open_validation_accessed": false,
+      "schema_version": "align-fast-note-experiment-v1",
+      "selection_population": "frozen calibration only",
+      "timestamp_metrics_used": false
+    },
+    "training": {
+      "augmentation_probability": 0.35,
+      "batch_size": 12,
+      "calibration_rows": 8,
+      "crop_frames": 1024,
+      "crops_per_clip": 6,
+      "epochs": 12,
+      "head_learning_rate": 0.0003,
+      "initialized_backbone_learning_rate": 5e-05,
+      "open_validation_rows": 8,
+      "precision": "bf16",
+      "scratch_backbone_learning_rate": 0.0003,
+      "short_note_loss_weights": "<80ms=5, <120ms=3, <180ms=1.8",
+      "train_rows": 29,
+      "weight_decay": 0.001
+    }
+  },
+  "reproduction_commands": [
+    "python scripts/fast_note_experiment_v1.py audit --dataset E:\\outputRaw_fast_1k --output-dir runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --seed 20260918",
+    "python scripts/fast_note_experiment_v1.py cache --manifest runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json --splits benchmark50 --output runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-benchmark50 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --device cuda --shard-rows 25",
+    "python scripts/fast_note_experiment_v1.py infer --name current-track-b-benchmark50 --checkpoint runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt --cache runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-benchmark50 --output-dir runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\phase-a-current-benchmark50 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --device cuda --min-confidence 0.8",
+    "python scripts/fast_note_experiment_v1.py score --name current-track-b-benchmark50 --manifest runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json --split benchmark50 --prediction-manifest runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\phase-a-current-benchmark50\\32bfb06cf8847a65d4a8a183aed168d9156101f81aaff5f61654de063042d0e1.predictions.manifest.json --output runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\phase-a-current-benchmark50\\report.json --resource-status runs\\TRAINING_RESOURCE_STATUS.json --bootstrap-replicates 1000",
+    "python scripts/fast_note_experiment_v1.py cache --manifest runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json --splits train,calibration --output runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-train-calibration --resource-status runs\\TRAINING_RESOURCE_STATUS.json --device cuda --shard-rows 37",
+    "python scripts/fast_note_experiment_v1.py cache --manifest runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json --splits open_validation --output runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-open-validation --resource-status runs\\TRAINING_RESOURCE_STATUS.json --device cuda --shard-rows 8",
+    "python scripts/train_fast_note_multipitch_v1.py --cache runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-train-calibration --track-b runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt --output-dir runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 12 --batch-size 12 --crop-frames 1024 --crops-per-clip 6 --learning-rate 0.0003 --backbone-learning-rate 0.00005 --workers 0 --checkpoint-every-steps 25 --augmentation-probability 0.35 --amp bf16 --seed 20260918",
+    "python scripts/train_fast_note_multipitch_v1.py --cache runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-train-calibration --output-dir runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\from-scratch --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 12 --batch-size 12 --crop-frames 1024 --crops-per-clip 6 --learning-rate 0.0003 --workers 0 --checkpoint-every-steps 25 --augmentation-probability 0.35 --amp bf16 --seed 20260918",
+    "python scripts/fast_note_experiment_v1.py select --initialized runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt --scratch runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\from-scratch\\best.pt --output runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\FROZEN_CANDIDATE.json",
+    "python scripts/fast_note_experiment_v1.py infer --name current-track-b-open-validation --checkpoint runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt --cache runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-open-validation --output-dir runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\current --resource-status runs\\TRAINING_RESOURCE_STATUS.json --device cuda --min-confidence 0.8",
+    "python scripts/fast_note_experiment_v1.py infer-multipitch --name selected-track-b-init-open-validation --checkpoint runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt --cache runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\cache-open-validation --output-dir runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\selected --resource-status runs\\TRAINING_RESOURCE_STATUS.json --device cuda",
+    "python scripts/fast_note_experiment_v1.py compare --baseline runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\current\\report.json --candidate runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\selected\\report.json --manifest runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json --output runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\COMPARISON.json"
+  ],
+  "schema_version": "align-fast-note-experiment-v1",
+  "status": "complete_without_final_benchmark_comparison",
+  "verification": {
+    "ide_lints": "no errors in experiment scripts",
+    "tests": [
+      {
+        "command": "pytest tests/test_ornament_multipitch_v1.py tests/test_mel_transcriber_v1.py tests/test_joint_infer.py -q",
+        "result": "17 passed"
+      },
+      {
+        "command": "pytest tests/test_mel_transcriber_v1.py tests/test_joint_infer.py -q",
+        "result": "14 passed"
+      },
+      {
+        "command": "pytest tests/test_ornament_multipitch_v1.py tests/test_mel_transcriber_v1.py -q",
+        "result": "14 passed"
+      }
+    ]
+  }
+}

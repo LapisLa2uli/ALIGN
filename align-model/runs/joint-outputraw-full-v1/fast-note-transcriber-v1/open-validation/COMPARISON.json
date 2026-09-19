@@ -1,0 +1,47 @@
+{
+  "baseline": {
+    "canonical_transcriber_f1": 0.4043865661411926,
+    "combined_mapper_v6_f1": 0.2008168822328114,
+    "lt120ms": {
+      "matched": 141,
+      "recall": 0.17364532019704434,
+      "support": 812
+    },
+    "pitch_sequence_f1": 0.424948594928033
+  },
+  "baseline_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\current\\report.json",
+  "baseline_report_sha256": "f91026dc0b4cc36e84424c7ee7e4037b59f08008d8aa05abdff1986375d7249f",
+  "benchmark50_comparison_authorized": false,
+  "candidate": {
+    "canonical_transcriber_f1": 0.46497461928934014,
+    "combined_mapper_v6_f1": 0.35858585858585856,
+    "lt120ms": {
+      "matched": 89,
+      "recall": 0.10960591133004927,
+      "support": 812
+    },
+    "pitch_sequence_f1": 0.36142131979695435
+  },
+  "candidate_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\open-validation\\selected\\report.json",
+  "candidate_report_sha256": "c699583a315150b8517cc2ded7432dea5837c3a7698c9bb29cd2deb11d2b832c",
+  "deltas": {
+    "combined_canonical_f1": 0.15776897635304715,
+    "lt120ms_recall": -0.06403940886699508,
+    "pitch_sequence_f1": -0.06352727513107864
+  },
+  "gate_checks": {
+    "combined": true,
+    "pitch_sequence": false,
+    "short_note": false
+  },
+  "gate_met": false,
+  "population": "frozen open_validation",
+  "prespecified_gate": {
+    "combined_canonical_f1_regression_max": 0.02,
+    "open_validation_lt120ms_recall_delta_min": 0.05,
+    "standalone_open_validation_pitch_sequence_f1_delta_min": 0.02
+  },
+  "rows": 8,
+  "schema_version": "align-fast-note-experiment-v1",
+  "selection_changed_after_open_validation": false
+}

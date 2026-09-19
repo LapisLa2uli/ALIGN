@@ -1,0 +1,227 @@
+{
+  "canonical_transcriber": {
+    "bootstrap": {
+      "lower_95": 0.43999810377521115,
+      "median": 0.47309852507969685,
+      "replicates": 1000,
+      "upper_95": 0.5047765982615697
+    },
+    "credit": 2674.0,
+    "f1": 0.47360963513992205,
+    "gold": 8303,
+    "precision": 0.8946135831381733,
+    "predicted": 2989,
+    "recall": 0.3220522702637601,
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5
+  },
+  "combined_mapper_v6": {
+    "bootstrap": {
+      "lower_95": 0.22075169877065576,
+      "median": 0.24482292227958136,
+      "replicates": 1000,
+      "upper_95": 0.2687477361868636
+    },
+    "credit": 1384.0,
+    "f1": 0.2441993824437583,
+    "gold": 8346,
+    "per_stratum": {
+      "20to30:ornament=0": {
+        "credit": 59.0,
+        "f1": 0.22097378277153557,
+        "gold": 410,
+        "precision": 0.47580645161290325,
+        "predicted": 124,
+        "recall": 0.14390243902439023,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "20to30:ornament=1": {
+        "credit": 526.5,
+        "f1": 0.2606435643564356,
+        "gold": 2976,
+        "precision": 0.4948308270676692,
+        "predicted": 1064,
+        "recall": 0.17691532258064516,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "30to45:ornament=1": {
+        "credit": 261.0,
+        "f1": 0.20535011801730924,
+        "gold": 1875,
+        "precision": 0.391304347826087,
+        "predicted": 667,
+        "recall": 0.1392,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "ge45:ornament=1": {
+        "credit": 121.5,
+        "f1": 0.23964497041420119,
+        "gold": 755,
+        "precision": 0.4691119691119691,
+        "predicted": 259,
+        "recall": 0.1609271523178808,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "lt20:ornament=0": {
+        "credit": 100.0,
+        "f1": 0.31201248049922,
+        "gold": 442,
+        "precision": 0.5025125628140703,
+        "predicted": 199,
+        "recall": 0.22624434389140272,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "lt20:ornament=1": {
+        "credit": 316.0,
+        "f1": 0.24648985959438377,
+        "gold": 1888,
+        "precision": 0.46745562130177515,
+        "predicted": 676,
+        "recall": 0.1673728813559322,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      }
+    },
+    "per_type": {
+      "copy": {
+        "credit": 87.0,
+        "f1": 0.0459830866807611,
+        "gold": 3691,
+        "precision": 0.9354838709677419,
+        "predicted": 93,
+        "recall": 0.023570848008669737,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "extra": {
+        "credit": 35.0,
+        "f1": 0.059625212947189095,
+        "gold": 488,
+        "precision": 0.05102040816326531,
+        "predicted": 686,
+        "recall": 0.07172131147540983,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "match": {
+        "credit": 1040.0,
+        "f1": 0.3640182009100455,
+        "gold": 3984,
+        "precision": 0.6011560693641619,
+        "predicted": 1730,
+        "recall": 0.26104417670682734,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "missed_note": {
+        "credit": 0.0,
+        "f1": 0.0,
+        "gold": 43,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "substitute": {
+        "credit": 27.0,
+        "f1": 0.08709677419354839,
+        "gold": 140,
+        "precision": 0.05625,
+        "predicted": 480,
+        "recall": 0.19285714285714287,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      }
+    },
+    "precision": 0.46303111408497827,
+    "predicted": 2989,
+    "recall": 0.16582794152887612,
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5
+  },
+  "manifest_sha256": "d4f09ce5589dcefdf21845923faa15c9341d555c0680845210ce1afe0e5eee5a",
+  "metric": {
+    "matching": "exclusive one-to-one; exact location/type=1.0; exact location/wrong type=0.5; wrong location=0",
+    "timestamp_metrics": "diagnostic_only",
+    "unit": "canonical score-event identity"
+  },
+  "name": "current-track-b-benchmark50",
+  "oracle_note_mapper": {
+    "bootstrap": {
+      "lower_95": 0.9507150342494582,
+      "median": 0.9587272223246048,
+      "replicates": 1000,
+      "upper_95": 0.9661761034763234
+    },
+    "credit": 7981.5,
+    "f1": 0.9587963241035499,
+    "gold": 8346,
+    "precision": 0.9612790557629772,
+    "predicted": 8303,
+    "recall": 0.9563263838964774,
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5
+  },
+  "prediction_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\phase-a-current-benchmark50\\32bfb06cf8847a65d4a8a183aed168d9156101f81aaff5f61654de063042d0e1.predictions.manifest.json",
+  "prediction_manifest_sha256": "7d6d3d3e45cb8be68aa86e46ed3ed7251546bb431fd30923f84e316117de0dcb",
+  "rows": 50,
+  "schema_version": "align-fast-note-experiment-v1",
+  "score_agnostic_transcriber": {
+    "count_ratio": 0.35999036492833913,
+    "onset_tolerance_sec": 0.05,
+    "pitch_sequence": {
+      "credit": 2916,
+      "f1": 0.5164718384697131,
+      "precision": 0.9755771160923385,
+      "predicted": 2989,
+      "recall": 0.3511983620378177,
+      "support": 8303
+    },
+    "same_pitch_split_count": 186,
+    "short_note_recall": {
+      "120to180ms": {
+        "matched": 524,
+        "recall": 0.1864105300604767,
+        "support": 2811
+      },
+      "80to120ms": {
+        "matched": 671,
+        "recall": 0.15791951047305247,
+        "support": 4249
+      },
+      "ge180ms": {
+        "matched": 83,
+        "recall": 0.10863874345549739,
+        "support": 764
+      },
+      "lt80ms": {
+        "matched": 25,
+        "recall": 0.05219206680584551,
+        "support": 479
+      }
+    }
+  },
+  "selection_use": false,
+  "split": "benchmark50",
+  "tuning_performed": false
+}

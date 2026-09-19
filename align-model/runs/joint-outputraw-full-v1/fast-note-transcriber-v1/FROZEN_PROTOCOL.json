@@ -1,0 +1,28 @@
+{
+  "benchmark50": {
+    "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\audit-v1\\split_manifest.json",
+    "manifest_sha256": "d4f09ce5589dcefdf21845923faa15c9341d555c0680845210ce1afe0e5eee5a",
+    "openings_authorized": 1,
+    "tuning_allowed": false
+  },
+  "frozen_before_benchmark_inference": true,
+  "mapper_v6": {
+    "declared_global_lineage_policy": "global monotonic raw-MIDI to generator performed-note sequence; exact pitch; zero-cost one-to-one required",
+    "declared_mapper": "generator grammar Viterbi",
+    "global_lineage_code": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\global_ornament_lineage_v2.py",
+    "global_lineage_code_sha256": "94cec25074cfa2c55ce3a9ac3d1103caa5fe75c05719eb74a52c488e509ecab7",
+    "grammar_code": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\grammar_mapper_v2.py",
+    "grammar_code_sha256": "4fcdd698d7a77e76aedbccea6da7352857d3e71ce93e3acde775c199f48bcd9c",
+    "validation_artifact": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v6\\VALIDATION_CANDIDATE.json",
+    "validation_artifact_sha256": "8020c3893078a64fcc67da85685db791518197507dc7e63c9d444f0caeb053cb"
+  },
+  "orn_lockboxes_allowed": false,
+  "production_mutation_allowed": false,
+  "schema_version": "align-fast-note-experiment-v1",
+  "track_b": {
+    "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt",
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "confidence": 0.8,
+    "unchanged": true
+  }
+}

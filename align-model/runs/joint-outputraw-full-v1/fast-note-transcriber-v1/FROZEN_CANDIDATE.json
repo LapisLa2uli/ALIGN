@@ -1,0 +1,90 @@
+{
+  "benchmark50_accessed_for_selection": false,
+  "candidates": [
+    {
+      "calibration": {
+        "count_ratio": 0.8648648648648649,
+        "decode": {
+          "activity_off": 0.35,
+          "activity_on": 0.65,
+          "min_confidence": 0.3,
+          "min_note_sec": 0.03,
+          "offset_threshold": 0.55,
+          "onset_threshold": 0.6,
+          "release_frames": 2,
+          "use_polyphony_gate": true
+        },
+        "f1": 0.3550724637681159,
+        "gold": 1036,
+        "matched": 343,
+        "precision": 0.3828125,
+        "predicted": 896,
+        "rank": 0.35071700347278095,
+        "recall": 0.3310810810810811,
+        "variant": 2
+      },
+      "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt",
+      "checkpoint_sha256": "f534292bf3f46a5e2cdd2981e65f77b10c43cd36d3c6d1ba87cb776019435d85",
+      "name": "track_b_initialized",
+      "rank": 0.349265183374336
+    },
+    {
+      "calibration": {
+        "count_ratio": 1.084942084942085,
+        "decode": {
+          "activity_off": 0.3,
+          "activity_on": 0.55,
+          "min_confidence": 0.25,
+          "min_note_sec": 0.03,
+          "offset_threshold": 0.5,
+          "onset_threshold": 0.5,
+          "release_frames": 2,
+          "use_polyphony_gate": true
+        },
+        "f1": 0.33888888888888885,
+        "gold": 1036,
+        "matched": 366,
+        "precision": 0.32562277580071175,
+        "predicted": 1124,
+        "rank": 0.3364430906598626,
+        "recall": 0.3532818532818533,
+        "variant": 1
+      },
+      "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\from-scratch\\best.pt",
+      "checkpoint_sha256": "3a5dbd47e4012c36a5e9ba2f224803a532f1f12fc5f54ee7e3c72108397e8bbe",
+      "name": "from_scratch",
+      "rank": 0.33562782458352053
+    }
+  ],
+  "chosen": {
+    "calibration": {
+      "count_ratio": 0.8648648648648649,
+      "decode": {
+        "activity_off": 0.35,
+        "activity_on": 0.65,
+        "min_confidence": 0.3,
+        "min_note_sec": 0.03,
+        "offset_threshold": 0.55,
+        "onset_threshold": 0.6,
+        "release_frames": 2,
+        "use_polyphony_gate": true
+      },
+      "f1": 0.3550724637681159,
+      "gold": 1036,
+      "matched": 343,
+      "precision": 0.3828125,
+      "predicted": 896,
+      "rank": 0.35071700347278095,
+      "recall": 0.3310810810810811,
+      "variant": 2
+    },
+    "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\fast-note-transcriber-v1\\training\\track-b-initialized\\best.pt",
+    "checkpoint_sha256": "f534292bf3f46a5e2cdd2981e65f77b10c43cd36d3c6d1ba87cb776019435d85",
+    "name": "track_b_initialized",
+    "rank": 0.349265183374336
+  },
+  "open_validation_accessed": false,
+  "schema_version": "align-fast-note-experiment-v1",
+  "selection_population": "frozen calibration only",
+  "timestamp_metrics_used": false
+}
