@@ -52,6 +52,65 @@ class CheckpointTests(unittest.TestCase):
 
 
 class DecodingTests(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get("BASELINE_FLAVOR") == "LadderSym", "LadderSym prompt path")
+    def test_cached_prompt_decoder_matches_full_prefix_with_padding(self):
+        from transformers import T5Config
+        from models.laddersym_t5 import T5Stack
+        torch.manual_seed(17)
+        cfg = T5Config(d_model=32, d_kv=8, d_ff=64, num_layers=1, num_heads=4,
+                       vocab_size=32, is_decoder=True, is_encoder_decoder=False,
+                       dropout_rate=0.0, use_cache=True, pad_token_id=0,
+                       decoder_start_token_id=0)
+        decoder = T5Stack(cfg, torch.nn.Embedding(32, 32), 'decoder', use_prompt=True).eval()
+        prefix = torch.tensor([[5, 6, 0, 0, 0], [7, 8, 9, 0, 0]])
+        mask = torch.tensor([[1, 1, 0, 0, 1], [1, 1, 1, 0, 1]])
+        context = torch.randn(2, 3, 32)
+        with torch.no_grad():
+            cached = decoder(input_ids=prefix, attention_mask=mask,
+                             encoder_hidden_states=context, initial_prompt_lengths=[2, 3],
+                             use_cache=True, return_dict=True)
+            for token in (11, 12, 13):
+                new_token = torch.full((2, 1), token)
+                prefix = torch.cat([prefix, new_token], dim=1)
+                mask = torch.cat([mask, torch.ones(2, 1, dtype=torch.long)], dim=1)
+                full = decoder(input_ids=prefix, attention_mask=mask,
+                               encoder_hidden_states=context, initial_prompt_lengths=[2, 3],
+                               use_cache=False, return_dict=True)
+                cached = decoder(input_ids=new_token, attention_mask=mask,
+                                 encoder_hidden_states=context, initial_prompt_lengths=[2, 3],
+                                 past_key_values=cached.past_key_values,
+                                 use_cache=True, return_dict=True)
+                torch.testing.assert_close(cached.last_hidden_state[:, -1],
+                                           full.last_hidden_state[:, -1], rtol=1e-5, atol=1e-5)
+
+    @unittest.skipUnless(os.environ.get("BASELINE_FLAVOR") == "LadderSym", "LadderSym prompt path")
+    def test_prompted_generation_starts_after_padded_prompt_like_training(self):
+        from models.laddersym_t5 import T5ForConditionalGeneration
+        prompt = torch.tensor([[8, 9, 0, 0], [7, 8, 9, 0]])
+        mask = torch.tensor([[1, 1, 0, 0], [1, 1, 1, 0]])
+        expected_ids = torch.cat([prompt, torch.zeros(2, 1, dtype=torch.long)], dim=1)
+        expected_mask = torch.cat([mask, torch.ones(2, 1, dtype=torch.long)], dim=1)
+
+        def decoder(**kwargs):
+            self.assertTrue(torch.equal(kwargs['input_ids'], expected_ids))
+            self.assertTrue(torch.equal(kwargs['attention_mask'], expected_mask))
+            self.assertEqual(kwargs['initial_prompt_lengths'], [2, 3])
+            logits = torch.zeros(2, 5, 10)
+            logits[:, -1, 1] = 1  # EOS on the first generated event.
+            return (logits,)
+
+        model = types.SimpleNamespace(
+            use_prompt=True, device=torch.device('cpu'),
+            config=types.SimpleNamespace(pad_token_id=0, decoder_start_token_id=0, eos_token_id=1),
+            encoder=lambda **kwargs: torch.zeros(2, 3, 4), decoder=decoder,
+            lm_head=lambda hidden: hidden,
+        )
+        output = T5ForConditionalGeneration.generate(
+            model, torch.zeros(2, 3, 4), torch.zeros(2, 3, 4),
+            decoder_input_ids=prompt, decoder_attention_mask=mask, max_length=2,
+        )
+        self.assertEqual(output.tolist(), [[0, 1], [0, 1]])
+
     def test_length_capped_valid_tokens_decode_to_real_classified_notes(self):
         handler = inference_error.InferenceHandler(model=None, device="cpu")
         for cls in (1, 2, 3):
@@ -150,6 +209,36 @@ class LabelTests(unittest.TestCase):
 
 
 class EvalTests(unittest.TestCase):
+    def test_unclassified_notes_are_not_guessed_or_silently_discarded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root, pred = Path(tmp) / 'data', Path(tmp) / 'pred'
+            root.mkdir(); (pred / 'clip').mkdir(parents=True)
+            (pred / 'evaluated_ids.json').write_text(json.dumps(['clip']))
+            (root / 'manifest.json').write_text(json.dumps({'tracks': {'clip': {'real_test': False}}}))
+            for name, pitch in [('extra', None), ('missing', 64), ('correct', 60)]:
+                notes = [] if pitch is None else [dict(start=1.0, end=1.5, pitch=pitch)]
+                write_label_midi(output_paths(root, 'clip')['removed' if name == 'missing' else name], notes)
+            midi = pretty_midi.PrettyMIDI()
+            for name, pitch in [('extra', None), ('correct', 60), ('', 64)]:
+                track = pretty_midi.Instrument(0, name=name)
+                if pitch is not None:
+                    track.notes.append(pretty_midi.Note(90, pitch, 1.0, 1.5))
+                midi.instruments.append(track)
+            midi.write(str(pred / 'clip/mix.mid'))
+            with self.assertRaisesRegex(ValueError, 'Unclassified'):
+                evaluate(root, pred)
+            result = evaluate(root, pred, allow_unclassified=True)
+            self.assertEqual(result['unclassified_notes'], 1)
+            self.assertEqual(result['micro']['missing']['F1'], 0)
+            self.assertEqual(result['micro']['correct']['F1'], 1)
+            self.assertEqual(result['micro']['all']['F1'], 1)
+            self.assertEqual(result['micro']['class_aware']['F1'], 0.5)
+            self.assertEqual(result['micro']['class_aware']['n_pred'], 2)
+            midi.instruments[-1].name = 'unknown_typo'
+            midi.write(str(pred / 'clip/mix.mid'))
+            with self.assertRaisesRegex(ValueError, 'Unclassified'):
+                evaluate(root, pred, allow_unclassified=True)
+
     def test_oracle_metrics_keep_classes_when_first_tracks_are_empty(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "data"

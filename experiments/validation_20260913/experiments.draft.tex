@@ -1,0 +1,180 @@
+% Working draft, not a report of completed runs. The Overleaf project was not
+% accessible when this file was prepared. Resolve the execution notes in
+% README.md and insert measured results before integrating into the paper.
+\section{Experiments}
+\label{sec:experiments}
+
+\paragraph{Synthetic corpus.}
+We generated 12,000 clarinet score--performance pairs: 10,000 from
+procedurally generated scores and 2,000 from snippets of three existing
+scores. Each pair contains a clean MusicXML score and a performance with
+one to eight injected content errors drawn from wrong notes, missed notes,
+extra notes, rhythm errors, and intonation errors, with optional repetitions.
+Reference and faulty audio are rendered with the FreePats clarinet SoundFont
+at 22,050\,Hz in mono. The faulty recordings total 134.08 hours. Error
+annotations, generation-time note identities, MIDI event timing, audio
+alignments, and mel spectrograms are saved with each pair.
+We retain 11,165 pairs after verifying synthetic note lineage, audible tie
+groups, and agreement between MIDI-derived labels and the renderer's event
+times. We exclude 835 pairs with ambiguous supervision or inconsistent
+rendering times. The retained corpus is divided into 10,049 training and
+1,116 validation pairs, with the same membership for each compared method.
+% This split is frozen for the ongoing baseline runs. ALIGN must use it too.
+
+\paragraph{Evaluation setting.}
+We compare ALIGN, Polytune, and LadderSym on a common validation set of
+score--performance pairs. Each example consists of a clean symbolic score,
+a clarinet performance recording, and error annotations. Split membership
+is fixed across methods. Training examples are used for parameter updates,
+and validation examples are used for checkpoint selection and calibration.
+The reported scores therefore describe validation performance under this
+selection procedure. All methods are evaluated on the same complete list
+of validation examples.
+% Insert audited dataset identity and actual training/validation counts for
+% the new corpus. Do not reuse the legacy align_v1 split or exclusion counts.
+% If using a per-clip split, retain the following qualification:
+The split is defined over clips; these results characterize performance
+within the sampled score collection and do not establish generalization
+to unseen pieces.
+
+\paragraph{Baselines.}
+Polytune~\cite{chou2025polytune} compares performance audio with a synthesized
+audio rendering of the reference score using a Transformer encoder--decoder.
+It produces note events labeled as correct, missing, or extra. A wrong pitch
+is represented by a missing expected note and an extra performed note.
+LadderSym~\cite{chou2026laddersym} introduces cross-attention between the
+reference and performance encoder streams and supplies symbolic score
+tokens as a decoder prompt. We use the prompted LadderSym variant, which
+has access to both the score rendering and reference MIDI. Both baselines
+use the authors' implementations with the ALIGN data loaders and
+class-preserving MIDI export. Their reference audio and MIDI retain the
+score timeline, and performance and reference windows are selected at the
+same absolute time. This input convention can limit their tolerance to
+large tempo changes or repeated passages.
+
+\paragraph{ALIGN implementation.}
+We evaluate the transcription-first implementation. A frozen Basic Pitch
+0.4.0 front end transcribes the performance into note events, with pitch
+conversion to the written-score convention. The decoder applies clarinet
+range and harmonic filtering and merges weak-onset splits of sustained
+notes. Layer~1 detects repeated phrases in the transcribed sequence using
+tempo-tolerant matching. A learned multilayer perceptron scores repetition
+candidates and provides a one-note recovery rule when no longer repetition
+has been found. Layer~2 aligns the first-pass performance notes to the clean
+score with a contextual note aligner; replayed notes reuse the source
+phrase's score correspondence. The aligner uses separate two-layer
+bidirectional GRUs with 64 hidden units per direction, contextual pair
+scores, and an extra-note output. A monotonic sequence decoder permits
+matched or substituted notes, insertions, and deletions. Tied score notes
+are collapsed before alignment.
+
+Layer~3 checks note durations using these same repetition-aware
+correspondences. For each usable note, the performed-to-score duration
+ratio is compared with the median ratio for the clip. The default detector
+requires an absolute log-ratio deviation of at least 0.35 and a duration
+deviation of at least 120\,ms, and it requires at least four usable pairs.
+The output comprises wrong notes, extra notes, missed notes, repetitions,
+and rhythm errors, localized on the clean score. Intonation detection and
+the optional timbre stage are disabled in this configuration. The
+performance score and synthetic lineage maps provide training supervision;
+they are not inputs to inference.
+
+\paragraph{Training and selection.}
+% Proposed run settings below must be reconciled with actual run artifacts.
+Both baselines are initialized from scratch. Their training configuration
+uses seed 365, weighted token cross-entropy with error-loss coefficient 8,
+and a learning-rate schedule configured for 40 epochs. Training was stopped
+early; the selected checkpoints correspond to 31 epochs for Polytune and
+26 epochs for prompted LadderSym. The learning rate has a peak of $2\times10^{-5}$, a
+4,000-update warmup, and cosine decay to half the peak. The decoder event
+budget is 1,024 tokens, and LadderSym additionally uses a 1,024-token
+symbolic prompt budget. Checkpoints are selected by validation loss.
+Validation loss uses deterministically selected segments; the F1 evaluation
+covers each complete validation recording.
+Each batch contains one clip contributing one sampled 2.048-second segment.
+Both models use 16 gradient-accumulation steps and therefore accumulate
+16 clips per optimizer update, except for a final incomplete
+accumulation. Training uses mixed bfloat16 precision on RTX A5500 GPUs.
+Inference uses float32 greedy decoding. For prompted LadderSym, generation
+appends the same unmasked decoder start token after the padded score prompt
+as training. Decoder key--value caching is enabled after verifying cached
+and uncached generation consistency.
+% Record actual initialization, effective batch sizes, accumulation, completed
+% epochs, hardware, and selected checkpoint hashes after training.
+
+ALIGN's repetition scorer uses AdamW with learning rate $8\times10^{-4}$
+and weight decay $10^{-3}$. Its checkpoint and detection threshold are
+selected on validation data. The contextual aligner is first trained on
+exact synthetic note correspondences, removing replay copies from the
+first-pass sequence, using learning rate $5\times10^{-4}$. It is then
+fine-tuned on cached Basic Pitch outputs after Layer~1 using learning rate
+$2\times10^{-4}$. Fine-tuning combines note-assignment cross-entropy with
+a monotonic sequence-level alignment loss. Both alignment stages use
+AdamW with weight decay $10^{-3}$ and select checkpoints by validation
+note-assignment accuracy. Basic Pitch remains frozen throughout.
+% Insert actual training sample counts, epochs, batches, calibrated decoder
+% settings, and the validation decision to retain a candidate aligner.
+
+\paragraph{Metrics.}
+The two baselines natively predict note classes, whereas ALIGN predicts
+typed error regions. We therefore distinguish note-level error detection
+from error-region localization. For the baselines' native output, we
+report precision, recall, and F1 separately for extra, missing, and correct
+notes using one-to-one onset-and-pitch matching with 50\,ms onset tolerance
+and 50-cent pitch tolerance. Note offsets are not required to match.
+Class identity is read from MIDI track names, including when a class is
+empty. Micro scores pool matched, predicted, and reference note counts;
+per-clip mean scores are reported separately. Pooling all three classes
+without their identities measures transcription and is not a substitute
+for error-class F1.
+We also report an overall class-aware micro-F1 by pooling the three
+class-specific match counts. Notes emitted without a valid class receive
+no class-match credit and count as false positives in this overall score.
+
+For a common error-region comparison, baseline note predictions are
+converted using the same fixed adapter for both models. Mutually nearest
+extra and missing onsets within 100\,ms form a wrong-note prediction;
+unpaired notes yield extra-note or missed-note predictions. Repetition
+regions are inferred from runs of extra notes whose pitch sequences match
+preceding performed material. These repetition outputs are produced by
+the adapter, rather than a native repetition class. The shared comparison
+covers wrong notes, extra notes, missed notes, and repetitions, with
+one-to-one onset matching evaluated separately by error type. Primary
+onset tolerance is 50\,ms; 100 and 200\,ms provide tolerance sensitivity.
+Ground truth retains first-pass errors and the repetition annotation,
+excluding duplicated error annotations on replayed passes. Rhythm is
+reported separately for ALIGN because the baseline output vocabularies
+do not contain a rhythm-error class.
+% This common adapter/evaluator must be validated on the actual annotation
+% schema before filling a comparison table. In particular, schema 1.2
+% score-melody windows must not be assumed to be wall-clock error onsets.
+
+ALIGN's score-localization diagnostic uses its implemented melody-set F1.
+Predicted and reference pitch sequences are matched one-to-one. A range
+match requires an equal sequence or an LCS-Dice similarity of at least
+0.80 together with a length ratio of at least 0.60; containment alone is
+insufficient. A range match receives weight 1 for the correct error type
+and 0.5 for a different type. Clips with empty prediction and reference
+sets receive a score of 1. This score is reported separately from the
+onset-based metrics above.
+
+\paragraph{Validation results.}
+% Native baseline predictions are complete; the common ALIGN comparison is pending.
+Table~\ref{tab:validation-native-baselines} reports the native note-level
+results for both baselines on all 1,116 validation pairs. The final comparison with ALIGN requires
+completed predictions and a verified common error-region evaluation.
+
+\begin{table}[t]
+\centering
+\caption{Native note-level micro-F1 (\%) on the common validation set.
+Overall retains class identity and counts unclassified notes as false positives.}
+\label{tab:validation-native-baselines}
+\begin{tabular}{lcccc}
+\hline
+Method & Extra & Missing & Correct & Overall \\
+\hline
+Polytune & 17.15 & 0.94 & 18.41 & 16.99 \\
+LadderSym (prompted) & 7.79 & 2.26 & 16.15 & 11.66 \\
+\hline
+\end{tabular}
+\end{table}

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+from collections import defaultdict, deque
 
-from music21 import converter, note
+import mido
 
 from datacreate.melody import extra_neighbor_core, padded_melody
 from synthpipeline.errors import PlannedLabel
@@ -15,36 +16,31 @@ def ql_to_seconds(ql: float, bpm: float) -> float:
 
 
 def midi_note_times(midi_path: Path) -> list[tuple[int, float, float]]:
-    """Return (midi_pitch, start_sec, end_sec) in performance order."""
-    parsed = converter.parse(str(midi_path))
-    flat = parsed.flatten()
-    times: list[tuple[int, float, float]] = []
-    try:
-        sec_map = flat.secondsMap
-    except Exception:
-        sec_map = []
-    for item in sec_map:
-        el = item.get("element")
-        if not isinstance(el, note.Note):
-            continue
-        start = float(item.get("offsetSeconds", 0.0))
-        end = float(item.get("endTimeSeconds", start))
-        times.append((int(el.pitch.midi), start, max(end, start + MIN_DURATION)))
-    if times:
-        return times
+    """Read exact MIDI note events, ordered by onset, without score quantization.
 
-    bpm = 120.0
-    from music21 import tempo
-
-    for mark in flat.getElementsByClass(tempo.MetronomeMark):
-        if mark.number:
-            bpm = float(mark.number)
-            break
-    for n in flat.getElementsByClass(note.Note):
-        start = ql_to_seconds(float(n.offset), bpm)
-        end = start + ql_to_seconds(float(n.duration.quarterLength), bpm)
-        times.append((int(n.pitch.midi), start, max(end, start + MIN_DURATION)))
-    return times
+    music21's default MIDI quantization can merge adjacent fast triplet notes
+    into Chords, dropping events from a Note-only scan. Mido merges tracks and
+    applies each tempo change when yielding message deltas in seconds.
+    """
+    active = defaultdict(deque)
+    events = []
+    seconds = 0.0
+    serial = 0
+    for message in mido.MidiFile(midi_path):
+        seconds += message.time
+        if message.type == "note_on" and message.velocity > 0:
+            active[(message.channel, message.note)].append((seconds, serial))
+            serial += 1
+        elif message.type == "note_off" or (message.type == "note_on" and message.velocity == 0):
+            pending = active[(message.channel, message.note)]
+            if pending:
+                start, order = pending.popleft()
+                if seconds <= start:
+                    raise ValueError(f"Nonpositive MIDI note duration in {midi_path}")
+                events.append((order, int(message.note), start, seconds))
+    if any(active.values()):
+        raise ValueError(f"Unclosed MIDI note events in {midi_path}")
+    return [(pitch, start, end) for _, pitch, start, end in sorted(events)]
 
 
 def refine_labels(

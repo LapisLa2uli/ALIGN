@@ -1,5 +1,5 @@
 diff --git a/inference_error.py b/inference_error.py
-index e036ad3..8f6f03a 100755
+index e036ad3..71904d2 100755
 --- a/inference_error.py
 +++ b/inference_error.py
 @@ -22,6 +22,16 @@ MIN_LOG_MEL = -12
@@ -41,7 +41,14 @@ index e036ad3..8f6f03a 100755
                  prompt_events_start_indices_batches.append(prompt_event_start_indices_batch)
                  prompt_events_end_indices_batches.append(prompt_event_end_indices_batch)
                  prompt_state_events_indices_batches.append(prompt_state_event_indices_batch)
-@@ -780,6 +805,14 @@ class InferenceHandler:
+@@ -774,12 +799,20 @@ class InferenceHandler:
+                     eos_token_id=self.model.config.eos_token_id,
+                     early_stopping=False,
+                     bad_words_ids=invalid_programs,
+-                    use_cache=False, # TODO: may need to change back to false
++                    use_cache=os.environ.get("LADDERSYM_USE_CACHE", "0") == "1",
+                 )
+                 results.append(self._postprocess_batch(result))
  
              # Combine final results
              event = self._to_event(results, mistake_frame_times_batch)
@@ -83,6 +90,86 @@ index e036ad3..8f6f03a 100755
                  start_time = frame_times[i][j][0]  # get start time of the frame
                  start_time -= start_time % (
                      1 / self.codec.steps_per_second
+diff --git a/models/laddersym_t5.py b/models/laddersym_t5.py
+index 752023a..0cd0b2d 100644
+--- a/models/laddersym_t5.py
++++ b/models/laddersym_t5.py
+@@ -296,11 +296,21 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
+ 
+         # 2. Determine prompt length and total length
+         if self.use_prompt and decoder_input_ids is not None:
+-            prompt_length = decoder_input_ids.size(1)
+-
+-
+             # Batch-wise initial prompt lengths
+             initial_prompt_lengths = decoder_attention_mask.sum(dim=1).tolist()
++            # Training appends _shift_right(labels) after the entire padded
++            # prompt. Its first position is an unmasked decoder start token.
++            # Generate from that same prefix, rather than the final masked
++            # prompt-padding position.
++            start_tokens = torch.full(
++                (batch_size, 1), self.config.decoder_start_token_id,
++                dtype=decoder_input_ids.dtype, device=decoder_input_ids.device,
++            )
++            decoder_input_ids = torch.cat([decoder_input_ids, start_tokens], dim=1)
++            decoder_attention_mask = torch.cat(
++                [decoder_attention_mask, torch.ones_like(start_tokens)], dim=1
++            )
++            prompt_length = decoder_input_ids.size(1)
+         else:
+             prompt_length = 1  # We'll insert the start token if no prompt is given.
+ 
+@@ -343,25 +353,35 @@ class T5ForConditionalGeneration(T5PreTrainedModel):
+         unfinished_sequences = torch.ones(
+             batch_size, dtype=torch.long, device=self.device
+         )
++        use_cache = bool(kwargs.get("use_cache", False))
++        past_key_values = None
+ 
+         # 6. Generate tokens step by step
+         for l in range(max_length):
+             # Decode step
+             if self.use_prompt:
+                 decoder_outputs = self.decoder(
+-                    input_ids=decoder_input_ids_start,
++                    input_ids=(decoder_input_ids_start[:, -1:]
++                               if past_key_values is not None else decoder_input_ids_start),
+                     attention_mask=decoder_attention_mask_start,
+                     encoder_hidden_states=hidden_states,
+                     return_dict=True,
+                     initial_prompt_lengths=initial_prompt_lengths,
++                    past_key_values=past_key_values,
++                    use_cache=use_cache,
+                 )
+             else:
+                 # print(f"decoder_input_ids_start: {decoder_input_ids_start}", flush=True)
+                 decoder_outputs = self.decoder(
+-                    input_ids=decoder_input_ids_start,
++                    input_ids=(decoder_input_ids_start[:, -1:]
++                               if past_key_values is not None else decoder_input_ids_start),
+                     encoder_hidden_states=hidden_states,
+                     return_dict=True,
++                    past_key_values=past_key_values,
++                    use_cache=use_cache,
+                 )
++            if use_cache:
++                past_key_values = decoder_outputs.past_key_values
+                 
+ 
+             # Compute logits for the next token
+@@ -683,9 +703,9 @@ class T5Stack(T5PreTrainedModel):
+ 
+ 
+         # Step 2: Modify the extended attention mask for prompt-to-prompt self-attention
+-        if self.use_prompt:
+-
+-
++        if self.use_prompt and past_key_values_length == 0:
++            # Cached steps contain only the new query. The bidirectional
++            # prompt block was already evaluated during the initial pass.
+             # Ensure there are prompt tokens in at least one batch element
+             if any(length > 0 for length in initial_prompt_lengths):
+                 # print(f"Batch-wise initial prompt lengths: {initial_prompt_lengths}")
 diff --git a/laddersym_test_inference.py b/laddersym_test_inference.py
 index 3f6bca7..45d2197 100644
 --- a/laddersym_test_inference.py

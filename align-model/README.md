@@ -155,6 +155,12 @@ conservative dynamic revision scored 0.506. Both remain available through
 `PipelineConfig.note_alignment_strategy`, but `contextual` remains the default
 because it scored best.
 
+Contextual-aligner training now preserves the manifest's split membership:
+requests exceeding either split's available sample count fail instead of
+moving validation examples into training. Missing or duplicate note maps and
+overlap between training and validation also fail before training. Set
+`--train-samples` and `--val-samples` to counts within the frozen splits.
+
 ## Melody-first (Model B)
 
 A separate checkpoint family. It does **not** emit one label per DTW pair.

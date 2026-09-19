@@ -47,6 +47,13 @@ _COMPLETE_FILES = (
     "reference_audio.wav",
     "verified_score.musicxml",
     "performance_score.musicxml",
+    "note_map.json",
+    "candidates.json",
+    "alignment.npz",
+    "performance_mel.npy",
+    "reference_mel.npy",
+    "performance_audio.mid",
+    "reference_audio.mid",
 )
 
 
@@ -58,7 +65,10 @@ def _sample_id_number(name: str) -> int | None:
 
 
 def sample_is_complete(sample_dir: Path) -> bool:
-    return sample_dir.is_dir() and all((sample_dir / name).is_file() for name in _COMPLETE_FILES)
+    return sample_dir.is_dir() and all(
+        (sample_dir / name).is_file() and (sample_dir / name).stat().st_size > 0
+        for name in _COMPLETE_FILES
+    )
 
 
 def complete_sample_ids(root: Path) -> set[int]:
@@ -383,6 +393,8 @@ def _build_sample(
         sounding_transpose=sounding,
         performed_score_path=performance_path,
     )
+    if not note_map["rendered_notes"]:
+        raise RuntimeError("Rendered MIDI has no note events; refusing an empty note map")
     write_note_map(sample_dir / "note_map.json", note_map)
     ingest_performance(perf_wav, sample_dir, dc_config, logger)
 

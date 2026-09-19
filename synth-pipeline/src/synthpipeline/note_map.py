@@ -302,6 +302,7 @@ def attach_rendered_events(
     payload["rendered_note_count"] = len(rendered)
     payload["rendered_notes"] = rendered
     payload["render_validation"] = {
+        "timing_source": "midi_events_unquantized",
         "midi_events": len(midi),
         "performed_score_notes": len(performed),
         "directly_mapped": sum(value is not None for value in mapping),

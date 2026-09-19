@@ -103,6 +103,15 @@ synth-pipeline generate --score ../RawData/Score --count 8
 
 `--config` selects a YAML file.
 
+Synthetic generation saves compact `alignment.npz` files by default. They keep
+the reference/performance features, full warping path, frame residuals and timing
+parameters, and set `dtw_cost_omitted=True`. Only the dense diagnostic `dtw_cost`
+array is omitted; DTW computation itself is unchanged. Set
+`render.save_dtw_cost: true` in the YAML to retain that matrix for debugging.
+Existing archives can be converted with `scripts/omit_dtw_cost.py`; the script
+checks the SHA-256 of every retained member before atomically replacing a file.
+Audio, scores, labels, mel files and note maps are unaffected by this conversion.
+
 | File | Role |
 |------|------|
 | `config/default.yaml` | One content error per clip; repetition 35%; no squeaks; no standalone repeat; no restart gap |

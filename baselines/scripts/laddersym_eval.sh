@@ -6,11 +6,14 @@
 #   laddersym_eval.sh --ckpt <model.ckpt|.pt|.pth> --data <DATA_ROOT> [--split-json <split.json>]
 #                     [--prompted|--unprompted] [--split test] [--profile cuda|mps|cpu] [--tag TAG]
 #                     [--first-n K] [--max-length N] [--bundles <ALIGN bundle root>]... [--randomize-prompt]
+#                     [--native-only]
 #                     [-- <extra hydra overrides...>]
 #
 # Defaults: --prompted, --split test, --tag align_<split>, device auto (cuda -> mps -> cpu),
 #           deterministic prompts (LADDERSYM_DETERMINISTIC_PROMPT=1; pass --randomize-prompt for the
 #           original shuffled-prompt behaviour).
+#           LADDERSYM_USE_CACHE=1 enables the verified decoder KV cache (default off).
+#           --native-only reports note F1 and skips the separate score-region bridge.
 # Output:   $B/runs/laddersym/eval_<tag>/<tag>/<track_id>/mix.mid
 #           (tracks named extra/missing/correct, note.instrument 1/2/3) and per-class onset F1 on stdout
 #           (also tee'd to eval.log).
@@ -42,6 +45,7 @@ FIRST_N=""
 MAX_LENGTH=""
 BUNDLES=()
 DETERMINISTIC=1
+NATIVE_ONLY=0
 EXTRA=()
 
 usage() { sed -n '2,26p' "$0"; exit "${1:-0}"; }
@@ -58,6 +62,7 @@ while [[ $# -gt 0 ]]; do
     --tag)         TAG="$2"; shift 2 ;;
     --first-n)     FIRST_N="$2"; shift 2 ;;
     --max-length)  MAX_LENGTH="$2"; shift 2 ;;
+    --native-only) NATIVE_ONLY=1; shift ;;
     --bundles)     BUNDLES+=("$2"); shift 2 ;;
     --randomize-prompt) DETERMINISTIC=0; shift ;;
     -h|--help)     usage 0 ;;
@@ -144,7 +149,9 @@ fi
 
 [[ "$STATUS" -eq 0 ]] || exit "$STATUS"
 "$PY" "$BASELINES/common/evaluate_notes.py" --data "$ALIGN_BASELINE_ROOT" \
-  --pred-dir "$PRED_DIR" --out "$RUN_DIR/note_metrics.json" | tee "$RUN_DIR/note_metrics.log"
+  --pred-dir "$PRED_DIR" --allow-unclassified --out "$RUN_DIR/note_metrics.json" | tee "$RUN_DIR/note_metrics.log"
+
+if (( NATIVE_ONLY )); then exit 0; fi
 
 if [[ -f "$BRIDGE" && "$N_PRED" -gt 0 ]]; then
   # Bundle roots: --bundles, else the distinct parents of manifest.json "bundle" paths.

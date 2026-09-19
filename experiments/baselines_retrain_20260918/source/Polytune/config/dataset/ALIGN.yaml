@@ -1,0 +1,46 @@
+# ALIGN bundles converted to the MAESTRO-E style layout Polytune expects:
+#   <DATA_ROOT>/label/{extra_notes,removed_notes,correct_notes}/<track_id>/MIDI/<track_id>.mid
+#   <DATA_ROOT>/mistake/<track_id>/mix.wav      (performance audio)
+#   <DATA_ROOT>/score/<track_id>/mix.wav        (reference audio, same timeline)
+#   <DATA_ROOT>/score/<track_id>/mix.mid        (reference MIDI)
+#   <DATA_ROOT>/split.json                      (pandas "columns" orientation: midi_filename + split)
+# Paths are taken from the environment (mirrors LadderSym/config/dataset/MAESTRO.yaml):
+#   ALIGN_BASELINE_ROOT        -> data_root
+#   ALIGN_BASELINE_SPLIT_JSON  -> split_json
+# scripts/polytune_train.sh and scripts/polytune_eval.sh export both.
+data_root: ${oc.env:ALIGN_BASELINE_ROOT,''}
+split_json: ${oc.env:ALIGN_BASELINE_SPLIT_JSON,''}
+
+train:
+  _target_: dataset.dataset_2_random.Dataset # choosing which data class to use
+  root_dir: ${..data_root}
+  split: train
+  split_json_path: ${..split_json}
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI                 # ignored by the loader (it globs label/*/**/*.mid)
+  audio_filename: mix_16k.wav       # ignored by the loader (it globs mistake/**/mix.* and score/**/mix.*)
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: ${dataset_is_deterministic}
+  is_randomize_tokens: ${dataset_is_randomize_tokens}
+  is_random_alignment_shift_augmentation: ${dataset_is_random_alignment_shift_augmentation}
+val:
+  _target_: dataset.dataset_2_random.Dataset # choosing which data class to use
+  root_dir: ${..data_root}
+  split: validation
+  split_json_path: ${..split_json}
+  mel_length: ${mel_length}
+  event_length: ${event_length}
+  midi_folder: MIDI
+  audio_filename: mix_16k.wav
+  num_rows_per_batch: ${num_rows_per_batch}
+  split_frame_length: ${split_frame_length}
+  is_deterministic: true
+  is_randomize_tokens: false
+
+test:
+  root_dir: ${..data_root}          # test_polytune.py reads dataset.test.root_dir / split_json_path
+  split: test
+  split_json_path: ${..split_json}
+collate_fn: dataset.dataset_2_random.collate_fn

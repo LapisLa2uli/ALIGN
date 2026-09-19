@@ -1,0 +1,92 @@
+# LadderSym, unprompted variant (audio-only: mistake + score spectrograms, no score-MIDI prefix),
+# on ALIGN bundles. Same ALIGN defaults as config_align_prompted.yaml except batch_size 4.
+#
+# ALIGN defaults:
+#   num_epochs 40, lr 2e-5, warmup 4000 steps, batch_size 4, num_rows_per_batch 8,
+#   check_val_every_n_epoch 1, checkpoint every epoch keeping the best 3 by val_loss,
+#   num_workers 8, trainer gpu / bf16-mixed / strategy auto.
+num_epochs: 40
+devices: 1
+mode: "train"
+model_type: ${hydra:runtime.choices.model} # parse the filename of the config
+dataset_type: ${hydra:runtime.choices.dataset}
+seed: 365
+# Warm start (optional): the official MAESTRO-E unprompted checkpoint, e.g.
+#   python setup_laddersym_assets.py --datasets none --checkpoints unprompted
+#   -> pretrained/laddersym/checkpoints/maestro/unprompted/model.ckpt
+path: ""
+use_lightweight_checkpoint: True # do not start from checkpoint training state. Use as pretrained weights instead.
+compile_model: False
+event_length: 1024        # max target tokens per 2.048 s segment; use 1024 for reported runs; reduced budgets are smoke-only
+prompt_length: 1024       # decoder-prompt token budget (only used when use_prompt); use the same budget for training and inference
+mel_length: 256
+num_rows_per_batch: 8
+split_frame_length: 2000
+dataset_is_deterministic: False # false for training
+dataset_is_randomize_tokens: True
+dataset_is_random_alignment_shift_augmentation: False
+use_prompt: False
+# ---- inference keys read by laddersym_test_inference.py (ignored by training) ----
+dataset_dir: null
+pieces: null
+output_mid_name: null
+overwrite: false
+model_label: null
+score_audio_filename: "score.wav"
+mistake_audio_filename: "mistake.wav"
+prompt_filename: "score.mid"   # still required on disk: the loader reads score/<id>/mix.mid unconditionally
+optim:
+  error_loss_weight: 8
+  lr: 2e-5
+  warmup_steps: 4000
+  num_epochs: ${num_epochs}
+  min_lr: 0.5
+
+grad_accum: 1
+
+dataloader:
+  train:
+    batch_size: 4
+    num_workers: 8
+    shuffle: true
+  val:
+    batch_size: 4
+    num_workers: 8
+
+modelcheckpoint:
+  monitor: 'val_loss'
+  mode: 'min'
+  save_last: True
+  save_top_k: 3
+  save_weights_only: False
+  every_n_epochs: 1
+  filename: '{epoch}-{step}-{val_loss:.4f}'
+
+trainer:
+  precision: bf16-mixed
+  max_epochs: ${num_epochs}
+  accelerator: 'gpu'
+  accumulate_grad_batches: ${grad_accum}
+  num_sanity_val_steps: 2
+  log_every_n_steps: 50
+  strategy: "auto"
+  devices: ${devices}
+  check_val_every_n_epoch: 1
+
+eval:
+  is_sanity_check: False
+  eval_first_n_examples:
+  eval_after_num_epoch: 0
+  eval_per_epoch: 1
+  eval_dataset:            # test_laddersym.py: must be MAESTRO (same layout / metric code path)
+  exp_tag_name:            # test_laddersym.py: sub-directory of the hydra run dir that receives <track_id>/mix.mid
+  audio_dir:
+  midi_dir:
+  contiguous_inference:
+  batch_size: 1
+  max_length: ${event_length}   # new decoder tokens per 2.048 s segment at inference; follows event_length. laddersym_eval.sh --max-length N overrides
+  load_weights_strict: False   # used when `path` is a .pt/.pth state dict
+
+defaults:
+  - model: laddersym_MT3Net
+  - dataset: ALIGN

@@ -1,0 +1,94 @@
+\subsection{Shared Canonical Note-Wise Comparison}
+
+We compare Polytune~\citep{chou2025polytune}, prompted
+LadderSym~\citep{chou2026laddersym}, and our method on the same complete
+358-clip outputRaw validation set. The frozen manifest and canonical target
+records define identical sample membership and ground truth for all three
+methods. All evaluation performance WAVs and MIDIs were verified against the
+manifest's SHA-256 hashes. Of these inputs, 26 were available locally and
+332 were reconstructed from their original source scores and sample seeds;
+all reconstructed audio and MIDI files matched byte for byte, and the
+clean/performed/deleted note lineage matched the audited targets.
+
+\paragraph{Training and checkpoint selection.}
+Our result uses the previously reported exact-32-dimensional checkpoint.
+The audited outputRaw release provides 4,544 training records. We evaluate the
+retained best Polytune and prompted LadderSym checkpoints after 31 and 26
+completed epochs, respectively. Both baselines were initialized from scratch
+and trained on a separate 10,049-clip synthetic corpus, with checkpoint
+selection on its 1,116-clip validation split. Their configuration uses seed
+365, a peak learning rate of $2\times10^{-5}$, 4,000 warmup updates, a cosine
+schedule originally configured for 40 epochs, and 16-step gradient
+accumulation with one sampled 2.048-second segment per batch. Inference uses
+16\,kHz mono inputs, float32 greedy decoding, and a 1,024-token output budget.
+LadderSym additionally uses a 1,024-token reference-score prompt. The complete
+recordings are evaluated.
+
+These existing checkpoints have different training exposure. An exact-audio
+hash audit found that 21 of the 358 evaluation recordings occurred in baseline
+training and three occurred in its original checkpoint-selection set. We
+retain the full common evaluation list and disclose these overlaps; the
+comparison describes the available trained systems and does not isolate
+architecture under a matched training budget or wholly unseen evaluation
+recordings. All clips are Mozart snippets, so this evaluation also does not
+establish generalization to unseen works.
+
+\paragraph{Shared score-location conversion.}
+The two baselines predict timestamped Extra, Missing, and Correct notes.
+We apply the same fixed conversion to both outputs before scoring. Mutually
+nearest Extra and Missing notes with different pitches and onsets within
+100\,ms form a substituted-note prediction. Correct notes, these substitutions,
+and remaining Missing notes are aligned monotonically to canonical events in
+the clean reference score. The edit alignment uses unit insertion/deletion
+costs and a pitch-mismatch cost of 1.5; a substitution uses the Missing note's
+expected pitch as its alignment anchor. Gaps in this conversion do not create
+additional Missing predictions.
+
+Remaining Extra runs of at least three notes can identify a replay of a
+previously visited contiguous score sequence with at least 80\% pitch
+agreement. The longest qualifying sequence is chosen, with ties resolved by
+pitch agreement and then the most recent score position; prior predicted
+visits determine the copy pass. The conversion uses only model predictions
+and the clean reference score. Its parameters are fixed without validation-score
+tuning. A process-level guard prevents access to labels and target databases
+during conversion, and predictions are frozen and hash-verified before a
+separate scoring process opens the gold targets. Unlocated and duplicate
+predictions remain in the prediction count. In particular, no gold rendered-note
+identity is assigned to an unlinked Extra prediction.
+
+\paragraph{Unified metric.}
+All three methods in Figure~\ref{fig:canonical-validation} use the implemented
+canonical combined-pipeline metric. The location is the canonical score event
+or event span together with its copy pass, or an audited rendered-event
+identity for an extra note. The complete event type comprises the alignment
+relationship, note-error class, rhythm flag, and replay flag; deleted score
+events are scored as missed notes. Rhythm remains part of this common target,
+while the baselines emit no rhythm-error detections. Intonation is masked for
+all methods.
+
+The same exclusive one-to-one matcher assigns credit 1 for the correct location
+and complete type, 0.5 for the correct location with a different type, and 0
+for an incorrect or unavailable location. We pool credit, prediction counts,
+and the same 40,712 target events over all 358 clips to obtain micro precision,
+recall, and F1. Confidence intervals use clip bootstrap resampling; the new
+baseline runs use 1,000 replicates with seed 365. Unit checks verify that the
+baseline scoring path agrees with our full-pipeline scorer for the same
+canonical labels. We report this single common metric for the comparison.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/canonical-validation.pdf}
+\caption{Canonical combined-pipeline micro-F1 on the same 358 outputRaw
+validation clips. Whiskers show 95\% clip-bootstrap intervals.
+Both baselines include the shared score-location conversion. Training corpora
+differ, and 21 evaluation recordings occurred in baseline training.
+The comparison therefore describes the available checkpoints under the
+training exposure detailed in the text.}
+\label{fig:canonical-validation}
+\end{figure}
+
+Our result retains the previously completed canonical validation measurement;
+the two baselines are newly evaluated using their fixed checkpoints. The comparison
+includes errors introduced by each system's score localization. It should be
+interpreted with the distinct training corpora and baseline training overlap
+stated above.

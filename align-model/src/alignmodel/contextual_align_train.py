@@ -187,9 +187,45 @@ def _paths(manifest: Path, split: str) -> list[Any]:
                 or Path(str(row["sample_dir"])) / "note_map.json"
             )
         )
-        if path.is_file():
-            paths.append(path)
+        if not path.is_file():
+            raise FileNotFoundError(f"Missing {split} note map: {path}")
+        paths.append(path.resolve())
     return paths
+
+
+def _alignment_source_key(source: Path | Mapping[str, Any]) -> tuple[Path, int | None]:
+    """Identify the backing note map or database record, ignoring row metadata."""
+    if isinstance(source, Mapping):
+        return Path(str(source["target_db"])).resolve(), int(source["target_record"])
+    return source.resolve(), None
+
+
+def _training_paths(
+    manifest: Path, train_samples: int, val_samples: int
+) -> tuple[list[Any], list[Any]]:
+    """Select within each frozen split; never borrow validation supervision."""
+    if train_samples < 1 or val_samples < 1:
+        raise ValueError("train_samples and val_samples must both be positive")
+    train_paths = _paths(manifest, "train")
+    val_paths = _paths(manifest, "val")
+    train_keys = [_alignment_source_key(source) for source in train_paths]
+    val_keys = [_alignment_source_key(source) for source in val_paths]
+    for name, keys in (("train", train_keys), ("val", val_keys)):
+        if len(keys) != len(set(keys)):
+            raise ValueError(f"Duplicate note maps in {name} split")
+    if set(train_keys) & set(val_keys):
+        raise ValueError("Training and validation note maps overlap")
+    for name, paths, requested in (
+        ("train", train_paths, train_samples),
+        ("val", val_paths, val_samples),
+    ):
+        if len(paths) < requested:
+            raise ValueError(
+                f"Requested {requested} {name} samples, but the frozen {name} "
+                f"split contains only {len(paths)} maps; reduce the sample "
+                "count without changing split membership"
+            )
+    return train_paths[:train_samples], val_paths[:val_samples]
 
 
 def train_contextual_aligner(
@@ -206,20 +242,7 @@ def train_contextual_aligner(
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-    train_paths = _paths(manifest, "train")
-    val_paths = _paths(manifest, "val")
-    if len(train_paths) < train_samples:
-        needed = train_samples - len(train_paths)
-        if len(val_paths) <= needed:
-            raise ValueError(
-                f"Only {len(train_paths) + len(val_paths)} maps available; "
-                f"cannot reserve validation after selecting {train_samples}"
-            )
-        train_paths = train_paths + val_paths[:needed]
-        val_paths = val_paths[needed:]
-    else:
-        train_paths = train_paths[:train_samples]
-    val_paths = val_paths[:val_samples]
+    train_paths, val_paths = _training_paths(manifest, train_samples, val_samples)
     train_loader = DataLoader(
         AlignmentDataset(train_paths, augment=True),
         batch_size=batch_size,

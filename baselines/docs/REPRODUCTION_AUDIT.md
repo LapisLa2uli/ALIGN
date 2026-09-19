@@ -1,5 +1,16 @@
 # Baseline 复现检查与修复记录（2026-09-13）
 
+2026-09-15 补充：完整验证集评估发现 prompted LadderSym 的生成前缀
+缺少训练时在 padded prompt 后追加的、attention mask 为 1 的起始 token。
+已修复生成前缀，并加入实际 checkpoint 的训练/推理输入一致性检查。
+可选 KV cache 保留位置偏移，且仅在首次解码时设置 prompt 内部的双向 attention；
+小模型逐步等价测试和两个完整样本的 MIDI 字节一致性检查通过。
+最终评估额外验证未分类音符：不按 track 顺序猜测类别，并将其计入区分类别的
+总体 F1 的假阳性。LadderSym 当前 17 项回归测试全部通过；Polytune 通过 14 项，
+跳过 3 项 LadderSym 专属测试。此次修改不改变 checkpoint 权重。
+完整协议、checkpoint 轮次和结果见
+[2026-09-15 F1 记录](../../experiments/baselines_f1_20260915/README.md)。
+
 ## 结论与范围
 
 Polytune 与 LadderSym 的 ALIGN 接入已做代码审计和实际运行检查。本次恢复了主仓库到最新 origin；修改限制在 `baselines/`，不需要对主模型或 synth generator 再打旧补丁。当前结果证明数据/训练/保存/续训/推理/评估链路的工程正确性，不证明长时间 GPU 训练收敛，也不等于作者论文表格的数值复现。

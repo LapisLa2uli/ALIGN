@@ -6,6 +6,7 @@
 #   polytune_eval.sh --ckpt <path.ckpt|.pt|.pth> --data <DATA_ROOT> [--split-json <split.json>]
 #                    [--split test|validation|train] [--profile auto|cuda|mps|cpu] [--tag NAME]
 #                    [--first-n K] [--batch-size N] [--max-length N] [--bundles <ALIGN bundle root>]...
+#                    [--native-only]
 #                    [--dry-run] [-- <extra hydra overrides...>]
 #
 #   --ckpt        Lightning .ckpt or plain state_dict .pt/.pth (e.g. .../version_0/checkpoints/last.pt)
@@ -23,6 +24,7 @@
 #   --bundles     ALIGN bundle root(s) for common/eval_bridge.py (repeatable). Default: the distinct
 #                 parent dirs of the "bundle" paths recorded in <DATA_ROOT>/manifest.json.
 #   --dry-run     only print the resolved command
+#   --native-only report note F1 and skip the separate score-region bridge
 #
 # Environment (optional): POLYTUNE_PYTHON, POLYTUNE_REPO, POLYTUNE_RUNS (see polytune_train.sh),
 #   EVAL_BRIDGE_PYTHON / EVAL_BRIDGE_ARGS for baselines/common/eval_bridge.py (called if present;
@@ -48,6 +50,7 @@ BATCH_SIZE=1
 MAX_LENGTH=""
 BUNDLES=()
 DRY_RUN=0
+NATIVE_ONLY=0
 EXTRA=()
 
 usage() { sed -n '2,/^set -euo/p' "$0" | grep '^#' | sed 's/^# \{0,1\}//'; }
@@ -67,6 +70,7 @@ while [[ $# -gt 0 ]]; do
     --max-length) MAX_LENGTH=$2; shift 2 ;;
     --bundles)    BUNDLES+=("$2"); shift 2 ;;
     --dry-run)    DRY_RUN=1; shift ;;
+    --native-only) NATIVE_ONLY=1; shift ;;
     -h|--help)    usage; exit 0 ;;
     --)           shift; EXTRA+=("$@"); break ;;
     *)            EXTRA+=("$1"); shift ;;
@@ -170,7 +174,9 @@ echo "[polytune_eval] official per-class onset F1 (evaluate_errors.py) is printe
 
 [[ "$STATUS" -eq 0 ]] || exit "$STATUS"
 "$PY" "$BASELINES/common/evaluate_notes.py" --data "$ALIGN_BASELINE_ROOT" \
-  --pred-dir "$PRED_DIR" --out "$RUN_DIR/note_metrics.json" | tee "$RUN_DIR/note_metrics.log"
+  --pred-dir "$PRED_DIR" --allow-unclassified --out "$RUN_DIR/note_metrics.json" | tee "$RUN_DIR/note_metrics.log"
+
+if (( NATIVE_ONLY )); then exit 0; fi
 
 if [[ -f "$BRIDGE" && "$N_PRED" -gt 0 ]]; then
   BRIDGE_PY=${EVAL_BRIDGE_PYTHON:-$PY}

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from datacreate.audio_utils import load_audio, sounding_span
+from datacreate.alignment_storage import save_alignment
 import librosa
 import numpy as np
 from librosa.sequence import dtw
@@ -1235,8 +1236,9 @@ def run_alignment(
         )
 
     alignment_path = sample_dir / "alignment.npz"
-    np.savez(
+    save_alignment(
         alignment_path,
+        save_dtw_cost=bool(config.alignment.get("save_dtw_cost", True)),
         ref_features=ref_feat,
         perf_features=perf_feat,
         warping_path=wp,

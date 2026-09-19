@@ -98,6 +98,9 @@ class SynthConfig:
             cfg.musescore["clarinet_program"] = preset.program
         cfg.audio["sample_rate"] = self.sample_rate()
         cfg.audio["mono"] = bool(self.audio.get("mono", True))
+        # Synthetic corpora keep the path and features; the dense diagnostic
+        # matrix can be explicitly enabled for debugging in the render config.
+        cfg.alignment["save_dtw_cost"] = bool(self.render.get("save_dtw_cost", False))
         cfg.schema_version = self.schema_version
         return cfg
 
