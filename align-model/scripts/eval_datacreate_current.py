@@ -15,6 +15,7 @@ import importlib.metadata
 import json
 import os
 import platform
+import re
 import sys
 import tempfile
 import time
@@ -47,8 +48,11 @@ from alignmodel.joint.index import ScoreEventIndex
 from alignmodel.joint.lattice import JointOperation, SparseJointLattice
 from alignmodel.joint.train import load_joint_model
 from alignmodel.melody import (
+    canonical_note_location,
     gold_melodies_from_labels,
     match_melodies_detail,
+    match_note_wise_labels_detail,
+    parse_sounding_notes,
     pred_melodies_from_labels,
 )
 from alignmodel.transcription.basic_pitch import (
@@ -61,6 +65,7 @@ from alignmodel.transcription.basic_pitch import (
     sanitize_basic_pitch_notes,
     save_basic_pitch_cache,
 )
+from alignmodel.training_resources import resource_lease
 
 
 FREEZE_SCHEMA = "align-datacreate-real-freeze-v1"
@@ -76,6 +81,14 @@ LAYER2_TYPES = {"wrong_note", "extra_note", "missed_note"}
 RHYTHM_TYPES = {"rhythm_error"}
 REPETITION_TYPES = {"repetition"}
 HUMAN_SOURCES = {"manual", "auto_confirmed", "auto_edited"}
+AGENT_SOURCES = {"agent"}
+_NOTE_ID = re.compile(r"^note_(\d+)$")
+_FREEZE_SAMPLE_INPUTS = {
+    "metadata.json",
+    "performance_audio.wav",
+    "verified_score.musicxml",
+}
+_EVALUATE_SAMPLE_INPUTS = {"labels.json", "verified_score.musicxml"}
 
 
 def _json(path: Path) -> Any:
@@ -156,17 +169,147 @@ def _expected_samples(root: Path) -> list[Path]:
     ]
 
 
+def _selected_samples(root: Path, sample_id: str | None = None) -> list[Path]:
+    expected = _expected_samples(root)
+    if sample_id is None:
+        return expected
+    by_name = {path.name: path for path in expected}
+    if sample_id not in by_name:
+        raise ValueError(
+            f"Unknown DataCreate sample id {sample_id!r}; "
+            "expected 001-093 or demo_001"
+        )
+    return [by_name[sample_id]]
+
+
+class _SampleReadGuard:
+    """Fail closed if a strict phase opens an undeclared sample file."""
+
+    def __init__(self, samples: Sequence[Path], allowed: set[str], phase: str):
+        self.roots = tuple(path.resolve() for path in samples)
+        self.allowed = set(allowed)
+        self.phase = phase
+        self.opened: set[str] = set()
+        self.violations: list[str] = []
+
+    def _sample_relative(self, value: Any) -> str | None:
+        if not isinstance(value, (str, bytes, os.PathLike)):
+            return None
+        try:
+            path = Path(os.fsdecode(value)).resolve()
+        except (OSError, TypeError, ValueError):
+            return None
+        for root in self.roots:
+            try:
+                return path.relative_to(root).as_posix()
+            except ValueError:
+                continue
+        return None
+
+    def __call__(self, event: str, arguments: tuple[Any, ...]) -> None:
+        if not arguments:
+            return
+        if event in {
+            "os.remove",
+            "os.rename",
+            "os.rmdir",
+            "os.mkdir",
+            "os.chmod",
+            "os.utime",
+        }:
+            affected = [
+                name
+                for name in (
+                    self._sample_relative(arguments[0]),
+                    self._sample_relative(arguments[1])
+                    if event == "os.rename" and len(arguments) > 1
+                    else None,
+                )
+                if name is not None
+            ]
+            if affected:
+                self.violations.extend(affected)
+                raise PermissionError(
+                    f"{self.phase} may not mutate sample paths {affected!r}"
+                )
+            return
+        if event != "open":
+            return
+        name = self._sample_relative(arguments[0])
+        if name is None:
+            return
+        mode = arguments[1] if len(arguments) > 1 else None
+        flags = arguments[2] if len(arguments) > 2 else 0
+        writing = (
+            isinstance(mode, str) and any(value in mode for value in "wax+")
+        ) or (
+            isinstance(flags, int)
+            and bool(
+                flags
+                & (
+                    os.O_WRONLY
+                    | os.O_RDWR
+                    | os.O_CREAT
+                    | os.O_TRUNC
+                    | os.O_APPEND
+                )
+            )
+        )
+        if writing or name not in self.allowed:
+            self.violations.append(name)
+            action = "write" if writing else "open"
+            raise PermissionError(
+                f"{self.phase} may not {action} sample input {name!r}"
+            )
+        self.opened.add(name)
+
+
+def _install_sample_read_guard(
+    samples: Sequence[Path], allowed: set[str], phase: str
+) -> _SampleReadGuard:
+    guard = _SampleReadGuard(samples, allowed, phase)
+    sys.addaudithook(guard)
+    return guard
+
+
+def _protected_sample_stats(sample: Path) -> dict[str, Any]:
+    output = {}
+    for name in ("labels.json", "note_alignment_v2.json"):
+        path = sample / name
+        if not path.exists():
+            output[name] = {"present": False}
+            continue
+        stat = path.stat()
+        output[name] = {
+            "present": True,
+            "bytes": stat.st_size,
+            "mtime_ns": stat.st_mtime_ns,
+        }
+    return output
+
+
 def _training_status(path: Path) -> dict[str, Any]:
     if not path.is_file():
         return {"status": "missing", "path": str(path)}
     value = _json(path)
-    lease = (value.get("leases") or {}).get("gpu")
+    leases = value.get("leases") or {}
+    lease = leases.get("gpu")
+    ownership = value.get("ownership") or {}
+    active_gpu_rows = [
+        row
+        for row in ownership.get("gpu_reserved") or []
+        if (row or {}).get("phase") == "gpu_active"
+    ]
     return {
         "path": str(path.resolve()),
         "schema_version": value.get("schema_version"),
         "updated_utc": value.get("updated_utc"),
         "gpu_lease_active": bool(lease),
         "gpu_lease": lease,
+        "gpu_training_active": bool(lease) or bool(active_gpu_rows),
+        "active_gpu_training": active_gpu_rows,
+        "leases": dict(leases),
+        "ownership": ownership,
         "policy": value.get("policy"),
         "recommended_concurrency": value.get("recommended_concurrency"),
     }
@@ -389,23 +532,40 @@ def _load_production_checkpoint(
     }
 
 
-def _cache_features(sample: Path, output: Path) -> tuple[Any, dict[str, Any]]:
+def _cache_features(
+    sample: Path,
+    output: Path,
+    *,
+    fresh_features: bool = False,
+) -> tuple[Any, dict[str, Any]]:
     wav = sample / "performance_audio.wav"
     metadata = load_audio_metadata(sample)
-    source = sample / "basic_pitch_cache.npz"
     destination = output / "feature-cache" / f"{sample.name}.npz"
-    features = load_basic_pitch_cache(source, wav, metadata)
-    if features is not None:
-        save_basic_pitch_cache(destination, features)
-        source_kind = "sample_hash_validated_cache"
-    else:
+    if fresh_features:
         features = extract_sample_basic_pitch_features(
-            sample, cache_path=destination, force=False
+            sample, cache_path=destination, force=True
         )
+        source = None
         source_kind = "fresh_audio_inference"
+    else:
+        source = sample / "basic_pitch_cache.npz"
+        features = load_basic_pitch_cache(source, wav, metadata)
+        if features is not None:
+            save_basic_pitch_cache(destination, features)
+            source_kind = "sample_hash_validated_cache"
+        else:
+            features = extract_sample_basic_pitch_features(
+                sample, cache_path=destination, force=False
+            )
+            source_kind = "fresh_audio_inference"
     return features, {
         "source_kind": source_kind,
-        "source_path": str(source) if source.is_file() else None,
+        "source_path": (
+            str(source) if source is not None and source.is_file() else None
+        ),
+        "sample_feature_cache_opened": (
+            source is not None and source_kind == "sample_hash_validated_cache"
+        ),
         "frozen_copy": str(destination.resolve()),
         "frozen_copy_sha256": _sha256(destination),
         "metadata": dict(features.metadata),
@@ -456,6 +616,8 @@ def _freeze_one(
     stack: Mapping[str, Any],
     production_lattice: SparseJointLattice | None,
     production_payload: Mapping[str, Any] | None,
+    *,
+    fresh_features: bool = False,
 ) -> dict[str, Any]:
     started = time.perf_counter()
     wav = sample / "performance_audio.wav"
@@ -466,7 +628,9 @@ def _freeze_one(
         )
     audio = _audio_info(wav)
     phase = time.perf_counter()
-    features, cache = _cache_features(sample, output)
+    features, cache = _cache_features(
+        sample, output, fresh_features=fresh_features
+    )
     feature_seconds = time.perf_counter() - phase
 
     phase = time.perf_counter()
@@ -637,98 +801,165 @@ def freeze(args: argparse.Namespace) -> None:
         torch.set_num_interop_threads(1)
     except RuntimeError:
         pass
-    status = _training_status(args.resource_status.resolve())
-    if not status.get("gpu_lease_active"):
-        coordination = "CPU chosen regardless; no GPU lease was acquired"
-    else:
-        coordination = "active GPU training observed; CPU-only inference enforced"
     if args.device != "cpu":
         raise ValueError("This evaluator permits CPU only while training is active")
+    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    os.environ["TF_NUM_INTRAOP_THREADS"] = str(max(1, int(args.cpu_threads)))
+    os.environ["TF_NUM_INTEROP_THREADS"] = "1"
 
-    stack = _load_completed_stack(args)
-    production_lattice, production_payload, production_selection = (
-        _load_production_checkpoint(args.production_checkpoint)
+    expected = _selected_samples(args.samples.resolve(), args.sample_id)
+    if any(
+        output == sample.resolve() or output.is_relative_to(sample.resolve())
+        for sample in expected
+    ):
+        raise ValueError("Output must be outside every sample directory")
+    guard = (
+        _install_sample_read_guard(expected, _FREEZE_SAMPLE_INPUTS, "freeze")
+        if args.sample_id is not None
+        else None
     )
-    stack["selection"]["production_baseline"] = production_selection
-
-    expected = _expected_samples(args.samples.resolve())
     discovered = [path for path in expected if path.is_dir()]
     rows = []
-    for position, sample in enumerate(expected, 1):
-        print(f"freeze {position}/{len(expected)} {sample.name}", flush=True)
-        if not sample.is_dir():
-            rows.append(
-                {
-                    "sample": sample.name,
-                    "status": "failed",
-                    "error": "sample directory missing",
-                }
-            )
-            continue
-        try:
-            rows.append(
-                _freeze_one(
-                    sample,
-                    output,
-                    stack,
-                    production_lattice,
-                    production_payload,
-                )
-            )
-        except BaseException as exc:
-            rows.append(
-                {
-                    "sample": sample.name,
-                    "status": "failed",
-                    "error": f"{type(exc).__name__}: {exc}",
-                    "traceback": traceback.format_exc(),
-                }
-            )
-    manifest = {
-        "schema_version": FREEZE_SCHEMA,
-        "created_utc": _utc(),
-        "gold_access": {
-            "labels_opened": False,
-            "forbidden_inputs_opened": [],
-            "phase": "freeze",
-            "process_separation_required": True,
-            "source_contract": (
-                "Only verified_score.musicxml, performance_audio.wav, "
-                "hash-validated Basic Pitch activations, metadata pitch "
-                "convention, completed checkpoint/config/report files, and "
-                "training resource status were read."
-            ),
-        },
-        "samples_root": str(args.samples.resolve()),
-        "output": str(output),
-        "discovered_expected": len(discovered),
-        "expected": len(expected),
-        "inference_succeeded": sum(row["status"] == "succeeded" for row in rows),
-        "inference_failed": sum(row["status"] == "failed" for row in rows),
-        "samples": rows,
-        "model_selection": stack["selection"],
-        "resource_coordination": {
+    status_before = _training_status(args.resource_status.resolve())
+    with resource_lease(
+        args.resource_status.resolve(),
+        "cpu",
+        track=f"eval-datacreate-current:{output.name}",
+        command=[sys.executable, *sys.argv],
+        metadata={
             "device": "cpu",
-            "cpu_threads": args.cpu_threads,
-            "decision": coordination,
-            "status_snapshot": status,
+            "cpu_threads": int(args.cpu_threads),
+            "sample_ids": [path.name for path in expected],
         },
-        "environment": {
-            "python": sys.version,
-            "executable": sys.executable,
-            "platform": platform.platform(),
-            "torch": torch.__version__,
-            "numpy": np.__version__,
-            "basic_pitch": _package_version("basic-pitch"),
-            "tensorflow": _package_version("tensorflow"),
-            "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
-            "basic_pitch_runtime": os.environ.get(
-                "ALIGN_BASIC_PITCH_RUNTIME", "tensorflow"
+    ) as lease_id:
+        status = _training_status(args.resource_status.resolve())
+        if not status_before.get("gpu_training_active"):
+            coordination = "CPU-only lease acquired; no active GPU lease observed"
+        else:
+            coordination = (
+                "active GPU training observed; bounded CPU-only inference "
+                "lease acquired"
+            )
+        stack = _load_completed_stack(args)
+        if args.skip_production_baseline:
+            production_lattice = production_payload = None
+            production_selection = {
+                "status": "skipped",
+                "reason": "single-stack evaluation requested",
+                "checkpoint_read": False,
+            }
+        else:
+            production_lattice, production_payload, production_selection = (
+                _load_production_checkpoint(args.production_checkpoint)
+            )
+        stack["selection"]["production_baseline"] = production_selection
+
+        for position, sample in enumerate(expected, 1):
+            print(f"freeze {position}/{len(expected)} {sample.name}", flush=True)
+            if not sample.is_dir():
+                rows.append(
+                    {
+                        "sample": sample.name,
+                        "status": "failed",
+                        "error": "sample directory missing",
+                    }
+                )
+                continue
+            try:
+                rows.append(
+                    _freeze_one(
+                        sample,
+                        output,
+                        stack,
+                        production_lattice,
+                        production_payload,
+                        fresh_features=bool(args.fresh_features),
+                    )
+                )
+            except BaseException as exc:
+                rows.append(
+                    {
+                        "sample": sample.name,
+                        "status": "failed",
+                        "error": f"{type(exc).__name__}: {exc}",
+                        "traceback": traceback.format_exc(),
+                    }
+                )
+        manifest = {
+            "schema_version": FREEZE_SCHEMA,
+            "created_utc": _utc(),
+            "process": {
+                "pid": os.getpid(),
+                "phase": "inference_freeze",
+            },
+            "gold_access": {
+                "labels_opened": False,
+                "forbidden_inputs_opened": list(
+                    guard.violations if guard else ()
+                ),
+                "phase": "freeze",
+                "process_separation_required": True,
+                "read_guard_enforced": guard is not None,
+                "opened_sample_inputs": sorted(guard.opened if guard else ()),
+                "source_contract": (
+                    "Only verified_score.musicxml, performance_audio.wav, "
+                    "immutable metadata pitch convention, completed frozen "
+                    "checkpoint/config/report files, and training resource "
+                    "status were read."
+                    if args.fresh_features
+                    else (
+                        "Only verified_score.musicxml, performance_audio.wav, "
+                        "hash-validated Basic Pitch activations, metadata pitch "
+                        "convention, completed checkpoint/config/report files, "
+                        "and training resource status were read."
+                    )
+                ),
+            },
+            "samples_root": str(args.samples.resolve()),
+            "output": str(output),
+            "subset": {
+                "requested": args.sample_id is not None,
+                "sample_ids": [path.name for path in expected],
+            },
+            "discovered_expected": len(discovered),
+            "expected": len(expected),
+            "inference_succeeded": sum(
+                row["status"] == "succeeded" for row in rows
             ),
-        },
-        "command": [sys.executable, *sys.argv],
-    }
-    _atomic_json(marker, manifest)
+            "inference_failed": sum(
+                row["status"] == "failed" for row in rows
+            ),
+            "samples": rows,
+            "model_selection": stack["selection"],
+            "resource_coordination": {
+                "device": "cpu",
+                "cpu_threads": args.cpu_threads,
+                "tensorflow_gpu_hidden": True,
+                "lease": {
+                    "resource": "cpu",
+                    "lease_id": lease_id,
+                    "track": f"eval-datacreate-current:{output.name}",
+                },
+                "decision": coordination,
+                "status_before": status_before,
+                "status_snapshot": status,
+            },
+            "environment": {
+                "python": sys.version,
+                "executable": sys.executable,
+                "platform": platform.platform(),
+                "torch": torch.__version__,
+                "numpy": np.__version__,
+                "basic_pitch": _package_version("basic-pitch"),
+                "tensorflow": _package_version("tensorflow"),
+                "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
+                "basic_pitch_runtime": os.environ.get(
+                    "ALIGN_BASIC_PITCH_RUNTIME", "tensorflow"
+                ),
+            },
+            "command": [sys.executable, *sys.argv],
+        }
+        _atomic_json(marker, manifest)
     print(marker)
 
 
@@ -784,12 +1015,21 @@ def _label_errors(
 
 def _inventory_gold(
     freeze_doc: Mapping[str, Any],
+    *,
+    gold_source: str = "human",
 ) -> tuple[list[dict[str, Any]], dict[str, list[dict[str, Any]]]]:
     samples_root = Path(freeze_doc["samples_root"])
     frozen_by_id = {row["sample"]: row for row in freeze_doc["samples"]}
+    subset_ids = (freeze_doc.get("subset") or {}).get("sample_ids")
+    selected = (
+        _selected_samples(samples_root)
+        if not subset_ids
+        else [samples_root / str(value) for value in subset_ids]
+    )
+    strict_subset = bool((freeze_doc.get("subset") or {}).get("requested"))
     inventory = []
     gold: dict[str, list[dict[str, Any]]] = {}
-    for sample in _expected_samples(samples_root):
+    for sample in selected:
         frozen = frozen_by_id.get(sample.name) or {}
         diagnostics = frozen.get("diagnostics") or {}
         duration = (diagnostics.get("audio") or {}).get("duration_sec")
@@ -815,7 +1055,7 @@ def _inventory_gold(
             "label_status": "missing",
             "note_alignment": {"present": alignment_path.is_file()},
         }
-        if metadata_path.is_file():
+        if metadata_path.is_file() and not strict_subset:
             metadata = _json(metadata_path)
             row["partial_take"] = {
                 "score_segment": metadata.get("score_segment"),
@@ -826,7 +1066,7 @@ def _inventory_gold(
                 )
                 == sample.name,
             }
-        if alignment_path.is_file():
+        if alignment_path.is_file() and not strict_subset:
             alignment = _json(alignment_path)
             row["note_alignment"].update(
                 {
@@ -842,11 +1082,23 @@ def _inventory_gold(
         if label_path.is_file():
             document = _json(label_path)
             labels = document.get("labels") or []
-            human = [
-                dict(label)
-                for label in labels
-                if str(label.get("source") or "") in HUMAN_SOURCES
-            ]
+            if gold_source == "agent":
+                selected_labels = [
+                    dict(label)
+                    for label in labels
+                    if str(label.get("source") or "") in AGENT_SOURCES
+                ]
+                if (
+                    not selected_labels
+                    and document.get("annotator_id") == "ai_f0_align"
+                ):
+                    selected_labels = [dict(label) for label in labels]
+            else:
+                selected_labels = [
+                    dict(label)
+                    for label in labels
+                    if str(label.get("source") or "") in HUMAN_SOURCES
+                ]
             explicit_complete = _explicit_complete(document)
             errors = _label_errors(
                 document, duration=duration, score_count=score_count
@@ -855,12 +1107,16 @@ def _inventory_gold(
                 isinstance(label.get("pitches"), list)
                 and bool(label.get("pitches"))
                 and isinstance(label.get("score_part"), Mapping)
-                for label in human
+                for label in selected_labels
             )
-            if human:
-                status = "usable_sparse_human_gold"
+            if selected_labels:
+                status = (
+                    "usable_agent_gold"
+                    if gold_source == "agent"
+                    else "usable_sparse_human_gold"
+                )
                 if frozen.get("status") == "succeeded":
-                    gold[sample.name] = human
+                    gold[sample.name] = selected_labels
             elif explicit_complete:
                 status = "reviewed_clean_empty"
             else:
@@ -870,17 +1126,254 @@ def _inventory_gold(
                     "label_status": status,
                     "label_schema_version": document.get("schema_version"),
                     "labels_total": len(labels),
-                    "human_labels": len(human),
+                    "selected_labels": len(selected_labels),
+                    "gold_source": gold_source,
+                    "human_labels": len(selected_labels),
                     "human_range_labels": range_count,
                     "explicit_completeness_marker": explicit_complete,
                     "validation_errors": errors,
                     "human_types": dict(
-                        Counter(str(label.get("type")) for label in human)
+                        Counter(
+                            str(label.get("type"))
+                            for label in selected_labels
+                        )
                     ),
                 }
             )
         inventory.append(row)
     return inventory, gold
+
+
+def _note_id_indices(values: Any) -> tuple[int, ...] | None:
+    if not isinstance(values, list) or not values:
+        return None
+    output = []
+    for value in values:
+        match = _NOTE_ID.fullmatch(str(value))
+        if match is None:
+            return None
+        output.append(int(match.group(1)))
+    return tuple(sorted(set(output)))
+
+
+def _canonical_core_indices(
+    label: Mapping[str, Any],
+    *,
+    score_event_count: int,
+) -> tuple[tuple[int, ...] | None, str | None]:
+    explicit = label.get("score_event_indices")
+    if isinstance(explicit, list) and explicit:
+        indices = tuple(sorted({int(value) for value in explicit}))
+        basis = "explicit_score_event_indices"
+    else:
+        part = label.get("score_part")
+        indices = None
+        basis = None
+        if isinstance(part, Mapping):
+            core_start = part.get("core_start_note_index")
+            core_end = part.get("core_end_note_index")
+            if core_start is not None and core_end is not None:
+                first, last = int(core_start), int(core_end)
+                indices = tuple(range(first, last + 1))
+                basis = "score_part_explicit_core"
+        core_ids = _note_id_indices(label.get("core_note_ids"))
+        if indices is None and core_ids is not None:
+            indices = core_ids
+            basis = "core_note_ids"
+        if indices is None and isinstance(part, Mapping):
+            try:
+                first = int(part["start_note_index"])
+                last = int(part["end_note_index"])
+                pad = max(0, int(part.get("pad_notes") or 0))
+            except (KeyError, TypeError, ValueError):
+                return None, None
+            core_first = min(last, first + pad)
+            core_last = max(core_first, last - pad)
+            indices = tuple(range(core_first, core_last + 1))
+            basis = "score_part_range_minus_declared_padding"
+    if (
+        not indices
+        or indices[0] < 0
+        or indices[-1] >= int(score_event_count)
+    ):
+        return None, basis
+    return indices, basis
+
+
+def _canonical_projection_audit(
+    label: Mapping[str, Any],
+    notes: Sequence[Any],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    value = dict(label)
+    indices, basis = _canonical_core_indices(
+        value, score_event_count=len(notes)
+    )
+    reasons = []
+    warnings = []
+    if indices is None:
+        reasons.append("missing_or_invalid_core_score_event_projection")
+    part = value.get("score_part")
+    if not isinstance(part, Mapping):
+        reasons.append("missing_score_part")
+    else:
+        try:
+            first = int(part["start_note_index"])
+            last = int(part["end_note_index"])
+        except (KeyError, TypeError, ValueError):
+            reasons.append("invalid_score_part")
+        else:
+            if first < 0 or last < first or last >= len(notes):
+                reasons.append("score_part_out_of_bounds")
+            else:
+                expected_pitches = [
+                    int(note.pitch) for note in notes[first : last + 1]
+                ]
+                supplied_pitches = value.get("pitches")
+                if supplied_pitches is not None and (
+                    not isinstance(supplied_pitches, list)
+                    or [int(item) for item in supplied_pitches]
+                    != expected_pitches
+                ):
+                    reasons.append("pitch_list_does_not_validate_score_part")
+                supplied_ids = _note_id_indices(value.get("note_ids"))
+                if supplied_ids is not None and supplied_ids != tuple(
+                    range(first, last + 1)
+                ):
+                    reasons.append("note_ids_do_not_validate_score_part")
+    core_ids = _note_id_indices(value.get("core_note_ids"))
+    if core_ids is not None and indices is not None and core_ids != indices:
+        warning = "core_note_ids_disagree_with_core_score_part"
+        if basis == "score_part_explicit_core":
+            warnings.append(warning)
+        else:
+            reasons.append(warning)
+    if indices is not None:
+        value["score_event_indices"] = list(indices)
+    location = canonical_note_location(
+        value, score_event_count=len(notes)
+    )
+    if location is None:
+        reasons.append("canonical_identity_unavailable")
+    audit = {
+        "label_id": value.get("id"),
+        "type": value.get("type"),
+        "accepted": not reasons,
+        "projection_basis": basis,
+        "canonical_location": location,
+        "score_event_indices": list(indices) if indices is not None else None,
+        "reasons": reasons,
+        "warnings": warnings,
+    }
+    return value, audit
+
+
+def _official_note_wise_report(
+    samples_root: Path,
+    gold: Mapping[str, Sequence[Mapping[str, Any]]],
+    predicted: Mapping[str, Sequence[Mapping[str, Any]]],
+) -> dict[str, Any]:
+    if not gold:
+        return {
+            "status": "unavailable",
+            "reason": "no selected nonempty gold labels",
+        }
+    sample_reports = {}
+    all_details = []
+    per_type_details: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for sample, target_labels in gold.items():
+        notes = parse_sounding_notes(
+            samples_root / sample / "verified_score.musicxml"
+        )
+        projected_gold = []
+        gold_audit = []
+        for label in target_labels:
+            projected, audit = _canonical_projection_audit(label, notes)
+            projected_gold.append(projected)
+            gold_audit.append(audit)
+        projected_predicted = []
+        predicted_audit = []
+        for label in predicted.get(sample, ()):
+            projected, audit = _canonical_projection_audit(label, notes)
+            projected_predicted.append(projected)
+            predicted_audit.append(audit)
+        rejected_gold = [
+            row for row in gold_audit if not bool(row["accepted"])
+        ]
+        if rejected_gold:
+            return {
+                "status": "unavailable",
+                "reason": (
+                    f"{sample} gold failed canonical projection audit"
+                ),
+                "sample": sample,
+                "gold_audit": gold_audit,
+            }
+        detail = match_note_wise_labels_detail(
+            projected_gold,
+            projected_predicted,
+            score_event_count=len(notes),
+        )
+        if detail["status"] != "available":
+            raise ValueError(
+                f"Official note-wise metric unavailable for {sample}"
+            )
+        all_details.append(detail)
+        types = sorted(
+            {
+                str(label.get("type"))
+                for label in [*projected_gold, *projected_predicted]
+            }
+        )
+        per_type = {}
+        for kind in types:
+            kind_detail = match_note_wise_labels_detail(
+                [
+                    label
+                    for label in projected_gold
+                    if str(label.get("type")) == kind
+                ],
+                [
+                    label
+                    for label in projected_predicted
+                    if str(label.get("type")) == kind
+                ],
+                score_event_count=len(notes),
+            )
+            per_type[kind] = kind_detail
+            per_type_details[kind].append(kind_detail)
+        sample_reports[sample] = {
+            "score_event_count": len(notes),
+            "metrics": detail,
+            "per_type": per_type,
+            "gold": gold_audit,
+            "predicted": predicted_audit,
+        }
+
+    def aggregate(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+        credit = sum(float(row["credit"]) for row in rows)
+        predicted_count = sum(int(row["predicted"]) for row in rows)
+        gold_count = sum(int(row["gold"]) for row in rows)
+        return _prf(credit, predicted_count, gold_count)
+
+    return {
+        "status": "available",
+        "metric_schema": "align-note-wise-score-event-metric-v1",
+        "matching_policy": (
+            "exclusive maximum-weight one-to-one canonical score-event "
+            "identity; exact location+type=1.0, exact location+different "
+            "type=0.5, different location=0.0"
+        ),
+        "canonical_projection": (
+            "score_event_indices derived from audited score_part core indices "
+            "or core_note_ids; declared context padding is excluded"
+        ),
+        "micro": aggregate(all_details),
+        "per_type": {
+            kind: aggregate(rows)
+            for kind, rows in sorted(per_type_details.items())
+        },
+        "samples": sample_reports,
+    }
 
 
 def _iou(left: Mapping[str, Any], right: Mapping[str, Any]) -> float:
@@ -1377,6 +1870,19 @@ def _markdown(report: Mapping[str, Any]) -> str:
     ranges = report["metrics"]["score_range"][
         "enhanced_schema_1_1_diagnostic"
     ]["micro"]
+    official = report["metrics"]["official_note_wise"]
+    if official.get("status") == "available":
+        note = official["micro"]
+        note_line = (
+            "- Official canonical note-wise P/R/F1: "
+            f"{note['precision']:.4f}/{note['recall']:.4f}/{note['f1']:.4f} "
+            f"(support={note['gold']})"
+        )
+    else:
+        note_line = (
+            "- Official canonical note-wise score unavailable: "
+            f"{official.get('reason')}"
+        )
     sample = report["sample_007"]["current"]
     return "\n".join(
         [
@@ -1391,15 +1897,15 @@ def _markdown(report: Mapping[str, Any]) -> str:
                 f"- Gold: {counts['gold_evaluable']} sparse non-empty human, "
                 f"{counts['empty_unreviewed']} empty/unreviewed"
             ),
+            note_line,
             (
-                "- Strict timestamp IoU>=0.3 type-aware P/R/F1: "
+                "- Legacy timestamp IoU>=0.3 diagnostic P/R/F1: "
                 f"{event['precision']:.4f}/{event['recall']:.4f}/{event['f1']:.4f}"
             ),
             (
                 "- Enhanced schema-1.1 pitch-range diagnostic P/R/F1: "
                 f"{ranges['precision']:.4f}/{ranges['recall']:.4f}/{ranges['f1']:.4f}"
             ),
-            "- Formal real schema-1.2 score: unavailable (zero schema-1.2 gold clips).",
             (
                 "- Sample 007 canonical/all/retained/decoded/score/labels: "
                 f"{sample['canonical_predicted_note_count']}/"
@@ -1410,8 +1916,13 @@ def _markdown(report: Mapping[str, Any]) -> str:
                 f"{sample['error_label_count']}"
             ),
             "",
-            "Precision and false-label rates are apparent values against sparse, "
-            "non-exhaustive annotations; empty files are not clean negatives.",
+            "A one-sample result is a smoke test, not a validation estimate."
+            if report["annotation_limitations"]["single_sample_smoke_test"]
+            else (
+                "Precision and false-label rates are apparent values against "
+                "sparse, non-exhaustive annotations; empty files are not clean "
+                "negatives."
+            ),
             "",
         ]
     )
@@ -1616,13 +2127,33 @@ def evaluate(args: argparse.Namespace) -> None:
     freeze_doc, integrity_errors = _verify_frozen(freeze_path)
     if integrity_errors:
         raise ValueError(f"Frozen prediction integrity failed: {integrity_errors}")
+    freeze_pid = int((freeze_doc.get("process") or {}).get("pid", -1))
+    if freeze_pid == os.getpid():
+        raise ValueError("Scoring must run in a process separate from freeze")
     output = Path(freeze_doc["output"])
     report_path = output / "report.json"
     if report_path.exists():
         raise FileExistsError(f"Refusing to overwrite evaluation: {report_path}")
+    samples_root = Path(freeze_doc["samples_root"])
+    subset_ids = list((freeze_doc.get("subset") or {}).get("sample_ids") or [])
+    strict_subset = bool((freeze_doc.get("subset") or {}).get("requested"))
+    selected_samples = [samples_root / str(value) for value in subset_ids]
+    protected_before = {
+        sample.name: _protected_sample_stats(sample)
+        for sample in selected_samples
+    }
+    evaluate_guard = (
+        _install_sample_read_guard(
+            selected_samples, _EVALUATE_SAMPLE_INPUTS, "evaluate"
+        )
+        if strict_subset
+        else None
+    )
 
     # Gold is opened only after the separate-process freeze hash check above.
-    inventory, gold = _inventory_gold(freeze_doc)
+    inventory, gold = _inventory_gold(
+        freeze_doc, gold_source=args.gold_source
+    )
     current_docs = _prediction_documents(freeze_doc, "prediction")
     rule_docs = _prediction_documents(freeze_doc, "rules")
     production_docs = _prediction_documents(freeze_doc, "production")
@@ -1638,6 +2169,9 @@ def evaluate(args: argparse.Namespace) -> None:
         sample: list(document.get("labels") or [])
         for sample, document in production_docs.items()
     }
+    official_note_wise = _official_note_wise_report(
+        samples_root, gold, current_labels
+    )
     schemas = {
         row["sample"]: row.get("label_schema_version") for row in inventory
     }
@@ -1700,12 +2234,7 @@ def evaluate(args: argparse.Namespace) -> None:
         },
         "model_selection": freeze_doc["model_selection"],
         "metrics": {
-            "official_note_wise": {
-                "status": "unavailable",
-                "reason": (
-                    "schema 1.1 gold requires successful canonical projection audit"
-                ),
-            },
+            "official_note_wise": official_note_wise,
             "legacy_timestamp_event": timestamp,
             "diagnostic_inferred_score_range": ranges,
             # Backward-compatible legacy aliases.
@@ -1723,11 +2252,33 @@ def evaluate(args: argparse.Namespace) -> None:
                 ),
             },
         },
-        "historical_comparison": _historical_comparison(
-            ranges, args.historical_summary.resolve()
+        "historical_comparison": (
+            {
+                "status": "not_opened",
+                "reason": "strict subset evaluation forbids prior predictions",
+            }
+            if strict_subset
+            else _historical_comparison(
+                ranges, args.historical_summary.resolve()
+            )
         ),
-        "sample_007": _sample_007(
-            current_docs, args.sample_007_diagnostic.resolve()
+        "sample_007": (
+            {
+                "status": "not_opened",
+                "reason": "strict subset evaluation forbids prior diagnostics",
+                "current": {
+                    "canonical_predicted_note_count": None,
+                    "candidate_union_all_count": None,
+                    "retained_candidate_count": None,
+                    "decoded_event_count": None,
+                    "score_count": None,
+                    "error_label_count": 0,
+                },
+            }
+            if strict_subset
+            else _sample_007(
+                current_docs, args.sample_007_diagnostic.resolve()
+            )
         ),
         "data_inventory": inventory,
         "inference_samples": freeze_rows,
@@ -1735,9 +2286,15 @@ def evaluate(args: argparse.Namespace) -> None:
             "sparse_non_exhaustive": True,
             "empty_unreviewed_are_clean_negatives": False,
             "precision_warning": (
-                "Human files have no corpus-level exhaustive review marker. "
-                "Unmatched predictions and false-labels/minute may be valid "
-                "unannotated errors and are reported as apparent values."
+                "Agreement against an agent annotation is not independent "
+                "accuracy; unmatched predictions may be valid unannotated "
+                "errors and timestamp false-label rates are apparent values."
+                if args.gold_source == "agent"
+                else (
+                    "Human files have no corpus-level exhaustive review marker. "
+                    "Unmatched predictions and false-labels/minute may be valid "
+                    "unannotated errors and are reported as apparent values."
+                )
             ),
             "unsupported_human_types": sorted(
                 {
@@ -1755,12 +2312,37 @@ def evaluate(args: argparse.Namespace) -> None:
                 "unavailable unless a usable human labels document declares "
                 "schema 1.2"
             ),
+            "single_sample_smoke_test": strict_subset,
+            "validation_estimate": not strict_subset,
+            "threshold_tuning_performed": False,
         },
         "protocol": {
             "two_process_freeze_evaluate": True,
+            "freeze_process_pid": freeze_pid,
+            "evaluate_process_pid": os.getpid(),
+            "process_separation_passed": freeze_pid != os.getpid(),
             "freeze_manifest": str(freeze_path),
             "freeze_prediction_hashes_verified_before_gold": True,
             "prediction_files_mutated_during_evaluation": False,
+            "gold_source": args.gold_source,
+            "schema_1_1_scoreability": (
+                "official only after score_part/core note projection audit"
+            ),
+            "sample_read_guard_enforced": evaluate_guard is not None,
+            "opened_sample_inputs": sorted(
+                evaluate_guard.opened if evaluate_guard else ()
+            ),
+            "forbidden_sample_inputs_opened": list(
+                evaluate_guard.violations if evaluate_guard else ()
+            ),
+            "old_predictions_opened": False,
+            "prior_alignments_opened": False,
+            "note_maps_opened": False,
+            "midi_opened": False,
+            "audit_targets_opened": False,
+            "lockbox_accessed": False,
+            "sample_files_mutated": False,
+            "tuning_performed": False,
             "freeze_command": freeze_doc["command"],
             "evaluate_command": [sys.executable, *sys.argv],
             "resource_coordination": freeze_doc["resource_coordination"],
@@ -1771,17 +2353,34 @@ def evaluate(args: argparse.Namespace) -> None:
     _atomic_json(report_path, report)
     (output / "REPORT.md").write_text(_markdown(report), encoding="utf-8")
     _freeze_after, after_errors = _verify_frozen(freeze_path)
+    protected_after = {
+        sample.name: _protected_sample_stats(sample)
+        for sample in selected_samples
+    }
+    protected_unchanged = protected_before == protected_after
+    label_hashes = {
+        sample.name: _sha256(sample / "labels.json")
+        for sample in selected_samples
+        if (sample / "labels.json").is_file()
+    }
     integrity = {
         "schema_version": "align-datacreate-real-integrity-v1",
         "checked_utc": _utc(),
         "freeze_manifest_sha256": _sha256(freeze_path),
         "report_sha256": _sha256(report_path),
         "prediction_hash_errors": after_errors,
-        "passed": not after_errors,
+        "process_separation_passed": freeze_pid != os.getpid(),
+        "protected_sample_stats_before": protected_before,
+        "protected_sample_stats_after": protected_after,
+        "protected_sample_stats_unchanged": protected_unchanged,
+        "labels_sha256": label_hashes,
+        "note_alignment_content_opened": False,
+        "lockbox_accessed": False,
+        "passed": not after_errors and protected_unchanged,
     }
     _atomic_json(output / "integrity.json", integrity)
-    if after_errors:
-        raise RuntimeError("Predictions changed during evaluation")
+    if after_errors or not protected_unchanged:
+        raise RuntimeError("Frozen predictions or protected sample files changed")
     print(report_path)
 
 
@@ -1806,6 +2405,10 @@ def _default_paths(parser: argparse.ArgumentParser) -> None:
     align = root / "align-model"
     parser.add_argument(
         "--samples", type=Path, default=root / "DataCreate" / "samples"
+    )
+    parser.add_argument(
+        "--sample-id",
+        help="Evaluate one expected sample id (001-093 or demo_001)",
     )
     parser.add_argument(
         "--output",
@@ -1866,6 +2469,16 @@ def main() -> None:
     _default_paths(freeze_parser)
     freeze_parser.add_argument("--device", default="cpu", choices=("cpu",))
     freeze_parser.add_argument("--cpu-threads", type=int, default=2)
+    freeze_parser.add_argument(
+        "--fresh-features",
+        action="store_true",
+        help="Ignore sample activation caches and infer directly from audio",
+    )
+    freeze_parser.add_argument(
+        "--skip-production-baseline",
+        action="store_true",
+        help="Run only the selected current completed model stack",
+    )
     freeze_parser.set_defaults(function=freeze)
 
     evaluate_parser = subparsers.add_parser("evaluate")
@@ -1895,6 +2508,11 @@ def main() -> None:
         / "007"
         / "diagnostic-v1-20260915"
         / "report.json",
+    )
+    evaluate_parser.add_argument(
+        "--gold-source",
+        choices=("human", "agent"),
+        default="human",
     )
     evaluate_parser.set_defaults(function=evaluate)
 
