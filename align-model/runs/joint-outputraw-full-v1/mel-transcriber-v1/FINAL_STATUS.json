@@ -1,0 +1,157 @@
+{
+  "schema_version": "align-mel-transcriber-track-b-final-status-v1",
+  "status": "target_not_met",
+  "success_requirement": {
+    "metric": "canonical note-wise score-event identity F1",
+    "target": 0.95,
+    "strictly_greater_than": true,
+    "achieved": false
+  },
+  "final_candidate": {
+    "name": "all4544-refit-epoch018-conf080",
+    "checkpoint": "full-training-all4544-v2/candidate-epoch-018.pt",
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "predictions": "validation-all4544-epoch018-conf080/predictions.jsonl",
+    "predictions_sha256": "32ae4b7b1d7d03bf1a56d7571caa2881b1847cc311365fc93efb747e181ec6c0",
+    "report": "validation-all4544-epoch018-conf080/report.json",
+    "report_sha256": "1717f5bed5c2e96937ec3d2553e41d1edb02cabc8597b4856bbf7f411732e73a",
+    "validation_rows": 358,
+    "training_rows": 4544,
+    "from_scratch": true,
+    "min_confidence": 0.8
+  },
+  "canonical_note_wise_transcription": {
+    "precision": 0.772106318212191,
+    "recall": 0.7720872104533756,
+    "f1": 0.7720967642145641,
+    "credit": 31198.5,
+    "predicted": 40407,
+    "gold": 40408,
+    "bootstrap_95": {
+      "lower": 0.7576731088915306,
+      "median": 0.772086462332854,
+      "upper": 0.7852191853526831,
+      "replicates": 1000
+    },
+    "matching": "exclusive one-to-one; exact score-event identity; exact type 1.0, different type 0.5"
+  },
+  "fixed_downstream_note_wise": {
+    "precision": 0.6927862451782858,
+    "recall": 0.7234844763214777,
+    "f1": 0.7078026625654829,
+    "bootstrap_95": {
+      "lower": 0.6891626000481946,
+      "median": 0.7081716328137682,
+      "upper": 0.7252766387747133,
+      "replicates": 1000
+    },
+    "per_type_f1": {
+      "match": 0.8813869447875211,
+      "copy": 0.6158228667616211,
+      "substitute": 0.4891774891774892,
+      "extra": 0.0,
+      "missed_note": 0.22304050499736977
+    }
+  },
+  "score_agnostic_diagnostics": {
+    "pitch_sequence_lcs": {
+      "precision": 0.9939119459499591,
+      "recall": 0.9938873490397941,
+      "f1": 0.9938996473426963
+    },
+    "count_ratio": 0.9999752524252623,
+    "same_pitch": {
+      "predicted_split_rate": 0.05526270200707798,
+      "true_rearticulation_rate": 0.05308486153339718,
+      "false_split_rate": 0.0021778404731853393,
+      "target_rearticulation_rate": 0.06545733518115225,
+      "rearticulation_recall": 0.8109640831758034
+    },
+    "short_note_recall_50ms": {
+      "lt_80ms": 0.9387755102040817,
+      "lt_120ms": 0.9937552039966694,
+      "lt_180ms": 0.995236319953606,
+      "ge_180ms": 0.9880125407266245
+    },
+    "per_source": {
+      "MozartClConcertoA": {
+        "f1": 0.9938996473426963,
+        "count_ratio": 0.9999752524252623
+      }
+    },
+    "per_render_timbre": {
+      "soundfont_v1": {
+        "f1": 0.9938996473426963,
+        "count_ratio": 0.9999752524252623
+      }
+    },
+    "timestamp_status": "diagnostic_only"
+  },
+  "version_comparison": {
+    "earlier_epoch010": {
+      "training_rows": 4317,
+      "calibration_rows": 227,
+      "canonical_f1": 0.7687460772610359,
+      "fixed_downstream_f1": 0.698246280618848,
+      "pitch_sequence_lcs_f1": 0.9909792387117418,
+      "count_ratio": 1.010913680459315,
+      "same_pitch_split_rate": 0.055790839433033854,
+      "concrete_limitation": "held out 227 train rows and over-predicted notes; canonical identity mapping remained the dominant error"
+    },
+    "later_all4544_refit": {
+      "change": "refit the selected high-resolution TCN from scratch on all 4544 train rows and apply the train-only selected 0.8 confidence gate",
+      "canonical_f1": 0.7720967642145641,
+      "fixed_downstream_f1": 0.7078026625654829,
+      "pitch_sequence_lcs_f1": 0.9938996473426963,
+      "count_ratio": 0.9999752524252623,
+      "same_pitch_split_rate": 0.05526270200707798,
+      "canonical_delta": 0.003350686953528137,
+      "fixed_downstream_delta": 0.00955638194663489,
+      "promotion": "rejected",
+      "reason": "comparable full-validation canonical F1 remains far below 0.95 and confidence intervals overlap"
+    },
+    "track_a_baseline": {
+      "canonical_f1": 0.7607407407407408,
+      "track_b_delta": 0.011356023473823251,
+      "used_in_final_candidate": false
+    }
+  },
+  "oracle_and_bottleneck_assessment": {
+    "final_acoustic_identity_oracle_f1": 0.9938996473426963,
+    "fixed_aligner_oracle_notes_f1": 0.7147551243936787,
+    "predicted_notes_oracle_source_repeat_resume_f1": 0.7262527960275914,
+    "fixed_aligner_final_f1": 0.7078026625654829,
+    "interpretation": "the acoustic candidate exceeds 0.95 under score-agnostic event-sequence identity, while the frozen score-event mapper remains near its measured oracle-note result and prevents an official canonical pass",
+    "scope_note": "oracle runs are non-deployable diagnostics, not claims of a universal mathematical upper bound"
+  },
+  "integrity_and_isolation": {
+    "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+    "release_pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "cache_pack_id": "17941a8ab4fcda4d797ad026db097a1f98faa74efdcd187738cabc450e2068d5",
+    "score_input_to_acoustic_model": false,
+    "target_column_read_at_inference": false,
+    "effective_audio_transpose_consumed": false,
+    "pitch_policy": "written pitch learned from sounding audio; train and validation transpose are both +2",
+    "locked_test_touched": false,
+    "production_mutated": false,
+    "promoted": false
+  },
+  "supporting_artifacts": {
+    "train_diagnostics": {
+      "path": "train-diagnostics-epoch018/diagnostics.json",
+      "sha256": "7dcc7c34a203baaf27db557a617b94405d6aba0c02cce803607ad5382bf7495c"
+    },
+    "confidence_calibration": {
+      "path": "train-diagnostics-epoch018/confidence-calibration.json",
+      "sha256": "13a935d26beb56c36d392fa276326eb18b433083a2af8fe9a1b3332451925b73"
+    },
+    "validation_diagnostics": {
+      "path": "validation-all4544-epoch018-conf080/diagnostics.json",
+      "sha256": "8736452a1ddbe07c13a797335dd0601e3645552a63924fba86e3ef86d4e8af70"
+    },
+    "structural_oracles": {
+      "path": "../note-wise-oracles-v1/structural-oracles-full358.json",
+      "sha256": "1a9c0ba52ebf95dac48d5c25c440e3e3f4b2661cd413564ba6723268ef93c2c9"
+    }
+  }
+}

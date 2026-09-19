@@ -1,0 +1,136 @@
+{
+  "schema_version": "align-mel-transcriber-profile-v1",
+  "ready_sha256": "da32428972b762cb78e48486891a11b221ff04281f2814f93b1ded5387d22af2",
+  "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+  "locked_test_materialized": false,
+  "frontend": [
+    {
+      "hop_length": 128,
+      "hop_ms": 5.804988662131519,
+      "clips": 6,
+      "frames": 30958,
+      "seconds": 3.5524583000005805,
+      "rows_per_second": 1.6889712681494444,
+      "audio_realtime_factor": 50.581000042704765,
+      "estimated_full_cache_minutes": 48.372640518341235
+    },
+    {
+      "hop_length": 256,
+      "hop_ms": 11.609977324263038,
+      "clips": 6,
+      "frames": 15480,
+      "seconds": 0.10024750000593485,
+      "rows_per_second": 59.85186662654718,
+      "audio_realtime_factor": 1792.432663292336,
+      "estimated_full_cache_minutes": 1.3650367917474795
+    }
+  ],
+  "packed_loading": [],
+  "model_training": [
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 4,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 10.103792726358948,
+      "vram_mb": 319.9443359375,
+      "estimated_epoch_minutes": 14.24217656648787,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 4,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 10.628498170860183,
+      "vram_mb": 319.94580078125,
+      "estimated_epoch_minutes": 13.539071813036207,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 8,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 10.829610135933375,
+      "vram_mb": 624.9326171875,
+      "estimated_epoch_minutes": 13.287643617246212,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 8,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 10.585760685761342,
+      "vram_mb": 624.93408203125,
+      "estimated_epoch_minutes": 13.593732587735193,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 4,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.912863452059092,
+      "vram_mb": 310.88330078125,
+      "estimated_epoch_minutes": 14.516491697473066,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 4,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.60815771023797,
+      "vram_mb": 310.884765625,
+      "estimated_epoch_minutes": 14.976856577475555,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 8,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 10.12401231717797,
+      "vram_mb": 573.9052734375,
+      "estimated_epoch_minutes": 14.213732213248786,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 8,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.516974523355467,
+      "vram_mb": 573.90673828125,
+      "estimated_epoch_minutes": 15.12035149898291,
+      "status": "ok"
+    },
+    {
+      "compile": true,
+      "status": "failed: BackendCompilerFailed: backend='inductor' raised:\nRuntimeError: Cannot find a working triton installation. Either the package is not installed or it is too old. More information on installing Triton can be found at https://github.com/openai/triton\n\nSet TORCH_LOGS=\"+dynamo\" and TORCHDYNAMO_VERBOSE=1 for more information\n\n\nYou can suppress this exception and fall back to eager by setting:\n    import torch._dynamo\n    torch._dynamo.config.suppress_errors = True\n"
+    }
+  ],
+  "measured_selection": {
+    "temporal_kind": "tcn",
+    "batch_size": 8,
+    "amp": "bf16",
+    "compile": false,
+    "crop_frames": 1024,
+    "rows_per_second": 10.829610135933375,
+    "vram_mb": 624.9326171875,
+    "estimated_epoch_minutes": 13.287643617246212,
+    "status": "ok"
+  },
+  "selection_policy": "Fastest stable pilot, subject to full-cache loader and train-fold calibration confirmation",
+  "report_sha256_basis": "59f7f4d3f0859de74a514ff55bad093dd36f07aea50f27e412dffda10d201ced"
+}

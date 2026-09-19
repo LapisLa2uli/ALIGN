@@ -1,0 +1,238 @@
+{
+  "basic_pitch_same_validation_comparison": {
+    "absolute_delta": 0.13649364964706534,
+    "basic_pitch_canonical_note_wise_f1": 0.6322524276139706,
+    "mel_transcriber_canonical_note_wise_f1": 0.7687460772610359,
+    "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v2-exact32-full358-note-wise\\report.json",
+    "report_sha256": "048720f39b2bc848f9e6b9076851b75a053c77fe0968bcf3ae16e4734bc490d8"
+  },
+  "canonical_note_wise": {
+    "bootstrap": {
+      "lower_95": 0.7544521719789224,
+      "median": 0.7686290944097205,
+      "replicates": 1000,
+      "upper_95": 0.7819338479896012
+    },
+    "credit": 31233.0,
+    "f1": 0.7687460772610359,
+    "gold": 40408,
+    "precision": 0.7645964405493403,
+    "predicted": 40849,
+    "recall": 0.7729410017818253,
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5
+  },
+  "canonical_note_wise_transcription": {
+    "bootstrap": {
+      "lower_95": 0.7544521719789224,
+      "median": 0.7686290944097205,
+      "replicates": 1000,
+      "upper_95": 0.7819338479896012
+    },
+    "credit": 31233.0,
+    "f1": 0.7687460772610359,
+    "gold": 40408,
+    "per_source": {
+      "MozartClConcertoA": {
+        "credit": 31233.0,
+        "f1": 0.7687460772610359,
+        "gold": 40408,
+        "precision": 0.7645964405493403,
+        "predicted": 40849,
+        "recall": 0.7729410017818253,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      }
+    },
+    "precision": 0.7645964405493403,
+    "predicted": 40849,
+    "recall": 0.7729410017818253,
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5
+  },
+  "data": {
+    "locked_test_touched": false,
+    "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+    "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "release": "joint-outputraw-full-v1",
+    "validation_rows": 358
+  },
+  "fixed_downstream_aligner": {
+    "candidate_alternatives_used": true,
+    "candidate_count": 42177,
+    "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\last_checkpoint.pt",
+    "checkpoint_sha256": "c6a044a1ff85a6550093830eae4dd73b77084f0cbdd20e1383ef076b7fdbae4c",
+    "config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\config.json",
+    "config_sha256": "6a52fe0607a2acadecbb7f5bca2a54ab2299af82ff3d4b5afd29d2097d6a4d85",
+    "reused_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\validation-epoch010\\report.json",
+    "reused_report_sha256": "684504008ef25a47ae1402cc0fd517bc7b736f0f102ac95a92d02c671287198a",
+    "score_used_only_downstream": true
+  },
+  "fixed_downstream_note_wise": {
+    "bootstrap": {
+      "lower_95": 0.6797598020182298,
+      "median": 0.6988411853412411,
+      "replicates": 1000,
+      "upper_95": 0.7162398627559342
+    },
+    "credit": 29403.5,
+    "f1": 0.698246280618848,
+    "gold": 40712,
+    "per_type": {
+      "copy": {
+        "credit": 9468.0,
+        "f1": 0.6040384063287505,
+        "precision": 0.5649501760248224,
+        "predicted": 16759,
+        "recall": 0.6489376285126799,
+        "support": 14590
+      },
+      "extra": {
+        "credit": 0.0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "predicted": 2177,
+        "recall": 0.0,
+        "support": 4435
+      },
+      "match": {
+        "credit": 19250.0,
+        "f1": 0.8813295485761379,
+        "precision": 0.8514685067232838,
+        "predicted": 22608,
+        "recall": 0.9133611691022965,
+        "support": 21076
+      },
+      "missed_note": {
+        "credit": 212.0,
+        "f1": 0.20161673799334284,
+        "precision": 0.1178432462479155,
+        "predicted": 1799,
+        "recall": 0.6973684210526315,
+        "support": 304
+      },
+      "substitute": {
+        "credit": 114.0,
+        "f1": 0.482029598308668,
+        "precision": 0.6867469879518072,
+        "predicted": 166,
+        "recall": 0.3713355048859935,
+        "support": 307
+      }
+    },
+    "precision": 0.6758027074858075,
+    "predicted": 43509,
+    "recall": 0.7222317744154058,
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5
+  },
+  "inference_isolation": {
+    "basic_pitch_dependency": false,
+    "cache_pack_id": "17941a8ab4fcda4d797ad026db097a1f98faa74efdcd187738cabc450e2068d5",
+    "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-skip-balanced\\candidate-epoch-010.pt",
+    "checkpoint_sha256": "81d92dd72f8024d803bb397f2b9bf91891b11f3c2d0521b0808c6ebe7d67e918",
+    "forbidden_basenames": [
+      "canonical_dev_targets.sqlite",
+      "labels.json",
+      "note_map.json",
+      "performance_audio.mid",
+      "performance_score.musicxml",
+      "verified_score.musicxml"
+    ],
+    "forbidden_files_opened": [],
+    "inference_inputs": [
+      "packed log-mel",
+      "immutable effective_audio_transpose"
+    ],
+    "locked_test_materialized": false,
+    "predictions": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\validation-epoch010\\predictions.jsonl",
+    "predictions_sha256": "80418bc923a9c136c14ceb7d58de57597ed21ae04e3f50d99f4efef1c665277b",
+    "release_pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "rows": 358,
+    "schema_version": "align-mel-transcriber-freeze-v1",
+    "score_input": false,
+    "split": "val",
+    "target_column_read": false
+  },
+  "metric": {
+    "matching": "exclusive one-to-one; exact type=1.0, different type=0.5",
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "timestamp_tolerances": "diagnostic_only",
+    "unit": "canonical score-event identity"
+  },
+  "promotion": {
+    "lockbox_opened": false,
+    "promoted": false,
+    "target_f1": 0.95,
+    "validation_gate_met": false
+  },
+  "schema_version": "align-mel-transcriber-evaluation-v1",
+  "score_agnostic_diagnostics": {
+    "count_ratio": 1.010913680459315,
+    "onset_tolerance_sec": 0.05,
+    "per_timbre_source": {
+      "source:MozartClConcertoA": {
+        "credit": 40086,
+        "f1": 0.9866473042322509,
+        "precision": 0.9813214521775319,
+        "predicted": 40849,
+        "recall": 0.9920312809344685,
+        "support": 40408
+      },
+      "timbre:soundfont_v1": {
+        "credit": 40086,
+        "f1": 0.9866473042322509,
+        "precision": 0.9813214521775319,
+        "predicted": 40849,
+        "recall": 0.9920312809344685,
+        "support": 40408
+      }
+    },
+    "pitch_sequence_lcs": {
+      "credit": 40262,
+      "f1": 0.9909792387117418,
+      "precision": 0.9856300031824524,
+      "predicted": 40849,
+      "recall": 0.9963868540882993,
+      "support": 40408
+    },
+    "same_pitch_split_count": 2279,
+    "same_pitch_split_rate": 0.055790839433033854,
+    "short_note_recall": {
+      "ge_180ms": {
+        "matched": 16066,
+        "recall": 0.9876436958259052,
+        "support": 16267
+      },
+      "lt_120ms": {
+        "matched": 2389,
+        "recall": 0.9945878434637802,
+        "support": 2402
+      },
+      "lt_180ms": {
+        "matched": 24020,
+        "recall": 0.9949877801250984,
+        "support": 24141
+      },
+      "lt_80ms": {
+        "matched": 46,
+        "recall": 0.9387755102040817,
+        "support": 49
+      }
+    },
+    "target_same_pitch_rearticulation_count": 2645,
+    "target_same_pitch_rearticulation_rate": 0.06545733518115225,
+    "timestamp_status": "diagnostic_only"
+  },
+  "track_a_same_validation_comparison": {
+    "absolute_delta": null,
+    "mel_transcriber_canonical_note_wise_f1": 0.7687460772610359,
+    "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v2-exact32-full358-note-wise\\report.json",
+    "report_sha256": "048720f39b2bc848f9e6b9076851b75a053c77fe0968bcf3ae16e4734bc490d8",
+    "track_a_canonical_note_wise_f1": null
+  }
+}

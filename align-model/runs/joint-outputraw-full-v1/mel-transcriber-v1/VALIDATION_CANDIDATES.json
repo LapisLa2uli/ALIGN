@@ -1,0 +1,31 @@
+{
+  "schema_version": "align-mel-transcriber-validation-candidates-v1",
+  "declared_before_validation": true,
+  "selection_source": "train-fold score-agnostic pitch-sequence LCS only",
+  "timestamp_metric_used": false,
+  "maximum_candidates": 3,
+  "candidates": [
+    {
+      "epoch": 10,
+      "train_fold_sequence_f1": 0.9948080338844104,
+      "checkpoint": "full-training-skip-balanced/candidate-epoch-010.pt",
+      "sha256": "81d92dd72f8024d803bb397f2b9bf91891b11f3c2d0521b0808c6ebe7d67e918"
+    },
+    {
+      "epoch": 12,
+      "train_fold_sequence_f1": 0.9955561632597253,
+      "checkpoint": "full-training-skip-balanced/candidate-epoch-012.pt",
+      "sha256": "ec4f296a984d61bcf8c661b45dc0e1a0285130cf9207f1a8d87c610fd98dcdeb"
+    },
+    {
+      "epoch": 18,
+      "train_fold_sequence_f1": 0.9956923076923078,
+      "checkpoint": "full-training-skip-balanced/candidate-epoch-018.pt",
+      "sha256": "8f09db34813dd9e0e38623c89b11bead6ec15ff54a26b88600b066e1be6654f5"
+    }
+  ],
+  "promotion_target": {
+    "canonical_note_wise_f1": 0.9,
+    "locked_test_access": false
+  }
+}

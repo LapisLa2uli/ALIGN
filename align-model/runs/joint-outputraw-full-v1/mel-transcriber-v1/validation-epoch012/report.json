@@ -1,0 +1,180 @@
+{
+  "schema_version": "align-mel-transcriber-evaluation-v1",
+  "metric": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "unit": "canonical score-event identity",
+    "matching": "exclusive one-to-one; exact type=1.0, different type=0.5",
+    "timestamp_tolerances": "diagnostic_only"
+  },
+  "data": {
+    "release": "joint-outputraw-full-v1",
+    "validation_rows": 358,
+    "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+    "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "locked_test_touched": false
+  },
+  "inference_isolation": {
+    "schema_version": "align-mel-transcriber-freeze-v1",
+    "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-skip-balanced\\candidate-epoch-012.pt",
+    "checkpoint_sha256": "ec4f296a984d61bcf8c661b45dc0e1a0285130cf9207f1a8d87c610fd98dcdeb",
+    "cache_pack_id": "17941a8ab4fcda4d797ad026db097a1f98faa74efdcd187738cabc450e2068d5",
+    "release_pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "predictions": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\validation-epoch012\\predictions.jsonl",
+    "predictions_sha256": "23177866acc93505102531b66bb2b462bdca6df6466f43c57681b3c263f4a506",
+    "rows": 358,
+    "split": "val",
+    "inference_inputs": [
+      "packed log-mel",
+      "immutable effective_audio_transpose"
+    ],
+    "score_input": false,
+    "target_column_read": false,
+    "forbidden_files_opened": [],
+    "forbidden_basenames": [
+      "canonical_dev_targets.sqlite",
+      "labels.json",
+      "note_map.json",
+      "performance_audio.mid",
+      "performance_score.musicxml",
+      "verified_score.musicxml"
+    ],
+    "basic_pitch_dependency": false,
+    "locked_test_materialized": false
+  },
+  "fixed_downstream_aligner": {
+    "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\last_checkpoint.pt",
+    "checkpoint_sha256": "c6a044a1ff85a6550093830eae4dd73b77084f0cbdd20e1383ef076b7fdbae4c",
+    "config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\config.json",
+    "config_sha256": "6a52fe0607a2acadecbb7f5bca2a54ab2299af82ff3d4b5afd29d2097d6a4d85",
+    "score_used_only_downstream": true,
+    "candidate_alternatives_used": true,
+    "candidate_count": 42048
+  },
+  "canonical_note_wise": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 29458.0,
+    "predicted": 43361,
+    "gold": 40712,
+    "precision": 0.6793662507783492,
+    "recall": 0.7235704460601297,
+    "f1": 0.7007719481878844,
+    "per_type": {
+      "copy": {
+        "precision": 0.5673695496783416,
+        "recall": 0.6528444139821796,
+        "f1": 0.6071132640703677,
+        "credit": 9525.0,
+        "predicted": 16788,
+        "support": 14590
+      },
+      "extra": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "credit": 0.0,
+        "predicted": 2082,
+        "support": 4435
+      },
+      "match": {
+        "precision": 0.8524379432624114,
+        "recall": 0.9124596697665591,
+        "f1": 0.8814281785681547,
+        "credit": 19231.0,
+        "predicted": 22560,
+        "support": 21076
+      },
+      "missed_note": {
+        "precision": 0.12097230073487847,
+        "recall": 0.7039473684210527,
+        "f1": 0.20646406174626147,
+        "credit": 214.0,
+        "predicted": 1769,
+        "support": 304
+      },
+      "substitute": {
+        "precision": 0.6975308641975309,
+        "recall": 0.36807817589576547,
+        "f1": 0.4818763326226013,
+        "credit": 113.0,
+        "predicted": 162,
+        "support": 307
+      }
+    },
+    "bootstrap": {
+      "replicates": 1000,
+      "lower_95": 0.6818968477539739,
+      "median": 0.7012192600010112,
+      "upper_95": 0.7184371310700595
+    }
+  },
+  "score_agnostic_diagnostics": {
+    "pitch_sequence_lcs": {
+      "precision": 0.9870368555185258,
+      "recall": 0.9968075628588399,
+      "f1": 0.9918981481481483,
+      "credit": 40279,
+      "predicted": 40808,
+      "support": 40408
+    },
+    "count_ratio": 1.0098990298950703,
+    "same_pitch_split_count": 2273,
+    "same_pitch_split_rate": 0.05569986277200549,
+    "short_note_recall": {
+      "lt_80ms": {
+        "matched": 47,
+        "support": 49,
+        "recall": 0.9591836734693877
+      },
+      "lt_120ms": {
+        "matched": 2390,
+        "support": 2402,
+        "recall": 0.9950041631973355
+      },
+      "lt_180ms": {
+        "matched": 24039,
+        "support": 24141,
+        "recall": 0.9957748229153722
+      },
+      "ge_180ms": {
+        "matched": 16099,
+        "support": 16267,
+        "recall": 0.989672342779861
+      }
+    },
+    "per_timbre_source": {
+      "source:MozartClConcertoA": {
+        "precision": 0.983581650656734,
+        "recall": 0.9933181548208275,
+        "f1": 0.9884259259259258,
+        "credit": 40138,
+        "predicted": 40808,
+        "support": 40408
+      },
+      "timbre:soundfont_v1": {
+        "precision": 0.983581650656734,
+        "recall": 0.9933181548208275,
+        "f1": 0.9884259259259258,
+        "credit": 40138,
+        "predicted": 40808,
+        "support": 40408
+      }
+    },
+    "onset_tolerance_sec": 0.05,
+    "timestamp_status": "diagnostic_only"
+  },
+  "basic_pitch_same_validation_comparison": {
+    "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v2-exact32-full358-note-wise\\report.json",
+    "report_sha256": "048720f39b2bc848f9e6b9076851b75a053c77fe0968bcf3ae16e4734bc490d8",
+    "basic_pitch_canonical_note_wise_f1": 0.6322524276139706,
+    "mel_transcriber_canonical_note_wise_f1": 0.7007719481878844,
+    "absolute_delta": 0.06851952057391375
+  },
+  "promotion": {
+    "target_f1": 0.9,
+    "validation_gate_met": false,
+    "promoted": false,
+    "lockbox_opened": false
+  }
+}

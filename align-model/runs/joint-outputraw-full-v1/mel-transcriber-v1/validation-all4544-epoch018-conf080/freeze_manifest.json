@@ -1,0 +1,48 @@
+{
+  "schema_version": "align-mel-transcriber-freeze-v1",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt",
+  "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+  "cache_pack_id": "17941a8ab4fcda4d797ad026db097a1f98faa74efdcd187738cabc450e2068d5",
+  "release_pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "predictions": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\validation-all4544-epoch018-conf080\\predictions.jsonl",
+  "predictions_sha256": "32ae4b7b1d7d03bf1a56d7571caa2881b1847cc311365fc93efb747e181ec6c0",
+  "rows": 358,
+  "split": "val",
+  "inference_inputs": [
+    "packed log-mel"
+  ],
+  "pitch_output_space": "written",
+  "pitch_policy": "written pitch learned from sounding-audio supervision; transpose metadata audited but not consumed by the model",
+  "effective_audio_transpose_consumed": false,
+  "effective_audio_transpose_values": [
+    2
+  ],
+  "decode_config": {
+    "voice_on": 0.52,
+    "voice_off": 0.35,
+    "onset_threshold": 0.48,
+    "boundary_threshold": 0.46,
+    "strong_rearticulation": 0.64,
+    "min_note_sec": 0.04,
+    "merge_gap_sec": 0.045,
+    "pitch_change_frames": 4,
+    "alternatives": 3,
+    "min_confidence": 0.8
+  },
+  "decode_override": {
+    "min_confidence": 0.8
+  },
+  "score_input": false,
+  "target_column_read": false,
+  "forbidden_files_opened": [],
+  "forbidden_basenames": [
+    "canonical_dev_targets.sqlite",
+    "labels.json",
+    "note_map.json",
+    "performance_audio.mid",
+    "performance_score.musicxml",
+    "verified_score.musicxml"
+  ],
+  "basic_pitch_dependency": false,
+  "locked_test_materialized": false
+}

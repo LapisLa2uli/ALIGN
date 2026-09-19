@@ -1,0 +1,200 @@
+{
+  "schema_version": "align-mel-transcriber-track-b-report-v1",
+  "status": "experimental_not_promoted",
+  "selected_experimental_checkpoint": {
+    "path": "full-training-skip-balanced/candidate-epoch-018.pt",
+    "sha256": "8f09db34813dd9e0e38623c89b11bead6ec15ff54a26b88600b066e1be6654f5",
+    "selection_reason": "Best official typed canonical score-event F1 after the same frozen full downstream aligner used by the Basic-Pitch track.",
+    "production_default_changed": false
+  },
+  "data": {
+    "release": "joint-outputraw-full-v1",
+    "train_rows": 4544,
+    "optimizer_train_rows": 4317,
+    "train_fold_calibration_rows": 227,
+    "validation_rows": 358,
+    "locked_test_metadata_rows": 4022,
+    "locked_test_materialized": false,
+    "locked_test_opened": false,
+    "intonation_masked": true,
+    "release_pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd"
+  },
+  "frontend_cache": {
+    "sample_rate": 22050,
+    "n_fft": 2048,
+    "n_mels": 128,
+    "selected_hop": 256,
+    "selected_hop_ms": 11.609977324263038,
+    "normalization": "per-clip q05/q50/q95; no top-dB clipping",
+    "packed_dtype": "float16",
+    "packed_bytes": 4661482752,
+    "packed_shards": 77,
+    "records": 4902,
+    "pack_id": "17941a8ab4fcda4d797ad026db097a1f98faa74efdcd187738cabc450e2068d5",
+    "deep_checksum_verification": "passed",
+    "source_audio_modified": false,
+    "hop_benchmark": {
+      "128": {
+        "hop_ms": 5.804988662131519,
+        "rows_per_second": 115.66488029344417
+      },
+      "256": {
+        "hop_ms": 11.609977324263038,
+        "rows_per_second": 177.79516219875586
+      }
+    }
+  },
+  "architecture_profile": {
+    "selected": "time-preserving 2D spectral encoder + dilated bidirectional-context TCN",
+    "selection": "measured pilot",
+    "selected_batch_size": 24,
+    "selected_amp": "bfloat16",
+    "selected_workers": 0,
+    "pilot_rows_per_second": 165.25891320533597,
+    "full_run_rows_per_second_range": [
+      103.9,
+      110.6
+    ],
+    "full_run_peak_vram_mb": 2233,
+    "bigru_best_pilot_rows_per_second": 160.00595222250635,
+    "torch_compile": "rejected: no working Triton installation",
+    "optimizer": "fused AdamW"
+  },
+  "version_rationale": {
+    "earlier": {
+      "path": "full-training",
+      "design": "convolutional spectral path without a direct high-resolution mel skip and without pitch-class balancing",
+      "observed_failure": {
+        "train_pitch_frame_accuracy": 0.15409224948533912,
+        "calibration_pitch_frame_accuracy": 0.16885025405997808,
+        "train_fold_sequence_f1": 0.32750279121697057,
+        "count_ratio": 0.47434842249657067
+      },
+      "decision": "rejected"
+    },
+    "later": {
+      "path": "full-training-skip-balanced",
+      "change": "adds a direct time-preserving 128-bin mel projection, inverse-sqrt pitch-class weights, and lowers augmentation probability to 0.55",
+      "why_it_targets_the_failure": "The direct path preserves absolute spectral position and class weighting prevents collapse onto common Mozart pitches.",
+      "comparable_evidence": {
+        "single_clip_loss_first": 8.573384284973145,
+        "single_clip_loss_last": 1.3712854385375977,
+        "train_fold_sequence_f1_epoch18": 0.9956923076923078,
+        "train_fold_count_ratio_epoch18": 1.0061728395061729
+      },
+      "decision": "experimental_not_promoted"
+    }
+  },
+  "validation_candidates": {
+    "declaration": "VALIDATION_CANDIDATES.json",
+    "count": 3,
+    "timestamp_metric_used_for_selection": false,
+    "results": [
+      {
+        "epoch": 10,
+        "canonical_transcription_f1": 0.7687460772610359,
+        "fixed_full_aligner_typed_f1": 0.698246280618848
+      },
+      {
+        "epoch": 12,
+        "canonical_transcription_f1": 0.7690849093774625,
+        "fixed_full_aligner_typed_f1": 0.7007719481878844
+      },
+      {
+        "epoch": 18,
+        "canonical_transcription_f1": 0.7684215712842749,
+        "fixed_full_aligner_typed_f1": 0.7033391329218008
+      }
+    ]
+  },
+  "selected_validation": {
+    "official_metric": {
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "unit": "canonical score-event identity",
+      "matching": "exclusive one-to-one",
+      "correct_location_correct_type_credit": 1.0,
+      "correct_location_different_type_credit": 0.5,
+      "wrong_location_credit": 0.0
+    },
+    "same_frozen_full_aligner_comparison": {
+      "mel_transcriber": {
+        "precision": 0.6830702282301745,
+        "recall": 0.7248477107486736,
+        "f1": 0.7033391329218008,
+        "bootstrap_lower_95": 0.6839328161287267,
+        "bootstrap_upper_95": 0.7210592274165938
+      },
+      "basic_pitch_track": {
+        "f1": 0.6322524276139706,
+        "report_sha256": "048720f39b2bc848f9e6b9076851b75a053c77fe0968bcf3ae16e4734bc490d8"
+      },
+      "absolute_f1_delta": 0.07108670530783018
+    },
+    "per_type": {
+      "match": {
+        "precision": 0.8514974304447989,
+        "recall": 0.9119377490985007,
+        "f1": 0.8806818181818181,
+        "support": 21076
+      },
+      "copy": {
+        "precision": 0.5726995879859079,
+        "recall": 0.6573680603152844,
+        "f1": 0.6121198583144526,
+        "support": 14590
+      },
+      "substitute": {
+        "precision": 0.6851851851851852,
+        "recall": 0.36156351791530944,
+        "f1": 0.4733475479744136,
+        "support": 307
+      },
+      "extra": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4435
+      },
+      "missed_note": {
+        "precision": 0.12852852852852853,
+        "recall": 0.7039473684210527,
+        "f1": 0.21736922295581518,
+        "support": 304
+      }
+    },
+    "score_agnostic_diagnostics": {
+      "pitch_sequence_f1": 0.9930526471385283,
+      "count_ratio": 1.0090576123539894,
+      "same_pitch_split_rate": 0.05547652916073969,
+      "short_note_recall_lt_80ms": 0.9591836734693877,
+      "short_note_recall_lt_120ms": 0.9954204829308909,
+      "short_note_recall_lt_180ms": 0.996396172486641,
+      "source_MozartClConcertoA_f1_at_50ms": 0.9895543347047374,
+      "timbre_soundfont_v1_f1_at_50ms": 0.9895543347047374,
+      "timestamp_status": "diagnostic_only"
+    }
+  },
+  "inference_contract": {
+    "basic_pitch_dependency": false,
+    "score_input_to_transcriber": false,
+    "labels_read_during_inference": false,
+    "note_map_read_during_inference": false,
+    "target_column_read_during_inference": false,
+    "written_pitch_metadata": "immutable effective_audio_transpose from audited bundle metadata",
+    "candidate_alternatives_and_confidence_emitted": true,
+    "score_use": "fixed downstream aligner only"
+  },
+  "checkpointing": {
+    "atomic_mid_epoch_resume": true,
+    "optimizer_boundary_only": true,
+    "model_optimizer_scheduler_scaler_rng_cursor_saved": true,
+    "resume_test": "passed"
+  },
+  "promotion": {
+    "required_canonical_note_wise_f1": 0.9,
+    "gate_met": false,
+    "promoted": false,
+    "lockbox_opened": false,
+    "honest_conclusion": "The acoustic transcriber is strong on score-agnostic validation, but the official canonical score-event gate after the frozen downstream aligner was not met."
+  }
+}

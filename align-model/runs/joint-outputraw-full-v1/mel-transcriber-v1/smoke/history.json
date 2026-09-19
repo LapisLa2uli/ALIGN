@@ -1,0 +1,43 @@
+{
+  "best_train_fold_calibration_f1": 0.07131782945736434,
+  "calibration_rows": 1,
+  "history": [
+    {
+      "epoch": 1,
+      "learning_rate": 2e-05,
+      "optimizer_steps": 2,
+      "rows_per_second": 4.563000170004353,
+      "train_boundary": 0.31207069754600525,
+      "train_confidence": 0.8472228050231934,
+      "train_fold_calibration": {
+        "clip_mean_f1": 0.07131782945736434,
+        "clips": 1,
+        "count_ratio": 3.5422535211267605,
+        "f1": 0.07131782945736434,
+        "matched": 23,
+        "metric": "score_agnostic_pitch_sequence_lcs",
+        "precision": 0.04572564612326044,
+        "predicted": 503,
+        "recall": 0.1619718309859155,
+        "selection_uses_timestamps": false,
+        "target": 142
+      },
+      "train_loss": 8.821592330932617,
+      "train_merge_consistency": 0.4927900433540344,
+      "train_min_duration": 4.445348167791963e-06,
+      "train_onset": 0.37526029348373413,
+      "train_pitch": 4.030736684799194,
+      "train_rearticulation": 0.3924843966960907,
+      "train_rows": 7,
+      "train_segment": 5.591214656829834,
+      "train_voiced": 0.6922563314437866
+    }
+  ],
+  "official_validation_selection_pending": true,
+  "schema_version": "align-mel-transcriber-v1",
+  "selection_metric": "train-fold score-agnostic pitch-sequence LCS F1",
+  "stopped_reason": "max_epochs",
+  "timestamp_metric_used_for_selection": false,
+  "training_rows": 7,
+  "validation_rows": 358
+}

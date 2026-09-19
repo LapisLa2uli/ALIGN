@@ -1,0 +1,38 @@
+{
+  "schema_version": "align-mel-transcriber-validation-candidates-v2",
+  "declared_before_validation": true,
+  "declared_utc": "2026-09-16T17:11:00Z",
+  "selection_source": "prior 227-row train-fold calibration; epoch 18 fixed before all-row refit",
+  "timestamp_metric_used": false,
+  "maximum_candidates": 1,
+  "candidates": [
+    {
+      "name": "all4544-refit-epoch018",
+      "epoch": 18,
+      "training_rows": 4544,
+      "calibration_rows_during_refit": 0,
+      "checkpoint": "full-training-all4544-v2/candidate-epoch-018.pt",
+      "decoder": {
+        "min_confidence": 0.8,
+        "selected_on": "all 4544 train rows by score-agnostic pitch-sequence LCS F1",
+        "train_fold_f1": 0.9962344689102051,
+        "train_fold_count_ratio": 0.9994596769104562
+      },
+      "sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+      "validation_opened": true,
+      "predictions": "validation-all4544-epoch018-conf080/predictions.jsonl",
+      "predictions_sha256": "32ae4b7b1d7d03bf1a56d7571caa2881b1847cc311365fc93efb747e181ec6c0",
+      "report": "validation-all4544-epoch018-conf080/report.json",
+      "report_sha256": "1717f5bed5c2e96937ec3d2553e41d1edb02cabc8597b4856bbf7f411732e73a",
+      "canonical_note_wise_f1": 0.7720967642145641,
+      "validation_gate_met": false,
+      "promotion": "rejected"
+    }
+  ],
+  "promotion_target": {
+    "canonical_note_wise_transcriber_f1": 0.95,
+    "strictly_greater_than_target": true,
+    "locked_test_access": false,
+    "production_mutation": false
+  }
+}

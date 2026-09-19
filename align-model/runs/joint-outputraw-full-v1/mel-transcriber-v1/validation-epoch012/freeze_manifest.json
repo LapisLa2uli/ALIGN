@@ -1,0 +1,28 @@
+{
+  "schema_version": "align-mel-transcriber-freeze-v1",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-skip-balanced\\candidate-epoch-012.pt",
+  "checkpoint_sha256": "ec4f296a984d61bcf8c661b45dc0e1a0285130cf9207f1a8d87c610fd98dcdeb",
+  "cache_pack_id": "17941a8ab4fcda4d797ad026db097a1f98faa74efdcd187738cabc450e2068d5",
+  "release_pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "predictions": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\validation-epoch012\\predictions.jsonl",
+  "predictions_sha256": "23177866acc93505102531b66bb2b462bdca6df6466f43c57681b3c263f4a506",
+  "rows": 358,
+  "split": "val",
+  "inference_inputs": [
+    "packed log-mel",
+    "immutable effective_audio_transpose"
+  ],
+  "score_input": false,
+  "target_column_read": false,
+  "forbidden_files_opened": [],
+  "forbidden_basenames": [
+    "canonical_dev_targets.sqlite",
+    "labels.json",
+    "note_map.json",
+    "performance_audio.mid",
+    "performance_score.musicxml",
+    "verified_score.musicxml"
+  ],
+  "basic_pitch_dependency": false,
+  "locked_test_materialized": false
+}

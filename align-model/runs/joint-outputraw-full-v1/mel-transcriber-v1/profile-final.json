@@ -1,0 +1,165 @@
+{
+  "schema_version": "align-mel-transcriber-profile-v1",
+  "ready_sha256": "da32428972b762cb78e48486891a11b221ff04281f2814f93b1ded5387d22af2",
+  "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+  "locked_test_materialized": false,
+  "frontend": [
+    {
+      "hop_length": 128,
+      "hop_ms": 5.804988662131519,
+      "clips": 6,
+      "frames": 30958,
+      "seconds": 0.05187399999704212,
+      "rows_per_second": 115.66488029344417,
+      "audio_realtime_factor": 3463.9105030320025,
+      "estimated_full_cache_minutes": 0.7063509666263902
+    },
+    {
+      "hop_length": 256,
+      "hop_ms": 11.609977324263038,
+      "clips": 6,
+      "frames": 15480,
+      "seconds": 0.03374669999902835,
+      "rows_per_second": 177.79516219875586,
+      "audio_realtime_factor": 5324.576726886181,
+      "estimated_full_cache_minutes": 0.4595175649867694
+    }
+  ],
+  "packed_loading": [
+    {
+      "workers": 0,
+      "prefetch_factor": null,
+      "rows": 320,
+      "seconds": 1.0453587000010884,
+      "rows_per_second": 306.11502061413637
+    },
+    {
+      "workers": 2,
+      "prefetch_factor": 4,
+      "rows": 320,
+      "seconds": 16.488251499999024,
+      "rows_per_second": 19.40775830596828
+    },
+    {
+      "workers": 4,
+      "prefetch_factor": 4,
+      "rows": 320,
+      "seconds": 30.428363900005934,
+      "rows_per_second": 10.516503649410398
+    },
+    {
+      "workers": 6,
+      "prefetch_factor": 4,
+      "rows": 320,
+      "seconds": 43.01574519999849,
+      "rows_per_second": 7.439136495536319
+    }
+  ],
+  "model_training": [
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 4,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.565060441144848,
+      "vram_mb": 319.9443359375,
+      "estimated_epoch_minutes": 15.04433776299029,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 4,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.434626693314234,
+      "vram_mb": 319.94580078125,
+      "estimated_epoch_minutes": 15.252325786453584,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 8,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.832891242455705,
+      "vram_mb": 624.9326171875,
+      "estimated_epoch_minutes": 14.634556251235608,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "tcn",
+      "batch_size": 8,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.373467804164836,
+      "vram_mb": 624.93408203125,
+      "estimated_epoch_minutes": 15.35184234975044,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 4,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.044170871348866,
+      "vram_mb": 310.88330078125,
+      "estimated_epoch_minutes": 15.910800674483328,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 4,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.892749243010389,
+      "vram_mb": 310.884765625,
+      "estimated_epoch_minutes": 14.546007026476582,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 8,
+      "amp": "bf16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 9.181422685771809,
+      "vram_mb": 573.9052734375,
+      "estimated_epoch_minutes": 15.672952321757037,
+      "status": "ok"
+    },
+    {
+      "temporal_kind": "bigru",
+      "batch_size": 8,
+      "amp": "fp16",
+      "compile": false,
+      "crop_frames": 1024,
+      "rows_per_second": 8.863951245428058,
+      "vram_mb": 573.90673828125,
+      "estimated_epoch_minutes": 16.234295069506643,
+      "status": "ok"
+    },
+    {
+      "compile": true,
+      "status": "failed: BackendCompilerFailed: backend='inductor' raised:\nRuntimeError: Cannot find a working triton installation. Either the package is not installed or it is too old. More information on installing Triton can be found at https://github.com/openai/triton\n\nSet TORCH_LOGS=\"+dynamo\" and TORCHDYNAMO_VERBOSE=1 for more information\n\n\nYou can suppress this exception and fall back to eager by setting:\n    import torch._dynamo\n    torch._dynamo.config.suppress_errors = True\n"
+    }
+  ],
+  "measured_selection": {
+    "temporal_kind": "bigru",
+    "batch_size": 4,
+    "amp": "fp16",
+    "compile": false,
+    "crop_frames": 1024,
+    "rows_per_second": 9.892749243010389,
+    "vram_mb": 310.884765625,
+    "estimated_epoch_minutes": 14.546007026476582,
+    "status": "ok"
+  },
+  "selection_policy": "Fastest stable pilot, subject to full-cache loader and train-fold calibration confirmation",
+  "report_sha256_basis": "6d46802ea6fc2b33de80a30f1f20773cabfa2740d28f6706a1b9f4f4a0431e1a"
+}
