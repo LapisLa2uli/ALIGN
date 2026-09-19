@@ -1,0 +1,97 @@
+{
+  "schema_version": "align-orn-v2-acoustic-support-blocker-v1",
+  "status": "high_recall_pool_fails_comfortable_canonical_headroom_gate",
+  "release_manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+  "population": {
+    "train": 901,
+    "calibration": 64,
+    "validation_read": false,
+    "lockbox_read": false
+  },
+  "activation_lattice": {
+    "candidate_pool_sha256": "1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0",
+    "sequence_supervision_sha256": "1b073c6d0cfe7cf1c4b0bdf4cf8608014bd65b1d11949124a2220f7211f2f81b",
+    "total_interval_candidates": 943719,
+    "unique_pitch_onset_groups": 237309,
+    "target_events": 48933,
+    "sequence_matched_events": 45282,
+    "sequence_oracle": {
+      "precision": 1.0,
+      "recall": 0.9253877751210839,
+      "f1": 0.9612482088839357
+    },
+    "support_recall": {
+      "lt_80ms": 0.6193353474320241,
+      "80_to_120ms": 0.606404958677686,
+      "120_to_180ms": 0.8475236505286589,
+      "ge_180ms": 0.9373868272356394,
+      "renderer_ornament": 0.5150698770836841,
+      "planted_extra": 0.9855351976856316,
+      "planted_extra_copy": 0.9805036555645816,
+      "copy": 0.9804314830875975,
+      "substitute": 0.9849198868991518,
+      "overlap": 0.9116665531567119
+    },
+    "exact_rendered_extra_prefix_recall": 0.12379675886438406,
+    "rows_with_full_sequence_coverage": 172,
+    "rows": 965,
+    "sequence_coverage_report": "basic-pitch-activation-lattice-v1\\sequence_coverage_report.json"
+  },
+  "canonical_candidate_oracles_on_calibration": {
+    "target_aware_identity_oracle": {
+      "precision": 0.9197662061636557,
+      "recall": 0.84521484375,
+      "f1": 0.8809160305343512,
+      "bootstrap_95": {
+        "lower": 0.864951132419973,
+        "median": 0.8807685154423184,
+        "upper": 0.8987959405051703
+      },
+      "extra_f1": 0.2588555858310627,
+      "extra_credit": 95.0,
+      "extra_predicted": 267,
+      "extra_gold": 467
+    },
+    "target_aware_selection_through_frozen_crf": {
+      "f1": 0.8362652232746954,
+      "bootstrap_95": {
+        "lower": 0.8165033770674959,
+        "median": 0.8362516552525325,
+        "upper": 0.8568373048937061
+      },
+      "gate": 0.85,
+      "gate_passed": false
+    },
+    "report": "basic-pitch-activation-lattice-v1\\canonical_oracle_report.json",
+    "report_sha256": "4a9a57eb1aca492deba9c2e13995688ccc1c44285c2e30321fca188ac44ce798"
+  },
+  "trained_interval_scorer": {
+    "architecture": "exact one-to-one interval labels, recall-balanced focal loss, hard same-onset/pitch interval negatives",
+    "model_sha256": "36d0fcac07efac599cf7ff16d9fca5bb18631edd7eebf3ea4dbc0bff0ad08ba5",
+    "best_threshold": 0.7,
+    "combined_calibration_f1": 0.657543391188251,
+    "promotion": "rejected",
+    "reason": "Independent thresholded group scoring cannot resolve the global emitted-event count needed for exclusive rendered EXTRA indices."
+  },
+  "comparisons": {
+    "unchanged_basic_pitch_combined_calibration_f1": 0.8013462485634543,
+    "direct_template_rescue_combined_calibration_f1": 0.8068033854166666,
+    "activation_interval_scorer_combined_calibration_f1": 0.657543391188251
+  },
+  "quantified_blocker": {
+    "definitive_for_current_candidate_lattice_and_scorer": true,
+    "reason": "The required comfortable candidate oracle was not achieved for exclusive rendered EXTRA identity. Missing early ornament events shift every later rendered index; only 12.38% of rendered extras retain exact prefix identity. Even target-aware candidate selection through the frozen CRF reaches only 0.83627, below 0.85.",
+    "required_next_model_change": "A jointly normalized candidate-selection/identity lattice must add candidate DROP versus EMIT and emitted-event-count state so selected intervals are reindexed globally while score-template ornament hypotheses can account for missing events. Local thresholding or another residual interval classifier cannot repair this identity coupling.",
+    "validation_action": "remain_unopened"
+  },
+  "isolation": {
+    "timestamps_used_for_promotion": false,
+    "validation_targets_read": false,
+    "v1_lockbox_opened": false,
+    "v2_lockbox_opened": false,
+    "v1_or_v2_lockbox_targets_read": false,
+    "original_mapper_v6_test_read": false,
+    "production_weights_mutated": false,
+    "paper_updated": false
+  }
+}

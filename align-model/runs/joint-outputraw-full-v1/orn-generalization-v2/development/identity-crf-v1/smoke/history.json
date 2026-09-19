@@ -1,0 +1,130 @@
+{
+  "history": [
+    {
+      "calibration_oracle": {
+        "bootstrap_95": {
+          "lower_95": 0.3815789473684211,
+          "median": 0.3815789473684211,
+          "replicates": 10,
+          "upper_95": 0.3815789473684211
+        },
+        "credit": 14.5,
+        "f1": 0.3815789473684211,
+        "gold": 27,
+        "per_row": [
+          {
+            "decode": {
+              "actions": {
+                "candidate_extra": 0,
+                "candidate_extra_copy": 24,
+                "link": 0,
+                "ornament_extra": 3,
+                "score_delete": 22,
+                "skip_ornament": 0
+              },
+              "copies": 0,
+              "hypotheses": 16,
+              "score": 3.8056553456699476,
+              "source_span": null
+            },
+            "metric": {
+              "credit": 14.5,
+              "f1": 0.3815789473684211,
+              "gold": 27,
+              "precision": 0.29591836734693877,
+              "predicted": 49,
+              "recall": 0.5370370370370371
+            },
+            "sample": "synth_gen_4263"
+          }
+        ],
+        "per_source": {
+          "0dd39cccb58f6b2d7291b1825cef21cdde388a07d24c37f9e3b667e7ce0b6b8a": {
+            "credit": 14.5,
+            "f1": 0.3815789473684211,
+            "gold": 27,
+            "precision": 0.29591836734693877,
+            "predicted": 49,
+            "recall": 0.5370370370370371,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          }
+        },
+        "per_type": {
+          "copy": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "gold": 0,
+            "precision": 0.0,
+            "predicted": 24,
+            "recall": 0.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "extra": {
+            "credit": 2.0,
+            "f1": 0.5,
+            "gold": 5,
+            "precision": 0.6666666666666666,
+            "predicted": 3,
+            "recall": 0.4,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "match": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "gold": 22,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "gold": 0,
+            "precision": 0.0,
+            "predicted": 22,
+            "recall": 0.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          },
+          "substitute": {
+            "credit": 0.0,
+            "f1": 1.0,
+            "gold": 0,
+            "precision": 1.0,
+            "predicted": 0,
+            "recall": 1.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5
+          }
+        },
+        "precision": 0.29591836734693877,
+        "predicted": 49,
+        "recall": 0.5370370370370371,
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "source_macro": {
+          "macro_f1": 0.3815789473684211,
+          "maximum_f1": 0.3815789473684211,
+          "median_f1": 0.3815789473684211,
+          "minimum_f1": 0.3815789473684211,
+          "sources": 1
+        },
+        "status": "available",
+        "type_mismatch_credit": 0.5
+      },
+      "epoch": 1,
+      "global_step": 1,
+      "train_loss": 1.5353401899337769
+    }
+  ]
+}

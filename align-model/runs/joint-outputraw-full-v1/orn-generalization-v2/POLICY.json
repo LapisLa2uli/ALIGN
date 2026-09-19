@@ -1,0 +1,119 @@
+{
+  "created_utc": "2026-09-17T23:02:29.296139+00:00",
+  "eligibility": {
+    "exact_identity_round_trip_required": true,
+    "identity_crf_gold_coverage_required": true,
+    "pitch_policy": {
+      "audio_pitch_space": "sounding",
+      "effective_audio_transpose": 2,
+      "midi_pitch_space": "sounding",
+      "sounding_transpose": -2
+    },
+    "repeat_metadata_lineage_consistency_required": true,
+    "required_files": [
+      "metadata.json",
+      "labels.json",
+      "note_map.json",
+      "verified_score.musicxml",
+      "performance_score.musicxml",
+      "performance_audio.wav",
+      "performance_audio.mid",
+      "reference_audio.wav",
+      "reference_audio.mid"
+    ],
+    "schemas": {
+      "corrected_lineage": "2.0",
+      "labels": "1.2",
+      "metadata": "1.2",
+      "source_note_map": "1.0"
+    },
+    "valid_label_spans_required": true
+  },
+  "gate": {
+    "combined_open_validation_f1": 0.85,
+    "lockbox_openings": 1,
+    "post_test_tuning": false
+  },
+  "grouping": {
+    "duplicates_never_cross_splits": true,
+    "generated": "connected component of verified-score, clean content, transposition-invariant content, performed lineage, and audio SHA-256",
+    "raw": "authoritative source-score SHA-256"
+  },
+  "identity_crf_module": {
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\identity_crf_v1.py",
+    "sha256": "b25c33fc83da8cb10978ea74a35a1c68570cacfff3d82095fd898929f468a985"
+  },
+  "locked_before_membership_selection": true,
+  "metric": {
+    "exact_identity_and_type": 1.0,
+    "exact_identity_wrong_type": 0.5,
+    "matching": "exclusive one-to-one",
+    "timestamp_metrics": "diagnostic_only",
+    "unit": "canonical score-note/event identity",
+    "wrong_identity": 0.0
+  },
+  "paper_updated": false,
+  "prior_exclusions": {
+    "orn500": {
+      "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\manifest.json",
+      "manifest_sha256": "78cbbe88aed16cc4659f237903aa247e1692a28d0baffeb5a0f40a18fefa94e1",
+      "prediction_or_outcome_files_read": false,
+      "scope": "all selected rows plus source-song, verified-score/content, and performance-audio groups"
+    },
+    "orn_generalization_v1": {
+      "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\release_manifest.json",
+      "manifest_sha256": "d4baeb90389136fbdd4549cdfb40fb2aceb2a97d899ae903bebffa2df6aefbc0",
+      "scope": "every development row/group and public sealed-lockbox verified-score/audio group; v1 targets/key are forbidden"
+    },
+    "outputraw": {
+      "development_targets": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\canonical_dev_targets.sqlite",
+      "original_test_read": false,
+      "splits": [
+        "train",
+        "val"
+      ]
+    }
+  },
+  "production_weights_mutated": false,
+  "raw_lockbox_minimum_independent_sources": 20,
+  "repair": {
+    "acoustic_predictions_used": false,
+    "module": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\global_ornament_lineage_v2.py",
+    "module_sha256": "e955bbd93533ba5ebf8db06f47e72d4096561a3b5f23cfa9dd06f1268184c329",
+    "rules": [
+      "parse generator performance MusicXML and non-grace performed lineage",
+      "collapse true notated tie chains before assignment",
+      "expand grace/trill/mordent/turn control flow exactly as the renderer",
+      "globally align raw MIDI and renderer template one-to-one by exact written pitch",
+      "require zero raw/template edits and every performed identity mapped",
+      "preserve planted EXTRA/copy lineage separately from renderer ornament EXTRA",
+      "project to tie-aware verified-score canonical spans",
+      "require zero backward identity steps within each replay pass",
+      "preserve raw MIDI temporal order and explicit rendered identity",
+      "fail closed on every ambiguity or failed exact round trip"
+    ],
+    "version": "align-global-ornament-lineage-v2"
+  },
+  "schema_version": "align-orn-generalization-v2-policy",
+  "seed": 20260919,
+  "selection_outcome_blind": true,
+  "source_root": "E:\\outputRaw_orn_10k",
+  "split_fractions_by_group": {
+    "calibration": [
+      0.15,
+      0.2
+    ],
+    "lockbox": [
+      0.0,
+      0.05
+    ],
+    "open_validation": [
+      0.05,
+      0.15
+    ],
+    "train": [
+      0.2,
+      1.0
+    ]
+  }
+}

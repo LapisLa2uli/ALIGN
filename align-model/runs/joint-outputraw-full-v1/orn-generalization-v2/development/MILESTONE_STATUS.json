@@ -1,0 +1,155 @@
+{
+  "schema_version": "align-orn-generalization-v2-development-milestone-v1",
+  "status": "mapper_oracle_gate_passed_combined_calibration_gate_unmet",
+  "release": {
+    "manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+    "membership_changed": false,
+    "train_rows": 901,
+    "calibration_rows": 64,
+    "unopened_validation_rows": 111,
+    "encrypted_lockbox_rows": 57
+  },
+  "source_integrity": {
+    "status": "passed",
+    "rows": 965,
+    "files_checked": 8685,
+    "failures": 0,
+    "report": "SOURCE_INTEGRITY.json",
+    "report_sha256": "c578d90487d69cdb88bb6c9207c43517121e1eb22eb9096b4acc673a4394c3f1",
+    "validation_or_lockbox_sources_read": false
+  },
+  "fast_runtime": {
+    "status": "strict_representative_equivalence_passed",
+    "reference_rows_per_second": 0.1415091255791699,
+    "fast_rows_per_second": 14.338061866825628,
+    "speedup": 101.32252466505373,
+    "loss_delta": 0.0,
+    "maximum_parameter_gradient_delta": 0.00002995133399963379,
+    "partition_loss_gradient_viterbi_semimarkov_identity": "matched",
+    "report": "identity-crf-fast-v2\\profile.json"
+  },
+  "identity_crf_training": {
+    "status": "calibration_oracle_gate_passed",
+    "best_epoch": 3,
+    "checkpoint": "identity-crf-fast-v2\\full-v1\\best.pt",
+    "checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1",
+    "calibration_oracle": {
+      "credit": 2962.5,
+      "predicted": 3069,
+      "gold": 3072,
+      "precision": 0.9652981427174976,
+      "recall": 0.96435546875,
+      "f1": 0.9648265754763068,
+      "bootstrap_95": {
+        "lower": 0.9551525085007938,
+        "median": 0.9645944774920615,
+        "upper": 0.9739192691457194,
+        "replicates": 200
+      },
+      "source_macro_f1": 0.9588828404970426,
+      "per_type": {
+        "match": {
+          "f1": 0.9881284916201117,
+          "credit": 1415.0,
+          "predicted": 1431,
+          "gold": 1433
+        },
+        "copy": {
+          "f1": 0.940212150433944,
+          "credit": 975.0,
+          "predicted": 1042,
+          "gold": 1032
+        },
+        "extra": {
+          "f1": 0.9359391965255157,
+          "credit": 431.0,
+          "predicted": 454,
+          "gold": 467
+        },
+        "substitute": {
+          "f1": 0.8280254777070064,
+          "credit": 65.0,
+          "predicted": 81,
+          "gold": 76
+        },
+        "missed_note": {
+          "f1": 0.688,
+          "credit": 43.0,
+          "predicted": 61,
+          "gold": 64
+        }
+      }
+    },
+    "oracle_gate": 0.95,
+    "oracle_gate_passed": true,
+    "atomic_optimizer_scheduler_rng_data_cursor_checkpoints": true,
+    "full_training_completed": true
+  },
+  "acoustic_calibration": {
+    "unchanged_basic_pitch": {
+      "score_agnostic_pitch_sequence_f1": 0.8640298760821593,
+      "combined_f1": 0.8013462485634543,
+      "combined_bootstrap_95": {
+        "lower": 0.7789394426007875,
+        "median": 0.8016752715746522,
+        "upper": 0.822205107159131
+      }
+    },
+    "template_supported_direct_rescue": {
+      "selected_variant": 9,
+      "rescued_candidates": 60,
+      "combined_f1": 0.8068033854166666,
+      "combined_bootstrap_95": {
+        "lower": 0.78622607777513,
+        "median": 0.806963658911933,
+        "upper": 0.8270104112975744
+      },
+      "candidate": "template-rescue-v3\\RESCUE_CANDIDATE.json",
+      "candidate_sha256": "3be0fc2f423bb00d3f99738d9039304a6c6d96b589a2af3ca0cc0711d1c044a2",
+      "status": "positive_but_below_gate"
+    },
+    "train_acoustic_pseudo_path_finetune": {
+      "train_candidates": 43677,
+      "pitch_lcs_pairs": 38604,
+      "exact_extra_identities": 665,
+      "best_combined_f1": 0.8013754707712462,
+      "baseline_combined_f1": 0.8013462485634543,
+      "status": "rejected_negligible_nonpersistent_gain",
+      "checkpoint_sha256": "66349090a016bd23dea0d2c37c85ee7cd9989165754dbfc98da80dd0cb4a088c"
+    },
+    "score_supported_alternative_pitch": {
+      "status": "rejected",
+      "reason": "No alternative-pitch variant exceeded direct template rescue on the identical 64-row calibration population."
+    },
+    "high_recall_activation_lattice": {
+      "interval_candidates": 943719,
+      "sequence_oracle_f1": 0.9612482088839357,
+      "canonical_identity_oracle_f1": 0.8809160305343512,
+      "canonical_identity_oracle_extra_f1": 0.2588555858310627,
+      "exact_rendered_extra_prefix_recall": 0.12379675886438406,
+      "target_aware_selection_through_crf_f1": 0.8362652232746954,
+      "trained_interval_scorer_combined_f1": 0.657543391188251,
+      "status": "candidate_support_blocked_for_exclusive_extra_identity",
+      "report": "ACOUSTIC_SUPPORT_BLOCKER.json"
+    }
+  },
+  "gate": {
+    "required_combined_calibration_f1_before_validation": 0.85,
+    "best_combined_calibration_f1": 0.8068033854166666,
+    "passed": false,
+    "remaining_gap": 0.04319661458333335,
+    "best_bootstrap_upper_95": 0.8270104112975744,
+    "validation_action": "remain_unopened",
+    "current_bottleneck": "The current activation lattice lacks emitted-event-count-aware DROP/EMIT selection. Exact rendered EXTRA prefix recall is only 0.1238, and target-aware pool selection through the CRF reaches 0.8363, below the gate."
+  },
+  "isolation": {
+    "official_metric": "exclusive one-to-one canonical score-event/rendered EXTRA identity; exact type=1, wrong type at exact identity=0.5, wrong identity=0",
+    "timestamps_used_for_selection": false,
+    "validation_targets_read": false,
+    "v1_lockbox_opened": false,
+    "v2_lockbox_opened": false,
+    "v1_or_v2_lockbox_targets_read": false,
+    "production_weights_mutated": false,
+    "paper_updated": false
+  }
+}

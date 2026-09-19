@@ -1,0 +1,106 @@
+{
+  "candidate_oracle": {
+    "by_stratum": {
+      "duration:120_to_180ms": {
+        "matched": 1523,
+        "recall": 0.8475236505286589,
+        "support": 1797
+      },
+      "duration:80_to_120ms": {
+        "matched": 587,
+        "recall": 0.606404958677686,
+        "support": 968
+      },
+      "duration:ge_180ms": {
+        "matched": 42967,
+        "recall": 0.9373868272356394,
+        "support": 45837
+      },
+      "duration:lt_80ms": {
+        "matched": 205,
+        "recall": 0.6193353474320241,
+        "support": 331
+      },
+      "origin:generator_performed_lineage": {
+        "matched": 39994,
+        "recall": 0.9820262240337868,
+        "support": 40726
+      },
+      "origin:planted_extra": {
+        "matched": 1022,
+        "recall": 0.9855351976856316,
+        "support": 1037
+      },
+      "origin:planted_extra_copy": {
+        "matched": 1207,
+        "recall": 0.9805036555645816,
+        "support": 1231
+      },
+      "origin:renderer_ornament": {
+        "matched": 3059,
+        "recall": 0.5150698770836841,
+        "support": 5939
+      },
+      "overlap:no": {
+        "matched": 18510,
+        "recall": 0.9459804773342874,
+        "support": 19567
+      },
+      "overlap:yes": {
+        "matched": 26772,
+        "recall": 0.9116665531567119,
+        "support": 29366
+      },
+      "type:copy": {
+        "matched": 18087,
+        "recall": 0.9804314830875975,
+        "support": 18448
+      },
+      "type:extra": {
+        "matched": 4081,
+        "recall": 0.5850057339449541,
+        "support": 6976
+      },
+      "type:match": {
+        "matched": 22069,
+        "recall": 0.9831165359942979,
+        "support": 22448
+      },
+      "type:substitute": {
+        "matched": 1045,
+        "recall": 0.9849198868991518,
+        "support": 1061
+      }
+    },
+    "exact_rendered_extra_prefix_recall": 0.12379675886438406,
+    "f1": 0.9612482088839357,
+    "precision": 1.0,
+    "recall": 0.9253877751210839,
+    "rows_with_full_sequence_coverage": 172
+  },
+  "candidate_pool_sha256": "1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0",
+  "lockbox_targets_read": false,
+  "matching": "exclusive one-to-one LCS over unique pitch/onset proposal groups; interval variant chosen only after identity assignment",
+  "open_validation_read": false,
+  "population": {
+    "calibration": 64,
+    "rows": 965,
+    "train": 901
+  },
+  "release_manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+  "schema_version": "align-basic-pitch-activation-sequence-oracle-v1",
+  "supervision": {
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\sequence_supervision.jsonl.gz",
+    "sha256": "1b073c6d0cfe7cf1c4b0bdf4cf8608014bd65b1d11949124a2220f7211f2f81b"
+  },
+  "timestamp_metrics_used_for_promotion": false,
+  "totals": {
+    "candidate_groups": 237309,
+    "exact_extra_prefix": 1016,
+    "extra_support": 8207,
+    "full_rows": 172,
+    "matched_events": 45282,
+    "rows": 965,
+    "target_events": 48933
+  }
+}

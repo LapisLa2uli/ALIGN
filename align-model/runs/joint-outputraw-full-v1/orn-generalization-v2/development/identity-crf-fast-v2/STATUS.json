@@ -1,0 +1,68 @@
+{
+  "schema_version": "align-ornament-identity-crf-fast-v2-status",
+  "status": "full_training_complete_oracle_gate_passed",
+  "release_manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+  "runtime": {
+    "implementation": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\identity_crf_fast_v2.py",
+    "method": "packed sparse edge DAG, Numba log-space forward/backward, analytic edge-marginal custom autograd, packed Viterbi",
+    "per_edge_python_autograd_graph": false,
+    "reference_semantics": "identity_crf_v1"
+  },
+  "equivalence": {
+    "tiny_tests": 8,
+    "tiny_tests_passed": true,
+    "partition_tolerance": 0.00002,
+    "gradient_tolerance": 0.0001,
+    "partition_loss_gradient_viterbi_identity": "passed",
+    "semi_markov_multi_event_span": "passed"
+  },
+  "synthetic_profile": {
+    "score_events": 40,
+    "candidate_events": 40,
+    "reference_seconds": 5.071418700001232,
+    "fast_seconds": 0.015998200000467477,
+    "reference_rows_per_second": 0.1971834701012141,
+    "fast_rows_per_second": 62.50703203852015,
+    "speedup": 316.9993311655712,
+    "loss_delta": 3.5762786865234375e-07
+  },
+  "representative_v2_profile": {
+    "status": "passed",
+    "source_root": "E:\\outputRaw_orn_10k",
+    "source_root_exists": true,
+    "reference_rows_per_second": 0.1415091255791699,
+    "fast_rows_per_second": 14.338061866825628,
+    "speedup": 101.32252466505373,
+    "loss_delta": 0.0,
+    "maximum_parameter_gradient_delta": 0.00002995133399963379,
+    "viterbi_identity_paths_equal": true
+  },
+  "training": {
+    "full_training_started": true,
+    "full_training_completed": true,
+    "runtime_option_added": "--runtime fast_v2",
+    "atomic_checkpoint_contract_preserved": true,
+    "train_rows": 901,
+    "calibration_rows": 64,
+    "epochs": 4,
+    "best_epoch": 3,
+    "best_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt",
+    "best_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1",
+    "best_calibration_oracle_f1": 0.9648265754763068,
+    "oracle_gate": 0.95,
+    "oracle_gate_passed": true
+  },
+  "next_action": {
+    "action": "Continue calibration-only acoustic candidate improvement; do not open validation until combined calibration F1 reaches 0.85.",
+    "current_best_combined_calibration_f1": 0.8068033854166666
+  },
+  "isolation": {
+    "open_validation_read": false,
+    "v1_lockbox_opened": false,
+    "v2_lockbox_opened": false,
+    "v1_or_v2_lockbox_targets_read": false,
+    "original_mapper_v6_test_read": false,
+    "production_weights_mutated": false,
+    "paper_updated": false
+  }
+}

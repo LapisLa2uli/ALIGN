@@ -1,0 +1,125 @@
+{
+  "artifacts": {
+    "candidate_pool": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\candidate_pool.jsonl.gz",
+      "sha256": "1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0"
+    },
+    "supervision": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\supervision.jsonl.gz",
+      "sha256": "ca18b713ab7933637af1d7a411db189bf03939169e7568777c25df8e3f3616bb"
+    }
+  },
+  "candidate_generation": {
+    "fixed_duration_frames": [
+      2,
+      4,
+      8
+    ],
+    "max_candidates_per_row": 1024,
+    "max_onsets_per_pitch": 32,
+    "note_floors": [
+      0.04,
+      0.08,
+      0.14
+    ],
+    "onset_floor": 0.04,
+    "score_input": false,
+    "total_candidates": 943719
+  },
+  "candidate_oracle": {
+    "by_stratum": {
+      "duration:120_to_180ms": {
+        "matched": 531,
+        "recall": 0.29549248747913187,
+        "support": 1797
+      },
+      "duration:80_to_120ms": {
+        "matched": 95,
+        "recall": 0.0981404958677686,
+        "support": 968
+      },
+      "duration:ge_180ms": {
+        "matched": 17837,
+        "recall": 0.3891397779086764,
+        "support": 45837
+      },
+      "duration:lt_80ms": {
+        "matched": 65,
+        "recall": 0.19637462235649547,
+        "support": 331
+      },
+      "origin:generator_performed_lineage": {
+        "matched": 16715,
+        "recall": 0.41042577223395377,
+        "support": 40726
+      },
+      "origin:planted_extra": {
+        "matched": 968,
+        "recall": 0.9334619093539055,
+        "support": 1037
+      },
+      "origin:planted_extra_copy": {
+        "matched": 61,
+        "recall": 0.04955320877335499,
+        "support": 1231
+      },
+      "origin:renderer_ornament": {
+        "matched": 784,
+        "recall": 0.13200875568277487,
+        "support": 5939
+      },
+      "overlap:no": {
+        "matched": 9614,
+        "recall": 0.4913374559206828,
+        "support": 19567
+      },
+      "overlap:yes": {
+        "matched": 8914,
+        "recall": 0.30354832118776814,
+        "support": 29366
+      },
+      "type:copy": {
+        "matched": 983,
+        "recall": 0.05328490893321769,
+        "support": 18448
+      },
+      "type:extra": {
+        "matched": 1752,
+        "recall": 0.2511467889908257,
+        "support": 6976
+      },
+      "type:match": {
+        "matched": 14900,
+        "recall": 0.6637562366357804,
+        "support": 22448
+      },
+      "type:substitute": {
+        "matched": 893,
+        "recall": 0.8416588124410933,
+        "support": 1061
+      }
+    },
+    "exact_rendered_extra_prefix_identity": {
+      "matched": 83,
+      "recall": 0.045780474351902925,
+      "support": 1813
+    },
+    "f1": 0.5492951483079113,
+    "gold": 48933,
+    "matched": 18528,
+    "precision": 1.0,
+    "recall": 0.37864018147262585,
+    "rows_with_full_sequence_coverage": 1,
+    "selected_predictions": 18528
+  },
+  "lockbox_targets_read": false,
+  "open_validation_read": false,
+  "population": {
+    "calibration": 64,
+    "rows": 965,
+    "train": 901
+  },
+  "release_manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+  "schema_version": "align-basic-pitch-activation-lattice-v1-coverage",
+  "timestamps": "used only to audit acoustic candidate support and create train labels; not a promotion metric"
+}

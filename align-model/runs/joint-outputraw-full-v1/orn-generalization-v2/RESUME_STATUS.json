@@ -1,0 +1,162 @@
+{
+  "schema_version": "align-orn-generalization-v2-resume-status-v1",
+  "state": "drop_emit_lattice_v1_training_validation_unopened",
+  "paused_at_utc": "2026-09-17T23:30:00Z",
+  "resumed_at_utc": "2026-09-18T04:39:00Z",
+  "updated_at_utc": "2026-09-19T04:12:00Z",
+  "working_directory": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model",
+  "completed": {
+    "repair_policy": {
+      "status": "frozen_before_membership_selection",
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\POLICY.json",
+      "sha256": "bfcde301e1bbf7dc6ecc5b45edd1a866601a1580d953eba8eb563982b765303f"
+    },
+    "release": {
+      "status": "frozen_ready_for_identity_crf_development",
+      "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json",
+      "manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+      "freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\FREEZE.json",
+      "freeze_sha256": "9eb36abf01c9a7e535f4d70c7bd738c074d5b5c19800f3cbd2d0abb4418eb94f",
+      "eligible_rows": 1133,
+      "excluded_rows": 8867,
+      "split_counts": {
+        "train": 901,
+        "calibration": 64,
+        "open_validation": 111,
+        "lockbox": 57
+      },
+      "source_group_counts": {
+        "train": 901,
+        "calibration": 64,
+        "open_validation": 111,
+        "lockbox": 57
+      },
+      "raw_lockbox_limitation": "No prior-disjoint raw source groups remained; the new lockbox is generated-only."
+    },
+    "target_invariants": {
+      "status": "passed",
+      "coverage_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-v1\\coverage.json",
+      "coverage_report_sha256": "87554ededf3c8ed33ce4dab51c9270ef527bbde37d0439b4cb6f70e6f083c790",
+      "train_calibration_rows": 965,
+      "gold_path_coverage": 1.0,
+      "exact_identity_round_trip": 1.0,
+      "backward_identity_steps": 0,
+      "coverage_failures": 0,
+      "lockbox_targets_read": false,
+      "open_validation_read": false
+    },
+    "identity_crf": {
+      "implementation": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\identity_crf_v1.py",
+      "smoke_status": "completed",
+      "smoke_train_rows": 1,
+      "smoke_calibration_rows": 1,
+      "smoke_epochs": 1,
+      "smoke_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-v1\\smoke\\best.pt",
+      "smoke_checkpoint_sha256": "c346f9e2c997be8abf9c3cb105fc133ebf4289a15aa685e406dcff14d880ee5e",
+      "smoke_rows_per_second": 0.084,
+      "smoke_calibration_oracle_f1": 0.3815789473684211,
+      "full_training_started": false,
+      "optimizer_scheduler_rng_cursor_checkpoint_contract": "implemented and smoke-tested"
+    },
+    "optimized_identity_crf_runtime": {
+      "status": "implemented_and_tiny_equivalence_passed",
+      "implementation": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\src\\alignmodel\\joint\\identity_crf_fast_v2.py",
+      "status_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\STATUS.json",
+      "method": "packed sparse states/edges, Numba log-space forward/backward, analytic marginal custom autograd, packed Viterbi",
+      "tiny_equivalence_tests": 8,
+      "synthetic_reference_seconds": 5.071418700001232,
+      "synthetic_fast_seconds": 0.015998200000467477,
+      "synthetic_speedup": 316.9993311655712,
+      "synthetic_loss_delta": 3.5762786865234375e-07,
+      "representative_v2_equivalence": "pending_external_source_drive"
+    },
+    "tests": {
+      "latest_preflight": "7 passed",
+      "command": ".\\.venv-amt-bench\\Scripts\\python.exe -m pytest tests\\test_identity_crf_v1.py tests\\test_global_ornament_lineage_v2.py -q",
+      "lattice_partition_viterbi_gradient_tests": "passed",
+      "global_ornament_lineage_tests": "passed"
+    }
+  },
+  "lockboxes": {
+    "orn_generalization_v1": {
+      "rows": 42,
+      "opened": false,
+      "targets_read_during_v2": false,
+      "key_read_during_v2": false,
+      "manifest_sha256": "d4baeb90389136fbdd4549cdfb40fb2aceb2a97d899ae903bebffa2df6aefbc0"
+    },
+    "orn_generalization_v2": {
+      "rows": 57,
+      "opened": false,
+      "targets_read_after_freeze": false,
+      "encrypted_targets": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\lockbox\\targets.aes256gcm",
+      "encrypted_targets_sha256": "c7079136237b03aeb222396af0a45ff6c5a5e6a43238e127b91a800ec939bd38",
+      "public_input_tree_sha256": "be28205f2873ea8f3624f64c3d135675bad9e0f4e8386e585c9f83c5457bf820"
+    },
+    "original_mapper_v6_test_accessed": false
+  },
+  "process_verification": {
+    "owned_process_match": "orn-generalization-v2|train_identity_crf_v1|freeze_orn_generalization_v2|audit_identity_crf_lattice_v1",
+    "result": "NO_OWNED_JOBS",
+    "owned_jobs_remaining": 0,
+    "owned_jobs_stopped_for_pause": 0,
+    "reason_none_stopped": "Every owned build, audit, coverage, and smoke-training command had already exited at an atomic completion boundary.",
+    "resource_status": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+    "resource_leases": {},
+    "current_heavy_jobs": 0
+  },
+  "last_command": {
+    "status": "succeeded",
+    "purpose": "Identity-CRF one-row atomic checkpoint smoke test",
+    "pid": 15900,
+    "exit_code": 0,
+    "command": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_identity_crf_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json --expected-release-sha256 5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705 --coverage-report runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-v1\\coverage.json --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-v1\\smoke --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 1 --hidden 16 --learning-rate 0.001 --max-negative-hypotheses 2 --max-train-rows 1 --max-calibration-rows 1 --checkpoint-every-steps 1 --bootstrap-replicates 10 --device cpu --seed 20260919"
+  },
+  "drop_emit_lattice_v1": {
+    "schema_version": "align-drop-emit-lattice-v1",
+    "implementation": "src\\alignmodel\\joint\\drop_emit_lattice_v1.py",
+    "fast_dp": "src\\alignmodel\\joint\\drop_emit_dp_fast_v1.py",
+    "coverage_report": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\drop-emit-lattice-v1\\coverage_report.json",
+    "coverage_report_sha256": "6b97ec9e117590a0dad80c4f695bea7c8b68ee05ac553712e44da06272d69eb7",
+    "supervision_sha256": "952604db4f7a63374829923e9e799cfdb016d37894c571df26dd62b9d6617864",
+    "rows": 965,
+    "gold_path_coverage": 1.0,
+    "exact_identity_round_trip": 1.0,
+    "acoustic_emits": 45282,
+    "template_inserts": 3651,
+    "dropped_groups": 192027,
+    "training_dir": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\drop-emit-lattice-v1\\train-v3",
+    "training_state": "running_epoch_1_unnormalized_nll",
+    "rejected_train_v1": "Partition was conditioned on the gold emission count, so honest decode emitted ~200 notes against ~30 gold. Stopped at step 800.",
+    "rejected_train_v2": "Length-normalized loss flattened near 0.51; decode under-emitted (ratios 0.12-0.44). Stopped after step 128.",
+    "train_v3_note": "Raw NLL from train-v2 step-100 weights. At step 50, loss ~158 and emission ratios 0.44-0.78 on 4 cal clips.",
+    "open_validation_read": false,
+    "lockbox_targets_read": false
+  },
+  "current_blocker": {
+    "type": "drop_emit_calibration_not_yet_measured",
+    "detail": "train-v3 uses unnormalized NLL and honest decode without gold event count. At step 50, mean loss ~158 and emission ratios on 4 cal clips are 0.44-0.78 (was 0.12-0.44 under length-normalized train-v2). Teacher-through-CRF ceiling remains 0.8958. Validation unopened. Best finished deployable score is still template-rescue 0.80680.",
+    "release_or_target_blocked": false,
+    "coverage_blocked": false,
+    "source_root_exists": true,
+    "remaining_combined_f1_gap": 0.04319661458333335,
+    "blocker_report": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\ACOUSTIC_SUPPORT_BLOCKER.json"
+  },
+  "next_action": {
+    "recommended": "Finish DROP/EMIT train-v1 (901 train / 64 calibration, frozen CRF). Promote only if combined calibration F1 >= 0.85, then open validation once. Do not retune the rejected interval scorer.",
+    "completed_mapper_checkpoint": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt",
+    "completed_mapper_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1",
+    "best_current_candidate": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\template-rescue-v3\\RESCUE_CANDIDATE.json",
+    "best_current_candidate_sha256": "3be0fc2f423bb00d3f99738d9039304a6c6d96b589a2af3ca0cc0711d1c044a2",
+    "milestone_status": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\MILESTONE_STATUS.json"
+  },
+  "isolation": {
+    "paused_before_further_validation": true,
+    "v2_open_validation_opened": false,
+    "v2_lockbox_opened": false,
+    "v1_lockbox_opened": false,
+    "production_weights_mutated": false,
+    "paper_updated": false,
+    "unrelated_working_tree_changes_preserved": true
+  }
+}
