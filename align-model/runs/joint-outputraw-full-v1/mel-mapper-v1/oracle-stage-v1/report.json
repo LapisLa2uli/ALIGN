@@ -1,0 +1,65 @@
+{
+  "schema_version": "align-mel-mapper-training-report-v1",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v1\\oracle-stage-v1\\last_checkpoint.pt",
+  "checkpoint_sha256": "863c50d5c1c8db5a829bea1fa854fd2da1fd33749762ad8d97a1d903f7d53b7f",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "curriculum_stage": "exact_oracle_notes",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.4091341258264056,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.8867440623589129
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.8857282342279659,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.8234964154518334
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.8477836659725975,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.8043010499795025
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.8319142478938196,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7929401486131289
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.820241370212798,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7849858641909186
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.8129869927962621,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7801270688352059
+    }
+  ],
+  "oracle_validation_rows": 64,
+  "oracle_validation": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5675.0,
+    "predicted": 7282,
+    "gold": 7282,
+    "precision": 0.7793188684427355,
+    "recall": 0.7793188684427355,
+    "f1": 0.7793188684427355
+  },
+  "selection_metric": "canonical_note_wise_only",
+  "locked_test_touched": false
+}

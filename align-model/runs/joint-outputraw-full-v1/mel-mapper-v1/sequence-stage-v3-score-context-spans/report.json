@@ -1,0 +1,83 @@
+{
+  "schema_version": "align-sequence-mapper-report-v1",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v1\\sequence-stage-v3-score-context-spans\\last_checkpoint.pt",
+  "checkpoint_sha256": "765b553cd075942ca88fda27b4d7d675aa41aac783625bc930362bf96277d80c",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "curriculum_stage": "exact_oracle_notes",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 6.167065129560583,
+      "heldout_loss": 5.212210488319397
+    },
+    {
+      "epoch": 2,
+      "train_loss": 4.520201559627758,
+      "heldout_loss": 4.0747294425964355
+    },
+    {
+      "epoch": 3,
+      "train_loss": 3.9262853804756612,
+      "heldout_loss": 3.691426384449005
+    },
+    {
+      "epoch": 4,
+      "train_loss": 3.6062385867623723,
+      "heldout_loss": 3.4372229099273683
+    },
+    {
+      "epoch": 5,
+      "train_loss": 3.388525359770831,
+      "heldout_loss": 3.236807143688202
+    },
+    {
+      "epoch": 6,
+      "train_loss": 3.179604582225575,
+      "heldout_loss": 2.9992355585098265
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.9507303434259753,
+      "heldout_loss": 2.7928365230560304
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.7806282870909746,
+      "heldout_loss": 2.6578265905380247
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.6601851968204273,
+      "heldout_loss": 2.556459367275238
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.571758770942688,
+      "heldout_loss": 2.475217580795288
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.5039618127486287,
+      "heldout_loss": 2.406280505657196
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.444576863681569,
+      "heldout_loss": 2.344738721847534
+    }
+  ],
+  "oracle_validation_rows": 64,
+  "oracle_validation": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 3733.0,
+    "predicted": 7282,
+    "gold": 7282,
+    "precision": 0.5126338917879704,
+    "recall": 0.5126338917879704,
+    "f1": 0.5126338917879704
+  },
+  "selection_metric": "canonical_note_wise_only",
+  "locked_test_touched": false
+}

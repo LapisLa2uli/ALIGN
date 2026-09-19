@@ -1,0 +1,79 @@
+{
+  "schema_version": "align-mel-mapper-training-report-v1",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v1\\oracle-stage-v2-long-context\\last_checkpoint.pt",
+  "checkpoint_sha256": "4ad987086498dc960cfceb9d2da9d233ecb3f76d7ea1eff3b1b02ab102de4511",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "curriculum_stage": "exact_oracle_notes",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.2777304182449976,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.8716858014258736
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.8724343474004783,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.8100220889422545
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.8344330819798451,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7936351424727723
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.8213201330572951,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7848878984207054
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.8123097159698898,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7775720466094412
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.8070886865550396,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7798754286867292
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.8009421377205381,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7668849744313968
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.7950914458024736,
+      "train_rows": 4073,
+      "heldout_train_rows": 471,
+      "heldout_local_nll": 0.7672446519294616
+    }
+  ],
+  "oracle_validation_rows": 64,
+  "oracle_validation": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5160.0,
+    "predicted": 7282,
+    "gold": 7282,
+    "precision": 0.7085965394122494,
+    "recall": 0.7085965394122494,
+    "f1": 0.7085965394122494
+  },
+  "selection_metric": "canonical_note_wise_only",
+  "locked_test_touched": false
+}

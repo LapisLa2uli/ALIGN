@@ -1,0 +1,70 @@
+{
+  "schema_version": "align-mel-mapper-candidate-comparison-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "selection_set": "predeclared_first_64_validation_rows",
+  "timestamp_metrics_used_for_selection": false,
+  "locked_test_touched": false,
+  "frontend": {
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "train_predictions_sha256": "9a7d8a72982f5f0392feada2b164a7fefe2243fcda35a2c1c346fbe57eb83fd6",
+    "train_rows": 4544,
+    "frozen": true
+  },
+  "oracle_note_candidates": [
+    {
+      "name": "fixed_mapper_reference",
+      "f1": 0.7147551243936787
+    },
+    {
+      "name": "teacher_forced_hidden32_v1",
+      "f1": 0.7793188684427355,
+      "report": "oracle-stage-v1/report.json"
+    },
+    {
+      "name": "long_context_hidden32_v2",
+      "f1": 0.7085965394122494,
+      "report": "oracle-stage-v2-long-context/report.json"
+    },
+    {
+      "name": "segmental_pair_hmm_v1",
+      "f1": 0.7644191156275748,
+      "report": "segmental-v1-oracle64.json"
+    },
+    {
+      "name": "dynamic_score_hidden32_epoch40",
+      "f1": 0.7268607525405109,
+      "report": "sequence-stage-v4-epoch040/report.json"
+    },
+    {
+      "name": "dynamic_score_hidden128_epoch30",
+      "f1": 0.7653803900027465,
+      "report": "sequence-stage-v5-hidden128/report.json"
+    },
+    {
+      "name": "cross_attention_hidden128_epoch30_identity_fixed",
+      "f1": 0.784331227684702,
+      "start_accuracy": 0.7833012908541609,
+      "span_accuracy": 0.7701180994232354,
+      "type_accuracy": 0.8534743202416919,
+      "report": "sequence-stage-v8-cross-attention/oracle64-canonical-identity-fix.json"
+    },
+    {
+      "name": "cross_attention_plus_local_transition",
+      "f1": 0.7774649821477616,
+      "report": "ensemble-v1-oracle64.json"
+    },
+    {
+      "name": "extra_reweighted_cross_attention",
+      "f1": 0.7828206536665752,
+      "report": "sequence-stage-v10-extra-reweighted/report.json"
+    }
+  ],
+  "best": "cross_attention_hidden128_epoch30_identity_fixed",
+  "oracle_sanity": {
+    "required_f1": 0.98,
+    "passed": false
+  },
+  "full_358_validation_run": false,
+  "promotion_eligible": false,
+  "next_architecture": "sequence-level forward-backward path CRF with learned event-score emissions and explicit copy-pass/resume state"
+}
