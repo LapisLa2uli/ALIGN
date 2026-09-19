@@ -1,0 +1,135 @@
+{
+  "schema_version": "align-orn-phase2-milestone-status-v1",
+  "status": "substantial_milestone_gate_not_attained",
+  "release": {
+    "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\release_manifest.json",
+    "manifest_sha256": "d4baeb90389136fbdd4549cdfb40fb2aceb2a97d899ae903bebffa2df6aefbc0",
+    "membership_changed": false
+  },
+  "official_metric": {
+    "unit": "canonical score-note/event identity",
+    "matching": "exclusive one-to-one",
+    "exact_location_and_type_credit": 1.0,
+    "exact_location_wrong_type_credit": 0.5,
+    "wrong_location_credit": 0.0,
+    "timestamp_metrics": "diagnostic_only"
+  },
+  "unchanged_baseline_open_validation": {
+    "rows": 66,
+    "source_groups": 66,
+    "provenance": {
+      "generated": 66,
+      "raw": 0
+    },
+    "score_agnostic_sequence_f1": 0.7845149253731344,
+    "canonical_transcriber_f1": 0.6911630036630036,
+    "oracle_note_mapper_f1": 0.7723446893787574,
+    "combined": {
+      "precision": 0.7032187670485542,
+      "recall": 0.5084812623274162,
+      "f1": 0.5902014652014652,
+      "bootstrap_lower_95": 0.5618752497044379,
+      "bootstrap_upper_95": 0.6215782663880267
+    },
+    "target_support": {
+      "gold": 2535,
+      "match": 1635,
+      "copy": 168,
+      "substitute": 70,
+      "rendered_extra": 582,
+      "missed_note": 80,
+      "ornament_realized_rows": 64,
+      "overlap_polyphonic_rows": 58
+    },
+    "report": "baseline-trackb18-mapperv6-v1\\report.json",
+    "report_sha256": "12ae925b2f93ca1adb46411ecff2d3f4e0881026983eddcb3589d7dd40e31678"
+  },
+  "mapper_development": {
+    "earlier": {
+      "name": "mapper-v6 grammar baseline",
+      "open_validation_oracle_f1": 0.7723446893787574,
+      "open_validation_combined_f1": 0.5902014652014652,
+      "concrete_limitation": "The grammar treated most ornament-realized events as ordinary edits; combined rendered-EXTRA F1 was 0.12287581699346406 and the mapper emitted no missed-note identities."
+    },
+    "later": {
+      "name": "ornament template plus learned soft EXTRA prior",
+      "change": "Added score-ornament templates, explicit rendered EXTRA states, canonical deletion identities, and a train-only ExtraTrees event prior calibrated on 53 rows.",
+      "open_validation_oracle_f1": 0.8347123719464145,
+      "open_validation_combined_with_track_b_f1": 0.6881765195670274,
+      "oracle_delta": 0.06236768256765712,
+      "combined_delta": 0.0979750543655622,
+      "report": "ornament-mapper-extra-prior-v2\\open_validation_report.json",
+      "report_sha256": "675434d914d9f1071a4788d84d2b8e474ecfca2d8dcf4c000fe3a98d845a84aa",
+      "promotion": "rejected",
+      "reason": "Its perfect-note oracle remains 0.01528762805358547 below the 0.85 combined gate, so no transcriber can pass through this frozen mapper candidate."
+    },
+    "rejected_ablation": {
+      "name": "hard learned-EXTRA gate",
+      "calibration_oracle_f1": 0.7905181918412348,
+      "calibration_combined_f1": 0.6305434103685197,
+      "reason": "Hard gating over-predicted deletions and was materially worse than the soft prior on the identical calibration population."
+    }
+  },
+  "acoustic_development": {
+    "frozen_track_b_open_validation": {
+      "pitch_sequence_f1": 0.7845149253731344,
+      "count_ratio": 0.7466395112016293,
+      "limitation": "One-pitch-per-frame decoding undercounted ornament-expanded events."
+    },
+    "basic_pitch_polyphonic_calibration": {
+      "rows": 53,
+      "pitch_sequence_precision": 0.8619075482738443,
+      "pitch_sequence_recall": 0.8307952622673435,
+      "pitch_sequence_f1": 0.8460654796094199,
+      "count_ratio": 0.9639029892837,
+      "combined_with_soft_mapper_f1": 0.7351821642196846,
+      "combined_candidate": "frontend-basicpitch-mapperprior-v1\\FRONTEND_CANDIDATE.json",
+      "combined_candidate_sha256": "579df59963c86bd9a774f95a985908be14cfdb434775599c1ae7d94576c273b2",
+      "status": "best_calibration_frontend_but_below_gate"
+    },
+    "multipitch_tcn_ablation": {
+      "architecture": "Track-B encoder with frame-wise independent pitch activity/onset/offset and polyphony-count heads",
+      "calibration_pitch_sequence_f1": 0.7396061269146609,
+      "calibration_count_ratio": 1.0620417371686408,
+      "checkpoint": "ornament-multipitch-v1\\full-v1\\best.pt",
+      "checkpoint_sha256": "c18e47b2b809b61ac687980cb58c3c288b594e863c3bfdf107551f1e35635627",
+      "promotion": "rejected",
+      "reason": "Recall increased but harmonic false positives reduced precision; it was worse than unchanged Basic Pitch on the identical 53-row calibration population."
+    },
+    "basic_pitch_residual_ablation": {
+      "architecture": "Zero-initialized temporal residual over Basic Pitch note/onset/contour maps",
+      "best_trained_calibration_pitch_sequence_f1": 0.8379732739420934,
+      "unchanged_basic_pitch_f1": 0.8460654796094199,
+      "checkpoint": "basic-pitch-polyphonic-v1\\full-v1\\best.pt",
+      "checkpoint_sha256": "cf4730905f04ac006fead9e76ab570b7339cb4ff742606d4818696dce39de654",
+      "promotion": "rejected",
+      "reason": "Comparable calibration performance regressed from the unchanged frontend."
+    },
+    "frontend_union_ablation": {
+      "selected": "unchanged Basic Pitch alone",
+      "reason": "Every predeclared Basic Pitch/Track-B union reduced the calibration pitch-sequence objective."
+    }
+  },
+  "gate": {
+    "required_combined_open_validation_f1": 0.85,
+    "best_measured_combined_open_validation_f1": 0.6881765195670274,
+    "passed": false,
+    "remaining_gap": 0.16182348043297257,
+    "quantified_blocker": "The best validated mapper's perfect-note oracle is 0.8347123719464145, below the required end-to-end F1. The next admissible work must improve sequence-level canonical location/type decoding, especially rendered EXTRA identity, before additional acoustic tuning can satisfy the gate."
+  },
+  "resource_and_resume": {
+    "active_training": false,
+    "multi_pitch_resume_command": ".\\.venv-amt-bench\\Scripts\\python.exe scripts\\train_orn_multipitch_v1.py --orn-cache runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\ornament-multipitch-v1\\mel-cache --replay-cache runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\mel-cache-hop256-v1 --track-b runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v1\\release_manifest.json --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\ornament-multipitch-v1\\full-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 8 --batch-size 24 --crop-frames 1024 --crops-per-clip 2 --resume runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\ornament-multipitch-v1\\full-v1\\mid_epoch_checkpoint.pt --device cuda",
+    "basic_pitch_refiner_resume_command": ".\\.venv-amt-bench\\Scripts\\python.exe scripts\\train_basic_pitch_polyphonic_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v1\\release_manifest.json --cache-index runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\basic-pitch-v1\\cache-index.json --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\basic-pitch-polyphonic-v1\\full-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 8 --batch-size 16 --crop-frames 1024 --crops-per-clip 2 --resume runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\basic-pitch-polyphonic-v1\\full-v1\\mid_epoch_checkpoint.pt --device cuda"
+  },
+  "isolation": {
+    "lockbox_rows": 42,
+    "lockbox_opened": false,
+    "lockbox_targets_read": false,
+    "lockbox_membership_changed": false,
+    "orn500_exact_rows_trained": 0,
+    "original_mapper_v6_test_read": false,
+    "production_weights_mutated": false,
+    "paper_updated": false
+  }
+}

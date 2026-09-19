@@ -1,0 +1,100 @@
+{
+  "commands": {
+    "freeze": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\freeze_orn_generalization_v1.py",
+      "freeze",
+      "--upstream-manifest",
+      "runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\manifest.json",
+      "--output-dir",
+      "runs\\joint-outputraw-full-v1\\orn-generalization-v1",
+      "--outputraw-targets",
+      "data-audit\\joint-outputraw-full-v1\\canonical_dev_targets.sqlite",
+      "--outputraw-seal",
+      "data-audit\\joint-outputraw-full-v1\\LOCKBOX_SEALED.json",
+      "--resource-status",
+      "runs\\TRAINING_RESOURCE_STATUS.json",
+      "--lockbox-key",
+      "C:\\Users\\Hank\\AppData\\Local\\Cursor\\AgentStores\\cursor_agent_stores\\u158847504\\files\\orn-generalization-v1-lockbox-aes256.key",
+      "--seed",
+      "20260918",
+      "--checkpoint-every",
+      "25"
+    ],
+    "resume_if_interrupted": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\freeze_orn_generalization_v1.py",
+      "freeze",
+      "--upstream-manifest",
+      "runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\manifest.json",
+      "--output-dir",
+      "runs\\joint-outputraw-full-v1\\orn-generalization-v1",
+      "--outputraw-targets",
+      "data-audit\\joint-outputraw-full-v1\\canonical_dev_targets.sqlite",
+      "--outputraw-seal",
+      "data-audit\\joint-outputraw-full-v1\\LOCKBOX_SEALED.json",
+      "--resource-status",
+      "runs\\TRAINING_RESOURCE_STATUS.json",
+      "--lockbox-key",
+      "C:\\Users\\Hank\\AppData\\Local\\Cursor\\AgentStores\\cursor_agent_stores\\u158847504\\files\\orn-generalization-v1-lockbox-aes256.key",
+      "--seed",
+      "20260918",
+      "--checkpoint-every",
+      "25"
+    ],
+    "verify": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\freeze_orn_generalization_v1.py",
+      "verify",
+      "--output-dir",
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1"
+    ]
+  },
+  "completed_utc": "2026-09-17T20:55:39.504363+00:00",
+  "development_target_f1": 0.85,
+  "freeze": {
+    "bytes": 1703,
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\FREEZE.json",
+    "sha256": "865bb1b19fc6287d62e532cf3d035b4e045650ff3f2e26da419e36e401894c4d"
+  },
+  "leakage_checks_passed": true,
+  "lockbox_opened": false,
+  "next_phase": "Train and tune on train/calibration/open_validation only; leave lockbox targets and key unopened.",
+  "paper_updated": false,
+  "production_weights_mutated": false,
+  "provenance_counts": {
+    "calibration": {
+      "generated": 53
+    },
+    "lockbox": {
+      "generated": 42
+    },
+    "open_validation": {
+      "generated": 66
+    },
+    "train": {
+      "generated": 281,
+      "raw": 98
+    }
+  },
+  "raw_lockbox_limitation": "Too few outcome-unseen independent raw source scores; every raw row was forced to training and the lockbox contains generated source groups only.",
+  "release_manifest": {
+    "bytes": 1328818,
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\release_manifest.json",
+    "sha256": "d4baeb90389136fbdd4549cdfb40fb2aceb2a97d899ae903bebffa2df6aefbc0"
+  },
+  "schema_version": "align-orn-generalization-release-v1-status",
+  "source_group_counts": {
+    "calibration": 53,
+    "lockbox": 42,
+    "open_validation": 66,
+    "train": 283
+  },
+  "split_counts": {
+    "calibration": 53,
+    "lockbox": 42,
+    "open_validation": 66,
+    "train": 379
+  },
+  "status": "frozen_ready_for_development"
+}

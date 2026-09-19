@@ -1,0 +1,37 @@
+{
+  "artifacts": {
+    "prediction_freeze": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\baseline-trackb18-mapperv6-v1\\prediction_freeze.json",
+      "sha256": "1f6364944c26507f28afc8017af17763ed15d9396568a2dcebb4fa30e0dd8032"
+    },
+    "predictions": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\baseline-trackb18-mapperv6-v1\\predictions.jsonl",
+      "sha256": "c830672df559cd063dcb3719e8bf15ad69200a48eda41773e03dcdc02c84c1c6"
+    },
+    "report": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\development\\baseline-trackb18-mapperv6-v1\\report.json",
+      "sha256": "12ae925b2f93ca1adb46411ecff2d3f4e0881026983eddcb3589d7dd40e31678"
+    }
+  },
+  "completed_utc": "2026-09-17T21:04:50.764944+00:00",
+  "gate": {
+    "lockbox_action": "remain_sealed",
+    "metric": "combined canonical note-wise F1",
+    "passed": false,
+    "threshold": 0.85
+  },
+  "lockbox_opened": false,
+  "paper_updated": false,
+  "production_weights_mutated": false,
+  "schema_version": "align-orn-phase2-baseline-v1-status",
+  "scores": {
+    "canonical_transcriber_f1": 0.6911630036630036,
+    "combined_bootstrap_lower_95": 0.5618752497044379,
+    "combined_f1": 0.5902014652014652,
+    "combined_precision": 0.7032187670485542,
+    "combined_recall": 0.5084812623274162,
+    "oracle_note_mapper_f1": 0.7723446893787574,
+    "score_agnostic_sequence_f1": 0.7845149253731344
+  },
+  "status": "baseline_below_gate"
+}

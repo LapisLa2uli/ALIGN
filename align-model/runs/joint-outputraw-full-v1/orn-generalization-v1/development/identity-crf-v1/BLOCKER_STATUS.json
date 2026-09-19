@@ -1,0 +1,91 @@
+{
+  "schema_version": "align-ornament-identity-crf-blocker-v1",
+  "status": "training_blocked_by_frozen_target_semantics",
+  "release_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v1\\release_manifest.json",
+  "release_manifest_sha256": "d4baeb90389136fbdd4549cdfb40fb2aceb2a97d899ae903bebffa2df6aefbc0",
+  "requested_model": {
+    "implemented": true,
+    "module": "src\\alignmodel\\joint\\identity_crf_v1.py",
+    "properties": [
+      "globally normalized log partition across replay hypotheses and edit paths",
+      "learned event/template/pair emissions",
+      "learned action transitions and replay-hypothesis score",
+      "MATCH/COPY/SUBSTITUTE",
+      "candidate EXTRA and extra-copy rendered identity",
+      "explicit ornament-template EXTRA and ornament skip",
+      "score DELETE/missed identity",
+      "semi-Markov multi-score-event spans for ties and folded events",
+      "top-pitch alternatives, confidence, durations, local intervals, ornament kind, replay/pass features",
+      "gold-consistent path marginalization"
+    ],
+    "training_started": false,
+    "reason_training_not_started": "The mandatory all-row gold-path coverage precondition failed; silently dropping rows or learning backward target corruption is forbidden."
+  },
+  "coverage": {
+    "population": {
+      "train": 379,
+      "calibration": 53,
+      "total": 432
+    },
+    "covered": 70,
+    "coverage_fraction": 0.16203703703703703,
+    "failures": 362,
+    "failures_by_split": {
+      "train": 315,
+      "calibration": 47
+    },
+    "no_gold_compatible_path": 348,
+    "exact_round_trip_failures": 12,
+    "rows_with_backward_identity_steps": 339,
+    "backward_identity_steps": 1056,
+    "rows_with_multi_span_events": 318,
+    "multi_span_events": 772,
+    "report": "coverage-final.json",
+    "report_sha256": "ac72e1b0edfadc8c28bcef97daad8ee4b82f3096000931471273ddcdc47c6797"
+  },
+  "independent_structural_audit": {
+    "population": {
+      "train": 379,
+      "calibration": 53,
+      "open_validation": 66,
+      "total": 498,
+      "lockbox": 0
+    },
+    "frozen_backward_identity_steps": 1213,
+    "rows_with_frozen_backward_identity": 391,
+    "rows_with_frozen_backward_identity_fraction": 0.785140562248996,
+    "rows_changed_by_global_monotonic_rebuild": 452,
+    "rows_changed_fraction": 0.9076305220883534,
+    "canonical_identity_disagreements": 5435,
+    "rows_with_complete_global_monotonic_performed_coverage": 495,
+    "complete_global_monotonic_coverage_fraction": 0.9939759036144579,
+    "corrected_backward_identity_steps": 0,
+    "report": "structural-monotonicity.json",
+    "report_sha256": "075ccf16c4155dd1e57e858fc73816602ac4dfff699dd43d14ec919bae9890ff"
+  },
+  "root_cause": {
+    "earlier_representation": "The frozen orn-generalization-v1 target archive inherited raw_midi_authoritative_v1 local forward recovery. It could claim a future same-pitch performed note, then later attach another audible event to an earlier score identity.",
+    "concrete_failure": "Canonical score spans move backward inside a nominal base pass. Example sequences jump from [3,5) to [10,11) and then resume at [5,6). A globally monotonic identity lattice cannot reproduce those labels.",
+    "later_representation_checked": "The mapper-v6-style global monotonic raw-MIDI reconstruction removes all backward transfers and covers every performed note on 495/498 development rows.",
+    "later_representation_status": "not promoted because it changes 452/498 frozen development target rows and 5435 canonical identities, which would violate the user's immutable release hash/target requirement",
+    "why_lattice_relaxation_is_invalid": "Adding arbitrary backward jumps would fit the known local-repair corruption, contradict the required global monotonic lineage, and invalidate source/replay identity semantics rather than repairing lattice coverage."
+  },
+  "conclusion": {
+    "definitive_blocker": true,
+    "blocked_goal": "honestly measured combined canonical note-wise F1 >= 0.85 on the frozen release",
+    "required_resolution": "Supersede the target representation with a separately versioned globally monotonic target sidecar/release and refreeze development plus an independently protected lockbox before CRF training. Membership may remain unchanged, but target hashes and therefore the release hash cannot.",
+    "current_release_can_be_used_for_headline_gate": false,
+    "reason": "Its canonical target identity is not globally monotonic or stable under the corrected lineage rule on most rows."
+  },
+  "isolation": {
+    "lockbox_rows": 42,
+    "lockbox_opened": false,
+    "lockbox_targets_read": false,
+    "lockbox_key_read": false,
+    "release_membership_changed": false,
+    "release_manifest_changed": false,
+    "orn500_used_for_training": false,
+    "production_weights_mutated": false,
+    "paper_updated": false
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "created_utc": "2026-09-17T20:55:38.958891+00:00",
+  "development_gate": {
+    "candidate_artifact_config_and_hash_frozen": true,
+    "combined_open_validation_f1_minimum": 0.85,
+    "oracle_mapper_and_transcriber_diagnostics_required": true
+  },
+  "official_metric": {
+    "credit": {
+      "exact_location_and_type": 1.0,
+      "exact_location_wrong_type": 0.5,
+      "wrong_location": 0.0
+    },
+    "matching": "exclusive one-to-one",
+    "reported": [
+      "micro precision/recall/F1",
+      "95% source bootstrap CI",
+      "per-type F1 and support",
+      "source macro F1"
+    ],
+    "timestamps": "diagnostic only",
+    "unit": "canonical score-note/event identity"
+  },
+  "population": {
+    "membership_selected_without_predictions_or outcomes": true,
+    "raw_lockbox_policy": "Too few outcome-unseen independent raw source scores; every raw row was forced to training and the lockbox contains generated source groups only.",
+    "seed": 20260918,
+    "split_fractions_by_group": {
+      "calibration": [
+        0.25,
+        0.35
+      ],
+      "lockbox": [
+        0.0,
+        0.1
+      ],
+      "open_validation": [
+        0.1,
+        0.25
+      ],
+      "train": [
+        0.35,
+        1.0
+      ]
+    }
+  },
+  "schema_version": "align-orn-generalization-release-v1-protocol",
+  "sealed_evaluation": {
+    "if_gate_not_attained": "leave lockbox sealed",
+    "openings_allowed": 1,
+    "post_test_tuning_allowed": false,
+    "preconditions": [
+      "development gate attained",
+      "candidate artifact/config/hash frozen",
+      "lockbox predictions frozen from public inference inputs",
+      "all release and input hashes verified"
+    ],
+    "required_open_sentinel": "lockbox/LOCKBOX_OPENED.json",
+    "required_result": "lockbox/LOCKBOX_RESULT.json"
+  }
+}
