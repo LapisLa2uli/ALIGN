@@ -1,9 +1,5 @@
 RawData/
 *.log
-align-model/runs/
-align-model/data-packed/
-align-model/wheels/
-align-model/.venv-amt-bench/
 hftoken.txt
 GitAuth.txt
 paper/
@@ -11,10 +7,51 @@ _overleaf_tmp/
 hf_upload_staging/
 __pycache__/
 *.py[cod]
+*.egg-info/
+.pytest_cache/
 ~$*
-align-model/data-audit/**/*.sqlite
-align-model/data-audit/**/*.sqlite-journal
-align-model/data-audit/**/*.jsonl.gz
+
+# Local toolchains and packed training corpora
+align-model/data-packed/
+align-model/wheels/
+align-model/.venv-amt-bench/
+**/synth_*
+
+# Feature caches, packed arrays, and media — keep weights/eval JSON
+*.bin
+*.npz
+*.npy
+*.wav
+*.mp3
+*.flac
+*.mid
+*.midi
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.jsonl
+*.jsonl.gz
+*.gz
+*.aes256gcm
+*.tmp
+
+# Intermediate run artifacts (weights and summary JSON stay tracked)
+frozen/
+lockbox/
+feature-freeze/
+predictions/
+previous-agent-labels/
+*hash_cache.json
+cache/
+cache-*/
+*-cache/
+*-cache-*/
+targets/
+prepared-local-v1/
+candidates/
+
+# Data-audit indexes are rebuildable; keep reports
 align-model/data-audit/**/bundle_index.json
 align-model/data-audit/**/bundle_index.jsonl
 align-model/data-audit/**/hash_cache.json

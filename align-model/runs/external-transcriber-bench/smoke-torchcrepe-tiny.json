@@ -1,0 +1,85 @@
+{
+  "model": "torchcrepe-tiny",
+  "manifest": "align-model\\runs\\note-align-full-e-s365\\split.json",
+  "written_pitch_policy": "detected WAV pitch - sounding_transpose",
+  "calibration_samples_requested": 1,
+  "calibration": {
+    "config": {
+      "confidence_threshold": 0.1,
+      "onset_threshold": 0.2,
+      "min_note_sec": 0.09,
+      "pitch_change_semitones": 0.55,
+      "max_gap_frames": 2,
+      "extra_written_shift": 2
+    },
+    "metrics": {
+      "precision": 0.6923076923076923,
+      "recall": 0.6,
+      "f1": 0.6428571428571429,
+      "n_pred": 26,
+      "n_target": 30,
+      "n_matched": 18,
+      "pred_target_ratio": 0.8666666666666667,
+      "onset_mae_sec": 0.01692307700000004,
+      "offset_mae_sec": 0.019786324888888922,
+      "cents_mae": 6.497777777777777,
+      "intonation_cents_mae": null,
+      "n_intonation_matched": 0,
+      "n_semitone_errors": 0,
+      "n_octave_errors": 0,
+      "n_plus_minus_2": 0
+    }
+  },
+  "splits": {
+    "val": {
+      "metrics": {
+        "precision": 0.6923076923076923,
+        "recall": 0.6,
+        "f1": 0.6428571428571429,
+        "n_pred": 26,
+        "n_target": 30,
+        "n_matched": 18,
+        "pred_target_ratio": 0.8666666666666667,
+        "onset_mae_sec": 0.01692307700000004,
+        "offset_mae_sec": 0.019786324888888922,
+        "cents_mae": 6.497777777777777,
+        "intonation_cents_mae": null,
+        "n_intonation_matched": 0,
+        "n_semitone_errors": 0,
+        "n_octave_errors": 0,
+        "n_plus_minus_2": 0,
+        "n_requested": 1,
+        "n_evaluated": 1,
+        "n_skipped": 0,
+        "inference_sec_total": 4.744770099991001
+      },
+      "samples": [
+        {
+          "sample": "synth_gen_0065",
+          "corpus": "procedural12k",
+          "source": "gen",
+          "inference_sec": 4.744770099991001,
+          "metrics": {
+            "precision": 0.6923076923076923,
+            "recall": 0.6,
+            "f1": 0.6428571428571429,
+            "onset_mae_sec": 0.01692307700000004,
+            "offset_mae_sec": 0.019786324888888922,
+            "cents_mae": 6.497777777777777,
+            "n_pred": 26,
+            "n_target": 30,
+            "n_matched": 18,
+            "n_onset_aligned": 18,
+            "n_semitone_errors": 0,
+            "n_octave_errors": 0,
+            "n_plus_minus_2": 0,
+            "pred_target_ratio": 0.8666666666666667,
+            "intonation_cents_mae": null,
+            "n_intonation_matched": 0
+          }
+        }
+      ],
+      "skipped": []
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "metric": "official hard type-aware melody F1",
+  "pool": "calib",
+  "n": 20,
+  "seed": 365,
+  "winner": "binary_gate_hardneg",
+  "rows": [
+    {
+      "name": "heuristic_baseline",
+      "mean_melody_f1": 0.0812,
+      "mean_melody_precision": 0.0463,
+      "mean_melody_recall": 0.3847,
+      "mean_n_gold": 5.7,
+      "mean_n_pred": 48.75,
+      "weights": null
+    },
+    {
+      "name": "binary_gate",
+      "mean_melody_f1": 0.104,
+      "mean_melody_precision": 0.0888,
+      "mean_melody_recall": 0.2113,
+      "mean_n_gold": 5.7,
+      "mean_n_pred": 15.2,
+      "weights": "align-model/runs/model-a-improve/stage2-binary-gate"
+    },
+    {
+      "name": "binary_gate_hardneg",
+      "mean_melody_f1": 0.1286,
+      "mean_melody_precision": 0.1086,
+      "mean_melody_recall": 0.2383,
+      "mean_n_gold": 5.7,
+      "mean_n_pred": 14.75,
+      "weights": "align-model/runs/model-a-improve/stage2-binary-hardneg",
+      "selected": true
+    }
+  ],
+  "selection_notes": "Hard-negatives raise F1 and precision while cutting the false-positive flood (49 -> 15 preds). Recall drops from 0.385 to 0.238 but does not collapse."
+}

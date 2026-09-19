@@ -1,0 +1,23 @@
+{
+  "status": "paused",
+  "active_command": null,
+  "owned_processes_remaining": 0,
+  "latest_valid_full_pipeline": {
+    "checkpoint": "weak-note-continuation-optimized/joint_decoder.pt",
+    "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+    "report": "weak-note-continuation-optimized/report.json",
+    "validation_rows": 1871,
+    "transcriber_note_f1_50ms": 0.8639180268113889,
+    "strict_joint_f1_50ms": 0.7049532218217164,
+    "conditional_mapping_accuracy_50ms": 0.8884565906309811,
+    "promotion_gate_passed": false
+  },
+  "paused_component": {
+    "status": "../components/candidate-rescorer-v1/PAUSED_STATUS.json",
+    "checkpoint": "../components/candidate-rescorer-v1/pause_checkpoint.pt",
+    "cache": "../components/candidate-rescorer-v1/examples-floor-050.sqlite",
+    "log": "../components/candidate-rescorer-v1/training-paused.log",
+    "restart_required": true
+  },
+  "locked_test_touched": false
+}

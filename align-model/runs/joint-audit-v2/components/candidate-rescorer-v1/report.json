@@ -1,0 +1,51 @@
+{
+  "schema_version": "align-candidate-rescorer-report-v1",
+  "requires_note_wise_rescore": true,
+  "promotion_allowed": false,
+  "official_metric": "note-wise canonical score-event scoring",
+  "timestamp_metrics_status": "diagnostic_only",
+  "required_rerun": "deterministic training and epoch/threshold selection from pause_checkpoint.pt",
+  "hold_marker": "runs/NOTE_WISE_PROMOTION_HOLD.json",
+  "checkpoint": "runs\\joint-audit-v2\\components\\candidate-rescorer-v1\\candidate_rescorer.pt",
+  "candidate_generation_floor": 0.5,
+  "global_candidate_gate": 0.65,
+  "confidence_band_trained": [
+    0.5,
+    0.65
+  ],
+  "duration_positive_weights": {
+    "lt_80ms": 4.0,
+    "lt_120ms": 3.0,
+    "lt_180ms": 2.0
+  },
+  "hard_negative_ratio": 1.0,
+  "cache": {
+    "requested": 16589,
+    "cache_hits": 16589,
+    "built": 0,
+    "seconds": 4.900000931229442e-06,
+    "rows_per_second": 0.0
+  },
+  "validation": {
+    "precision": 0.8829709699873071,
+    "recall": 0.9000183636333283,
+    "f1": 0.891413170632903,
+    "matched": 107824,
+    "predicted": 122115,
+    "target": 119802,
+    "count_ratio": 1.0193068563129164,
+    "short_note_recall_lt_120ms": 0.7717915024091109,
+    "short_note_matched": 1762,
+    "short_note_target": 2283,
+    "same_pitch_split_count": 13144,
+    "same_pitch_split_rate": 0.1076362445236048,
+    "threshold": 0.6799999999999999
+  },
+  "bootstrap_note_f1_50ms": {
+    "replicates": 2000,
+    "lower_95": 0.8869831525208917,
+    "median": 0.8914925414902245,
+    "upper_95": 0.8961339821712799
+  },
+  "locked_test_touched": false
+}

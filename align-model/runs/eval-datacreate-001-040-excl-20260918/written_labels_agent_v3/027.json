@@ -1,0 +1,795 @@
+{
+  "agent_labeling": {
+    "kept_counts_by_type": {
+      "extra_note": 15,
+      "missed_note": 1,
+      "repetition": 1
+    },
+    "method": "align_error_heads_v3",
+    "pipeline": {
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 65.98027210884354,
+          "frames": 1454865,
+          "sample_rate": 22050,
+          "sha256": "7e3ba2fef0e5afd09f12f10af4dbad526df08968b079705321839a7f32a372df"
+        },
+        "candidate_count": 136,
+        "candidate_pitch_in_score_ratio": 0.9926470588235294,
+        "candidate_to_score_count_ratio": 1.1623931623931625,
+        "candidate_union_all_count": 195,
+        "canonical_to_score_count_ratio": 1.0769230769230769,
+        "canonical_transcription_count": 126,
+        "copy_event_count": 10,
+        "decoded_event_count": 136,
+        "deleted_score_event_count": 10,
+        "mapped_event_count": 116,
+        "mapped_score_coverage": 0.9145299145299145,
+        "operations": {
+          "EXTRA": 20,
+          "MATCH": 116
+        },
+        "path_score": 53.464820861816406,
+        "retained_candidate_count": 136,
+        "score_event_count": 117,
+        "unmapped_event_count": 20
+      },
+      "error_heads_checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "evaluation_model": "v3",
+      "intonation_masked": true,
+      "joint_checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "range_decoder": "sequence_cluster_v3",
+      "sample_id": "027",
+      "upstream_frozen": true,
+      "v3_decode_config_sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4"
+    },
+    "replaced_previous_agent_labels": true,
+    "source_eval": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-001-040-excl-20260918\\report.json",
+    "source_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-all94-agent-note-wise-20260915\\predictions\\v3\\027.json",
+    "transcriber": "basic-pitch-frozen",
+    "uses_project_alignment_or_error_models": true,
+    "written_utc": "2026-09-18T13:49:09.314112+00:00"
+  },
+  "annotator_id": "cursor_agent_error_heads_v3",
+  "audio_reference": "performance_audio.wav",
+  "labels": [
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0001",
+        "note_0002"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 0.9056,
+      "extra_copies": null,
+      "id": "agent_0000",
+      "measure_number": 2,
+      "note_id": "note_0001",
+      "note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002",
+        "note_0003"
+      ],
+      "pitches": [
+        84,
+        83,
+        81,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 2,
+        "core_start_note_index": 1,
+        "end_measure": 2,
+        "end_note_index": 3,
+        "pad_notes": 1,
+        "start_measure": 2,
+        "start_note_index": 0
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 0.6153,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0006",
+        "note_0007"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.4974,
+      "extra_copies": null,
+      "id": "agent_0001",
+      "measure_number": 2,
+      "note_id": "note_0006",
+      "note_ids": [
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        76,
+        81,
+        77,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 7,
+        "core_start_note_index": 6,
+        "end_measure": 3,
+        "end_note_index": 8,
+        "pad_notes": 1,
+        "start_measure": 2,
+        "start_note_index": 5
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 1.7879,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0008",
+        "note_0009"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 3.5539,
+      "extra_copies": null,
+      "id": "agent_0002",
+      "measure_number": 3,
+      "note_id": "note_0008",
+      "note_ids": [
+        "note_0007",
+        "note_0008",
+        "note_0009",
+        "note_0010"
+      ],
+      "pitches": [
+        77,
+        74,
+        81,
+        83
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 9,
+        "core_start_note_index": 8,
+        "end_measure": 3,
+        "end_note_index": 10,
+        "pad_notes": 1,
+        "start_measure": 3,
+        "start_note_index": 7
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.6832,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0013",
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 6.7492,
+      "extra_copies": null,
+      "id": "agent_0003",
+      "measure_number": 4,
+      "note_id": "note_0013",
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        84,
+        83,
+        81,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 13,
+        "end_measure": 4,
+        "end_note_index": 15,
+        "pad_notes": 1,
+        "start_measure": 4,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 6.2965,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 8.4456,
+      "extra_copies": null,
+      "id": "agent_0004",
+      "measure_number": 4,
+      "note_id": "note_0019",
+      "note_ids": [
+        "note_0018",
+        "note_0019",
+        "note_0020",
+        "note_0021"
+      ],
+      "pitches": [
+        81,
+        79,
+        77,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 4,
+        "end_note_index": 21,
+        "pad_notes": 1,
+        "start_measure": 4,
+        "start_note_index": 18
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 8.2018,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0023",
+        "note_0024",
+        "note_0025"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 10.3277,
+      "extra_copies": null,
+      "id": "agent_0005",
+      "measure_number": 4,
+      "note_id": "note_0023",
+      "note_ids": [
+        "note_0022",
+        "note_0023",
+        "note_0024",
+        "note_0025",
+        "note_0026"
+      ],
+      "pitches": [
+        77,
+        74,
+        72,
+        79,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 25,
+        "core_start_note_index": 23,
+        "end_measure": 6,
+        "end_note_index": 26,
+        "pad_notes": 1,
+        "start_measure": 4,
+        "start_note_index": 22
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 9.1074,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0028",
+        "note_0029"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 17.5529,
+      "extra_copies": null,
+      "id": "agent_0006",
+      "measure_number": 6,
+      "note_id": "note_0028",
+      "note_ids": [
+        "note_0027",
+        "note_0028",
+        "note_0029",
+        "note_0030"
+      ],
+      "pitches": [
+        74,
+        79,
+        77,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 29,
+        "core_start_note_index": 28,
+        "end_measure": 7,
+        "end_note_index": 30,
+        "pad_notes": 1,
+        "start_measure": 6,
+        "start_note_index": 27
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 16.9724,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0032",
+        "note_0033"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 21.8396,
+      "extra_copies": null,
+      "id": "agent_0007",
+      "measure_number": 8,
+      "note_id": "note_0032",
+      "note_ids": [
+        "note_0031",
+        "note_0032",
+        "note_0033",
+        "note_0034"
+      ],
+      "pitches": [
+        79,
+        83,
+        81,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 33,
+        "core_start_note_index": 32,
+        "end_measure": 8,
+        "end_note_index": 34,
+        "pad_notes": 1,
+        "start_measure": 8,
+        "start_note_index": 31
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 21.4332,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0035",
+        "note_0036"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 22.6187,
+      "extra_copies": null,
+      "id": "agent_0008",
+      "measure_number": 8,
+      "note_id": "note_0035",
+      "note_ids": [
+        "note_0034",
+        "note_0035",
+        "note_0036",
+        "note_0037"
+      ],
+      "pitches": [
+        79,
+        86,
+        84,
+        83
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 36,
+        "core_start_note_index": 35,
+        "end_measure": 8,
+        "end_note_index": 37,
+        "pad_notes": 1,
+        "start_measure": 8,
+        "start_note_index": 34
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 22.4562,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0044",
+        "note_0045"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 26.3133,
+      "extra_copies": null,
+      "id": "agent_0009",
+      "measure_number": 9,
+      "note_id": "note_0044",
+      "note_ids": [
+        "note_0043",
+        "note_0044",
+        "note_0045",
+        "note_0046"
+      ],
+      "pitches": [
+        75,
+        76,
+        81,
+        80
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 45,
+        "core_start_note_index": 44,
+        "end_measure": 10,
+        "end_note_index": 46,
+        "pad_notes": 1,
+        "start_measure": 9,
+        "start_note_index": 43
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 25.7315,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0048",
+        "note_0049"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 32.1918,
+      "extra_copies": null,
+      "id": "agent_0010",
+      "measure_number": 10,
+      "note_id": "note_0048",
+      "note_ids": [
+        "note_0047",
+        "note_0048",
+        "note_0049",
+        "note_0050"
+      ],
+      "pitches": [
+        83,
+        81,
+        81,
+        80
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 49,
+        "core_start_note_index": 48,
+        "end_measure": 11,
+        "end_note_index": 50,
+        "pad_notes": 1,
+        "start_measure": 10,
+        "start_note_index": 47
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 31.6332,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0050",
+        "note_0051"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 34.248,
+      "extra_copies": null,
+      "id": "agent_0011",
+      "measure_number": 11,
+      "note_id": "note_0050",
+      "note_ids": [
+        "note_0049",
+        "note_0050",
+        "note_0051",
+        "note_0052"
+      ],
+      "pitches": [
+        81,
+        80,
+        83,
+        83
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 51,
+        "core_start_note_index": 50,
+        "end_measure": 11,
+        "end_note_index": 52,
+        "pad_notes": 1,
+        "start_measure": 11,
+        "start_note_index": 49
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 33.9694,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0080",
+        "note_0081"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 47.0964,
+      "extra_copies": null,
+      "id": "agent_0012",
+      "measure_number": 14,
+      "note_id": "note_0080",
+      "note_ids": [
+        "note_0079",
+        "note_0080",
+        "note_0081",
+        "note_0082"
+      ],
+      "pitches": [
+        83,
+        84,
+        79,
+        78
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 81,
+        "core_start_note_index": 80,
+        "end_measure": 16,
+        "end_note_index": 82,
+        "pad_notes": 1,
+        "start_measure": 14,
+        "start_note_index": 79
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 46.5391,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0110",
+        "note_0111"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 62.9775,
+      "extra_copies": null,
+      "id": "agent_0013",
+      "measure_number": 19,
+      "note_id": "note_0110",
+      "note_ids": [
+        "note_0109",
+        "note_0110",
+        "note_0111",
+        "note_0112"
+      ],
+      "pitches": [
+        76,
+        72,
+        67,
+        72
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 111,
+        "core_start_note_index": 110,
+        "end_measure": 19,
+        "end_note_index": 112,
+        "pad_notes": 1,
+        "start_measure": 19,
+        "start_note_index": 109
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 62.7917,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0113",
+        "note_0114"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 63.9076,
+      "extra_copies": null,
+      "id": "agent_0014",
+      "measure_number": 19,
+      "note_id": "note_0113",
+      "note_ids": [
+        "note_0112",
+        "note_0113",
+        "note_0114",
+        "note_0115"
+      ],
+      "pitches": [
+        72,
+        64,
+        67,
+        60
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 114,
+        "core_start_note_index": 113,
+        "end_measure": 20,
+        "end_note_index": 115,
+        "pad_notes": 1,
+        "start_measure": 19,
+        "start_note_index": 112
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 63.6057,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0093",
+        "note_0094",
+        "note_0095",
+        "note_0096",
+        "note_0097",
+        "note_0098",
+        "note_0099",
+        "note_0100",
+        "note_0101",
+        "note_0102"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 61.2115,
+      "extra_copies": null,
+      "id": "agent_0015",
+      "measure_number": 18,
+      "note_id": "note_0093",
+      "note_ids": [
+        "note_0092",
+        "note_0093",
+        "note_0094",
+        "note_0095",
+        "note_0096",
+        "note_0097",
+        "note_0098",
+        "note_0099",
+        "note_0100",
+        "note_0101",
+        "note_0102",
+        "note_0103"
+      ],
+      "pitches": [
+        78,
+        79,
+        76,
+        72,
+        71,
+        81,
+        79,
+        71,
+        72,
+        84,
+        79,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 102,
+        "core_start_note_index": 93,
+        "end_measure": 19,
+        "end_note_index": 103,
+        "pad_notes": 1,
+        "start_measure": 18,
+        "start_note_index": 92
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 61.0141,
+      "type": "missed_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0082",
+        "note_0083",
+        "note_0084",
+        "note_0085",
+        "note_0086",
+        "note_0087",
+        "note_0088",
+        "note_0089",
+        "note_0090",
+        "note_0091"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 61.0141,
+      "extra_copies": 1,
+      "id": "agent_0016",
+      "measure_number": 16,
+      "note_id": "note_0082",
+      "note_ids": [
+        "note_0081",
+        "note_0082",
+        "note_0083",
+        "note_0084",
+        "note_0085",
+        "note_0086",
+        "note_0087",
+        "note_0088",
+        "note_0089",
+        "note_0090",
+        "note_0091",
+        "note_0092"
+      ],
+      "pitches": [
+        79,
+        78,
+        79,
+        76,
+        72,
+        71,
+        81,
+        79,
+        71,
+        72,
+        79,
+        78
+      ],
+      "repeats_label_range": {
+        "end_time": 61.0141,
+        "start_time": 56.9481
+      },
+      "score_part": {
+        "core_end_note_index": 91,
+        "core_start_note_index": 82,
+        "end_measure": 18,
+        "end_note_index": 92,
+        "pad_notes": 1,
+        "start_measure": 16,
+        "start_note_index": 81
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 56.9481,
+      "type": "repetition"
+    }
+  ],
+  "schema_version": "1.2",
+  "self_reported": []
+}

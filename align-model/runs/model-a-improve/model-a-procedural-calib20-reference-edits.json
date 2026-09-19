@@ -1,0 +1,2793 @@
+{
+  "n_samples": 20,
+  "mean_melody_f1": 0.2532,
+  "mean_melody_precision": 0.4917,
+  "mean_melody_recall": 0.1746,
+  "mean_n_gold": 5.7,
+  "mean_n_pred": 1.7,
+  "per_type": {
+    "extra_note": {
+      "n_gold": 19,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0
+    },
+    "intonation_error": {
+      "n_gold": 26,
+      "n_pred": 2,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0
+    },
+    "missed_note": {
+      "n_gold": 14,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0
+    },
+    "repetition": {
+      "n_gold": 16,
+      "n_pred": 9,
+      "n_matched": 9.0,
+      "melody_f1": 0.72,
+      "melody_precision": 1.0,
+      "melody_recall": 0.5625
+    },
+    "rhythm_error": {
+      "n_gold": 18,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0
+    },
+    "wrong_note": {
+      "n_gold": 21,
+      "n_pred": 23,
+      "n_matched": 7.0,
+      "melody_f1": 0.3182,
+      "melody_precision": 0.3043,
+      "melody_recall": 0.3333
+    }
+  },
+  "samples": [
+    {
+      "sample": "synth_gen_9885",
+      "n_gold": 6,
+      "n_pred": 2,
+      "n_matched": 2.0,
+      "melody_f1": 0.5,
+      "melody_precision": 1.0,
+      "melody_recall": 0.3333,
+      "melody_similarity": 0.5,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "wrong_note",
+        "missed_note",
+        "rhythm_error",
+        "extra_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 18.5527,
+          "end_time": 35.8748,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.976",
+          "repeats_label_range": {
+            "start_time": 0.0,
+            "end_time": 17.3221
+          },
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 21,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 13
+          },
+          "pitches": [
+            64,
+            65,
+            62,
+            62,
+            67,
+            69,
+            70,
+            69,
+            67,
+            65,
+            64,
+            62,
+            57,
+            55,
+            53,
+            58,
+            58,
+            58,
+            57,
+            57,
+            62,
+            64
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 9.0558,
+          "end_time": 9.4737,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 64 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 6,
+          "note_id": "note_0010",
+          "score_part": {
+            "start_note_index": 8,
+            "end_note_index": 12,
+            "pad_notes": 2,
+            "start_measure": 5,
+            "end_measure": 7
+          },
+          "pitches": [
+            67,
+            65,
+            64,
+            62,
+            57
+          ],
+          "note_ids": [
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_1946",
+      "n_gold": 8,
+      "n_pred": 4,
+      "n_matched": 1.0,
+      "melody_f1": 0.1667,
+      "melody_precision": 0.25,
+      "melody_recall": 0.125,
+      "melody_similarity": 0.1667,
+      "note_set_iou": 0.25,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "extra_note",
+        "missed_note",
+        "extra_note",
+        "intonation_error",
+        "wrong_note",
+        "intonation_error",
+        "missed_note",
+        "wrong_note"
+      ],
+      "pred_types": [
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 2,
+          "n_pred": 4,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 4
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 10.0078,
+          "end_time": 10.5883,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 78 | stage2-net",
+          "deviation_cents": 0.21,
+          "measure_number": 5,
+          "note_id": "note_0016",
+          "score_part": {
+            "start_note_index": 11,
+            "end_note_index": 18,
+            "pad_notes": 2,
+            "start_measure": 4,
+            "end_measure": 5
+          },
+          "pitches": [
+            78,
+            79,
+            78,
+            79,
+            79,
+            78,
+            79,
+            81
+          ],
+          "note_ids": [
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018"
+          ]
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 15.4413,
+          "end_time": 16.0218,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 83 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 7,
+          "note_id": "note_0024",
+          "score_part": {
+            "start_note_index": 21,
+            "end_note_index": 26,
+            "pad_notes": 2,
+            "start_measure": 6,
+            "end_measure": 8
+          },
+          "pitches": [
+            83,
+            81,
+            83,
+            83,
+            83,
+            83
+          ],
+          "note_ids": [
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026"
+          ]
+        },
+        {
+          "id": "pipe_002",
+          "source": "pipeline",
+          "start_time": 18.8778,
+          "end_time": 19.4351,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 83 | stage2-net",
+          "deviation_cents": 99.82,
+          "measure_number": 9,
+          "note_id": "note_0029",
+          "score_part": {
+            "start_note_index": 27,
+            "end_note_index": 31,
+            "pad_notes": 2,
+            "start_measure": 8,
+            "end_measure": 9
+          },
+          "pitches": [
+            83,
+            81,
+            83,
+            79,
+            78
+          ],
+          "note_ids": [
+            "note_0027",
+            "note_0028",
+            "note_0029",
+            "note_0030",
+            "note_0031"
+          ]
+        },
+        {
+          "id": "pipe_003",
+          "source": "pipeline",
+          "start_time": 22.8949,
+          "end_time": 23.4057,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 79 | stage2-net",
+          "deviation_cents": 149.32,
+          "measure_number": 11,
+          "note_id": "note_0035",
+          "score_part": {
+            "start_note_index": 33,
+            "end_note_index": 37,
+            "pad_notes": 2,
+            "start_measure": 10,
+            "end_measure": 11
+          },
+          "pitches": [
+            79,
+            78,
+            79,
+            83,
+            81
+          ],
+          "note_ids": [
+            "note_0033",
+            "note_0034",
+            "note_0035",
+            "note_0036",
+            "note_0037"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_0793",
+      "n_gold": 6,
+      "n_pred": 1,
+      "n_matched": 0.5,
+      "melody_f1": 0.1429,
+      "melody_precision": 0.5,
+      "melody_recall": 0.0833,
+      "melody_similarity": 0.1429,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.5,
+      "gold_types": [
+        "missed_note",
+        "rhythm_error",
+        "wrong_note",
+        "wrong_note",
+        "extra_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 2,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 1.0,
+          "melody_recall": 0.5
+        }
+      },
+      "label_counts": {
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 63.8781,
+          "end_time": 66.3626,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 82 | stage2-net",
+          "deviation_cents": 100.4,
+          "measure_number": 7,
+          "note_id": "note_0020",
+          "score_part": {
+            "start_note_index": 18,
+            "end_note_index": 22,
+            "pad_notes": 2,
+            "start_measure": 6,
+            "end_measure": 8
+          },
+          "pitches": [
+            84,
+            84,
+            82,
+            84,
+            84
+          ],
+          "note_ids": [
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_11431",
+      "n_gold": 7,
+      "n_pred": 1,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "wrong_note",
+        "extra_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "intonation_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 3,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_007",
+          "source": "pipeline",
+          "start_time": 45.0003,
+          "end_time": 45.5576,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 60 | stage2-net",
+          "deviation_cents": -98.11,
+          "measure_number": 10,
+          "note_id": "note_0026",
+          "score_part": {
+            "start_note_index": 24,
+            "end_note_index": 28,
+            "pad_notes": 2,
+            "start_measure": 10,
+            "end_measure": 11
+          },
+          "pitches": [
+            52,
+            57,
+            60,
+            59,
+            60
+          ],
+          "note_ids": [
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_2662",
+      "n_gold": 6,
+      "n_pred": 2,
+      "n_matched": 1.0,
+      "melody_f1": 0.25,
+      "melody_precision": 0.5,
+      "melody_recall": 0.1667,
+      "melody_similarity": 0.25,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "extra_note",
+        "intonation_error",
+        "rhythm_error",
+        "wrong_note",
+        "intonation_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 22.384,
+          "end_time": 39.1642,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.937",
+          "repeats_label_range": {
+            "start_time": 4.884,
+            "end_time": 21.6642
+          },
+          "score_part": {
+            "start_note_index": 4,
+            "end_note_index": 28,
+            "pad_notes": 2,
+            "start_measure": 2,
+            "end_measure": 9
+          },
+          "pitches": [
+            75,
+            77,
+            75,
+            77,
+            77,
+            75,
+            77,
+            75,
+            74,
+            72,
+            70,
+            72,
+            70,
+            69,
+            72,
+            74,
+            74,
+            75,
+            70,
+            69,
+            69,
+            70,
+            74,
+            72,
+            72
+          ],
+          "note_ids": [
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 7.1982,
+          "end_time": 8.3824,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 75 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 4,
+          "note_id": "note_0009",
+          "score_part": {
+            "start_note_index": 7,
+            "end_note_index": 11,
+            "pad_notes": 2,
+            "start_measure": 3,
+            "end_measure": 5
+          },
+          "pitches": [
+            77,
+            77,
+            75,
+            77,
+            75
+          ],
+          "note_ids": [
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_2722",
+      "n_gold": 8,
+      "n_pred": 2,
+      "n_matched": 1.5,
+      "melody_f1": 0.3,
+      "melody_precision": 0.75,
+      "melody_recall": 0.1875,
+      "melody_similarity": 0.3,
+      "note_set_iou": 0.75,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.5,
+      "gold_types": [
+        "intonation_error",
+        "rhythm_error",
+        "rhythm_error",
+        "extra_note",
+        "extra_note",
+        "intonation_error",
+        "missed_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 16.579,
+          "end_time": 30.8454,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.927",
+          "repeats_label_range": {
+            "start_time": 1.5,
+            "end_time": 15.7663
+          },
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 20,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 12
+          },
+          "pitches": [
+            70,
+            69,
+            67,
+            69,
+            74,
+            72,
+            70,
+            72,
+            74,
+            76,
+            77,
+            79,
+            84,
+            84,
+            84,
+            84,
+            81,
+            79,
+            79,
+            77,
+            72
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 13.1889,
+          "end_time": 14.2571,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 84 | stage2-net",
+          "deviation_cents": -200.13,
+          "measure_number": 10,
+          "note_id": "note_0015",
+          "score_part": {
+            "start_note_index": 12,
+            "end_note_index": 17,
+            "pad_notes": 2,
+            "start_measure": 8,
+            "end_measure": 11
+          },
+          "pitches": [
+            84,
+            84,
+            84,
+            84,
+            81,
+            79
+          ],
+          "note_ids": [
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_8033",
+      "n_gold": 2,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "intonation_error",
+        "extra_note"
+      ],
+      "pred_types": [],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {},
+      "pred_labels": []
+    },
+    {
+      "sample": "synth_gen_7264",
+      "n_gold": 8,
+      "n_pred": 4,
+      "n_matched": 2.0,
+      "melody_f1": 0.3333,
+      "melody_precision": 0.5,
+      "melody_recall": 0.25,
+      "melody_similarity": 0.3333,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "extra_note",
+        "rhythm_error",
+        "intonation_error",
+        "rhythm_error",
+        "wrong_note",
+        "extra_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 3,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 3,
+          "n_matched": 1.0,
+          "melody_f1": 0.5,
+          "melody_precision": 0.3333,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 3
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 21.5713,
+          "end_time": 35.3569,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.902",
+          "repeats_label_range": {
+            "start_time": 7.3213,
+            "end_time": 21.1069
+          },
+          "score_part": {
+            "start_note_index": 7,
+            "end_note_index": 28,
+            "pad_notes": 2,
+            "start_measure": 4,
+            "end_measure": 13
+          },
+          "pitches": [
+            74,
+            72,
+            71,
+            67,
+            69,
+            69,
+            69,
+            67,
+            69,
+            71,
+            67,
+            69,
+            67,
+            65,
+            67,
+            71,
+            72,
+            72,
+            77,
+            79,
+            76,
+            77
+          ],
+          "note_ids": [
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 12.3995,
+          "end_time": 13.2122,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 71 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 8,
+          "note_id": "note_0016",
+          "score_part": {
+            "start_note_index": 14,
+            "end_note_index": 18,
+            "pad_notes": 2,
+            "start_measure": 7,
+            "end_measure": 9
+          },
+          "pitches": [
+            67,
+            69,
+            71,
+            67,
+            69
+          ],
+          "note_ids": [
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018"
+          ]
+        },
+        {
+          "id": "pipe_003",
+          "source": "pipeline",
+          "start_time": 18.8546,
+          "end_time": 19.4119,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 77 | stage2-net",
+          "deviation_cents": -300.0,
+          "measure_number": 12,
+          "note_id": "note_0025",
+          "score_part": {
+            "start_note_index": 23,
+            "end_note_index": 27,
+            "pad_notes": 2,
+            "start_measure": 11,
+            "end_measure": 13
+          },
+          "pitches": [
+            72,
+            72,
+            77,
+            79,
+            76
+          ],
+          "note_ids": [
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027"
+          ]
+        },
+        {
+          "id": "pipe_004",
+          "source": "pipeline",
+          "start_time": 19.4119,
+          "end_time": 20.2478,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 79 | stage2-net",
+          "deviation_cents": -0.81,
+          "measure_number": 12,
+          "note_id": "note_0026",
+          "score_part": {
+            "start_note_index": 24,
+            "end_note_index": 28,
+            "pad_notes": 2,
+            "start_measure": 11,
+            "end_measure": 13
+          },
+          "pitches": [
+            72,
+            77,
+            79,
+            76,
+            77
+          ],
+          "note_ids": [
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_6473",
+      "n_gold": 5,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "wrong_note",
+        "extra_note",
+        "intonation_error",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {},
+      "pred_labels": []
+    },
+    {
+      "sample": "synth_gen_2219",
+      "n_gold": 7,
+      "n_pred": 2,
+      "n_matched": 2.0,
+      "melody_f1": 0.4444,
+      "melody_precision": 1.0,
+      "melody_recall": 0.2857,
+      "melody_similarity": 0.4444,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "intonation_error",
+        "rhythm_error",
+        "wrong_note",
+        "rhythm_error",
+        "wrong_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note"
+      ],
+      "per_type": {
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 3,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 2,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 1.0,
+          "melody_recall": 0.5
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 6.8034,
+          "end_time": 10.8639,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.985",
+          "repeats_label_range": {
+            "start_time": 2.0,
+            "end_time": 6.0604
+          },
+          "score_part": {
+            "start_note_index": 1,
+            "end_note_index": 12,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 5
+          },
+          "pitches": [
+            65,
+            67,
+            72,
+            76,
+            72,
+            70,
+            70,
+            76,
+            70,
+            76,
+            77,
+            76
+          ],
+          "note_ids": [
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 2.0201,
+          "end_time": 2.6703,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 72 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 2,
+          "note_id": "note_0003",
+          "score_part": {
+            "start_note_index": 1,
+            "end_note_index": 7,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 3
+          },
+          "pitches": [
+            65,
+            67,
+            72,
+            76,
+            72,
+            70,
+            70
+          ],
+          "note_ids": [
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_5608",
+      "n_gold": 2,
+      "n_pred": 1,
+      "n_matched": 1.0,
+      "melody_f1": 0.6667,
+      "melody_precision": 1.0,
+      "melody_recall": 0.5,
+      "melody_similarity": 0.6667,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "wrong_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "wrong_note"
+      ],
+      "per_type": {
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 18.0187,
+          "end_time": 18.901,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 81 | stage2-net",
+          "deviation_cents": -100.86,
+          "measure_number": 11,
+          "note_id": "note_0021",
+          "score_part": {
+            "start_note_index": 19,
+            "end_note_index": 23,
+            "pad_notes": 2,
+            "start_measure": 10,
+            "end_measure": 12
+          },
+          "pitches": [
+            77,
+            79,
+            81,
+            83,
+            81
+          ],
+          "note_ids": [
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_7219",
+      "n_gold": 8,
+      "n_pred": 3,
+      "n_matched": 1.5,
+      "melody_f1": 0.2727,
+      "melody_precision": 0.5,
+      "melody_recall": 0.1875,
+      "melody_similarity": 0.2727,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.5,
+      "gold_types": [
+        "extra_note",
+        "intonation_error",
+        "intonation_error",
+        "extra_note",
+        "intonation_error",
+        "missed_note",
+        "intonation_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note",
+        "intonation_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 4,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1,
+        "intonation_error": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 22.8717,
+          "end_time": 39.4142,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.991",
+          "repeats_label_range": {
+            "start_time": 5.1217,
+            "end_time": 21.6642
+          },
+          "score_part": {
+            "start_note_index": 6,
+            "end_note_index": 35,
+            "pad_notes": 2,
+            "start_measure": 2,
+            "end_measure": 11
+          },
+          "pitches": [
+            75,
+            79,
+            82,
+            79,
+            77,
+            79,
+            77,
+            77,
+            77,
+            75,
+            77,
+            79,
+            79,
+            84,
+            82,
+            84,
+            84,
+            82,
+            84,
+            84,
+            84,
+            82,
+            79,
+            79,
+            82,
+            84,
+            84,
+            84,
+            84,
+            82
+          ],
+          "note_ids": [
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028",
+            "note_0029",
+            "note_0030",
+            "note_0031",
+            "note_0032",
+            "note_0033",
+            "note_0034",
+            "note_0035"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 4.3886,
+          "end_time": 5.1316,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 82 | stage2-net",
+          "deviation_cents": -299.42,
+          "measure_number": 3,
+          "note_id": "note_0008",
+          "score_part": {
+            "start_note_index": 6,
+            "end_note_index": 10,
+            "pad_notes": 2,
+            "start_measure": 2,
+            "end_measure": 4
+          },
+          "pitches": [
+            75,
+            79,
+            82,
+            79,
+            77
+          ],
+          "note_ids": [
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010"
+          ]
+        },
+        {
+          "id": "pipe_002",
+          "source": "pipeline",
+          "start_time": 11.6332,
+          "end_time": 12.4227,
+          "type": "intonation_error",
+          "comment": "chroma cents over tolerance | stage2-net",
+          "deviation_cents": -49.69,
+          "measure_number": 6,
+          "note_id": "note_0019",
+          "score_part": {
+            "start_note_index": 17,
+            "end_note_index": 21,
+            "pad_notes": 2,
+            "start_measure": 5,
+            "end_measure": 7
+          },
+          "pitches": [
+            79,
+            79,
+            84,
+            82,
+            84
+          ],
+          "note_ids": [
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_5759",
+      "n_gold": 5,
+      "n_pred": 2,
+      "n_matched": 2.0,
+      "melody_f1": 0.5714,
+      "melody_precision": 1.0,
+      "melody_recall": 0.4,
+      "melody_similarity": 0.5714,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "rhythm_error",
+        "rhythm_error",
+        "wrong_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note"
+      ],
+      "per_type": {
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 3,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 12.0744,
+          "end_time": 23.6379,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.981",
+          "repeats_label_range": {
+            "start_time": 0.0,
+            "end_time": 11.5635
+          },
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 22,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 13
+          },
+          "pitches": [
+            66,
+            67,
+            69,
+            71,
+            71,
+            69,
+            67,
+            67,
+            72,
+            71,
+            66,
+            67,
+            69,
+            64,
+            64,
+            62,
+            60,
+            64,
+            62,
+            67,
+            71,
+            69,
+            64
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 5.4567,
+          "end_time": 6.014,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 67 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 6,
+          "note_id": "note_0011",
+          "score_part": {
+            "start_note_index": 9,
+            "end_note_index": 13,
+            "pad_notes": 2,
+            "start_measure": 4,
+            "end_measure": 7
+          },
+          "pitches": [
+            71,
+            66,
+            67,
+            69,
+            64
+          ],
+          "note_ids": [
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_9898",
+      "n_gold": 7,
+      "n_pred": 3,
+      "n_matched": 2.5,
+      "melody_f1": 0.5,
+      "melody_precision": 0.8333,
+      "melody_recall": 0.3571,
+      "melody_similarity": 0.5,
+      "note_set_iou": 0.8333,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.5,
+      "gold_types": [
+        "intonation_error",
+        "intonation_error",
+        "extra_note",
+        "rhythm_error",
+        "wrong_note",
+        "extra_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note",
+        "intonation_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 2,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1,
+        "wrong_note": 1,
+        "intonation_error": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 25.9367,
+          "end_time": 41.8043,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.991",
+          "repeats_label_range": {
+            "start_time": 9.1867,
+            "end_time": 25.0543
+          },
+          "score_part": {
+            "start_note_index": 7,
+            "end_note_index": 29,
+            "pad_notes": 2,
+            "start_measure": 3,
+            "end_measure": 13
+          },
+          "pitches": [
+            74,
+            76,
+            74,
+            78,
+            83,
+            81,
+            83,
+            83,
+            83,
+            83,
+            81,
+            83,
+            81,
+            81,
+            79,
+            74,
+            73,
+            73,
+            71,
+            69,
+            67,
+            71,
+            74
+          ],
+          "note_ids": [
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028",
+            "note_0029"
+          ],
+          "extra_copies": 1
+        },
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 9.2415,
+          "end_time": 10.0078,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 78 | stage2-net",
+          "deviation_cents": 100.97,
+          "measure_number": 5,
+          "note_id": "note_0010",
+          "score_part": {
+            "start_note_index": 8,
+            "end_note_index": 12,
+            "pad_notes": 2,
+            "start_measure": 4,
+            "end_measure": 6
+          },
+          "pitches": [
+            76,
+            74,
+            78,
+            83,
+            81
+          ],
+          "note_ids": [
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012"
+          ]
+        },
+        {
+          "id": "pipe_002",
+          "source": "pipeline",
+          "start_time": 20.3871,
+          "end_time": 20.7586,
+          "type": "intonation_error",
+          "comment": "chroma cents over tolerance | stage2-net",
+          "deviation_cents": 50.06,
+          "measure_number": 9,
+          "note_id": "note_0021",
+          "score_part": {
+            "start_note_index": 19,
+            "end_note_index": 23,
+            "pad_notes": 2,
+            "start_measure": 8,
+            "end_measure": 10
+          },
+          "pitches": [
+            81,
+            81,
+            79,
+            74,
+            73
+          ],
+          "note_ids": [
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_4106",
+      "n_gold": 3,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "wrong_note",
+        "intonation_error",
+        "intonation_error"
+      ],
+      "pred_types": [],
+      "per_type": {
+        "intonation_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {},
+      "pred_labels": []
+    },
+    {
+      "sample": "synth_gen_7828",
+      "n_gold": 5,
+      "n_pred": 1,
+      "n_matched": 1.0,
+      "melody_f1": 0.3333,
+      "melody_precision": 1.0,
+      "melody_recall": 0.2,
+      "melody_similarity": 0.3333,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "extra_note",
+        "extra_note",
+        "intonation_error",
+        "intonation_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 2,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 15.3716,
+          "end_time": 45.0467,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.989",
+          "repeats_label_range": {
+            "start_time": 0.0,
+            "end_time": 14.8376
+          },
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 19,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 7
+          },
+          "pitches": [
+            65,
+            63,
+            67,
+            65,
+            63,
+            62,
+            62,
+            65,
+            63,
+            67,
+            65,
+            62,
+            63,
+            62,
+            63,
+            62,
+            63,
+            62,
+            60,
+            62
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019"
+          ],
+          "extra_copies": 2
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_4884",
+      "n_gold": 3,
+      "n_pred": 1,
+      "n_matched": 0.5,
+      "melody_f1": 0.25,
+      "melody_precision": 0.5,
+      "melody_recall": 0.1667,
+      "melody_similarity": 0.25,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.5,
+      "gold_types": [
+        "missed_note",
+        "intonation_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "wrong_note"
+      ],
+      "per_type": {
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 9.7524,
+          "end_time": 10.3561,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 71 | stage2-net",
+          "deviation_cents": 198.82,
+          "measure_number": 7,
+          "note_id": "note_0008",
+          "score_part": {
+            "start_note_index": 6,
+            "end_note_index": 10,
+            "pad_notes": 2,
+            "start_measure": 5,
+            "end_measure": 8
+          },
+          "pitches": [
+            67,
+            69,
+            71,
+            73,
+            69
+          ],
+          "note_ids": [
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_1072",
+      "n_gold": 9,
+      "n_pred": 3,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "wrong_note",
+        "missed_note",
+        "intonation_error",
+        "wrong_note",
+        "missed_note",
+        "extra_note",
+        "rhythm_error",
+        "missed_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "wrong_note",
+        "wrong_note",
+        "wrong_note"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "intonation_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "missed_note": {
+          "n_gold": 3,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 2,
+          "n_pred": 3,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 3
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 4.1332,
+          "end_time": 4.9226,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 76 | stage2-net",
+          "deviation_cents": 100.42,
+          "measure_number": 3,
+          "note_id": "note_0008",
+          "score_part": {
+            "start_note_index": 6,
+            "end_note_index": 10,
+            "pad_notes": 2,
+            "start_measure": 2,
+            "end_measure": 4
+          },
+          "pitches": [
+            74,
+            77,
+            76,
+            77,
+            76
+          ],
+          "note_ids": [
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010"
+          ]
+        },
+        {
+          "id": "pipe_002",
+          "source": "pipeline",
+          "start_time": 7.5,
+          "end_time": 7.6858,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 79 | stage2-net",
+          "deviation_cents": 99.34,
+          "measure_number": 5,
+          "note_id": "note_0013",
+          "score_part": {
+            "start_note_index": 11,
+            "end_note_index": 16,
+            "pad_notes": 2,
+            "start_measure": 5,
+            "end_measure": 6
+          },
+          "pitches": [
+            77,
+            76,
+            79,
+            79,
+            79,
+            81
+          ],
+          "note_ids": [
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016"
+          ]
+        },
+        {
+          "id": "pipe_005",
+          "source": "pipeline",
+          "start_time": 58.3517,
+          "end_time": 63.6691,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 57 | stage2-net",
+          "deviation_cents": 300.0,
+          "measure_number": 14,
+          "note_id": "note_0035",
+          "score_part": {
+            "start_note_index": 33,
+            "end_note_index": 37,
+            "pad_notes": 2,
+            "start_measure": 13,
+            "end_measure": 15
+          },
+          "pitches": [
+            60,
+            62,
+            57,
+            59,
+            60
+          ],
+          "note_ids": [
+            "note_0033",
+            "note_0034",
+            "note_0035",
+            "note_0036",
+            "note_0037"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_4114",
+      "n_gold": 7,
+      "n_pred": 1,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "wrong_note",
+        "wrong_note",
+        "intonation_error",
+        "wrong_note",
+        "wrong_note",
+        "intonation_error",
+        "intonation_error"
+      ],
+      "pred_types": [
+        "wrong_note"
+      ],
+      "per_type": {
+        "intonation_error": {
+          "n_gold": 3,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 4,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_001",
+          "source": "pipeline",
+          "start_time": 9.2415,
+          "end_time": 13.0728,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 61 | stage2-net",
+          "deviation_cents": 299.72,
+          "measure_number": 4,
+          "note_id": "note_0009",
+          "score_part": {
+            "start_note_index": 7,
+            "end_note_index": 11,
+            "pad_notes": 2,
+            "start_measure": 3,
+            "end_measure": 5
+          },
+          "pitches": [
+            64,
+            62,
+            61,
+            62,
+            62
+          ],
+          "note_ids": [
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_4357",
+      "n_gold": 2,
+      "n_pred": 1,
+      "n_matched": 0.5,
+      "melody_f1": 0.3333,
+      "melody_precision": 0.5,
+      "melody_recall": 0.25,
+      "melody_similarity": 0.3333,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.5,
+      "gold_types": [
+        "missed_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "wrong_note"
+      ],
+      "per_type": {
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "wrong_note": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 17.4614,
+          "end_time": 18.6224,
+          "type": "wrong_note",
+          "comment": "pitch-class mismatch MIDI 69 | stage2-net",
+          "deviation_cents": -201.16,
+          "measure_number": 9,
+          "note_id": "note_0022",
+          "score_part": {
+            "start_note_index": 20,
+            "end_note_index": 24,
+            "pad_notes": 2,
+            "start_measure": 8,
+            "end_measure": 10
+          },
+          "pitches": [
+            67,
+            67,
+            69,
+            67,
+            71
+          ],
+          "note_ids": [
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024"
+          ]
+        }
+      ]
+    }
+  ],
+  "soft": false,
+  "ignore_type": false,
+  "stages": [
+    1,
+    2,
+    3
+  ],
+  "weights_dir": "align-model\\runs\\model-a-improve\\stage3-procedural",
+  "types": null,
+  "pool": "calib",
+  "n_requested": 20
+}

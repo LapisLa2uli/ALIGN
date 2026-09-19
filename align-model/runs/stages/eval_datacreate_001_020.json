@@ -1,0 +1,1795 @@
+{
+  "summary": {
+    "n_clips": 20,
+    "scored_types": [
+      "repetition",
+      "extra_note",
+      "wrong_note",
+      "missed_note",
+      "rhythm_error",
+      "intonation_error"
+    ],
+    "iou": 0.3,
+    "gold_counts": {
+      "extra_note": 28,
+      "repetition": 31,
+      "wrong_note": 6,
+      "rhythm_error": 5,
+      "missed_note": 4
+    },
+    "pred_counts": {
+      "repetition": 54,
+      "wrong_note": 651,
+      "extra_note": 348,
+      "missed_note": 211,
+      "rhythm_error": 18
+    },
+    "micro": {
+      "tp": 39,
+      "fp": 1243,
+      "fn": 35,
+      "precision": 0.030421216848673948,
+      "recall": 0.527027027027027,
+      "f1": 0.057522123893805316
+    },
+    "by_type": {
+      "repetition": {
+        "tp": 10,
+        "fp": 44,
+        "fn": 21,
+        "precision": 0.18518518518518517,
+        "recall": 0.3225806451612903,
+        "f1": 0.2352941176470588,
+        "gold": 31,
+        "pred": 54,
+        "f1_iou05": 0.1176470588235294
+      },
+      "extra_note": {
+        "tp": 20,
+        "fp": 328,
+        "fn": 8,
+        "precision": 0.05747126436781609,
+        "recall": 0.7142857142857143,
+        "f1": 0.10638297872340424,
+        "gold": 28,
+        "pred": 348,
+        "f1_iou05": 0.07446808510638298
+      },
+      "wrong_note": {
+        "tp": 5,
+        "fp": 646,
+        "fn": 1,
+        "precision": 0.007680491551459293,
+        "recall": 0.8333333333333334,
+        "f1": 0.015220700152207,
+        "gold": 6,
+        "pred": 651,
+        "f1_iou05": 0.006088280060882801
+      },
+      "missed_note": {
+        "tp": 2,
+        "fp": 209,
+        "fn": 2,
+        "precision": 0.009478672985781991,
+        "recall": 0.5,
+        "f1": 0.0186046511627907,
+        "gold": 4,
+        "pred": 211,
+        "f1_iou05": 0.0186046511627907
+      },
+      "rhythm_error": {
+        "tp": 2,
+        "fp": 16,
+        "fn": 3,
+        "precision": 0.1111111111111111,
+        "recall": 0.4,
+        "f1": 0.1739130434782609,
+        "gold": 5,
+        "pred": 18,
+        "f1_iou05": 0.08695652173913045
+      },
+      "intonation_error": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "gold": 0,
+        "pred": 0,
+        "f1_iou05": 0.0
+      }
+    },
+    "n_errors": 0
+  },
+  "clips": [
+    {
+      "id": "001",
+      "status": "ok",
+      "n_segments": 8,
+      "gold": {
+        "extra_note": 2,
+        "repetition": 2
+      },
+      "pred": {
+        "repetition": 3,
+        "wrong_note": 27,
+        "extra_note": 17,
+        "missed_note": 5
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 52,
+        "fn": 4,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 3
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 17,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 17
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 27
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 5
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "002",
+      "status": "ok",
+      "n_segments": 13,
+      "gold": {
+        "extra_note": 6,
+        "repetition": 5
+      },
+      "pred": {
+        "repetition": 4,
+        "extra_note": 2,
+        "missed_note": 11,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 19,
+        "fn": 11,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 5,
+          "pred": 4
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 6,
+          "pred": 2
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 11,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 11
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "003",
+      "status": "ok",
+      "n_segments": 6,
+      "gold": {
+        "extra_note": 5,
+        "repetition": 5
+      },
+      "pred": {
+        "repetition": 2,
+        "missed_note": 8,
+        "extra_note": 3,
+        "rhythm_error": 1
+      },
+      "micro_iou03": {
+        "tp": 1,
+        "fp": 13,
+        "fn": 9,
+        "precision": 0.07142857142857142,
+        "recall": 0.1,
+        "f1": 0.08333333333333333
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 5,
+          "pred": 2
+        },
+        "extra_note": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 4,
+          "precision": 0.3333333333333333,
+          "recall": 0.2,
+          "f1": 0.25,
+          "gold": 5,
+          "pred": 3
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 8,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 8
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "004",
+      "status": "ok",
+      "n_segments": 7,
+      "gold": {},
+      "pred": {
+        "repetition": 4,
+        "extra_note": 18,
+        "missed_note": 15,
+        "wrong_note": 4,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 43,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 4
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 18,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 18
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 4
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 15,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 15
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "005",
+      "status": "ok",
+      "n_segments": 8,
+      "gold": {
+        "extra_note": 3,
+        "repetition": 5,
+        "wrong_note": 2,
+        "rhythm_error": 1
+      },
+      "pred": {
+        "repetition": 6,
+        "extra_note": 9,
+        "wrong_note": 17,
+        "missed_note": 7,
+        "rhythm_error": 1
+      },
+      "micro_iou03": {
+        "tp": 1,
+        "fp": 39,
+        "fn": 10,
+        "precision": 0.025,
+        "recall": 0.09090909090909091,
+        "f1": 0.03921568627450981
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 1,
+          "fp": 5,
+          "fn": 4,
+          "precision": 0.16666666666666666,
+          "recall": 0.2,
+          "f1": 0.1818181818181818,
+          "gold": 5,
+          "pred": 6
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 9,
+          "fn": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "pred": 9
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 17,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 17
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 7,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 7
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 1
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "006",
+      "status": "ok",
+      "n_segments": 7,
+      "gold": {
+        "extra_note": 4,
+        "repetition": 2,
+        "rhythm_error": 2
+      },
+      "pred": {
+        "repetition": 1,
+        "wrong_note": 22,
+        "extra_note": 31,
+        "missed_note": 22,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 1,
+        "fp": 77,
+        "fn": 7,
+        "precision": 0.01282051282051282,
+        "recall": 0.125,
+        "f1": 0.02325581395348837
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 1
+        },
+        "extra_note": {
+          "tp": 1,
+          "fp": 30,
+          "fn": 3,
+          "precision": 0.03225806451612903,
+          "recall": 0.25,
+          "f1": 0.05714285714285715,
+          "gold": 4,
+          "pred": 31
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 22,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 22
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 22,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 22
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "007",
+      "status": "ok",
+      "n_segments": 9,
+      "gold": {
+        "rhythm_error": 1,
+        "repetition": 4,
+        "extra_note": 2
+      },
+      "pred": {
+        "repetition": 3,
+        "missed_note": 14,
+        "wrong_note": 95,
+        "extra_note": 9,
+        "rhythm_error": 1
+      },
+      "micro_iou03": {
+        "tp": 1,
+        "fp": 121,
+        "fn": 6,
+        "precision": 0.00819672131147541,
+        "recall": 0.14285714285714285,
+        "f1": 0.015503875968992248
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 3,
+          "precision": 0.3333333333333333,
+          "recall": 0.25,
+          "f1": 0.28571428571428575,
+          "gold": 4,
+          "pred": 3
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 9,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 9
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 95,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 95
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 14,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 14
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 1
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "008",
+      "status": "ok",
+      "n_segments": 9,
+      "gold": {},
+      "pred": {
+        "repetition": 4,
+        "wrong_note": 5,
+        "extra_note": 7,
+        "missed_note": 1,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 19,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 4
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 7,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 7
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 5
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "009",
+      "status": "ok",
+      "n_segments": 11,
+      "gold": {
+        "extra_note": 1
+      },
+      "pred": {
+        "repetition": 4,
+        "missed_note": 5,
+        "wrong_note": 11,
+        "extra_note": 5
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 25,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 4
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 5
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 11,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 11
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 5
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "010",
+      "status": "ok",
+      "n_segments": 8,
+      "gold": {},
+      "pred": {
+        "repetition": 1,
+        "wrong_note": 85,
+        "extra_note": 6,
+        "missed_note": 5
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 97,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 6,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 6
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 85,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 85
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 5
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "011",
+      "status": "ok",
+      "n_segments": 5,
+      "gold": {},
+      "pred": {
+        "repetition": 1,
+        "wrong_note": 22,
+        "extra_note": 2,
+        "missed_note": 1
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 26,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 22,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 22
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "012",
+      "status": "ok",
+      "n_segments": 5,
+      "gold": {
+        "extra_note": 1,
+        "wrong_note": 2,
+        "repetition": 1
+      },
+      "pred": {
+        "repetition": 2,
+        "missed_note": 3,
+        "wrong_note": 25,
+        "extra_note": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 32,
+        "fn": 4,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 2
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 2
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 25,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 25
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 3
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "013",
+      "status": "ok",
+      "n_segments": 12,
+      "gold": {
+        "repetition": 5,
+        "rhythm_error": 1,
+        "extra_note": 3,
+        "missed_note": 3
+      },
+      "pred": {
+        "repetition": 2,
+        "missed_note": 27,
+        "extra_note": 38,
+        "wrong_note": 48
+      },
+      "micro_iou03": {
+        "tp": 1,
+        "fp": 114,
+        "fn": 11,
+        "precision": 0.008695652173913044,
+        "recall": 0.08333333333333333,
+        "f1": 0.015748031496062992
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 5,
+          "pred": 2
+        },
+        "extra_note": {
+          "tp": 1,
+          "fp": 37,
+          "fn": 2,
+          "precision": 0.02631578947368421,
+          "recall": 0.3333333333333333,
+          "f1": 0.048780487804878044,
+          "gold": 3,
+          "pred": 38
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 48,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 48
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 27,
+          "fn": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "pred": 27
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "014",
+      "status": "ok",
+      "n_segments": 10,
+      "gold": {
+        "missed_note": 1
+      },
+      "pred": {
+        "wrong_note": 12,
+        "extra_note": 29,
+        "missed_note": 11,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 54,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 29,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 29
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 12,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 12
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 11,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 11
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "015",
+      "status": "ok",
+      "n_segments": 15,
+      "gold": {},
+      "pred": {
+        "repetition": 5,
+        "wrong_note": 1,
+        "extra_note": 4,
+        "missed_note": 12
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 22,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 5
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 4
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 12,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 12
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "016",
+      "status": "ok",
+      "n_segments": 6,
+      "gold": {
+        "extra_note": 1
+      },
+      "pred": {
+        "repetition": 3,
+        "missed_note": 26,
+        "extra_note": 8,
+        "wrong_note": 2,
+        "rhythm_error": 1
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 40,
+        "fn": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 3
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 8,
+          "fn": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "pred": 8
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 26,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 26
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "017",
+      "status": "ok",
+      "n_segments": 5,
+      "gold": {},
+      "pred": {
+        "repetition": 1,
+        "wrong_note": 15,
+        "extra_note": 55,
+        "missed_note": 12,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 85,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 1
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 55,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 55
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 15,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 15
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 12,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 12
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "018",
+      "status": "ok",
+      "n_segments": 7,
+      "gold": {},
+      "pred": {
+        "repetition": 4,
+        "extra_note": 60,
+        "wrong_note": 117,
+        "missed_note": 5
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 186,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 4
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 60,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 60
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 117,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 117
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 5
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "019",
+      "status": "ok",
+      "n_segments": 7,
+      "gold": {},
+      "pred": {
+        "wrong_note": 25,
+        "extra_note": 27,
+        "missed_note": 18,
+        "rhythm_error": 2
+      },
+      "micro_iou03": {
+        "tp": 0,
+        "fp": 72,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 27,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 27
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 25,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 25
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 18,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 18
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 2
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    },
+    {
+      "id": "020",
+      "status": "ok",
+      "n_segments": 7,
+      "gold": {
+        "wrong_note": 2,
+        "repetition": 2
+      },
+      "pred": {
+        "repetition": 4,
+        "wrong_note": 118,
+        "extra_note": 16,
+        "missed_note": 3
+      },
+      "micro_iou03": {
+        "tp": 1,
+        "fp": 140,
+        "fn": 3,
+        "precision": 0.0070921985815602835,
+        "recall": 0.25,
+        "f1": 0.013793103448275862
+      },
+      "per_type": {
+        "repetition": {
+          "tp": 1,
+          "fp": 3,
+          "fn": 1,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "gold": 2,
+          "pred": 4
+        },
+        "extra_note": {
+          "tp": 0,
+          "fp": 16,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 16
+        },
+        "wrong_note": {
+          "tp": 0,
+          "fp": 118,
+          "fn": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "pred": 118
+        },
+        "missed_note": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 3
+        },
+        "rhythm_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        },
+        "intonation_error": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "pred": 0
+        }
+      }
+    }
+  ],
+  "errors": []
+}

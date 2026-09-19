@@ -1,0 +1,742 @@
+{
+  "n_samples": 10,
+  "mean_melody_f1": 0.3293,
+  "mean_melody_precision": 0.2548,
+  "mean_melody_recall": 0.5667,
+  "mean_n_gold": 3.5,
+  "mean_n_pred": 11.1,
+  "per_type": {
+    "extra_note": {
+      "n_gold": 6,
+      "n_pred": 15,
+      "n_matched": 5.0,
+      "melody_f1": 0.4762,
+      "melody_precision": 0.3333,
+      "melody_recall": 0.8333
+    },
+    "missed_note": {
+      "n_gold": 7,
+      "n_pred": 22,
+      "n_matched": 2.0,
+      "melody_f1": 0.1379,
+      "melody_precision": 0.0909,
+      "melody_recall": 0.2857
+    },
+    "repetition": {
+      "n_gold": 10,
+      "n_pred": 14,
+      "n_matched": 8.0,
+      "melody_f1": 0.6667,
+      "melody_precision": 0.5714,
+      "melody_recall": 0.8
+    },
+    "rhythm_error": {
+      "n_gold": 9,
+      "n_pred": 41,
+      "n_matched": 2.0,
+      "melody_f1": 0.08,
+      "melody_precision": 0.0488,
+      "melody_recall": 0.2222
+    },
+    "wrong_note": {
+      "n_gold": 3,
+      "n_pred": 19,
+      "n_matched": 3.0,
+      "melody_f1": 0.2727,
+      "melody_precision": 0.1579,
+      "melody_recall": 1.0
+    }
+  },
+  "samples": [
+    {
+      "sample": "synth_gen_0059",
+      "n_gold": 4,
+      "n_pred": 19,
+      "n_matched": 2.0,
+      "melody_f1": 0.1739,
+      "melody_precision": 0.1053,
+      "melody_recall": 0.5,
+      "melody_similarity": 0.1739,
+      "note_set_iou": 0.1053,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "extra_note",
+        "missed_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "repetition",
+        "extra_note",
+        "extra_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 7,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 8,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 66,
+      "n_note_repetitions": 2,
+      "n_mapped_notes": 64
+    },
+    {
+      "sample": "synth_gen_0084",
+      "n_gold": 2,
+      "n_pred": 4,
+      "n_matched": 1.0,
+      "melody_f1": 0.3333,
+      "melody_precision": 0.25,
+      "melody_recall": 0.5,
+      "melody_similarity": 0.3333,
+      "note_set_iou": 0.25,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "extra_note",
+        "extra_note",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 0,
+          "n_pred": 2,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        }
+      },
+      "n_transcribed_notes": 36,
+      "n_note_repetitions": 0,
+      "n_mapped_notes": 34
+    },
+    {
+      "sample": "synth_gen_0086",
+      "n_gold": 2,
+      "n_pred": 10,
+      "n_matched": 0.5,
+      "melody_f1": 0.0833,
+      "melody_precision": 0.05,
+      "melody_recall": 0.25,
+      "melody_similarity": 0.0833,
+      "note_set_iou": 0.05,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.5,
+      "gold_types": [
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "repetition",
+        "wrong_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "missed_note": {
+          "n_gold": 0,
+          "n_pred": 3,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 4,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 26,
+      "n_note_repetitions": 2,
+      "n_mapped_notes": 26
+    },
+    {
+      "sample": "synth_gen_0092",
+      "n_gold": 3,
+      "n_pred": 5,
+      "n_matched": 1.5,
+      "melody_f1": 0.375,
+      "melody_precision": 0.3,
+      "melody_recall": 0.5,
+      "melody_similarity": 0.375,
+      "note_set_iou": 0.3,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.5,
+      "gold_types": [
+        "extra_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "extra_note",
+        "extra_note",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 25,
+      "n_note_repetitions": 1,
+      "n_mapped_notes": 23
+    },
+    {
+      "sample": "synth_gen_0097",
+      "n_gold": 3,
+      "n_pred": 13,
+      "n_matched": 3.0,
+      "melody_f1": 0.375,
+      "melody_precision": 0.2308,
+      "melody_recall": 1.0,
+      "melody_similarity": 0.375,
+      "note_set_iou": 0.2308,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 3.0,
+      "gold_types": [
+        "wrong_note",
+        "wrong_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "repetition",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "missed_note",
+        "missed_note",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "missed_note": {
+          "n_gold": 0,
+          "n_pred": 2,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 0,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 2,
+          "n_pred": 8,
+          "n_matched": 2.0,
+          "melody_f1": 0.4,
+          "melody_precision": 0.25,
+          "melody_recall": 1.0
+        }
+      },
+      "n_transcribed_notes": 56,
+      "n_note_repetitions": 2,
+      "n_mapped_notes": 56
+    },
+    {
+      "sample": "synth_gen_0098",
+      "n_gold": 2,
+      "n_pred": 6,
+      "n_matched": 1.0,
+      "melody_f1": 0.25,
+      "melody_precision": 0.1667,
+      "melody_recall": 0.5,
+      "melody_similarity": 0.25,
+      "note_set_iou": 0.1667,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "extra_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "extra_note",
+        "extra_note",
+        "extra_note",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 3,
+          "n_matched": 1.0,
+          "melody_f1": 0.5,
+          "melody_precision": 0.3333,
+          "melody_recall": 1.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 0,
+          "n_pred": 2,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 44,
+      "n_note_repetitions": 1,
+      "n_mapped_notes": 39
+    },
+    {
+      "sample": "synth_gen_0133",
+      "n_gold": 3,
+      "n_pred": 3,
+      "n_matched": 2.0,
+      "melody_f1": 0.6667,
+      "melody_precision": 0.6667,
+      "melody_recall": 0.6667,
+      "melody_similarity": 0.6667,
+      "note_set_iou": 0.6667,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "rhythm_error",
+        "missed_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "missed_note",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 42,
+      "n_note_repetitions": 1,
+      "n_mapped_notes": 42
+    },
+    {
+      "sample": "synth_gen_0148",
+      "n_gold": 4,
+      "n_pred": 14,
+      "n_matched": 3.0,
+      "melody_f1": 0.3333,
+      "melody_precision": 0.2143,
+      "melody_recall": 0.75,
+      "melody_similarity": 0.3333,
+      "note_set_iou": 0.2143,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 3.0,
+      "gold_types": [
+        "rhythm_error",
+        "missed_note",
+        "extra_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "repetition",
+        "extra_note",
+        "extra_note",
+        "extra_note",
+        "wrong_note",
+        "wrong_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 1,
+          "n_pred": 3,
+          "n_matched": 1.0,
+          "melody_f1": 0.5,
+          "melody_precision": 0.3333,
+          "melody_recall": 1.0
+        },
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 3,
+          "n_matched": 1.0,
+          "melody_f1": 0.5,
+          "melody_precision": 0.3333,
+          "melody_recall": 1.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 4,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 2,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 96,
+      "n_note_repetitions": 2,
+      "n_mapped_notes": 93
+    },
+    {
+      "sample": "synth_gen_0153",
+      "n_gold": 8,
+      "n_pred": 31,
+      "n_matched": 2.0,
+      "melody_f1": 0.1026,
+      "melody_precision": 0.0645,
+      "melody_recall": 0.25,
+      "melody_similarity": 0.1026,
+      "note_set_iou": 0.0645,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 2.0,
+      "gold_types": [
+        "rhythm_error",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "extra_note",
+        "extra_note",
+        "rhythm_error",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "repetition",
+        "extra_note",
+        "wrong_note",
+        "extra_note",
+        "wrong_note",
+        "extra_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "wrong_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "missed_note",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "extra_note": {
+          "n_gold": 2,
+          "n_pred": 3,
+          "n_matched": 1.0,
+          "melody_f1": 0.4,
+          "melody_precision": 0.3333,
+          "melody_recall": 0.5
+        },
+        "missed_note": {
+          "n_gold": 3,
+          "n_pred": 5,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 2,
+          "n_pred": 15,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "wrong_note": {
+          "n_gold": 0,
+          "n_pred": 6,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "n_transcribed_notes": 151,
+      "n_note_repetitions": 2,
+      "n_mapped_notes": 148
+    },
+    {
+      "sample": "synth_gen_0183",
+      "n_gold": 4,
+      "n_pred": 6,
+      "n_matched": 3.0,
+      "melody_f1": 0.6,
+      "melody_precision": 0.5,
+      "melody_recall": 0.75,
+      "melody_similarity": 0.6,
+      "note_set_iou": 0.5,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 3.0,
+      "gold_types": [
+        "rhythm_error",
+        "wrong_note",
+        "missed_note",
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition",
+        "wrong_note",
+        "wrong_note",
+        "missed_note",
+        "rhythm_error",
+        "rhythm_error"
+      ],
+      "per_type": {
+        "missed_note": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        },
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        },
+        "rhythm_error": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        },
+        "wrong_note": {
+          "n_gold": 1,
+          "n_pred": 2,
+          "n_matched": 1.0,
+          "melody_f1": 0.6667,
+          "melody_precision": 0.5,
+          "melody_recall": 1.0
+        }
+      },
+      "n_transcribed_notes": 53,
+      "n_note_repetitions": 1,
+      "n_mapped_notes": 53
+    }
+  ],
+  "procedural_only": true,
+  "raw_derived_data_used": false,
+  "split": "test_id",
+  "types": [
+    "extra_note",
+    "missed_note",
+    "repetition",
+    "rhythm_error",
+    "wrong_note"
+  ]
+}

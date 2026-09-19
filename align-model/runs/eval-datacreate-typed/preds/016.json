@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.2",
+  "audio_reference": "performance_audio.wav",
+  "annotator_id": "align_pipeline",
+  "labels": [
+    {
+      "id": "pipe_000",
+      "source": "pipeline",
+      "start_time": 28.2006,
+      "end_time": 29.5322,
+      "type": "rhythm_error",
+      "comment": "stage3-net logit=1.77",
+      "deviation_ms": 1331.56,
+      "score_part": {
+        "start_note_index": 73,
+        "end_note_index": 75,
+        "pad_notes": 2,
+        "start_measure": 35,
+        "end_measure": 36
+      },
+      "pitches": [
+        71,
+        74,
+        72
+      ],
+      "note_ids": [
+        "note_0073",
+        "note_0074",
+        "note_0075"
+      ]
+    }
+  ],
+  "pipeline": {
+    "sample_id": "016",
+    "stages_run": [
+      1,
+      2,
+      3
+    ],
+    "boundaries": [
+      2.1943,
+      17.264,
+      27.65,
+      29.3,
+      30.95
+    ],
+    "n_segments": 5,
+    "n_pairs": 65
+  }
+}

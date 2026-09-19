@@ -1,0 +1,98 @@
+{
+    "status":  "paused",
+    "resumed_at_local":  "2026-09-14T12:53:00+08:00",
+    "paused_at_local":  "2026-09-15T12:41:17.7420632+08:00",
+    "completed_steps":  [
+                            "Verified audit release manifest, SQLite target API, and protocol SHA-256 hashes.",
+                            "Integrated the joint oracle with audited SQLite targets.",
+                            "Ran full validation oracle notes plus oracle repeats: 50 ms strict joint F1 1.0 with zero invalid indices.",
+                            "Implemented and tested the sparse score-conditioned path lattice with MATCH, SUBSTITUTE, EXTRA, NOISE, DELETE, REPEAT_ENTER, REPLAY, CONTINUE, and explicit resume state.",
+                            "Built hash-validated frozen Basic Pitch activation caches for all 14,718 train and 1,871 validation rows (16,589 NPZ files); locked test remains untouched.",
+                            "Corrected a path-CRF partition inconsistency for unlinked candidate features and added a regression test.",
+                            "Completed a corrected CUDA path-CRF epoch on 1,000 train rows: validation-100 joint F1 0.642098.",
+                            "Raised sparse option coverage from 0.910652 to 0.979170 by prioritizing exact-pitch single-event spans.",
+                            "Added interval-consistency emissions and completed another 1,000-row path-CRF epoch: validation-100 joint F1 0.743044 with conditional mapping accuracy 0.910287.",
+                            "Added score-conditioned repeat phrase hints; focused joint tests pass."
+                        ],
+    "active_command":  null,
+    "last_command":  "\u0026 \u0027.\\.venv-amt-bench\\Scripts\\python.exe\u0027 scripts/train_joint_decoder.py --manifest data-audit/2026-09-14-v2/split.json --cache-root runs/joint-audit-v2/basic-pitch-cache --output-dir runs/joint-audit-v2/path-full-v1-interval --initialize-checkpoint runs/joint-audit-v2/path-1000-v4-interval/joint_decoder.pt --warmup-epochs 0 --epochs 1 --max-val-samples 100 --device cpu --hidden-dim 64 --max-options 12 --max-states 48 --max-delete-events 24 --gradient-accumulation 8 --minimum-candidate-confidence 0.65 --noise-inference-bias -6",
+    "last_command_status":  "No owned joint/path trainer or monitor was active when pause was requested. The full path epoch left no completed atomic history or checkpoint, so no partial state is valid.",
+    "latest_valid_checkpoint":  {
+                                    "path":  "runs/joint-audit-v2/path-1000-v4-interval/joint_decoder.pt",
+                                    "sha256":  "63ada0ff34a9eae5bbb747f42e1464e34119f0590a161e58ff513ac75108bf35",
+                                    "history":  "runs/joint-audit-v2/path-1000-v4-interval/history.json",
+                                    "history_sha256":  "23be44b3bd843eb10c78a4c85d901b410b2207a93620ded887f82e61e2608640",
+                                    "optimizer_scheduler_state":  "No resumable optimizer/scheduler state is currently written; the trainer checkpoints completed epochs only."
+                                },
+    "cache":  {
+                  "path":  "runs/joint-audit-v2/basic-pitch-cache",
+                  "npz_count":  16589,
+                  "expected_train":  14718,
+                  "expected_val":  1871,
+                  "report":  "runs/joint-audit-v2/basic-pitch-cache/cache_report.json",
+                  "report_sha256":  "05701e3f75e5e7afa436d6081a7dff8bc6ba017a46a9e864e028d550b0f4353",
+                  "note":  "The final report was last written by the train pass and lists 14,718 train rows; the directory inventory additionally contains all 1,871 previously completed validation caches."
+              },
+    "exact_next_command":  "Paused by explicit request. Do not restart automatically. If explicitly resumed, rerun the recorded last_command from runs/joint-audit-v2/path-1000-v4-interval/joint_decoder.pt; no path-full-v1-interval checkpoint exists.",
+    "known_metrics":  {
+                          "validation_oracle_notes_oracle_repeats_joint_f1_50ms":  1.0,
+                          "validation_oracle_notes_predicted_repeats_joint_f1_50ms":  0.9224887731423516,
+                          "validation_oracle_notes_predicted_repeats_copy_f1_50ms":  0.8081452808433536,
+                          "validation_full_basic_pitch_union_oracle_mapping_joint_f1_20ms":  0.575516790665762,
+                          "validation_full_basic_pitch_union_oracle_mapping_joint_f1_50ms":  0.8342781796089526,
+                          "validation_full_basic_pitch_union_oracle_mapping_joint_f1_100ms":  0.8381265595713119,
+                          "validation_100_candidate_confidence_0_65_note_f1_50ms":  0.8471959213401311,
+                          "validation_100_current_aligner_baseline_joint_f1_50ms":  0.6254916241806264,
+                          "validation_100_warmup_1000_joint_f1_50ms":  0.5452294246176256,
+                          "validation_100_corrected_path_1000_v2_joint_f1_50ms":  0.6420975965040058,
+                          "validation_100_option_ranked_path_1000_v3_joint_f1_50ms":  0.7091041514930809,
+                          "validation_100_interval_path_1000_v4_joint_f1_50ms":  0.7430444282592862,
+                          "validation_100_interval_path_1000_v4_conditional_mapping_accuracy_50ms":  0.9102868627809245
+                      },
+    "known_failures":  [
+                           "Audit manifest effective_audio_transpose=4 for procedural oscillator bundles is physically inconsistent with bundle sounding_transpose=-2 and validation acoustics; using the manifest override made generated candidates exactly two semitones sharp. Cache and inference tooling now use immutable bundle physical metadata, producing the correct +2 shift without changing the audit release.",
+                           "The first path-1000 run developed negative NLL because gold unlinked edges omitted candidate features while partition edges included them. That checkpoint is invalid and must not be used. The feature mismatch is fixed and covered by test_joint_lattice.py.",
+                           "The interrupted corrected path-1000-v2 run had no completed epoch, so it produced no valid checkpoint or optimizer snapshot.",
+                           "The E: source volume is currently absent. Training uses audited SQLite lineage reconstruction for unavailable score files; this is training-only. Honest deployable validation remains blocked until verified_score.musicxml inputs are available again.",
+                           "CUDA was measured slower than CPU for the small sequential sparse lattice (82 minutes versus about 30 minutes per 1,000-row epoch), so the full dynamic path-CRF run uses CPU while leaving the single GPU idle.",
+                           "Validation promotion gate has not passed; locked test features have not been extracted or inspected."
+                       ],
+    "environment_prerequisites":  {
+                                      "working_directory":  "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model",
+                                      "python":  ".venv-amt-bench\\Scripts\\python.exe",
+                                      "pytest_python":  "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe",
+                                      "torch":  "2.6.0+cu124",
+                                      "gpu":  "NVIDIA RTX 2000 Ada Generation Laptop GPU, 8188 MiB",
+                                      "basic_pitch":  "0.4.0 TensorFlow runtime in .venv-amt-bench",
+                                      "manifest_sha256":  "b6e34d9d170c0d7715064b15e2a0c21aa191d772e8738dd7b386ab7b27396e11",
+                                      "target_db_sha256":  "a685f5c48a718d2ddb82c10684f52585945025bfd40cd8c17d56277bd0e9874c",
+                                      "target_jsonl_sha256":  "e017af65f978479797b2dd92dc866808b0c0ac9d1ef9ea83ae38279440a67fbd"
+                                  },
+    "process_verification":  {
+                                 "experiment_processes_running":  0,
+                                 "active_root_pid":  null,
+                                 "verified_pids_absent":  [
+                                                              13048,
+                                                              13228,
+                                                              18012,
+                                                              27308,
+                                                              27660,
+                                                              30936,
+                                                              34340,
+                                                              44652
+                                                          ]
+                             },
+    "pause_verification":  {
+                               "verified_at_local":  "2026-09-15T12:41:17.7420632+08:00",
+                               "owned_processes_active_at_request":  0,
+                               "owned_processes_stopped":  [
+
+                                                           ],
+                               "remaining_owned_processes":  0,
+                               "full_output_checkpoint_exists":  false,
+                               "full_output_history_exists":  false,
+                               "latest_valid_checkpoint":  "runs/joint-audit-v2/path-1000-v4-interval/joint_decoder.pt",
+                               "latest_valid_checkpoint_sha256":  "63ada0ff34a9eae5bbb747f42e1464e34119f0590a161e58ff513ac75108bf35",
+                               "latest_valid_history_sha256":  "23be44b3bd843eb10c78a4c85d901b410b2207a93620ded887f82e61e2608640"
+                           }
+}

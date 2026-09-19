@@ -1,0 +1,3085 @@
+{
+  "data": "E:\\output_2k_rawdata",
+  "n_clips": 60,
+  "n_skipped_for_gt": 364,
+  "n_with_copy": 23,
+  "n_without_copy": 37,
+  "mean_n_clean": 67.03,
+  "mean_n_played": 90.9,
+  "accuracy_recall": {
+    "dtw": 0.333,
+    "symbolic_noise_0": 1.0,
+    "symbolic_noise_0_no_copy_handling": 0.8774,
+    "symbolic_noise_5": 0.9097,
+    "symbolic_noise_10": 0.896,
+    "symbolic_noise_20": 0.8257
+  },
+  "accuracy_recall_with_copy": {
+    "dtw": 0.0661,
+    "symbolic_noise_0": 1.0,
+    "symbolic_noise_0_no_copy_handling": 0.6802,
+    "symbolic_noise_10": 0.7986
+  },
+  "accuracy_recall_without_copy": {
+    "dtw": 0.5035,
+    "symbolic_noise_0": 1.0,
+    "symbolic_noise_10": 0.9565
+  },
+  "dtw_onset_mae_sec": 2.115,
+  "dtw_onset_within_150ms": 0.4371,
+  "copy_block_clips": 23,
+  "samples": [
+    {
+      "sample": "synth_MozartClConcertoA_1900",
+      "n_clean": 37,
+      "n_played": 67,
+      "has_copy": true,
+      "copy_notes": 5,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 67,
+        "n_scored": 67,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.5223880597014925,
+        "precision": 0.5303030303030303,
+        "n_correct": 35,
+        "n_scored": 65,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.7611940298507462,
+        "precision": 0.75,
+        "n_correct": 51,
+        "n_scored": 64,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.5223880597014925,
+        "precision": 0.5303030303030303,
+        "n_correct": 35,
+        "n_scored": 62,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 0.9253731343283582,
+        "precision": 0.9253731343283582,
+        "n_correct": 62,
+        "n_scored": 67,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.029850746268656716,
+        "precision": 0.029850746268656716,
+        "n_correct": 2,
+        "n_scored": 67,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 6.098136192714454,
+      "dtw_onset_within_tol": 0.13513513513513514
+    },
+    {
+      "sample": "synth_001_0986",
+      "n_clean": 49,
+      "n_played": 49,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9795918367346939,
+        "precision": 0.96,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9387755102040817,
+        "precision": 0.9019607843137255,
+        "n_correct": 46,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.9795918367346939,
+        "precision": 0.9795918367346939,
+        "n_correct": 48,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0036687499999999277,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_001_0505",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.98,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.94,
+        "precision": 0.9215686274509803,
+        "n_correct": 47,
+        "n_scored": 49,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.98,
+        "precision": 0.9607843137254902,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.96,
+        "precision": 0.96,
+        "n_correct": 48,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0037354166666665987,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0055",
+      "n_clean": 64,
+      "n_played": 83,
+      "has_copy": true,
+      "copy_notes": 13,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 83,
+        "n_scored": 83,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.8433734939759037,
+        "precision": 0.8641975308641975,
+        "n_correct": 70,
+        "n_scored": 81,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.8192771084337349,
+        "precision": 0.8395061728395061,
+        "n_correct": 68,
+        "n_scored": 81,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8433734939759037,
+        "precision": 0.8433734939759037,
+        "n_correct": 70,
+        "n_scored": 76,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.8433734939759037,
+        "precision": 0.8433734939759037,
+        "n_correct": 70,
+        "n_scored": 83,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.03614457831325301,
+        "precision": 0.03614457831325301,
+        "n_correct": 3,
+        "n_scored": 83,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.2568271059782608,
+      "dtw_onset_within_tol": 0.0
+    },
+    {
+      "sample": "synth_001_0574",
+      "n_clean": 49,
+      "n_played": 48,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9583333333333334,
+        "precision": 0.9787234042553191,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9583333333333334,
+        "precision": 0.9387755102040817,
+        "n_correct": 46,
+        "n_scored": 47,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.8958333333333334,
+        "precision": 0.86,
+        "n_correct": 43,
+        "n_scored": 44,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.9375,
+        "precision": 0.9375,
+        "n_correct": 45,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0067354166666666335,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_WeberITAV_0044",
+      "n_clean": 111,
+      "n_played": 317,
+      "has_copy": true,
+      "copy_notes": 202,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 317,
+        "n_scored": 317,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.3753943217665615,
+        "precision": 0.38387096774193546,
+        "n_correct": 119,
+        "n_scored": 307,
+        "n_spurious_bound": 2
+      },
+      "sym_10": {
+        "recall": 0.7791798107255521,
+        "precision": 0.7484848484848485,
+        "n_correct": 247,
+        "n_scored": 310,
+        "n_spurious_bound": 6
+      },
+      "sym_20": {
+        "recall": 0.7034700315457413,
+        "precision": 0.6840490797546013,
+        "n_correct": 223,
+        "n_scored": 302,
+        "n_spurious_bound": 4
+      },
+      "sym_0_nocopy": {
+        "recall": 0.3627760252365931,
+        "precision": 0.3627760252365931,
+        "n_correct": 115,
+        "n_scored": 317,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.012618296529968454,
+        "precision": 0.012618296529968454,
+        "n_correct": 4,
+        "n_scored": 317,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 5.192991891891892,
+      "dtw_onset_within_tol": 0.17117117117117117
+    },
+    {
+      "sample": "synth_001_1813",
+      "n_clean": 49,
+      "n_played": 48,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9791666666666666,
+        "precision": 1.0,
+        "n_correct": 47,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9166666666666666,
+        "precision": 0.9777777777777777,
+        "n_correct": 44,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9166666666666666,
+        "precision": 0.9361702127659575,
+        "n_correct": 44,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.8958333333333334,
+        "precision": 0.8958333333333334,
+        "n_correct": 43,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.01786249999999988,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1936",
+      "n_clean": 97,
+      "n_played": 163,
+      "has_copy": true,
+      "copy_notes": 54,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 163,
+        "n_scored": 163,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.754601226993865,
+        "precision": 0.7592592592592593,
+        "n_correct": 123,
+        "n_scored": 162,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9570552147239264,
+        "precision": 0.9341317365269461,
+        "n_correct": 156,
+        "n_scored": 160,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.6441717791411042,
+        "precision": 0.65625,
+        "n_correct": 105,
+        "n_scored": 153,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 0.6687116564417178,
+        "precision": 0.6687116564417178,
+        "n_correct": 109,
+        "n_scored": 163,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.04294478527607362,
+        "precision": 0.04294478527607362,
+        "n_correct": 7,
+        "n_scored": 163,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 5.833313632246377,
+      "dtw_onset_within_tol": 0.125
+    },
+    {
+      "sample": "synth_001_1186",
+      "n_clean": 49,
+      "n_played": 96,
+      "has_copy": true,
+      "copy_notes": 44,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 96,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9270833333333334,
+        "precision": 0.89,
+        "n_correct": 89,
+        "n_scored": 94,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 0.6041666666666666,
+        "precision": 0.6105263157894737,
+        "n_correct": 58,
+        "n_scored": 92,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.90625,
+        "precision": 0.8787878787878788,
+        "n_correct": 87,
+        "n_scored": 92,
+        "n_spurious_bound": 3
+      },
+      "sym_0_nocopy": {
+        "recall": 0.5416666666666666,
+        "precision": 0.5416666666666666,
+        "n_correct": 52,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.020833333333333332,
+        "precision": 0.020833333333333332,
+        "n_correct": 2,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 2.813418367346939,
+      "dtw_onset_within_tol": 0.02040816326530612
+    },
+    {
+      "sample": "synth_001_0572",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.98,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9,
+        "precision": 0.9183673469387755,
+        "n_correct": 45,
+        "n_scored": 46,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.94,
+        "precision": 0.94,
+        "n_correct": 47,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.98,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0036877551020407465,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_001_1607",
+      "n_clean": 49,
+      "n_played": 51,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9622641509433962,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9803921568627451,
+        "precision": 0.9090909090909091,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.9215686274509803,
+        "precision": 0.8545454545454545,
+        "n_correct": 47,
+        "n_scored": 48,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.9411764705882353,
+        "precision": 0.9411764705882353,
+        "n_correct": 48,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.00365833333333326,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0942",
+      "n_clean": 67,
+      "n_played": 65,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 65,
+        "n_scored": 65,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9692307692307692,
+        "precision": 1.0,
+        "n_correct": 63,
+        "n_scored": 63,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9846153846153847,
+        "precision": 0.9552238805970149,
+        "n_correct": 64,
+        "n_scored": 64,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.8615384615384616,
+        "precision": 0.875,
+        "n_correct": 56,
+        "n_scored": 60,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 65,
+        "n_scored": 65,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.16923076923076924,
+        "precision": 0.16923076923076924,
+        "n_correct": 11,
+        "n_scored": 65,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.8444930434782605,
+      "dtw_onset_within_tol": 0.1076923076923077
+    },
+    {
+      "sample": "synth_001_1720",
+      "n_clean": 49,
+      "n_played": 47,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 47,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9574468085106383,
+        "precision": 0.9375,
+        "n_correct": 45,
+        "n_scored": 47,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 0.9787234042553191,
+        "precision": 0.9387755102040817,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8936170212765957,
+        "precision": 0.9545454545454546,
+        "n_correct": 42,
+        "n_scored": 43,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 47,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.14893617021276595,
+        "precision": 0.14893617021276595,
+        "n_correct": 7,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.38471649984360334,
+      "dtw_onset_within_tol": 0.13043478260869565
+    },
+    {
+      "sample": "synth_WeberITAV_0462",
+      "n_clean": 96,
+      "n_played": 150,
+      "has_copy": true,
+      "copy_notes": 54,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 150,
+        "n_scored": 150,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.7933333333333333,
+        "precision": 0.7986577181208053,
+        "n_correct": 119,
+        "n_scored": 148,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.6666666666666666,
+        "precision": 0.6666666666666666,
+        "n_correct": 100,
+        "n_scored": 146,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.7533333333333333,
+        "precision": 0.743421052631579,
+        "n_correct": 113,
+        "n_scored": 142,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.64,
+        "precision": 0.64,
+        "n_correct": 96,
+        "n_scored": 150,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.16666666666666666,
+        "precision": 0.16666666666666666,
+        "n_correct": 25,
+        "n_scored": 150,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.9748125000000001,
+      "dtw_onset_within_tol": 0.4375
+    },
+    {
+      "sample": "synth_001_0720",
+      "n_clean": 49,
+      "n_played": 49,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9591836734693877,
+        "precision": 0.9591836734693877,
+        "n_correct": 47,
+        "n_scored": 48,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 1.0,
+        "precision": 0.9245283018867925,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9387755102040817,
+        "precision": 0.9583333333333334,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.007612244897959024,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0199",
+      "n_clean": 49,
+      "n_played": 51,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9411764705882353,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.803921568627451,
+        "precision": 0.8367346938775511,
+        "n_correct": 41,
+        "n_scored": 44,
+        "n_spurious_bound": 3
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "dtw": null
+    },
+    {
+      "sample": "synth_001_1878",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9803921568627451,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.98,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9,
+        "precision": 0.9183673469387755,
+        "n_correct": 45,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.06,
+        "precision": 0.06,
+        "n_correct": 3,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.5668265306122449,
+      "dtw_onset_within_tol": 0.04081632653061224
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0088",
+      "n_clean": 47,
+      "n_played": 108,
+      "has_copy": true,
+      "copy_notes": 55,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 108,
+        "n_scored": 108,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9351851851851852,
+        "precision": 0.9439252336448598,
+        "n_correct": 101,
+        "n_scored": 106,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.7685185185185185,
+        "precision": 0.7980769230769231,
+        "n_correct": 83,
+        "n_scored": 102,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.6203703703703703,
+        "precision": 0.6261682242990654,
+        "n_correct": 67,
+        "n_scored": 103,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 0.49074074074074076,
+        "precision": 0.49074074074074076,
+        "n_correct": 53,
+        "n_scored": 108,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.2037037037037037,
+        "precision": 0.2037037037037037,
+        "n_correct": 22,
+        "n_scored": 108,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 13.206435337650325,
+      "dtw_onset_within_tol": 0.3404255319148936
+    },
+    {
+      "sample": "synth_001_1837",
+      "n_clean": 49,
+      "n_played": 49,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9795918367346939,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.8979591836734694,
+        "precision": 0.8979591836734694,
+        "n_correct": 44,
+        "n_scored": 46,
+        "n_spurious_bound": 2
+      },
+      "sym_20": {
+        "recall": 0.9183673469387755,
+        "precision": 0.9375,
+        "n_correct": 45,
+        "n_scored": 45,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0036877551020407465,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_001_0557",
+      "n_clean": 49,
+      "n_played": 144,
+      "has_copy": true,
+      "copy_notes": 72,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 144,
+        "n_scored": 144,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.7638888888888888,
+        "precision": 0.7857142857142857,
+        "n_correct": 110,
+        "n_scored": 138,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.6458333333333334,
+        "precision": 0.6690647482014388,
+        "n_correct": 93,
+        "n_scored": 138,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9027777777777778,
+        "precision": 0.87248322147651,
+        "n_correct": 130,
+        "n_scored": 137,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 0.5,
+        "precision": 0.5,
+        "n_correct": 72,
+        "n_scored": 144,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.013888888888888888,
+        "precision": 0.013888888888888888,
+        "n_correct": 2,
+        "n_scored": 144,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 7.223836734734694,
+      "dtw_onset_within_tol": 0.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0243",
+      "n_clean": 119,
+      "n_played": 181,
+      "has_copy": true,
+      "copy_notes": 59,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 181,
+        "n_scored": 181,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.994475138121547,
+        "precision": 0.9782608695652174,
+        "n_correct": 180,
+        "n_scored": 180,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.6519337016574586,
+        "precision": 0.6555555555555556,
+        "n_correct": 118,
+        "n_scored": 175,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.574585635359116,
+        "precision": 0.5909090909090909,
+        "n_correct": 104,
+        "n_scored": 167,
+        "n_spurious_bound": 3
+      },
+      "sym_0_nocopy": {
+        "recall": 0.6740331491712708,
+        "precision": 0.6740331491712708,
+        "n_correct": 122,
+        "n_scored": 181,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.0718232044198895,
+        "precision": 0.0718232044198895,
+        "n_correct": 13,
+        "n_scored": 181,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 8.13888302213334,
+      "dtw_onset_within_tol": 0.11764705882352941
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1317",
+      "n_clean": 171,
+      "n_played": 198,
+      "has_copy": true,
+      "copy_notes": 24,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 198,
+        "n_scored": 198,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9646464646464646,
+        "precision": 0.9597989949748744,
+        "n_correct": 191,
+        "n_scored": 195,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9494949494949495,
+        "precision": 0.9740932642487047,
+        "n_correct": 188,
+        "n_scored": 189,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.7676767676767676,
+        "precision": 0.76,
+        "n_correct": 152,
+        "n_scored": 187,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 0.8787878787878788,
+        "precision": 0.8787878787878788,
+        "n_correct": 174,
+        "n_scored": 198,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.05555555555555555,
+        "precision": 0.05555555555555555,
+        "n_correct": 11,
+        "n_scored": 198,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.4838481566234422,
+      "dtw_onset_within_tol": 0.4678362573099415
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1521",
+      "n_clean": 71,
+      "n_played": 102,
+      "has_copy": true,
+      "copy_notes": 30,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 102,
+        "n_scored": 102,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.8529411764705882,
+        "precision": 0.8787878787878788,
+        "n_correct": 87,
+        "n_scored": 99,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.8137254901960784,
+        "precision": 0.8217821782178217,
+        "n_correct": 83,
+        "n_scored": 97,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.8529411764705882,
+        "precision": 0.8365384615384616,
+        "n_correct": 87,
+        "n_scored": 94,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.7058823529411765,
+        "precision": 0.7058823529411765,
+        "n_correct": 72,
+        "n_scored": 102,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.0196078431372549,
+        "precision": 0.0196078431372549,
+        "n_correct": 2,
+        "n_scored": 102,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 3.399422167789344,
+      "dtw_onset_within_tol": 0.08450704225352113
+    },
+    {
+      "sample": "synth_001_1678",
+      "n_clean": 49,
+      "n_played": 98,
+      "has_copy": true,
+      "copy_notes": 33,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 98,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 98,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.6428571428571429,
+        "precision": 0.6631578947368421,
+        "n_correct": 63,
+        "n_scored": 93,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.5816326530612245,
+        "precision": 0.6063829787234043,
+        "n_correct": 57,
+        "n_scored": 90,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.6632653061224489,
+        "precision": 0.6632653061224489,
+        "n_correct": 65,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.02040816326530612,
+        "precision": 0.02040816326530612,
+        "n_correct": 2,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 3.139481632653061,
+      "dtw_onset_within_tol": 0.02040816326530612
+    },
+    {
+      "sample": "synth_001_1965",
+      "n_clean": 49,
+      "n_played": 98,
+      "has_copy": true,
+      "copy_notes": 19,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 98,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.6530612244897959,
+        "precision": 0.6736842105263158,
+        "n_correct": 64,
+        "n_scored": 95,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9795918367346939,
+        "precision": 0.9795918367346939,
+        "n_correct": 96,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.7755102040816326,
+        "precision": 0.7676767676767676,
+        "n_correct": 76,
+        "n_scored": 92,
+        "n_spurious_bound": 3
+      },
+      "sym_0_nocopy": {
+        "recall": 0.8061224489795918,
+        "precision": 0.8061224489795918,
+        "n_correct": 79,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.02040816326530612,
+        "precision": 0.02040816326530612,
+        "n_correct": 2,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 3.012657142897959,
+      "dtw_onset_within_tol": 0.02040816326530612
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1208",
+      "n_clean": 54,
+      "n_played": 55,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 55,
+        "n_scored": 55,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 55,
+        "n_scored": 55,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9636363636363636,
+        "precision": 1.0,
+        "n_correct": 53,
+        "n_scored": 53,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9090909090909091,
+        "precision": 0.8620689655172413,
+        "n_correct": 50,
+        "n_scored": 52,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 55,
+        "n_scored": 55,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.03636363636363636,
+        "precision": 0.03636363636363636,
+        "n_correct": 2,
+        "n_scored": 55,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.29568107890499185,
+      "dtw_onset_within_tol": 0.24074074074074073
+    },
+    {
+      "sample": "synth_001_0813",
+      "n_clean": 49,
+      "n_played": 49,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9795918367346939,
+        "precision": 0.96,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9591836734693877,
+        "precision": 0.9591836734693877,
+        "n_correct": 47,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8979591836734694,
+        "precision": 0.9777777777777777,
+        "n_correct": 44,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0036877551020407465,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_001_0162",
+      "n_clean": 49,
+      "n_played": 51,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9215686274509803,
+        "precision": 0.9038461538461539,
+        "n_correct": 47,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9803921568627451,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8823529411764706,
+        "precision": 0.9782608695652174,
+        "n_correct": 45,
+        "n_scored": 45,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 51,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.9607843137254902,
+        "precision": 0.9607843137254902,
+        "n_correct": 49,
+        "n_scored": 51,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0038163265306121654,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1897",
+      "n_clean": 109,
+      "n_played": 209,
+      "has_copy": true,
+      "copy_notes": 55,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 209,
+        "n_scored": 209,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.7320574162679426,
+        "precision": 0.7427184466019418,
+        "n_correct": 153,
+        "n_scored": 205,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.7655502392344498,
+        "precision": 0.7692307692307693,
+        "n_correct": 160,
+        "n_scored": 202,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.6220095693779905,
+        "precision": 0.6220095693779905,
+        "n_correct": 130,
+        "n_scored": 192,
+        "n_spurious_bound": 5
+      },
+      "sym_0_nocopy": {
+        "recall": 0.7368421052631579,
+        "precision": 0.7368421052631579,
+        "n_correct": 154,
+        "n_scored": 209,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.023923444976076555,
+        "precision": 0.023923444976076555,
+        "n_correct": 5,
+        "n_scored": 209,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 15.30385978951244,
+      "dtw_onset_within_tol": 0.009174311926605505
+    },
+    {
+      "sample": "synth_001_0872",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.96,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9,
+        "precision": 0.9574468085106383,
+        "n_correct": 45,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.82,
+        "precision": 0.8367346938775511,
+        "n_correct": 41,
+        "n_scored": 45,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.96,
+        "precision": 0.96,
+        "n_correct": 48,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0036687499999999277,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0790",
+      "n_clean": 117,
+      "n_played": 116,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 116,
+        "n_scored": 116,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9655172413793104,
+        "precision": 0.9824561403508771,
+        "n_correct": 112,
+        "n_scored": 113,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9913793103448276,
+        "precision": 0.9504132231404959,
+        "n_correct": 115,
+        "n_scored": 115,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9396551724137931,
+        "precision": 0.9478260869565217,
+        "n_correct": 109,
+        "n_scored": 109,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 116,
+        "n_scored": 116,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.47413793103448276,
+        "precision": 0.47413793103448276,
+        "n_correct": 55,
+        "n_scored": 116,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.5458608695652173,
+      "dtw_onset_within_tol": 0.5258620689655172
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0906",
+      "n_clean": 82,
+      "n_played": 92,
+      "has_copy": true,
+      "copy_notes": 10,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 92,
+        "n_scored": 92,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9782608695652174,
+        "precision": 0.989010989010989,
+        "n_correct": 90,
+        "n_scored": 90,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9021739130434783,
+        "precision": 0.9120879120879121,
+        "n_correct": 83,
+        "n_scored": 88,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.8804347826086957,
+        "precision": 0.9,
+        "n_correct": 81,
+        "n_scored": 84,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 0.8913043478260869,
+        "precision": 0.8913043478260869,
+        "n_correct": 82,
+        "n_scored": 92,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.41304347826086957,
+        "precision": 0.41304347826086957,
+        "n_correct": 38,
+        "n_scored": 92,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.3832270943796395,
+      "dtw_onset_within_tol": 0.7073170731707317
+    },
+    {
+      "sample": "synth_001_0768",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9803921568627451,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.98,
+        "precision": 0.9607843137254902,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.94,
+        "precision": 0.9038461538461539,
+        "n_correct": 47,
+        "n_scored": 48,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.14,
+        "precision": 0.14,
+        "n_correct": 7,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.1986897959183674,
+      "dtw_onset_within_tol": 0.42857142857142855
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0900",
+      "n_clean": 45,
+      "n_played": 46,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9130434782608695,
+        "precision": 0.875,
+        "n_correct": 42,
+        "n_scored": 45,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.8913043478260869,
+        "precision": 0.9534883720930233,
+        "n_correct": 41,
+        "n_scored": 41,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.13043478260869565,
+        "precision": 0.13043478260869565,
+        "n_correct": 6,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.4294778743961351,
+      "dtw_onset_within_tol": 0.08888888888888889
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0552",
+      "n_clean": 78,
+      "n_played": 114,
+      "has_copy": true,
+      "copy_notes": 33,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 114,
+        "n_scored": 114,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.8596491228070176,
+        "precision": 0.8909090909090909,
+        "n_correct": 98,
+        "n_scored": 109,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9122807017543859,
+        "precision": 0.896551724137931,
+        "n_correct": 104,
+        "n_scored": 111,
+        "n_spurious_bound": 2
+      },
+      "sym_20": {
+        "recall": 0.5877192982456141,
+        "precision": 0.6146788990825688,
+        "n_correct": 67,
+        "n_scored": 104,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.7105263157894737,
+        "precision": 0.7105263157894737,
+        "n_correct": 81,
+        "n_scored": 114,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.08771929824561403,
+        "precision": 0.08771929824561403,
+        "n_correct": 10,
+        "n_scored": 114,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 2.293106768174617,
+      "dtw_onset_within_tol": 0.34615384615384615
+    },
+    {
+      "sample": "synth_001_1762",
+      "n_clean": 49,
+      "n_played": 48,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9583333333333334,
+        "precision": 0.9787234042553191,
+        "n_correct": 46,
+        "n_scored": 47,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9375,
+        "precision": 0.9375,
+        "n_correct": 45,
+        "n_scored": 46,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.75,
+        "precision": 0.8181818181818182,
+        "n_correct": 36,
+        "n_scored": 41,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.3333333333333333,
+        "precision": 0.3333333333333333,
+        "n_correct": 16,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.1578303240740739,
+      "dtw_onset_within_tol": 0.4166666666666667
+    },
+    {
+      "sample": "synth_001_1959",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9803921568627451,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.94,
+        "precision": 0.94,
+        "n_correct": 47,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.86,
+        "precision": 0.86,
+        "n_correct": 43,
+        "n_scored": 47,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.98,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.003716326530612181,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1309",
+      "n_clean": 72,
+      "n_played": 72,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 72,
+        "n_scored": 72,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9863013698630136,
+        "n_correct": 72,
+        "n_scored": 72,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9583333333333334,
+        "precision": 0.9452054794520548,
+        "n_correct": 69,
+        "n_scored": 70,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.9444444444444444,
+        "precision": 0.918918918918919,
+        "n_correct": 68,
+        "n_scored": 68,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 72,
+        "n_scored": 72,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.05555555555555555,
+        "precision": 0.05555555555555555,
+        "n_correct": 4,
+        "n_scored": 72,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.29053538647342975,
+      "dtw_onset_within_tol": 0.2777777777777778
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1142",
+      "n_clean": 45,
+      "n_played": 44,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 44,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9565217391304348,
+        "n_correct": 44,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9772727272727273,
+        "precision": 0.9148936170212766,
+        "n_correct": 43,
+        "n_scored": 44,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.7727272727272727,
+        "precision": 0.723404255319149,
+        "n_correct": 34,
+        "n_scored": 41,
+        "n_spurious_bound": 5
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 44,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.045454545454545456,
+        "precision": 0.045454545454545456,
+        "n_correct": 2,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 2.1452693629929223,
+      "dtw_onset_within_tol": 0.046511627906976744
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0787",
+      "n_clean": 28,
+      "n_played": 28,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 28,
+        "n_scored": 28,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9333333333333333,
+        "n_correct": 28,
+        "n_scored": 28,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9642857142857143,
+        "precision": 1.0,
+        "n_correct": 27,
+        "n_scored": 27,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8571428571428571,
+        "precision": 0.8571428571428571,
+        "n_correct": 24,
+        "n_scored": 26,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 28,
+        "n_scored": 28,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.10714285714285714,
+        "precision": 0.10714285714285714,
+        "n_correct": 3,
+        "n_scored": 28,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.5919917701863358,
+      "dtw_onset_within_tol": 0.07142857142857142
+    },
+    {
+      "sample": "synth_001_2007",
+      "n_clean": 49,
+      "n_played": 66,
+      "has_copy": true,
+      "copy_notes": 17,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 66,
+        "n_scored": 66,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.7121212121212122,
+        "precision": 0.7121212121212122,
+        "n_correct": 47,
+        "n_scored": 63,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 0.9090909090909091,
+        "precision": 0.9375,
+        "n_correct": 60,
+        "n_scored": 62,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.6818181818181818,
+        "precision": 0.6716417910447762,
+        "n_correct": 45,
+        "n_scored": 62,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.7424242424242424,
+        "precision": 0.7424242424242424,
+        "n_correct": 49,
+        "n_scored": 66,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.030303030303030304,
+        "precision": 0.030303030303030304,
+        "n_correct": 2,
+        "n_scored": 66,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.6431775510204087,
+      "dtw_onset_within_tol": 0.04081632653061224
+    },
+    {
+      "sample": "synth_001_1380",
+      "n_clean": 49,
+      "n_played": 49,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9795918367346939,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9387755102040817,
+        "precision": 0.9583333333333334,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9387755102040817,
+        "precision": 0.8846153846153846,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.9795918367346939,
+        "precision": 0.9795918367346939,
+        "n_correct": 48,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.004920408163265245,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_1311",
+      "n_clean": 131,
+      "n_played": 133,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 133,
+        "n_scored": 133,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9924812030075187,
+        "precision": 0.9705882352941176,
+        "n_correct": 132,
+        "n_scored": 132,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9774436090225563,
+        "precision": 0.9848484848484849,
+        "n_correct": 130,
+        "n_scored": 130,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8872180451127819,
+        "precision": 0.9147286821705426,
+        "n_correct": 118,
+        "n_scored": 122,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 133,
+        "n_scored": 133,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.06766917293233082,
+        "precision": 0.06766917293233082,
+        "n_correct": 9,
+        "n_scored": 133,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.44541115167607026,
+      "dtw_onset_within_tol": 0.5877862595419847
+    },
+    {
+      "sample": "synth_WeberITAV_1662",
+      "n_clean": 72,
+      "n_played": 96,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 96,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.75,
+        "precision": 0.75,
+        "n_correct": 72,
+        "n_scored": 95,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 0.96875,
+        "precision": 0.9789473684210527,
+        "n_correct": 93,
+        "n_scored": 93,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.7291666666666666,
+        "precision": 0.7608695652173914,
+        "n_correct": 70,
+        "n_scored": 85,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 96,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.125,
+        "precision": 0.125,
+        "n_correct": 12,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.4863125000000001,
+      "dtw_onset_within_tol": 0.2916666666666667
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0103",
+      "n_clean": 104,
+      "n_played": 114,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 114,
+        "n_scored": 114,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9824561403508771,
+        "precision": 0.9824561403508771,
+        "n_correct": 112,
+        "n_scored": 113,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9649122807017544,
+        "precision": 0.9649122807017544,
+        "n_correct": 110,
+        "n_scored": 110,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.7982456140350878,
+        "precision": 0.8272727272727273,
+        "n_correct": 91,
+        "n_scored": 107,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 114,
+        "n_scored": 114,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.06140350877192982,
+        "precision": 0.06140350877192982,
+        "n_correct": 7,
+        "n_scored": 114,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.5378767976588628,
+      "dtw_onset_within_tol": 0.14423076923076922
+    },
+    {
+      "sample": "synth_WeberITAV_0767",
+      "n_clean": 103,
+      "n_played": 136,
+      "has_copy": true,
+      "copy_notes": 27,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 136,
+        "n_scored": 136,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9264705882352942,
+        "precision": 0.9333333333333333,
+        "n_correct": 126,
+        "n_scored": 133,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.8529411764705882,
+        "precision": 0.8529411764705882,
+        "n_correct": 116,
+        "n_scored": 134,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.7058823529411765,
+        "precision": 0.7007299270072993,
+        "n_correct": 96,
+        "n_scored": 126,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 0.8014705882352942,
+        "precision": 0.8014705882352942,
+        "n_correct": 109,
+        "n_scored": 136,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.03676470588235294,
+        "precision": 0.03676470588235294,
+        "n_correct": 5,
+        "n_scored": 136,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.858711650485437,
+      "dtw_onset_within_tol": 0.13592233009708737
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0546",
+      "n_clean": 59,
+      "n_played": 58,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 58,
+        "n_scored": 58,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9655172413793104,
+        "precision": 0.9824561403508771,
+        "n_correct": 56,
+        "n_scored": 56,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9482758620689655,
+        "precision": 0.9322033898305084,
+        "n_correct": 55,
+        "n_scored": 57,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9655172413793104,
+        "precision": 0.9333333333333333,
+        "n_correct": 56,
+        "n_scored": 57,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 58,
+        "n_scored": 58,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.06896551724137931,
+        "precision": 0.06896551724137931,
+        "n_correct": 4,
+        "n_scored": 58,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.3697420780957756,
+      "dtw_onset_within_tol": 0.47368421052631576
+    },
+    {
+      "sample": "synth_001_0541",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.98,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.96,
+        "precision": 0.96,
+        "n_correct": 48,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.92,
+        "precision": 0.8679245283018868,
+        "n_correct": 46,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.98,
+        "precision": 0.98,
+        "n_correct": 49,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.003716326530612181,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0515",
+      "n_clean": 131,
+      "n_played": 131,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 131,
+        "n_scored": 131,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9923664122137404,
+        "precision": 0.9774436090225563,
+        "n_correct": 130,
+        "n_scored": 130,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9618320610687023,
+        "precision": 0.9264705882352942,
+        "n_correct": 126,
+        "n_scored": 126,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8854961832061069,
+        "precision": 0.9133858267716536,
+        "n_correct": 116,
+        "n_scored": 120,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 131,
+        "n_scored": 131,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.11450381679389313,
+        "precision": 0.11450381679389313,
+        "n_correct": 15,
+        "n_scored": 131,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.2452394955194157,
+      "dtw_onset_within_tol": 0.6641221374045801
+    },
+    {
+      "sample": "synth_001_0042",
+      "n_clean": 49,
+      "n_played": 50,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.98,
+        "precision": 0.9607843137254902,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.98,
+        "precision": 1.0,
+        "n_correct": 49,
+        "n_scored": 49,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9,
+        "precision": 0.9183673469387755,
+        "n_correct": 45,
+        "n_scored": 45,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 50,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.04,
+        "precision": 0.04,
+        "n_correct": 2,
+        "n_scored": 50,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.7360367346938778,
+      "dtw_onset_within_tol": 0.10204081632653061
+    },
+    {
+      "sample": "synth_001_0105",
+      "n_clean": 49,
+      "n_played": 48,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9375,
+        "precision": 1.0,
+        "n_correct": 45,
+        "n_scored": 45,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9375,
+        "precision": 0.9574468085106383,
+        "n_correct": 45,
+        "n_scored": 45,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8958333333333334,
+        "precision": 0.8958333333333334,
+        "n_correct": 43,
+        "n_scored": 44,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 48,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.9375,
+        "precision": 0.9375,
+        "n_correct": 45,
+        "n_scored": 48,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.0054354166666665685,
+      "dtw_onset_within_tol": 1.0
+    },
+    {
+      "sample": "synth_001_0592",
+      "n_clean": 49,
+      "n_played": 98,
+      "has_copy": true,
+      "copy_notes": 37,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 98,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.7755102040816326,
+        "precision": 0.7755102040816326,
+        "n_correct": 76,
+        "n_scored": 96,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.8367346938775511,
+        "precision": 0.8723404255319149,
+        "n_correct": 82,
+        "n_scored": 93,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9387755102040817,
+        "precision": 0.9019607843137255,
+        "n_correct": 92,
+        "n_scored": 94,
+        "n_spurious_bound": 2
+      },
+      "sym_0_nocopy": {
+        "recall": 0.6224489795918368,
+        "precision": 0.6224489795918368,
+        "n_correct": 61,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.030612244897959183,
+        "precision": 0.030612244897959183,
+        "n_correct": 3,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.6877262260127932,
+      "dtw_onset_within_tol": 0.4897959183673469
+    },
+    {
+      "sample": "synth_001_0831",
+      "n_clean": 49,
+      "n_played": 98,
+      "has_copy": true,
+      "copy_notes": 22,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 98,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.6938775510204082,
+        "precision": 0.6938775510204082,
+        "n_correct": 68,
+        "n_scored": 96,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 0.9489795918367347,
+        "precision": 0.9587628865979382,
+        "n_correct": 93,
+        "n_scored": 94,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.673469387755102,
+        "precision": 0.66,
+        "n_correct": 66,
+        "n_scored": 93,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 0.7755102040816326,
+        "precision": 0.7755102040816326,
+        "n_correct": 76,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.02040816326530612,
+        "precision": 0.02040816326530612,
+        "n_correct": 2,
+        "n_scored": 98,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 3.0431244897959178,
+      "dtw_onset_within_tol": 0.02040816326530612
+    },
+    {
+      "sample": "synth_WeberITAV_0227",
+      "n_clean": 132,
+      "n_played": 232,
+      "has_copy": true,
+      "copy_notes": 91,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 232,
+        "n_scored": 232,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9439655172413793,
+        "precision": 0.9319148936170213,
+        "n_correct": 219,
+        "n_scored": 230,
+        "n_spurious_bound": 1
+      },
+      "sym_10": {
+        "recall": 0.5862068965517241,
+        "precision": 0.5991189427312775,
+        "n_correct": 136,
+        "n_scored": 222,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.6896551724137931,
+        "precision": 0.6808510638297872,
+        "n_correct": 160,
+        "n_scored": 217,
+        "n_spurious_bound": 4
+      },
+      "sym_0_nocopy": {
+        "recall": 0.6077586206896551,
+        "precision": 0.6077586206896551,
+        "n_correct": 141,
+        "n_scored": 232,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.06465517241379311,
+        "precision": 0.06465517241379311,
+        "n_correct": 15,
+        "n_scored": 232,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 4.78247196969697,
+      "dtw_onset_within_tol": 0.14393939393939395
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0993",
+      "n_clean": 24,
+      "n_played": 26,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 26,
+        "n_scored": 26,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.8076923076923077,
+        "precision": 0.84,
+        "n_correct": 21,
+        "n_scored": 25,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.8846153846153846,
+        "precision": 0.8846153846153846,
+        "n_correct": 23,
+        "n_scored": 24,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.9615384615384616,
+        "precision": 0.8064516129032258,
+        "n_correct": 25,
+        "n_scored": 25,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 26,
+        "n_scored": 26,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.038461538461538464,
+        "precision": 0.038461538461538464,
+        "n_correct": 1,
+        "n_scored": 26,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 1.650977717481884,
+      "dtw_onset_within_tol": 0.041666666666666664
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0569",
+      "n_clean": 112,
+      "n_played": 274,
+      "has_copy": true,
+      "copy_notes": 141,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 274,
+        "n_scored": 274,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.8248175182481752,
+        "precision": 0.8158844765342961,
+        "n_correct": 226,
+        "n_scored": 269,
+        "n_spurious_bound": 2
+      },
+      "sym_10": {
+        "recall": 0.6715328467153284,
+        "precision": 0.6594982078853047,
+        "n_correct": 184,
+        "n_scored": 269,
+        "n_spurious_bound": 2
+      },
+      "sym_20": {
+        "recall": 0.635036496350365,
+        "precision": 0.6397058823529411,
+        "n_correct": 174,
+        "n_scored": 253,
+        "n_spurious_bound": 7
+      },
+      "sym_0_nocopy": {
+        "recall": 0.4854014598540146,
+        "precision": 0.4854014598540146,
+        "n_correct": 133,
+        "n_scored": 274,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.029197080291970802,
+        "precision": 0.029197080291970802,
+        "n_correct": 8,
+        "n_scored": 274,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 9.921359782608695,
+      "dtw_onset_within_tol": 0.0625
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0626",
+      "n_clean": 44,
+      "n_played": 86,
+      "has_copy": true,
+      "copy_notes": 37,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 86,
+        "n_scored": 86,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9186046511627907,
+        "precision": 0.9294117647058824,
+        "n_correct": 79,
+        "n_scored": 84,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9418604651162791,
+        "precision": 0.9642857142857143,
+        "n_correct": 81,
+        "n_scored": 84,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.7209302325581395,
+        "precision": 0.6888888888888889,
+        "n_correct": 62,
+        "n_scored": 82,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 0.5697674418604651,
+        "precision": 0.5697674418604651,
+        "n_correct": 49,
+        "n_scored": 86,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.06976744186046512,
+        "precision": 0.06976744186046512,
+        "n_correct": 6,
+        "n_scored": 86,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 9.279863636363636,
+      "dtw_onset_within_tol": 0.045454545454545456
+    },
+    {
+      "sample": "synth_001_1298",
+      "n_clean": 49,
+      "n_played": 46,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.9583333333333334,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 2
+      },
+      "sym_10": {
+        "recall": 0.9782608695652174,
+        "precision": 0.8653846153846154,
+        "n_correct": 45,
+        "n_scored": 46,
+        "n_spurious_bound": 1
+      },
+      "sym_20": {
+        "recall": 0.8695652173913043,
+        "precision": 0.9090909090909091,
+        "n_correct": 40,
+        "n_scored": 41,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 46,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.2826086956521739,
+        "precision": 0.2826086956521739,
+        "n_correct": 13,
+        "n_scored": 46,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.14049456521739143,
+      "dtw_onset_within_tol": 0.6739130434782609
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0981",
+      "n_clean": 90,
+      "n_played": 91,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 91,
+        "n_scored": 91,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 1.0,
+        "precision": 0.978494623655914,
+        "n_correct": 91,
+        "n_scored": 91,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9560439560439561,
+        "precision": 0.9666666666666667,
+        "n_correct": 87,
+        "n_scored": 88,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.8901098901098901,
+        "precision": 0.9,
+        "n_correct": 81,
+        "n_scored": 82,
+        "n_spurious_bound": 1
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 91,
+        "n_scored": 91,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.27472527472527475,
+        "precision": 0.27472527472527475,
+        "n_correct": 25,
+        "n_scored": 91,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.6642155837811431,
+      "dtw_onset_within_tol": 0.4943820224719101
+    },
+    {
+      "sample": "synth_WeberITAV_1540",
+      "n_clean": 89,
+      "n_played": 86,
+      "has_copy": false,
+      "copy_notes": 0,
+      "sym_0": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 86,
+        "n_scored": 86,
+        "n_spurious_bound": 0
+      },
+      "sym_5": {
+        "recall": 0.9767441860465116,
+        "precision": 0.9767441860465116,
+        "n_correct": 84,
+        "n_scored": 85,
+        "n_spurious_bound": 0
+      },
+      "sym_10": {
+        "recall": 0.9534883720930233,
+        "precision": 0.9879518072289156,
+        "n_correct": 82,
+        "n_scored": 82,
+        "n_spurious_bound": 0
+      },
+      "sym_20": {
+        "recall": 0.9418604651162791,
+        "precision": 0.9529411764705882,
+        "n_correct": 81,
+        "n_scored": 82,
+        "n_spurious_bound": 0
+      },
+      "sym_0_nocopy": {
+        "recall": 1.0,
+        "precision": 1.0,
+        "n_correct": 86,
+        "n_scored": 86,
+        "n_spurious_bound": 0
+      },
+      "dtw": {
+        "recall": 0.8604651162790697,
+        "precision": 0.8604651162790697,
+        "n_correct": 74,
+        "n_scored": 86,
+        "n_spurious_bound": 0
+      },
+      "dtw_onset_mae": 0.00811627906976744,
+      "dtw_onset_within_tol": 1.0
+    }
+  ]
+}

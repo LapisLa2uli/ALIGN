@@ -1,0 +1,96 @@
+{
+  "dataset": "E:/output",
+  "rawdata_derived_datasets_used": false,
+  "selection_metric": "official hard type-aware melody F1",
+  "development": {
+    "n_samples": 20,
+    "mean_melody_f1": 0.2532,
+    "mean_melody_precision": 0.4917,
+    "mean_melody_recall": 0.1746,
+    "mean_n_pred": 1.7
+  },
+  "locked_holdout": {
+    "n_samples": 100,
+    "mean_melody_f1": 0.2061,
+    "mean_melody_precision": 0.4297,
+    "mean_melody_recall": 0.143,
+    "mean_n_gold": 5.31,
+    "mean_n_pred": 1.47,
+    "runtime_sec": 117.473,
+    "per_type": {
+      "repetition": {
+        "f1": 0.5899,
+        "precision": 0.7193,
+        "recall": 0.5,
+        "n_gold": 82,
+        "n_pred": 57
+      },
+      "wrong_note": {
+        "f1": 0.1333,
+        "precision": 0.1412,
+        "recall": 0.1263,
+        "n_gold": 95,
+        "n_pred": 85
+      },
+      "intonation_error": {
+        "f1": 0.0235,
+        "precision": 0.2,
+        "recall": 0.0125,
+        "n_gold": 80,
+        "n_pred": 5
+      },
+      "extra_note": {
+        "f1": 0.0,
+        "n_gold": 103,
+        "n_pred": 0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "n_gold": 87,
+        "n_pred": 0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "n_gold": 84,
+        "n_pred": 0
+      }
+    }
+  },
+  "retained": {
+    "stage1": {
+      "kind": "retrieval-first algorithmic detector",
+      "checkpoint": null,
+      "max_lookback_sec": 20.0,
+      "confidence_threshold": 0.88
+    },
+    "stage2": {
+      "checkpoint": "align-model/runs/model-a-improve/stage3-procedural/stage2.pt",
+      "source_checkpoint": "align-model/runs/model-a-improve/stage2-binary-hardneg/stage2.pt",
+      "error_probability_threshold": 0.375
+    },
+    "stage3": {
+      "checkpoint": "align-model/runs/model-a-improve/stage3-procedural/stage3.pt",
+      "logit_threshold": 20.0,
+      "note": "Official-F1 calibration suppresses all rhythm candidates on the development pool."
+    }
+  },
+  "stage2_training_optimization": {
+    "max_train_examples": 20000,
+    "class_quota": {
+      "match": 8000,
+      "missed_note": 3000,
+      "extra_note": 3000,
+      "wrong_note": 3000,
+      "intonation_error": 3000
+    },
+    "uncapped_runtime_sec": 3703.765,
+    "capped_runtime_sec": 839.302,
+    "speedup": 4.41,
+    "capped_checkpoint_retained": false
+  },
+  "intonation_audio_validation": {
+    "detector_implemented": true,
+    "controlled_tests_pass": true,
+    "procedural_audio_issue": "Checked labeled spans measured 0.0 cents against reference despite labels of -40.5 and -77.9 cents."
+  }
+}

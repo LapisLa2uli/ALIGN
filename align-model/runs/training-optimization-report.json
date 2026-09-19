@@ -1,0 +1,696 @@
+{
+  "metric_migration_hold": {
+    "active": true,
+    "created_utc": "2026-09-15T12:41:00Z",
+    "official_metric": "note-wise canonical score-event scoring",
+    "timestamp_metrics": "diagnostic_only",
+    "requires_note_wise_rescore": true,
+    "heavy_restart_allowed": false,
+    "active_training_or_evaluation_processes": [],
+    "leases_cleared": true,
+    "hold_marker": "runs/NOTE_WISE_PROMOTION_HOLD.json",
+    "preserved_outputraw_checkpoint_sha256": "e1b2e4889a373eb1ac5f06b2d41703d11dadeac5f38d69af4e00e602b191939d",
+    "preserved_candidate_checkpoint_sha256": "9ae46bd9514e2594a48dcd46d1276a361fc9760c8c8d91619a6ca3721b749bde"
+  },
+  "autonomous_schedule_restart": {
+    "restarted_utc": "2026-09-15T04:48:23Z",
+    "checkpoint_sha256_before_restart": "689f94e0dc928c6f2d2c1b84dc57a577d80eb7b3ec02cc57b3902c69216ae6e7",
+    "cursor_start": 150,
+    "cursor_measured": 225,
+    "trainer_launcher_pid": 1596,
+    "trainer_pid": 31612,
+    "supervisor_launcher_pid": 19096,
+    "supervisor_pid": 18308,
+    "measured_rows_per_second": 0.104,
+    "expected_rows_per_second_range": [
+      0.08,
+      0.108
+    ],
+    "throughput_status": "within_verified_range",
+    "trainer_rss_mb": 3988.0,
+    "trainer_cpu_one_core_percent": 98.4375,
+    "ram_percent": 69.8,
+    "ram_available_mb": 9793.2,
+    "disk_read_mib_per_second": 0.0,
+    "disk_write_mib_per_second": 0.3125,
+    "gpu_vram_mb": 99,
+    "structured_cpu_affinity": "0xF0000",
+    "structured_cpu_priority": "High",
+    "gpu_utilization_percent": 0.0,
+    "gpu_idle_reason": "Structured path DP is intentionally on CPU; GPU remains exclusively leased for later vector phases.",
+    "resource_status": "runs/TRAINING_RESOURCE_STATUS.json",
+    "queue": [
+      {
+        "track": "candidate-rescorer-optimized",
+        "state": "queued",
+        "blocked_by": "outputraw-full-training",
+        "automatic_handoff": true,
+        "packed_training_root": "runs/joint-audit-v2/components/candidate-rescorer-v1/packed-training-v1",
+        "checkpoint_every_clips": 250,
+        "verified_restart_checkpoint": "runs/joint-audit-v2/components/candidate-rescorer-v1/pause_checkpoint.pt"
+      }
+    ],
+    "exact_restart_command": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_outputraw_full_pipeline.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --output-dir runs\\joint-outputraw-full-v1\\training-v1-optimized --hardware-profile runs\\joint-outputraw-full-v1\\profiles\\architecture-cuda-optimized.json --actual-training-profile runs\\joint-outputraw-full-v1\\profiles\\actual-training-cuda.json --initialize-checkpoint runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt --resume-checkpoint runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt --prepared-local-cache runs\\joint-outputraw-full-v1\\prepared-local-v1 --prepared-max-open-shards 64 --device cuda --path-device cpu --local-checkpoint-every 250 --path-checkpoint-every 25 --checkpoint-every 250 --gradient-accumulation 1 --acoustic-epochs 1 --structure-epochs 1 --errors-epochs 1 --joint-epochs 3 --path-epochs 1 --path-samples-per-epoch 1000 --bootstrap-replicates 1000"
+  },
+  "active_run_estimate": {
+    "checkpoint_rows_complete": 225,
+    "checkpoint_rows_total": 1000,
+    "note": "ETA uses the most recent representative CPU segment and is intentionally conservative.",
+    "remaining_structured_hours_at_selected_rate": 2.0620833333333333,
+    "remaining_structured_seconds_at_selected_rate": 7423.5,
+    "validation_rows": 358,
+    "validation_seconds_estimate": 447.5
+  },
+  "checkpoint_contract": {
+    "atomic": true,
+    "contains_optimizer": true,
+    "contains_rng": true,
+    "contains_sampler_cursor": true,
+    "contains_scaler_key": true,
+    "contains_scheduler": true,
+    "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "metadata": {
+      "config_sha256": "92e91532bb4c60029399fb8a4e02436d36f90c71b646bfda868930cc31b71598",
+      "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+      "packed_cache_version": "align-outputraw-packed-v1",
+      "prepared_local_cache_version": "align-prepared-local-v1",
+      "prepared_local_fingerprint": "bef82e22f4db2deaef15b933f40d334be4f8a35d4143efd4107346b7af6e2259"
+    },
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+    "schema_version": "align-outputraw-full-joint-v1"
+  },
+  "created_utc": "2026-09-15T04:28:04.521550+00:00",
+  "data_profile": {
+    "1000_rows": {
+      "baseline": {
+        "phase_seconds": {
+          "candidate_construction": 315.16591859998334,
+          "musicxml_score_index": 35.231727800015506,
+          "npz_metadata_validation_decompression": 54.52801510001882,
+          "target_pairing_reconstruction": 18.93704240002262,
+          "target_sqlite_zlib_json": 3.238397700011774
+        },
+        "process_cpu_one_core_percent": 88.21721773664129,
+        "process_cpu_seconds": 376.78125,
+        "process_read_bytes": 4735570200,
+        "process_read_mib_per_sec": 10.573930209691778,
+        "rows": 1000,
+        "rows_per_sec": 2.3413377851642374,
+        "rss_end_mb": 791.59765625,
+        "rss_start_mb": 555.56640625,
+        "seconds": 427.1062493999998
+      },
+      "end_to_end_phase_speedup": 138.34939997374036,
+      "optimized": {
+        "edges": 1997127,
+        "phase_seconds": {
+          "collation": 0.09137430000009772,
+          "packed_sqlite_zlib_json_candidates": 2.0544371999858413,
+          "packed_target_reconstruction": 0.5583521000226028,
+          "prepared_mmap_tensor_load": 0.38163979999626463
+        },
+        "prepared_rows_per_sec": 2114.1018840827164,
+        "process_cpu_one_core_percent": 99.70744923363084,
+        "process_cpu_seconds": 3.078125,
+        "process_read_bytes": 27787448,
+        "process_read_mib_per_sec": 8.584007800082775,
+        "rows": 1000,
+        "rows_per_sec": 323.9226777133185,
+        "rss_end_mb": 1330.60546875,
+        "rss_start_mb": 821.359375,
+        "seconds": 3.0871564999997645
+      },
+      "training_prepared_speedup": 902.9461265600421
+    },
+    "100_rows": {
+      "baseline": {
+        "phase_seconds": {
+          "candidate_construction": 37.43927990001066,
+          "musicxml_score_index": 4.392762200004654,
+          "npz_metadata_validation_decompression": 4.9712464999975055,
+          "target_pairing_reconstruction": 2.0482837999970798,
+          "target_sqlite_zlib_json": 0.2665712000034546
+        },
+        "process_cpu_one_core_percent": 88.81549712323222,
+        "process_cpu_seconds": 43.625,
+        "process_read_bytes": 533108568,
+        "process_read_mib_per_sec": 10.350684242483418,
+        "rows": 100,
+        "rows_per_sec": 2.035885320876383,
+        "rss_end_mb": 792.26953125,
+        "rss_start_mb": 555.56640625,
+        "seconds": 49.11868019999929
+      },
+      "optimized": {
+        "edges": 201189,
+        "phase_seconds": {
+          "collation": 0.009546799999952782,
+          "packed_sqlite_zlib_json_candidates": 0.19519839999338728,
+          "packed_target_reconstruction": 0.059280500003296765,
+          "prepared_mmap_tensor_load": 0.03709649999655085
+        },
+        "prepared_rows_per_sec": 2143.9306397166574,
+        "process_cpu_one_core_percent": 103.73116864426571,
+        "process_cpu_seconds": 0.3125,
+        "process_read_bytes": 2990115,
+        "process_read_mib_per_sec": 9.465579935630753,
+        "rows": 100,
+        "rows_per_sec": 331.93973966165026,
+        "rss_end_mb": 839.2578125,
+        "rss_start_mb": 786.05859375,
+        "seconds": 0.3012594999981957
+      }
+    },
+    "manifest_seconds": 0.09731430000101682,
+    "packed_loader_release": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\loader_benchmark.json"
+  },
+  "full_local_training": {
+    "epoch_seconds_mean": 17.284251133333782,
+    "epochs_completed": 6,
+    "history": [
+      {
+        "batches": 145,
+        "cursor": {
+          "epoch": 1,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 4544,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "edges": 9260174,
+        "edges_per_second": 608531.5186099556,
+        "epoch": 1,
+        "examples": 4544,
+        "examples_per_second": 298.60855968404456,
+        "mean_batch_loss": 4.324218100514905,
+        "optimizer_steps": 145,
+        "phase_seconds": {
+          "backward": 2.334187300009944,
+          "checkpoint_io": 3.0414059000067937,
+          "data_and_collation": 3.027657899991027,
+          "forward": 5.373981000013373,
+          "host_to_device": 0.31747689999428985,
+          "optimizer": 0.25537260000965034,
+          "scheduler": 2.519999907235615e-05
+        },
+        "segment_edges_per_second": 608531.5186099556,
+        "segment_examples_per_second": 298.60855968404456,
+        "stage": "acoustic",
+        "train_wall_seconds": 15.217246299998806
+      },
+      {
+        "batches": 145,
+        "cursor": {
+          "epoch": 10001,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 4544,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "edges": 9260174,
+        "edges_per_second": 582905.4383180013,
+        "epoch": 1,
+        "examples": 4544,
+        "examples_per_second": 286.0337518190261,
+        "mean_batch_loss": 3.1368453650638974,
+        "optimizer_steps": 145,
+        "phase_seconds": {
+          "backward": 2.4713368999928207,
+          "checkpoint_io": 3.595642299991596,
+          "data_and_collation": 2.8276735999934317,
+          "forward": 5.454270700010966,
+          "host_to_device": 0.357821600011448,
+          "optimizer": 0.25752999999167514,
+          "scheduler": 3.0500001230393536e-05
+        },
+        "segment_edges_per_second": 582905.4383180013,
+        "segment_examples_per_second": 286.0337518190261,
+        "stage": "structure",
+        "train_wall_seconds": 15.886237100001381
+      },
+      {
+        "batches": 145,
+        "cursor": {
+          "epoch": 20001,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 4544,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "edges": 9260174,
+        "edges_per_second": 679701.9452873395,
+        "epoch": 1,
+        "examples": 4544,
+        "examples_per_second": 333.5321387466014,
+        "mean_batch_loss": 2.8356677943262563,
+        "optimizer_steps": 145,
+        "phase_seconds": {
+          "backward": 1.4181165999871155,
+          "checkpoint_io": 2.688350199992783,
+          "data_and_collation": 2.5422772000038094,
+          "forward": 5.496965300000738,
+          "host_to_device": 0.3368012000046292,
+          "optimizer": 0.22374770001079014,
+          "scheduler": 2.330000097572338e-05
+        },
+        "segment_edges_per_second": 679701.9452873395,
+        "segment_examples_per_second": 333.5321387466014,
+        "stage": "errors",
+        "train_wall_seconds": 13.623874499999147
+      },
+      {
+        "batches": 145,
+        "cursor": {
+          "epoch": 30001,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 4544,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "edges": 9260174,
+        "edges_per_second": 468806.99872156285,
+        "epoch": 1,
+        "examples": 4544,
+        "examples_per_second": 230.04524560670043,
+        "mean_batch_loss": 2.6410115455758985,
+        "optimizer_steps": 145,
+        "phase_seconds": {
+          "backward": 4.214419199990516,
+          "checkpoint_io": 5.947790899999745,
+          "data_and_collation": 2.9338371000012557,
+          "forward": 5.0300722000029054,
+          "host_to_device": 0.2515645000112272,
+          "optimizer": 0.39655549999406503,
+          "scheduler": 2.700000004551839e-05
+        },
+        "segment_edges_per_second": 468806.99872156285,
+        "segment_examples_per_second": 230.04524560670043,
+        "stage": "joint",
+        "train_wall_seconds": 19.752636000001075
+      },
+      {
+        "batches": 145,
+        "cursor": {
+          "epoch": 30002,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 4544,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "edges": 9260174,
+        "edges_per_second": 477895.8609654364,
+        "epoch": 2,
+        "examples": 4544,
+        "examples_per_second": 234.50518232453763,
+        "mean_batch_loss": 2.458987231090151,
+        "optimizer_steps": 145,
+        "phase_seconds": {
+          "backward": 4.109988900005192,
+          "checkpoint_io": 5.832800199990743,
+          "data_and_collation": 2.8979357999978674,
+          "forward": 4.938788100002057,
+          "host_to_device": 0.24156270001913072,
+          "optimizer": 0.38234640000155196,
+          "scheduler": 1.6099998902063817e-05
+        },
+        "segment_edges_per_second": 477895.8609654364,
+        "segment_examples_per_second": 234.50518232453763,
+        "stage": "joint",
+        "train_wall_seconds": 19.376970500001335
+      },
+      {
+        "batches": 145,
+        "cursor": {
+          "epoch": 30003,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 4544,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "edges": 9260174,
+        "edges_per_second": 466541.7647997949,
+        "epoch": 3,
+        "examples": 4544,
+        "examples_per_second": 228.93368734218902,
+        "mean_batch_loss": 2.3164688110351563,
+        "optimizer_steps": 145,
+        "phase_seconds": {
+          "backward": 4.173536899983446,
+          "checkpoint_io": 5.985489500008043,
+          "data_and_collation": 3.0015984999899956,
+          "forward": 5.039021899990985,
+          "host_to_device": 0.24230099999476806,
+          "optimizer": 0.3929662000045937,
+          "scheduler": 2.119999953720253e-05
+        },
+        "segment_edges_per_second": 466541.7647997949,
+        "segment_examples_per_second": 228.93368734218902,
+        "stage": "joint",
+        "train_wall_seconds": 19.84854240000095
+      }
+    ],
+    "mean_rows_per_sec": 262.8982861303494,
+    "rows": 27264,
+    "wall_seconds": 103.7055068000027
+  },
+  "gpu_tuning": {
+    "actual_full_loss_selected": {
+      "amp_dtype": "bfloat16",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 1388779.699107484,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8201450705528259,
+        "confidence": 0.6754913330078125,
+        "copy_count": 1.2561382055282593,
+        "duration": 0.2350717931985855,
+        "emission": 2.26448917388916,
+        "layer2": 1.3467093706130981,
+        "layer3": 1.0621230602264404,
+        "path": 2.628281354904175,
+        "split": 0.9271119236946106,
+        "structure": 1.3895519971847534
+      },
+      "first_loss_relative_error_vs_fp32": 0.00019188255923317088,
+      "fused_optimizer": true,
+      "gradient_l2": 1.999999636188677,
+      "iterations": 3,
+      "losses": [
+        7.7274932861328125,
+        7.594213962554932,
+        7.498409271240234
+      ],
+      "ok": true,
+      "peak_vram_mb": 703.69677734375,
+      "phase_seconds": {
+        "backward": 0.06020190000162984,
+        "forward": 0.0639368000011018,
+        "host_to_device": 0.003933699999834062,
+        "optimizer": 0.007503499997255858
+      },
+      "rows": 25,
+      "rows_per_sec": 546.9617732042644,
+      "seconds": 0.13712110000051325
+    },
+    "actual_profile_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\profiles\\actual-training-cuda.json",
+    "channels_last": "not_applicable_2d_edge_mlp",
+    "pin_memory": "enabled_for_gpu_edge_batch",
+    "structured_math": "FP32 log-partition/gold/decode reductions",
+    "synthetic_selected": {
+      "amp_dtype": "bfloat16",
+      "edges": 32768,
+      "edges_per_second": 2212335.009977165,
+      "fused_optimizer": false,
+      "iterations": 3,
+      "ok": true,
+      "peak_vram_mb": 368.73876953125,
+      "seconds": 0.04443449999962468,
+      "torch_compile": "disabled"
+    },
+    "torch_compile": "rejected_missing_triton"
+  },
+  "guardrails": {
+    "evaluation_standard_changed": false,
+    "intonation_masked_as_before": true,
+    "objective_changed": false,
+    "oracle_metrics_reported_as_trained": false,
+    "sealed_test_accessed": false
+  },
+  "local_training_before_after": {
+    "baseline_data_collation_seconds": 4.093258000000787,
+    "baseline_rows_per_sec": 21.515818688092825,
+    "diagnostic_validation_rows": 5,
+    "optimized_data_collation_seconds": 0.1421961999985797,
+    "optimized_rows_per_sec": 133.50177697550546,
+    "rows": 100,
+    "same_model_data_seed": true,
+    "validation_combined_f1": 0.3404791929382093,
+    "validation_combined_f1_identical": true,
+    "wall_speedup": 6.204819761257206
+  },
+  "prepared_local_cache": {
+    "bytes": 986064018,
+    "destination": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\prepared-local-v1",
+    "equivalence_source_ordinals": [
+      0,
+      1,
+      2272,
+      4542,
+      4543
+    ],
+    "lattice": {
+      "continuation_candidate_skips": 1,
+      "continuation_feature_enabled": true,
+      "continuation_hard_negative_copies": 1,
+      "continuation_lookahead_notes": 3,
+      "continuation_pitch_tolerance": 0,
+      "continuation_score_skips": 1,
+      "continuation_score_weight": 0.35,
+      "max_delete_events": 24,
+      "max_options_per_candidate": 12,
+      "max_span_events": 4,
+      "max_states": 48,
+      "noise_inference_bias": -6.0,
+      "repeat_fragment_penalty": 0.25,
+      "timing_scale_ceiling_sec_per_ql": 2.5,
+      "timing_scale_floor_sec_per_ql": 0.08
+    },
+    "mmap_residency_tuning": {
+      "random_1000_rows_per_sec": {
+        "1": 363.95702963179866,
+        "36": 2238.8849994509205,
+        "4": 388.92338423231126,
+        "8": 433.63983575094863
+      },
+      "reason": "Retain all 36 small prepared shards; maps are read-only and total payload is 986 MB.",
+      "selected_max_open_shards": 64
+    },
+    "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "prefetch": 8,
+    "protected_test_accessed": false,
+    "records": 4544,
+    "rows_per_sec": 30.14101245158597,
+    "schema_version": "align-prepared-local-report-v1",
+    "seconds": 150.7580412999996,
+    "shard_rows": 128,
+    "validation": {
+      "cache_fingerprint": "bef82e22f4db2deaef15b933f40d334be4f8a35d4143efd4107346b7af6e2259",
+      "deep": true,
+      "records": 4544,
+      "status": "ok"
+    },
+    "worker_tuning": {
+      "reason": "Windows spawn cost loses on 100 rows but amortizes to a material full-cache win; result transport is bounded to prefetch=8.",
+      "selected_workers": 4,
+      "workers_0_rows_per_sec_100": 12.808036479335152,
+      "workers_4_rows_per_sec_100": 7.786964899532579,
+      "workers_4_rows_per_sec_1000": 27.18292521732147,
+      "workers_4_rows_per_sec_full_4544": 30.14101245158597
+    },
+    "workers": 4
+  },
+  "recommended_configuration": {
+    "fused_adamw": true,
+    "gradient_accumulation": 1,
+    "loader_prefetch": 0,
+    "loader_workers": 0,
+    "local_amp": "bfloat16",
+    "local_batch_edges": 65536,
+    "local_checkpoint_rows": 250,
+    "prepared_max_open_shards": 64,
+    "structured_checkpoint_rows": 25,
+    "structured_device": "cpu",
+    "structured_threads": 1,
+    "torch_compile": false
+  },
+  "repository": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model",
+  "resource_coordination": {
+    "active_full_trainer": {
+      "affinity": "0xF0000",
+      "checkpoint_progress": {
+        "cursor": {
+          "epoch": 90001,
+          "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "position": 75,
+          "schema_version": "align-packed-cursor-v1",
+          "seed": 20260915,
+          "split": "train"
+        },
+        "elapsed_seconds": 953.8336366000021,
+        "epoch": 1,
+        "examples": 75,
+        "phase": "structured_path",
+        "phase_seconds": {
+          "data": 0.24538340000981407,
+          "optimizer": 0.8194615999927919,
+          "structured_backward": 455.05836899998576,
+          "structured_forward": 497.6108240000085,
+          "target_reconstruction": 0.06911320000472188
+        },
+        "total_loss": 81.8431207537651
+      },
+      "pid": 32412,
+      "priority": "High",
+      "state": "structured_path_cpu"
+    },
+    "candidate_component": {
+      "durable_cache_rows": 16589,
+      "gpu_context_mb": 179,
+      "handoff": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\components\\candidate-rescorer-v1\\RESOURCE_PAUSE_HANDOFF.json",
+      "pid": 4432,
+      "state": "suspended_in_memory_during_post_validation_threshold_sweep"
+    },
+    "machine_snapshot": {
+      "cpu_percent": 27.7,
+      "disk": {
+        "busy_percent": null,
+        "read_mib_per_sec": 0.0,
+        "read_ops_per_sec": 0.0,
+        "write_mib_per_sec": 0.46484375,
+        "write_ops_per_sec": 45.0
+      },
+      "gpu": {
+        "available": true,
+        "compute_processes": [
+          {
+            "name": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe",
+            "pid": 4432,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe",
+            "pid": 32412,
+            "vram_mb": null
+          }
+        ],
+        "devices": [
+          {
+            "gpu_percent": 0.0,
+            "index": 0,
+            "memory_percent": 0.0,
+            "name": "NVIDIA RTX 2000 Ada Generation Laptop GPU",
+            "power_watts": 2.47,
+            "temperature_c": 57.0,
+            "vram_total_mb": 8188.0,
+            "vram_used_mb": 278.0
+          }
+        ]
+      },
+      "logical_cpus": 20,
+      "pagefile_percent": 0.5,
+      "physical_cpus": 14,
+      "ram_available_mb": 6503.2,
+      "ram_percent": 80.0,
+      "ram_total_mb": 32440.4
+    },
+    "ownership": {
+      "gpu_physical_pids": [
+        4432,
+        32412
+      ],
+      "gpu_reserved": [
+        {
+          "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe scripts/train_candidate_rescorer.py --manifest data-audit/2026-09-14-v2/split.json --basic-cache-root runs/joint-audit-v2/basic-pitch-cache --example-cache-path runs/joint-audit-v2/components/candidate-rescorer-v1/examples-floor-050.sqlite --output-dir runs/joint-audit-v2/components/candidate-rescorer-v1 --epochs 3 --batch-candidates 16384 --learning-rate 0.0003 --hidden-dim 64 --dropout 0.05 --candidate-floor 0.50 --global-candidate-gate 0.65 --hard-negative-ratio 1.0 --short-weight-lt-80ms 4 --short-weight-lt-120ms 3 --short-weight-lt-180ms 2 --workers 1 --prefetch 1 --device cuda --seed 365",
+          "phase": "suspended_queued_gpu_context",
+          "pid": 4432,
+          "role": "candidate_rescorer"
+        },
+        {
+          "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe -u scripts\\train_outputraw_full_pipeline.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --output-dir runs\\joint-outputraw-full-v1\\training-v1-optimized --hardware-profile runs\\joint-outputraw-full-v1\\profiles\\architecture-cuda-optimized.json --actual-training-profile runs\\joint-outputraw-full-v1\\profiles\\actual-training-cuda.json --initialize-checkpoint runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt --resume-checkpoint runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt --prepared-local-cache runs\\joint-outputraw-full-v1\\prepared-local-v1 --prepared-max-open-shards 64 --device cuda --path-device cpu --local-checkpoint-every 250 --path-checkpoint-every 25 --checkpoint-every 250 --gradient-accumulation 1 --acoustic-epochs 1 --structure-epochs 1 --errors-epochs 1 --joint-epochs 3 --path-epochs 1 --path-samples-per-epoch 1000 --bootstrap-replicates 1000",
+          "phase": "gpu_context_idle_cpu_phase",
+          "pid": 32412,
+          "role": "outputraw_full_training"
+        }
+      ],
+      "heavy_cpu_pids": [
+        4432,
+        32412
+      ],
+      "paused_pids": [
+        4432
+      ],
+      "waiting_or_stalled_pids": []
+    },
+    "policy": {
+      "gpu_exclusive": true,
+      "max_heavy_cpu_jobs_during_gpu_training": 1,
+      "max_simultaneous_gpu_trainers": 1,
+      "physical_cpu_reserve_for_os": 2,
+      "recommended_loader_workers": 4,
+      "recommended_prefetch": 16,
+      "threads_per_loader_worker": 1
+    },
+    "status_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json"
+  },
+  "restart_commands": {
+    "rebuild_prepared_cache": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\prepare_outputraw_local_cache.py --pack-root data-packed\\joint-outputraw-full-v1-shard64 --destination runs\\joint-outputraw-full-v1\\prepared-local-v1 --workers 4 --prefetch 8 --checkpoint-rows 16 --shard-rows 128",
+    "refresh_resource_status": ".\\.venv-amt-bench\\Scripts\\python.exe -m alignmodel.training_resources --status runs\\TRAINING_RESOURCE_STATUS.json --repo-root . --sample-seconds 1 --queue candidate-rescorer-threshold-sweep",
+    "resume_highest_priority": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_outputraw_full_pipeline.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --output-dir runs\\joint-outputraw-full-v1\\training-v1-optimized --hardware-profile runs\\joint-outputraw-full-v1\\profiles\\architecture-cuda-optimized.json --actual-training-profile runs\\joint-outputraw-full-v1\\profiles\\actual-training-cuda.json --initialize-checkpoint runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt --resume-checkpoint runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt --prepared-local-cache runs\\joint-outputraw-full-v1\\prepared-local-v1 --prepared-max-open-shards 64 --device cuda --path-device cpu --local-checkpoint-every 250 --path-checkpoint-every 25 --checkpoint-every 250 --gradient-accumulation 1 --acoustic-epochs 1 --structure-epochs 1 --errors-epochs 1 --joint-epochs 3 --path-epochs 1 --path-samples-per-epoch 1000 --bootstrap-replicates 1000"
+  },
+  "runtime_utilization_samples": {
+    "local_gpu_stage": {
+      "disk_queue": 0.059,
+      "disk_read_mib_per_sec": 0.023,
+      "disk_write_mib_per_sec": 0.77,
+      "gpu_memory_used_mb_machine": 792.0,
+      "gpu_percent": 30.0,
+      "machine_cpu_percent": 12.9,
+      "ram_available_mb": 11179.0,
+      "trainer_vram_reserved_mb": 466.0
+    },
+    "structured_cpu_stage": {
+      "affinity": "0xF0000",
+      "gpu_percent": 0.0,
+      "machine_gpu_memory_mb": 278.0,
+      "process_cpu_one_core_percent": 100.0,
+      "threads_selected": 1
+    }
+  },
+  "schema_version": "align-training-optimization-report-v1",
+  "structured_dp": {
+    "cpu_rows_0_25_per_sec": 0.10763348159654554,
+    "cpu_rows_50_75_per_sec": 0.07982120537862396,
+    "gpu_rejected_reason": "Representative 25-row segment was slower than CPU",
+    "gpu_rows_25_50_per_sec": 0.061219903600544065,
+    "selected_device": "cpu",
+    "thread_tuning": {
+      "1": 0.6181541106,
+      "2": 0.5201235453,
+      "4": 0.6211330585,
+      "reason": "4 threads was not materially faster and changed one fixture loss by 2.1e-5",
+      "selected": 1
+    },
+    "vectorization": {
+      "batched_gold_rejected_reason": "Dropout changes masks and therefore loss/gradients when edge rows are combined",
+      "batched_gold_training": false,
+      "gpu_syncs_per_layer_reduced": true,
+      "ragged_logsumexp_fp32": true,
+      "viterbi_segment_argmax": true
+    }
+  },
+  "tuning_rejections": {
+    "batched_gold_scoring": "Dropout mask order changed measured losses/gradients; scalar gold scoring retained.",
+    "channels_last": "No spatial tensors in the edge MLP",
+    "shape_bucketing": "Edge batches concatenate ragged examples without padding; reordering would alter deterministic sampler/RNG order",
+    "structured_gpu": "0.061 rows/s versus 0.080 rows/s CPU on consecutive 25-row segments",
+    "structured_threads_2": "0.520 rows/s versus 0.618 at one thread on identical rows",
+    "structured_threads_4": "No material speedup and one 2.1e-5 loss change",
+    "torch_compile": "Triton unavailable"
+  },
+  "verification": {
+    "checkpoint_metadata_mismatch_fails_closed": true,
+    "ide_lints": "none",
+    "packed_resume_cursor_tested": true,
+    "prepared_tensor_loss_gradient_exact": true,
+    "py_compile": "passed",
+    "pytest": "43 passed",
+    "segment_logsumexp_loss_gradient_tolerance": 1e-06
+  }
+}

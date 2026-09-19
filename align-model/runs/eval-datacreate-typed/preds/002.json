@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.2",
+  "audio_reference": "performance_audio.wav",
+  "annotator_id": "align_pipeline",
+  "labels": [
+    {
+      "id": "pipe_000",
+      "source": "pipeline",
+      "start_time": 15.3948,
+      "end_time": 21.3624,
+      "type": "repetition",
+      "comment": "practice restart (stage 1)",
+      "repeats_label_range": {
+        "start_time": 13.276,
+        "end_time": 15.3948
+      },
+      "score_part": {
+        "start_note_index": 22,
+        "end_note_index": 26,
+        "pad_notes": 2,
+        "start_measure": 4,
+        "end_measure": 6
+      },
+      "pitches": [
+        77,
+        74,
+        72,
+        79,
+        79
+      ],
+      "note_ids": [
+        "note_0022",
+        "note_0023",
+        "note_0024",
+        "note_0025",
+        "note_0026"
+      ],
+      "extra_copies": 1
+    },
+    {
+      "id": "pipe_001",
+      "source": "pipeline",
+      "start_time": 62.55,
+      "end_time": 64.2,
+      "type": "repetition",
+      "comment": "practice restart (stage 1)",
+      "repeats_label_range": {
+        "start_time": 60.9,
+        "end_time": 62.55
+      },
+      "score_part": {
+        "start_note_index": 90,
+        "end_note_index": 94,
+        "pad_notes": 2,
+        "start_measure": 16,
+        "end_measure": 18
+      },
+      "pitches": [
+        79,
+        71,
+        72,
+        79,
+        78
+      ],
+      "note_ids": [
+        "note_0090",
+        "note_0091",
+        "note_0092",
+        "note_0093",
+        "note_0094"
+      ],
+      "extra_copies": 1
+    },
+    {
+      "id": "pipe_002",
+      "source": "pipeline",
+      "start_time": 61.9913,
+      "end_time": 63.3163,
+      "type": "rhythm_error",
+      "comment": "stage3-net logit=-0.00",
+      "deviation_ms": 1324.92,
+      "score_part": {
+        "start_note_index": 90,
+        "end_note_index": 94,
+        "pad_notes": 2,
+        "start_measure": 16,
+        "end_measure": 18
+      },
+      "pitches": [
+        79,
+        71,
+        72,
+        79,
+        78
+      ],
+      "note_ids": [
+        "note_0090",
+        "note_0091",
+        "note_0092",
+        "note_0093",
+        "note_0094"
+      ]
+    }
+  ],
+  "pipeline": {
+    "sample_id": "002",
+    "stages_run": [
+      1,
+      2,
+      3
+    ],
+    "boundaries": [
+      4.7369,
+      13.276,
+      15.3948,
+      21.3624,
+      29.6519,
+      30.4878,
+      33.9476,
+      41.4708,
+      45.3718,
+      49.5514,
+      56.0298,
+      56.3664,
+      60.9,
+      62.55,
+      64.2,
+      67.3843
+    ],
+    "n_segments": 15,
+    "n_pairs": 110
+  }
+}

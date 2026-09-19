@@ -1,0 +1,2734 @@
+{
+  "audio_inference_rerun": false,
+  "created_from_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-all94-agent-note-wise-20260915\\freeze_manifest.json",
+  "diagnostic_accepted_rows_only": {
+    "clips": [
+      "001",
+      "002",
+      "006",
+      "017",
+      "019",
+      "029",
+      "033",
+      "035"
+    ],
+    "models": {
+      "rules": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.008547008547008546,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.01800045045045045
+        },
+        "credit": 1.5,
+        "f1": 0.008902077151335312,
+        "full_credit_matches": 0,
+        "gold": 17,
+        "half_credit_matches": 3,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_start": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 41,
+            "recall": 0.0,
+            "zero_credit_assignments": 2,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 41
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 96,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 96
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 4,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 4
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 179,
+            "recall": 0.0,
+            "zero_credit_assignments": 3,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 179
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          }
+        },
+        "precision": 0.0046875,
+        "predicted": 320,
+        "recall": 0.08823529411764706,
+        "zero_credit_assignments": 14,
+        "zero_credit_or_unmatched_gold": 14,
+        "zero_credit_or_unmatched_predictions": 317
+      },
+      "v2": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 17,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_start": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 8,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 8
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 4,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 4
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 1
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 2
+          }
+        },
+        "precision": 0.0,
+        "predicted": 15,
+        "recall": 0.0,
+        "zero_credit_assignments": 9,
+        "zero_credit_or_unmatched_gold": 17,
+        "zero_credit_or_unmatched_predictions": 15
+      },
+      "v3": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 17,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_start": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 25,
+            "recall": 0.0,
+            "zero_credit_assignments": 2,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 25
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 55,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 55
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 4,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 4
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 1
+          }
+        },
+        "precision": 0.0,
+        "predicted": 85,
+        "recall": 0.0,
+        "zero_credit_assignments": 17,
+        "zero_credit_or_unmatched_gold": 17,
+        "zero_credit_or_unmatched_predictions": 85
+      },
+      "v3_balanced": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 17,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_start": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 9,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 9
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 24,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 24
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 4,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 4
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          }
+        },
+        "precision": 0.0,
+        "predicted": 37,
+        "recall": 0.0,
+        "zero_credit_assignments": 16,
+        "zero_credit_or_unmatched_gold": 17,
+        "zero_credit_or_unmatched_predictions": 37
+      }
+    },
+    "warning": "not official; mixed clips contribute only validated rows"
+  },
+  "diagnostic_empty_as_clean": {
+    "models": {
+      "rules": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 146,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 146
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 279,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 279
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 16,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 16
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 515,
+            "recall": 0.0,
+            "zero_credit_assignments": 3,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 515
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 3,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 3
+          }
+        },
+        "precision": 0.0,
+        "predicted": 959,
+        "recall": 0.0,
+        "zero_credit_assignments": 13,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 959
+      },
+      "v2": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 43,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 43
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 16,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 16
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 10,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 10
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 4,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 4
+          }
+        },
+        "precision": 0.0,
+        "predicted": 73,
+        "recall": 0.0,
+        "zero_credit_assignments": 5,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 73
+      },
+      "v3": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 87,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 87
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 185,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 185
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 16,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 16
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 10,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 10
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 7,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 7
+          }
+        },
+        "precision": 0.0,
+        "predicted": 305,
+        "recall": 0.0,
+        "zero_credit_assignments": 13,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 305
+      },
+      "v3_balanced": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 37,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 37
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 86,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 86
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 16,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 16
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 1
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          }
+        },
+        "precision": 0.0,
+        "predicted": 140,
+        "recall": 0.0,
+        "zero_credit_assignments": 12,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 140
+      }
+    },
+    "warning": "not official; empty unreviewed files are treated as clean negatives and unmatched predictions count as false positives"
+  },
+  "figures": [
+    "audited_clip_counts.png",
+    "joint_coverage.png",
+    "official_f1_by_model.png",
+    "score_span_timelines.png",
+    "time_overlay_001.png",
+    "time_overlay_002.png",
+    "time_overlay_003.png",
+    "time_overlay_006.png",
+    "time_overlay_008.png",
+    "time_overlay_013.png",
+    "v3_per_type_f1.png"
+  ],
+  "freeze_sha256": "bdce521d7c7146ce50d42cf27f105a585d75c83dde815bc13f697e8be6148211",
+  "gold_type_counts": {
+    "bad_start": 3,
+    "bad_timbre": 3,
+    "click": 2,
+    "extra_note": 5,
+    "missed_note": 7,
+    "repetition": 2,
+    "rhythm_error": 4,
+    "sliding": 4,
+    "squeak": 1,
+    "wrong_note": 4
+  },
+  "inventory": {
+    "001": {
+      "accepted_rows": 2,
+      "audit_status": "available",
+      "gold_types": {
+        "click": 2
+      },
+      "label_count": 2,
+      "mapped_score_coverage": 1.0,
+      "operations": {
+        "EXTRA": 4,
+        "MATCH": 47
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3
+      },
+      "v3_predicted": 3
+    },
+    "002": {
+      "accepted_rows": 1,
+      "audit_status": "rejected",
+      "gold_types": {
+        "bad_start": 1,
+        "missed_note": 5
+      },
+      "label_count": 6,
+      "mapped_score_coverage": 0.9743589743589743,
+      "operations": {
+        "EXTRA": 6,
+        "MATCH": 112
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 5,
+      "rejection_reasons": {
+        "pitch_list_does_not_validate_score_part": 5
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 4,
+        "missed_note": 1,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "v3_predicted": 7
+    },
+    "003": {
+      "accepted_rows": 0,
+      "audit_status": "rejected",
+      "gold_types": {
+        "bad_start": 1
+      },
+      "label_count": 1,
+      "mapped_score_coverage": 0.7702702702702703,
+      "operations": {
+        "EXTRA": 5,
+        "MATCH": 58
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 1,
+      "rejection_reasons": {
+        "pitch_list_does_not_validate_score_part": 1
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 8,
+        "repetition": 1
+      },
+      "v3_predicted": 12
+    },
+    "004": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.875,
+      "operations": {
+        "EXTRA": 8,
+        "MATCH": 109
+      },
+      "provenance": "explicit_user",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 5,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "v3_predicted": 10
+    },
+    "006": {
+      "accepted_rows": 4,
+      "audit_status": "available",
+      "gold_types": {
+        "sliding": 3,
+        "squeak": 1
+      },
+      "label_count": 4,
+      "mapped_score_coverage": 0.8300653594771242,
+      "operations": {
+        "EXTRA": 5,
+        "MATCH": 107
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 4,
+        "missed_note": 13
+      },
+      "v3_predicted": 17
+    },
+    "008": {
+      "accepted_rows": 0,
+      "audit_status": "rejected",
+      "gold_types": {
+        "bad_timbre": 1,
+        "extra_note": 1
+      },
+      "label_count": 2,
+      "mapped_score_coverage": 0.8813559322033898,
+      "operations": {
+        "EXTRA": 16,
+        "MATCH": 59
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 2,
+      "rejection_reasons": {
+        "pitch_list_does_not_validate_score_part": 2
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 4,
+        "missed_note": 4,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "v3_predicted": 10
+    },
+    "009": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8392857142857143,
+      "operations": {
+        "EXTRA": 1,
+        "MATCH": 53,
+        "SUBSTITUTE": 1
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 4,
+        "repetition": 1,
+        "rhythm_error": 2
+      },
+      "v3_predicted": 8
+    },
+    "011": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8117647058823529,
+      "operations": {
+        "EXTRA": 6,
+        "MATCH": 66
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 5,
+        "repetition": 1
+      },
+      "v3_predicted": 9
+    },
+    "013": {
+      "accepted_rows": 0,
+      "audit_status": "rejected",
+      "gold_types": {
+        "bad_start": 1,
+        "extra_note": 1,
+        "rhythm_error": 1,
+        "sliding": 1,
+        "wrong_note": 2
+      },
+      "label_count": 6,
+      "mapped_score_coverage": 0.9028571428571428,
+      "operations": {
+        "EXTRA": 13,
+        "MATCH": 180
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 6,
+      "rejection_reasons": {
+        "pitch_list_does_not_validate_score_part": 6
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 7,
+        "missed_note": 9,
+        "repetition": 1
+      },
+      "v3_predicted": 17
+    },
+    "014": {
+      "accepted_rows": 0,
+      "audit_status": "rejected",
+      "gold_types": {
+        "missed_note": 1
+      },
+      "label_count": 1,
+      "mapped_score_coverage": 0.8888888888888888,
+      "operations": {
+        "EXTRA": 3,
+        "MATCH": 72
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 1,
+      "rejection_reasons": {
+        "pitch_list_does_not_validate_score_part": 1
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 4,
+        "repetition": 1
+      },
+      "v3_predicted": 8
+    },
+    "015": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.9316239316239316,
+      "operations": {
+        "EXTRA": 17,
+        "MATCH": 116,
+        "SUBSTITUTE": 1
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 8,
+        "missed_note": 5,
+        "repetition": 1,
+        "wrong_note": 2
+      },
+      "v3_predicted": 16
+    },
+    "016": {
+      "accepted_rows": 0,
+      "audit_status": "rejected",
+      "gold_types": {
+        "extra_note": 1
+      },
+      "label_count": 1,
+      "mapped_score_coverage": 0.8378378378378378,
+      "operations": {
+        "EXTRA": 4,
+        "MATCH": 64
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 1,
+      "rejection_reasons": {
+        "pitch_list_does_not_validate_score_part": 1
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 6,
+        "repetition": 1
+      },
+      "v3_predicted": 8
+    },
+    "017": {
+      "accepted_rows": 1,
+      "audit_status": "available",
+      "gold_types": {
+        "bad_timbre": 1
+      },
+      "label_count": 1,
+      "mapped_score_coverage": 0.9464285714285714,
+      "operations": {
+        "EXTRA": 11,
+        "MATCH": 110
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 6,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "v3_predicted": 9
+    },
+    "018": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8218390804597702,
+      "operations": {
+        "EXTRA": 4,
+        "MATCH": 124
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 14
+      },
+      "v3_predicted": 17
+    },
+    "019": {
+      "accepted_rows": 2,
+      "audit_status": "available",
+      "gold_types": {
+        "rhythm_error": 1,
+        "wrong_note": 1
+      },
+      "label_count": 2,
+      "mapped_score_coverage": 0.9150326797385621,
+      "operations": {
+        "EXTRA": 5,
+        "MATCH": 118
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 4,
+        "missed_note": 10
+      },
+      "v3_predicted": 14
+    },
+    "021": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.9354838709677419,
+      "operations": {
+        "EXTRA": 17,
+        "MATCH": 58
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 6,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "v3_predicted": 8
+    },
+    "022": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.74,
+      "operations": {
+        "EXTRA": 3,
+        "MATCH": 51
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 2,
+        "missed_note": 4,
+        "repetition": 1,
+        "rhythm_error": 2
+      },
+      "v3_predicted": 9
+    },
+    "023": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.6045197740112994,
+      "operations": {
+        "EXTRA": 3,
+        "MATCH": 98
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 21,
+        "wrong_note": 1
+      },
+      "v3_predicted": 23
+    },
+    "024": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8352941176470589,
+      "operations": {
+        "EXTRA": 10,
+        "MATCH": 60
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 4,
+        "missed_note": 6,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "v3_predicted": 12
+    },
+    "025": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8877551020408163,
+      "operations": {
+        "EXTRA": 6,
+        "MATCH": 83,
+        "SUBSTITUTE": 1
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 4,
+        "repetition": 1
+      },
+      "v3_predicted": 8
+    },
+    "027": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.9145299145299145,
+      "operations": {
+        "EXTRA": 20,
+        "MATCH": 116
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 15,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "v3_predicted": 17
+    },
+    "028": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.9054054054054054,
+      "operations": {
+        "EXTRA": 2,
+        "MATCH": 70
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 3,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "v3_predicted": 6
+    },
+    "029": {
+      "accepted_rows": 1,
+      "audit_status": "available",
+      "gold_types": {
+        "rhythm_error": 1
+      },
+      "label_count": 1,
+      "mapped_score_coverage": 0.8839285714285714,
+      "operations": {
+        "EXTRA": 6,
+        "MATCH": 113
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 2,
+        "missed_note": 4,
+        "repetition": 1
+      },
+      "v3_predicted": 7
+    },
+    "031": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8160919540229885,
+      "operations": {
+        "EXTRA": 3,
+        "MATCH": 141
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 17,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "v3_predicted": 22
+    },
+    "032": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.9084967320261438,
+      "operations": {
+        "EXTRA": 4,
+        "MATCH": 125
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 8,
+        "rhythm_error": 1
+      },
+      "v3_predicted": 12
+    },
+    "033": {
+      "accepted_rows": 3,
+      "audit_status": "available",
+      "gold_types": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 3,
+      "mapped_score_coverage": 0.8627450980392157,
+      "operations": {
+        "EXTRA": 1,
+        "MATCH": 117
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 11
+      },
+      "v3_predicted": 12
+    },
+    "035": {
+      "accepted_rows": 3,
+      "audit_status": "rejected",
+      "gold_types": {
+        "bad_timbre": 1,
+        "extra_note": 1,
+        "repetition": 2,
+        "wrong_note": 1
+      },
+      "label_count": 5,
+      "mapped_score_coverage": 0.6428571428571429,
+      "operations": {
+        "EXTRA": 5,
+        "MATCH": 153
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 2,
+      "rejection_reasons": {
+        "missing_or_invalid_canonical_identity": 2
+      },
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 14,
+        "repetition": 1
+      },
+      "v3_predicted": 16
+    },
+    "037": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.8803418803418803,
+      "operations": {
+        "EXTRA": 12,
+        "MATCH": 117
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 7,
+        "missed_note": 5,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "v3_predicted": 14
+    },
+    "038": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.615819209039548,
+      "operations": {
+        "EXTRA": 1,
+        "MATCH": 102
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 1,
+        "missed_note": 18,
+        "wrong_note": 1
+      },
+      "v3_predicted": 20
+    },
+    "039": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.6384180790960452,
+      "operations": {
+        "EXTRA": 1,
+        "MATCH": 122
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "missed_note": 18,
+        "repetition": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "v3_predicted": 22
+    },
+    "040": {
+      "accepted_rows": 0,
+      "audit_status": "empty_unreviewed",
+      "gold_types": {},
+      "label_count": 0,
+      "mapped_score_coverage": 0.7529411764705882,
+      "operations": {
+        "EXTRA": 6,
+        "MATCH": 65
+      },
+      "provenance": "explicit_agent",
+      "rejected_rows": 0,
+      "rejection_reasons": {},
+      "schema_version": "1.1",
+      "v3_pred_types": {
+        "extra_note": 3,
+        "missed_note": 6,
+        "repetition": 1
+      },
+      "v3_predicted": 10
+    }
+  },
+  "model": {
+    "comparisons": [
+      "v3",
+      "v3_balanced",
+      "v2",
+      "rules"
+    ],
+    "error_heads": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+    "headline": "error-heads-v3 on frozen joint decoder + Basic Pitch 0.4.0",
+    "joint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+    "v3_decode": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\decode_config.json"
+  },
+  "official_note_wise": {
+    "audited_clips": [
+      "001",
+      "006",
+      "017",
+      "019",
+      "029",
+      "033"
+    ],
+    "empty_unreviewed_clips": [
+      "004",
+      "009",
+      "011",
+      "015",
+      "018",
+      "021",
+      "022",
+      "023",
+      "024",
+      "025",
+      "027",
+      "028",
+      "031",
+      "032",
+      "037",
+      "038",
+      "039",
+      "040"
+    ],
+    "models": {
+      "rules": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 30,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 30
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 51,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 51
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 2
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 123,
+            "recall": 0.0,
+            "zero_credit_assignments": 3,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 123
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          }
+        },
+        "precision": 0.0,
+        "predicted": 206,
+        "recall": 0.0,
+        "zero_credit_assignments": 13,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 206
+      },
+      "v2": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 4,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 4
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 2
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 1
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 2
+          }
+        },
+        "precision": 0.0,
+        "predicted": 9,
+        "recall": 0.0,
+        "zero_credit_assignments": 5,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 9
+      },
+      "v3": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 20,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 20
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 40,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 40
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 2
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          }
+        },
+        "precision": 0.0,
+        "predicted": 62,
+        "recall": 0.0,
+        "zero_credit_assignments": 13,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 62
+      },
+      "v3_balanced": {
+        "bootstrap_95_ci": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 13,
+        "half_credit_matches": 0,
+        "macro_f1_supported_gold_types": 0.0,
+        "matching_policy": "exclusive maximum-weight canonical identity; same type=1, different type=0.5, different location=0",
+        "per_type": {
+          "bad_timbre": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "click": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 2,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 2,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "extra_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 8,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 8
+          },
+          "missed_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 18,
+            "recall": 0.0,
+            "zero_credit_assignments": 1,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 18
+          },
+          "repetition": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 0,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 0,
+            "zero_credit_or_unmatched_predictions": 2
+          },
+          "rhythm_error": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "sliding": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 3,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 3,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "squeak": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          },
+          "wrong_note": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "full_credit_matches": 0,
+            "gold": 1,
+            "half_credit_matches": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0,
+            "zero_credit_assignments": 0,
+            "zero_credit_or_unmatched_gold": 1,
+            "zero_credit_or_unmatched_predictions": 0
+          }
+        },
+        "precision": 0.0,
+        "predicted": 28,
+        "recall": 0.0,
+        "zero_credit_assignments": 12,
+        "zero_credit_or_unmatched_gold": 13,
+        "zero_credit_or_unmatched_predictions": 28
+      }
+    },
+    "per_clip_v3": [
+      {
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 2,
+        "gold_types": {
+          "click": 2
+        },
+        "half_credit_matches": 0,
+        "precision": 0.0,
+        "pred_types": {
+          "extra_note": 3
+        },
+        "predicted": 3,
+        "recall": 0.0,
+        "sample": "001"
+      },
+      {
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 4,
+        "gold_types": {
+          "sliding": 3,
+          "squeak": 1
+        },
+        "half_credit_matches": 0,
+        "precision": 0.0,
+        "pred_types": {
+          "extra_note": 4,
+          "missed_note": 13
+        },
+        "predicted": 17,
+        "recall": 0.0,
+        "sample": "006"
+      },
+      {
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 1,
+        "gold_types": {
+          "bad_timbre": 1
+        },
+        "half_credit_matches": 0,
+        "precision": 0.0,
+        "pred_types": {
+          "extra_note": 6,
+          "missed_note": 2,
+          "repetition": 1
+        },
+        "predicted": 9,
+        "recall": 0.0,
+        "sample": "017"
+      },
+      {
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 2,
+        "gold_types": {
+          "rhythm_error": 1,
+          "wrong_note": 1
+        },
+        "half_credit_matches": 0,
+        "precision": 0.0,
+        "pred_types": {
+          "extra_note": 4,
+          "missed_note": 10
+        },
+        "predicted": 14,
+        "recall": 0.0,
+        "sample": "019"
+      },
+      {
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 1,
+        "gold_types": {
+          "rhythm_error": 1
+        },
+        "half_credit_matches": 0,
+        "precision": 0.0,
+        "pred_types": {
+          "extra_note": 2,
+          "missed_note": 4,
+          "repetition": 1
+        },
+        "predicted": 7,
+        "recall": 0.0,
+        "sample": "029"
+      },
+      {
+        "credit": 0.0,
+        "f1": 0.0,
+        "full_credit_matches": 0,
+        "gold": 3,
+        "gold_types": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 1
+        },
+        "half_credit_matches": 0,
+        "precision": 0.0,
+        "pred_types": {
+          "extra_note": 1,
+          "missed_note": 11
+        },
+        "predicted": 12,
+        "recall": 0.0,
+        "sample": "033"
+      }
+    ],
+    "policy": "exclusive one-to-one canonical score-event identity; same type=1.0, different type=0.5, wrong location=0; clip rejected if any gold row fails identity/pitch audit; empty unreviewed documents are not clean negatives",
+    "rejected_nonempty_clips": [
+      "002",
+      "003",
+      "008",
+      "013",
+      "014",
+      "016",
+      "035"
+    ]
+  },
+  "reason_predictions_reused": "The completed full stack was already frozen gold-blind on all 94 DataCreate bundles, including every requested sample, using the same joint decoder and error-heads-v3 checkpoints. Identity-CRF full-v1 currently holds the CPU lease, so audio inference was not repeated.",
+  "schema_version": "align-datacreate-001-040-excl-eval-v1",
+  "subset": {
+    "excluded": [
+      "005",
+      "007",
+      "010",
+      "012",
+      "020",
+      "026",
+      "030",
+      "034",
+      "036"
+    ],
+    "kept": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "006",
+      "008",
+      "009",
+      "011",
+      "013",
+      "014",
+      "015",
+      "016",
+      "017",
+      "018",
+      "019",
+      "021",
+      "022",
+      "023",
+      "024",
+      "025",
+      "027",
+      "028",
+      "029",
+      "031",
+      "032",
+      "033",
+      "035",
+      "037",
+      "038",
+      "039",
+      "040"
+    ],
+    "kept_count": 31,
+    "requested": "DataCreate samples 001-040"
+  },
+  "v3_predicted_type_counts": {
+    "extra_note": 110,
+    "missed_note": 231,
+    "repetition": 23,
+    "rhythm_error": 11,
+    "wrong_note": 8
+  }
+}

@@ -1,0 +1,406 @@
+{
+  "hold_snapshot": {
+    "captured_utc": "2026-09-15T12:45:27.017329+00:00",
+    "cpu_percent": 7.9,
+    "gpu_activity_classification": "unrelated desktop processes",
+    "gpu_memory_mb": 628,
+    "gpu_percent": 21.0,
+    "gpu_training_owner": null,
+    "ram_available_mb": 10912.6,
+    "ram_percent": 66.4,
+    "training_or_evaluation_processes": []
+  },
+  "host": "Hank088",
+  "leases": {
+    "gpu_training": {
+      "claimed_utc": "2026-09-19T05:10:41.659054+00:00",
+      "command": [
+        "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\train_drop_emit_lattice_v1.py"
+      ],
+      "heartbeat_utc": "2026-09-19T05:10:41.659054+00:00",
+      "lease_id": "28d53993-d782-45a8-86a2-9e3882b9171b",
+      "metadata": {
+        "device": "cuda",
+        "epochs": 2
+      },
+      "pid": 49244,
+      "track": "orn-v2-drop-emit-lattice-train"
+    }
+  },
+  "oracle_completion": {
+    "artifact": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\note-wise-oracles-v1\\structural-oracles-full358.json",
+    "completed_utc": "2026-09-15T14:44:33.108139+00:00",
+    "error": null,
+    "integrity_passed": true,
+    "summary": {
+      "bytes": 131279,
+      "rows": 358,
+      "sections": [
+        "baseline",
+        "oracle_notes_predicted_path",
+        "predicted_notes_oracle_source_repeat_resume",
+        "oracle_copy_states_only"
+      ],
+      "sha256": "1a9c0ba52ebf95dac48d5c25c440e3e3f4b2661cd413564ba6723268ef93c2c9"
+    },
+    "track": "structural-oracles-full358-note-wise"
+  },
+  "ownership": {
+    "gpu_physical_pids": [
+      1888,
+      2408,
+      2648,
+      3088,
+      5376,
+      5476,
+      6248,
+      11096,
+      12944,
+      14144,
+      14308,
+      14784,
+      14816,
+      14896,
+      14940,
+      16520,
+      16544,
+      16776,
+      17624,
+      18324,
+      18600,
+      20596,
+      21044,
+      21100,
+      21320,
+      22172,
+      24168,
+      24516,
+      32052,
+      33968,
+      38540
+    ],
+    "gpu_reserved": [],
+    "heavy_cpu_pids": [],
+    "paused_pids": [],
+    "waiting_or_stalled_pids": []
+  },
+  "policy": {
+    "gpu_exclusive": true,
+    "max_heavy_cpu_jobs_during_gpu_training": 1,
+    "max_simultaneous_gpu_trainers": 1,
+    "physical_cpu_reserve_for_os": 2,
+    "recommended_loader_workers": 4,
+    "recommended_prefetch": 16,
+    "threads_per_loader_worker": 1
+  },
+  "promotion_hold": {
+    "active": true,
+    "created_utc": "2026-09-15T12:41:00Z",
+    "heavy_restart_allowed": true,
+    "lockbox_access_allowed": false,
+    "migration_execution_hold_active": false,
+    "official_metric": "note-wise canonical score-event scoring",
+    "ordinary_validation_promotion_gate_active": true,
+    "production_mutation_allowed": false,
+    "promotion_allowed": false,
+    "requires_note_wise_rescore": true,
+    "timestamp_metrics": "diagnostic_only"
+  },
+  "publication": {
+    "atomic_replace": true,
+    "dead_pid_leases_reaped": true,
+    "mutex": "runs\\TRAINING_RESOURCE_STATUS.json.lock"
+  },
+  "queue": [],
+  "recommended_concurrency": {
+    "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+    "current_heavy_jobs": 0,
+    "oversubscribed": false
+  },
+  "repository": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model",
+  "revision": 561,
+  "schedule": {
+    "candidate_rescorer_pid": null,
+    "execution_unblocked": true,
+    "full_pipeline_pid": null,
+    "full_pipeline_restarts": 0,
+    "last_completed_track": "exact32-full358-note-wise-validation",
+    "next_track": null,
+    "policy": "one-note-wise-validation-or-retraining-job-at-a-time",
+    "requires_note_wise_rescore": true,
+    "supervisor_pid": null,
+    "updated_utc": "2026-09-15T14:49:35.144956+00:00"
+  },
+  "schema_version": "align-training-resource-status-v1",
+  "snapshot": {
+    "machine": {
+      "cpu_percent": 5.7,
+      "disk": {
+        "busy_percent": null,
+        "read_mib_per_sec": 0.1640625,
+        "read_ops_per_sec": 4.0,
+        "write_mib_per_sec": 0.25,
+        "write_ops_per_sec": 17.0
+      },
+      "gpu": {
+        "available": true,
+        "compute_processes": [
+          {
+            "name": "[Insufficient Permissions]",
+            "pid": 2408,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\System32\\ShellHost.exe",
+            "pid": 14940,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe",
+            "pid": 14144,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\explorer.exe",
+            "pid": 14816,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe",
+            "pid": 16544,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe",
+            "pid": 16520,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe",
+            "pid": 5376,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe",
+            "pid": 20596,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe",
+            "pid": 21044,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe",
+            "pid": 22172,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\WindowsApps\\AdobeSystemsIncorporated.AdobePhotoshopExpress_6.7.6.0_x64__mtcwf2zmmt10c\\PSExpressCore.exe",
+            "pid": 14896,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\WindowsApps\\5319275A.WhatsAppDesktop_2.2636.100.0_x64__cv1g1gvanyjgm\\WhatsApp.Root.exe",
+            "pid": 6248,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe",
+            "pid": 21100,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "pid": 24168,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11911.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe",
+            "pid": 5476,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\WindowsApps\\MicrosoftWindows.Client.WebExperience_526.21100.40.0_x64__cw5n1h2txyewy\\WidgetBoard.exe",
+            "pid": 16776,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Users\\Hank\\AppData\\Local\\Programs\\cursor\\Cursor.exe",
+            "pid": 18324,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files (x86)\\TickTick\\TickTick.exe",
+            "pid": 14308,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Users\\Hank\\AppData\\Local\\Feishu\\app\\Feishu.exe",
+            "pid": 2648,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Users\\Hank\\AppData\\Local\\Feishu\\app\\Feishu.exe",
+            "pid": 12944,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\System32\\ApplicationFrameHost.exe",
+            "pid": 3088,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe",
+            "pid": 1888,
+            "vram_mb": null
+          },
+          {
+            "name": "[Insufficient Permissions]",
+            "pid": 32052,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "pid": 17624,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\WindowsApps\\Microsoft.ZuneMusic_11.2607.16.0_x64__8wekyb3d8bbwe\\Microsoft.Media.Player.exe",
+            "pid": 14784,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+            "pid": 18600,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe",
+            "pid": 21320,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Users\\Hank\\AppData\\Roaming\\Tencent\\xwechat\\XPlugin\\Plugins\\RadiumWMPF\\WeChatAppEx.exe",
+            "pid": 33968,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "pid": 24516,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files\\Tencent\\Weixin\\Weixin.exe",
+            "pid": 11096,
+            "vram_mb": null
+          },
+          {
+            "name": "C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\153.0.4234.32\\msedgewebview2.exe",
+            "pid": 38540,
+            "vram_mb": null
+          }
+        ],
+        "devices": [
+          {
+            "gpu_percent": 0.0,
+            "index": 0,
+            "memory_percent": 5.0,
+            "name": "NVIDIA RTX 2000 Ada Generation Laptop GPU",
+            "power_watts": 4.38,
+            "temperature_c": 50.0,
+            "vram_total_mb": 8188.0,
+            "vram_used_mb": 1293.0
+          }
+        ]
+      },
+      "logical_cpus": 20,
+      "pagefile_percent": 7.3,
+      "physical_cpus": 14,
+      "ram_available_mb": 17506.9,
+      "ram_percent": 46.0,
+      "ram_total_mb": 32440.4
+    },
+    "python_processes": [
+      {
+        "affinity": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe -m alignmodel.training_resources --status runs\\TRAINING_RESOURCE_STATUS.json --repo-root . --sample-seconds 1",
+        "cpu_percent": 1.5,
+        "create_time": 1789748554.0188255,
+        "page_faults_per_sec": 3.0,
+        "phase": "support",
+        "pid": 35568,
+        "ppid": 39584,
+        "private_mb": 1374.5,
+        "read_mib_per_sec": 0.0,
+        "role": "python_support",
+        "rss_mb": 532.7,
+        "status": "running",
+        "threads": 23,
+        "write_mib_per_sec": 0.0
+      },
+      {
+        "affinity": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "command": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe -m alignmodel.training_resources --status runs\\TRAINING_RESOURCE_STATUS.json --repo-root . --sample-seconds 1",
+        "cpu_percent": 0.0,
+        "create_time": 1789748554.0028715,
+        "page_faults_per_sec": 0.0,
+        "phase": "support",
+        "pid": 39584,
+        "ppid": 39456,
+        "private_mb": 0.8,
+        "read_mib_per_sec": 0.0,
+        "role": "python_support",
+        "rss_mb": 4.1,
+        "status": "running",
+        "threads": 3,
+        "write_mib_per_sec": 0.0
+      }
+    ],
+    "sample_seconds": 1.0
+  },
+  "updated_utc": "2026-09-19T05:10:41.659054+00:00",
+  "writer_pid": 35568
+}

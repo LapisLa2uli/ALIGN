@@ -1,0 +1,598 @@
+{
+  "audio_inference_rerun": false,
+  "gold_opened_only_after_source_freeze_verification": true,
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "error_heads_v3": {
+      "balanced_policy_evaluated_as_alternate": true,
+      "classifier_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "classifier_checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "classifier_retrained": false,
+      "compatible": true,
+      "decode_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\decode_config.json",
+      "decode_config_schema_version": "align-error-heads-v3-decode-config-v1",
+      "decode_config_sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4",
+      "experiment_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\config.json",
+      "experiment_config_sha256": "456224d716596bad8106d275cee362a4f1fa8953565dde4be9635a3558f7bc81",
+      "experiment_schema_version": "align-error-heads-v3-experiment-v1",
+      "policy": "completed v3 maximum-F1 sequence-cluster decoder applied to the exact completed v2 head and hash-compatible frozen upstream",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\report.json",
+      "report_schema_version": "align-error-heads-v3-report-v1",
+      "report_sha256": "40784dc0a0877def80f50696b97ca6e0f8f43d3718158f84650699377b60b1bd",
+      "source_v2_freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\integrated-validation-rerun-20260915\\freeze_manifest.json",
+      "source_v2_freeze_manifest_sha256": "9e9e10405d0a16de3be11ba88f74302c6e13c4ad53f3a7404b21d1bc4b5f188e"
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "prediction_hashes": {
+    "rules": {
+      "aggregate_sha256": "75ec63cbf50889a36e81ad284288f03020b8b929b69b86774529bf4d95112622",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\001.json",
+          "sample": "001",
+          "sha256": "29004d01090e8aaef89cc26c57b2d98fd069cba9d63dc1b4f2f335ddac80662e"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\002.json",
+          "sample": "002",
+          "sha256": "248822c3dd8f8da19145350f7fb7f60982cb601991e69670c0f82d62509c409f"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\003.json",
+          "sample": "003",
+          "sha256": "c9bf83bd5cd4a56be0c7692c608508fdf8f499f7c4422dffeffed97582616497"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\006.json",
+          "sample": "006",
+          "sha256": "0142caecb69e6e502ecedbbb445924f8b386697a4c0c09681684ffc955d00e22"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\008.json",
+          "sample": "008",
+          "sha256": "8f81f722c69f313a3448d231da31fc2107ac96570fe3e710c53059682d62cb6d"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\010.json",
+          "sample": "010",
+          "sha256": "c7c0f41e967fda48dee1e29796f55d7c37345e7bbfe7a409e9198296db9d49b9"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\012.json",
+          "sample": "012",
+          "sha256": "92bc914b7d7cb989cb986744ad822e83675a5982d9dcbaf07dfe80a1c0dbb198"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\013.json",
+          "sample": "013",
+          "sha256": "1c208c6046fdefb4a1f5b8808172c586931e695350210db67b88692dbf4a7a2a"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\014.json",
+          "sample": "014",
+          "sha256": "c89fb7d64d7dd863cd622016c9192cbc462cad1b00bd536319d6ce08f25f8e6f"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\016.json",
+          "sample": "016",
+          "sha256": "4cdd895f58f4fa30f5e1fc9074081147a958432573c439e8365ca602fb60eab6"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\017.json",
+          "sample": "017",
+          "sha256": "d9577316d471b7ade9d8ae2ad4951ceb4ad9dc0eb75261712053cce5775b6538"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\019.json",
+          "sample": "019",
+          "sha256": "98e11a57cac42e324a17a3c424b876b56618351f6ccad2648093695c672238f0"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\020.json",
+          "sample": "020",
+          "sha256": "a48d8fc73f3af97f194b9f8cf333898cfa5b004df2ac33ec47b3ba63e858d9ab"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\029.json",
+          "sample": "029",
+          "sha256": "09d3dca1520cfae3c1a80e02bd86fbdc8e1b6fd8f5412924e5fc58a76894166d"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\030.json",
+          "sample": "030",
+          "sha256": "da354e8e142c4f50701883dcec00d150a0ad732e7ffa8e3fc9b4a1a510ce1672"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\033.json",
+          "sample": "033",
+          "sha256": "5f3dabad3d8c65d2eb74e3f6668feec7743fcaaeb1f426420750afdf289c0082"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\034.json",
+          "sample": "034",
+          "sha256": "5a0f0e27e4d23e2a80105b8a806989da8c31b39c4c880585186638bf98a64978"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\035.json",
+          "sample": "035",
+          "sha256": "8e684393717f9681a2a0b84e7f531fce9141efe4fe6cb6e9971d7a36402b8b49"
+        }
+      ]
+    },
+    "v2": {
+      "aggregate_sha256": "04a9f9d531de67a7010df240683f358779eb891129e1f2a5926ae3530606c594",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\001.json",
+          "sample": "001",
+          "sha256": "d6ab2448eda79dbda94c94d6525ade8d1ada1f7a210a9119071a292d71419f59"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\002.json",
+          "sample": "002",
+          "sha256": "4c0bf2737f665cdd13fd20b969dcd3b7e22a7d0ae48e16d28b91018e8560410e"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\003.json",
+          "sample": "003",
+          "sha256": "18369b3a39af0bc34198bd39ae5ef97f8215a4dd7e57d850df2aaf848f362d14"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\006.json",
+          "sample": "006",
+          "sha256": "a9b10e7943b3a06127847c500cf2849bbdaecc4b33ebf7100fe37f58f57f7329"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\008.json",
+          "sample": "008",
+          "sha256": "0dd1a34390da36ffeb9b5fb0be0d12dcfeba97471edec99d67fdaecedde65f50"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\010.json",
+          "sample": "010",
+          "sha256": "5d451b67eea13f2e301629f1587c1f05712ca9f2fa8a08e7bceef3526b867285"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\012.json",
+          "sample": "012",
+          "sha256": "9d2389071b511e67772d1d42bdb09d1f720a8e796f3e1a7bbc3ccd474e3e886b"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\013.json",
+          "sample": "013",
+          "sha256": "635ad45ee9b5870f1f08327890d3bcf092e10d6fa46eb6adee11974f0b02269b"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\014.json",
+          "sample": "014",
+          "sha256": "50d66a2cc5234449cdf71a91ae33d2fdf53e60288acc56e96768db068b9760f1"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\016.json",
+          "sample": "016",
+          "sha256": "49924ccc918aee0018ea98b95cb173fcde4b7311413cd68001714024e8abfa03"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\017.json",
+          "sample": "017",
+          "sha256": "0d40396d1f189270f1ed2ee0128c9cbe7dc8cfd7e58ab16277ed8b1a94dc87b8"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\019.json",
+          "sample": "019",
+          "sha256": "918ebb72aaa74d1a231efc2b20cc1f6b888269ce5d7f2dc4fda8caacf78eee72"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\020.json",
+          "sample": "020",
+          "sha256": "9f36618daa42adfa7ac2758aba75b4911fd6264f86063c944ba6bebd303de03d"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\029.json",
+          "sample": "029",
+          "sha256": "f85ea4c4f0fb910da23ed67f96f4140fedb61da96e3119cc1459b8b5397df249"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\030.json",
+          "sample": "030",
+          "sha256": "345a3769a1c828ad7b02df052ae776f3846a3a632df370d170aa29b2211b85d1"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\033.json",
+          "sample": "033",
+          "sha256": "1cf8220757e1a47756182bc680267b09ecb79a4142269ae357eb7d4160a648e3"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\034.json",
+          "sample": "034",
+          "sha256": "67642b5bf41e07526ff5e0c0daf3f7eb3897f68dffa3c4977f94707f2cc2f6b7"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\035.json",
+          "sample": "035",
+          "sha256": "784eb8dee5aac77c1a518eeebf7c5c0836e85ecade324c7cc42876b02755129d"
+        }
+      ]
+    },
+    "v3": {
+      "aggregate_sha256": "a25363edae05a7b6c0d383ee7050c0032809f9f15ea0c003c05d49e4d343f91c",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\001.json",
+          "sample": "001",
+          "sha256": "63558e5bac1b2a1b9fd74ae061f55d6f2080a1001579d98552685a8b4e4b4830"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\002.json",
+          "sample": "002",
+          "sha256": "ff56d33470afbc7781faf68ebc8e695a2a4907de84feb743637a29ae284b5e37"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\003.json",
+          "sample": "003",
+          "sha256": "c59ec96b2eea9c4693a10d5616e563c9738a353ae949ea7ac93f0b0b6871864a"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\006.json",
+          "sample": "006",
+          "sha256": "08a3f8090f3f016ab39dcc408f2434b743816f0198fc067084e3da852b50869a"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\008.json",
+          "sample": "008",
+          "sha256": "dc0144b2eb5e4ac2971aa89f06b34844e21f0828c2f7f689377165dee51acac7"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\010.json",
+          "sample": "010",
+          "sha256": "de7b64e88fb38f0ff6b3be78563e6cf007b95feff42af6c68a3bfa18ed163733"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\012.json",
+          "sample": "012",
+          "sha256": "5be73c0dc2eee41abf2e7a86487677789b469624fd0cdab9fba63ef822b48529"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\013.json",
+          "sample": "013",
+          "sha256": "3f02513236745d84cbffec81582efda28641cee4715a9de25e248f909089bb9a"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\014.json",
+          "sample": "014",
+          "sha256": "53d92cd22d6b13e4faac85681f929662c49d3357d4c46c97b27c54756848c154"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\016.json",
+          "sample": "016",
+          "sha256": "62b0463aa9813086be1a5d95b71b927ba503ad8bd3e007cefb2449d111aaae42"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\017.json",
+          "sample": "017",
+          "sha256": "39c2a4a2d96d680b3787a1153aa323beb5ad16a028e3198bfa989c70eea68121"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\019.json",
+          "sample": "019",
+          "sha256": "52d8e27f5641f981df2bc18d0a1ad483e1b19ad384d08bc5c16196d17a20543d"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\020.json",
+          "sample": "020",
+          "sha256": "b346eeab262226166c1ec3c234cae5dbfa1fbe7a5a8015563daeeca13a8314f4"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\029.json",
+          "sample": "029",
+          "sha256": "df9dbcce2bf5f4a5ebf8bc515d929a41ec5deb2ef3efe57c11c93cfdf0996c57"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\030.json",
+          "sample": "030",
+          "sha256": "65ee138fe77d45326a7183d351b69fbbca6e4f51fd7262eb0f3d2e8b57544c99"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\033.json",
+          "sample": "033",
+          "sha256": "327dfcc57162cde1b72ab85fd142f4ad0c0d6a20fa9e2af3143b853d9bd35f1d"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\034.json",
+          "sample": "034",
+          "sha256": "430e3666ce078a38d569f78bc9387741cfb656f6132149be246c705b765c71e7"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\035.json",
+          "sample": "035",
+          "sha256": "957a87d51bd7ce9668ef9f79c1ddefa64c1cddfff15ceb5486bf7cca3cf201be"
+        }
+      ]
+    },
+    "v3_balanced": {
+      "aggregate_sha256": "e65c0644c470024e5070bba9acb499ae4feb6977ad1e94d41d4a3b585cdbf1ff",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\001.json",
+          "sample": "001",
+          "sha256": "1c387a1e3e3935f60f94341f9761b25effb56f20560ad846ea650c15e5b4176a"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\002.json",
+          "sample": "002",
+          "sha256": "c368324e6c92ef656905f98f12da99047b5cc5213efd0ffa32299356e30d80c6"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\003.json",
+          "sample": "003",
+          "sha256": "1f45af4e7b5cb0abe70f2f1da5eea9e22d7ee69abf7dc8cc5ab895ee87f23f3c"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\006.json",
+          "sample": "006",
+          "sha256": "5098b1ef723afd5c6c1fc6f981b45763dcbf2ba75245c69e6c497a99f0fa81fb"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\008.json",
+          "sample": "008",
+          "sha256": "765b77b5d56614f7f6c7e210f1787d1c40c86df634bcca596b16dd0c9bbda0e3"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\010.json",
+          "sample": "010",
+          "sha256": "a6f552099da539ee6163221914e192e5df1672e3f674e71c1e6f64fb243fd63c"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\012.json",
+          "sample": "012",
+          "sha256": "08ddf48bfd0374f4b4487187957ed2dd292e1e7f18d375fabf76ed25c187d0f6"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\013.json",
+          "sample": "013",
+          "sha256": "3a2d23880e6b2b464edd84ebccafadfaeaf0c55e7aea61a842277bc4ca50a74c"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\014.json",
+          "sample": "014",
+          "sha256": "4cc34a6e338e1f6d2d809d11db22774569e6344ee482321b30b22f784d494461"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\016.json",
+          "sample": "016",
+          "sha256": "6f172197a353e2197db9acc060a6ea7169a21650a860b372af5eb9654607d41e"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\017.json",
+          "sample": "017",
+          "sha256": "526595008be29c1dc534ced5d4eb5e2afe46cd3513da9578ab516b83bb8af26d"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\019.json",
+          "sample": "019",
+          "sha256": "c59f1c6ab84eccbf2351c0334055182eb7866eface2b727b1e4b63d15bded774"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\020.json",
+          "sample": "020",
+          "sha256": "3d4e9cd6b776968ffdb88aeac431d48d0d95d3c39d5771f6983d8cd9dbd3566e"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\029.json",
+          "sample": "029",
+          "sha256": "c284a158ee6b76b6772bcb9646190cdd88db5bf4382218a4b0c503697cf03b05"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\030.json",
+          "sample": "030",
+          "sha256": "9436816d57c5d704bd83d855d2fd648b33d95f7b87efff5c1d9313123caad1dd"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\033.json",
+          "sample": "033",
+          "sha256": "3a42caacc04d2230aacc42f626dcf2e22a11571379d44b24dfdab923013117f4"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\034.json",
+          "sample": "034",
+          "sha256": "52d3432d60c62ecb595f3e23de67eb97246f3cc634c9dd8065cc11a7317a3ae2"
+        },
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\035.json",
+          "sample": "035",
+          "sha256": "5bafc4653d597fa42ae71122257d166e6ee38dc47ef9a78943e8838e81427313"
+        }
+      ]
+    }
+  },
+  "prediction_models": [
+    "v3",
+    "v3_balanced",
+    "v2",
+    "rules"
+  ],
+  "sample_ids": [
+    "001",
+    "002",
+    "003",
+    "006",
+    "008",
+    "010",
+    "012",
+    "013",
+    "014",
+    "016",
+    "017",
+    "019",
+    "020",
+    "029",
+    "030",
+    "033",
+    "034",
+    "035"
+  ],
+  "schema_version": "align-datacreate-canonical-note-wise-freeze-reference-v1",
+  "source_freeze_integrity_verified": true,
+  "source_freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\freeze_manifest.json",
+  "source_freeze_manifest_sha256": "af801c43bc6abc85d2eb161e74f363f5a42e5abf483342726f6f5e6e3e3adf1a"
+}

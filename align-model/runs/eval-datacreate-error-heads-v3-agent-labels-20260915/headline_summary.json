@@ -1,0 +1,2285 @@
+{
+  "comparisons": {
+    "rules": {
+      "enhanced_range_delta_v3_minus_baseline": 0.018468106377373526,
+      "enhanced_range_f1": 0.02569593147751606,
+      "identical_subset_rerun": true,
+      "timestamp_iou_0.3_delta_v3_minus_baseline": -0.006396588486140725,
+      "timestamp_iou_0.3_f1": 0.006396588486140725
+    },
+    "v2": {
+      "enhanced_range_delta_v3_minus_baseline": 0.0325361308781454,
+      "enhanced_range_f1": 0.011627906976744186,
+      "identical_subset_rerun": true,
+      "timestamp_iou_0.3_delta_v3_minus_baseline": 0.0,
+      "timestamp_iou_0.3_f1": 0.0
+    }
+  },
+  "counts": {
+    "ambiguous_nonempty_clips": 0,
+    "discovered": 94,
+    "evaluated_clips": 18,
+    "evaluated_labels": 49,
+    "expected": 94,
+    "inference_failed": 0,
+    "inference_succeeded": 94,
+    "label_states": {
+      "empty_unreviewed": 75,
+      "nonempty": 19
+    },
+    "provenance_categories": {
+      "empty_unreviewed": 2,
+      "explicit_agent": 91,
+      "human_or_manual": 1
+    },
+    "strict_agent_labelled_clips": 18
+  },
+  "limitations": {
+    "agent_labels_are_independent_human_ground_truth": false,
+    "false_label_rates_are_apparent": true,
+    "note_f1": "not reported because there is no independent note transcription reference",
+    "range_metric_status": "enhanced schema-1.1 diagnostic only; score projection comes from optional pitches/score_part fields",
+    "schema_1_2_claimed": false,
+    "shared_model_bias_possible": true,
+    "sparse_non_exhaustive": true
+  },
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "error_heads_v3": {
+      "balanced_policy_evaluated_as_alternate": true,
+      "classifier_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "classifier_checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "classifier_retrained": false,
+      "compatible": true,
+      "decode_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\decode_config.json",
+      "decode_config_schema_version": "align-error-heads-v3-decode-config-v1",
+      "decode_config_sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4",
+      "experiment_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\config.json",
+      "experiment_config_sha256": "456224d716596bad8106d275cee362a4f1fa8953565dde4be9635a3558f7bc81",
+      "experiment_schema_version": "align-error-heads-v3-experiment-v1",
+      "policy": "completed v3 maximum-F1 sequence-cluster decoder applied to the exact completed v2 head and hash-compatible frozen upstream",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\report.json",
+      "report_schema_version": "align-error-heads-v3-report-v1",
+      "report_sha256": "40784dc0a0877def80f50696b97ca6e0f8f43d3718158f84650699377b60b1bd",
+      "source_v2_freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\integrated-validation-rerun-20260915\\freeze_manifest.json",
+      "source_v2_freeze_manifest_sha256": "9e9e10405d0a16de3be11ba88f74302c6e13c4ad53f3a7404b21d1bc4b5f188e"
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "protocol": {
+    "environment": {
+      "cuda_visible_devices": null,
+      "executable": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "numpy": "1.26.4",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:27:10) [MSC v.1944 64 bit (AMD64)]",
+      "torch": "2.6.0+cu124"
+    },
+    "freeze_command": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\eval_datacreate_error_heads_v3.py",
+      "freeze",
+      "--cpu-threads",
+      "2"
+    ],
+    "freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\freeze_manifest.json",
+    "freeze_manifest_sha256": "af801c43bc6abc85d2eb161e74f363f5a42e5abf483342726f6f5e6e3e3adf1a",
+    "freeze_pid": 19020,
+    "immutable_changes": [],
+    "immutable_synthetic_and_lockbox_after": {
+      "sealed_lockbox": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\LOCKBOX_SEALED.json",
+        "sha256": "8dd3bf310e798aaad208694a6a2faf2b509021bef569009823d1291e2534b7fe"
+      },
+      "v3_decode_config": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\decode_config.json",
+        "sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4"
+      },
+      "v3_experiment_config": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\config.json",
+        "sha256": "456224d716596bad8106d275cee362a4f1fa8953565dde4be9635a3558f7bc81"
+      },
+      "v3_report": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\report.json",
+        "sha256": "40784dc0a0877def80f50696b97ca6e0f8f43d3718158f84650699377b60b1bd"
+      },
+      "v3_synthetic_freeze_manifest": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\freeze_manifest.json",
+        "sha256": "eca601889bb44d77bfc7fbf2e042b84de5a1bcb814ffc148009f913c8f42a6b6"
+      },
+      "v3_synthetic_integrity": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\integrity.json",
+        "sha256": "5ccdebd43940f5b16951cb62eb26591f2ff8eff055b19d7aa228fa496535848d"
+      },
+      "v3_synthetic_verification": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\verification.json",
+        "sha256": "612cb9a8543eec8d5165514e95d0738a6e8193bb1ffe726d7b1bb614bb465a78"
+      }
+    },
+    "locked_synthetic_test_untouched": true,
+    "prediction_hashes_verified_before_labels_opened": true,
+    "resource_coordination": {
+      "cpu_threads": 2,
+      "decision": "CPU-only optimized cached inference; no GPU lease acquired",
+      "device": "cpu",
+      "status_snapshot": {
+        "gpu_lease": null,
+        "gpu_lease_active": false,
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+        "policy": {
+          "gpu_exclusive": true,
+          "max_heavy_cpu_jobs_during_gpu_training": 1,
+          "max_simultaneous_gpu_trainers": 1,
+          "physical_cpu_reserve_for_os": 2,
+          "recommended_loader_workers": 4,
+          "recommended_prefetch": 16,
+          "threads_per_loader_worker": 1
+        },
+        "recommended_concurrency": {
+          "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+          "current_heavy_jobs": 0,
+          "oversubscribed": false
+        },
+        "schema_version": "align-training-resource-status-v1",
+        "updated_utc": "2026-09-15T11:57:02.009361+00:00"
+      }
+    },
+    "score_command": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\eval_datacreate_error_heads_v3.py",
+      "score"
+    ],
+    "score_pid": 22524,
+    "two_process_freeze_score": true
+  },
+  "rules_identical_subset_rerun": {
+    "enhanced_schema_1_1_range": {
+      "bootstrap_f1": {
+        "lower_95": 0.015692706183583666,
+        "median": 0.02571376562815792,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.03739677325130189
+      },
+      "clips": 18,
+      "macro_clip_f1": 0.028775143193165455,
+      "micro": {
+        "f1": 0.02569593147751606,
+        "gold": 45,
+        "matched": 12.0,
+        "precision": 0.013498312710911136,
+        "predicted": 889,
+        "recall": 0.26666666666666666
+      },
+      "samples": {
+        "001": {
+          "correct": 0.5,
+          "f1": 0.07692307692307693,
+          "gold": 2,
+          "precision": 0.045454545454545456,
+          "predicted": 11,
+          "recall": 0.25
+        },
+        "002": {
+          "correct": 1.0,
+          "f1": 0.08,
+          "gold": 2,
+          "precision": 0.043478260869565216,
+          "predicted": 23,
+          "recall": 0.5
+        },
+        "003": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 27,
+          "recall": 0.0
+        },
+        "006": {
+          "correct": 2.0,
+          "f1": 0.07692307692307693,
+          "gold": 4,
+          "precision": 0.041666666666666664,
+          "predicted": 48,
+          "recall": 0.5
+        },
+        "008": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 26,
+          "recall": 0.0
+        },
+        "010": {
+          "correct": 1.0,
+          "f1": 0.020202020202020204,
+          "gold": 2,
+          "precision": 0.010309278350515464,
+          "predicted": 97,
+          "recall": 0.5
+        },
+        "012": {
+          "correct": 0.5,
+          "f1": 0.022727272727272724,
+          "gold": 3,
+          "precision": 0.012195121951219513,
+          "predicted": 41,
+          "recall": 0.16666666666666666
+        },
+        "013": {
+          "correct": 1.5,
+          "f1": 0.04,
+          "gold": 6,
+          "precision": 0.021739130434782608,
+          "predicted": 69,
+          "recall": 0.25
+        },
+        "014": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 25,
+          "recall": 0.0
+        },
+        "016": {
+          "correct": 1.0,
+          "f1": 0.08695652173913045,
+          "gold": 1,
+          "precision": 0.045454545454545456,
+          "predicted": 22,
+          "recall": 1.0
+        },
+        "017": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 34,
+          "recall": 0.0
+        },
+        "019": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 47,
+          "recall": 0.0
+        },
+        "020": {
+          "correct": 1.5,
+          "f1": 0.030303030303030304,
+          "gold": 3,
+          "precision": 0.015625,
+          "predicted": 96,
+          "recall": 0.5
+        },
+        "029": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 26,
+          "recall": 0.0
+        },
+        "030": {
+          "correct": 1.0,
+          "f1": 0.029411764705882353,
+          "gold": 4,
+          "precision": 0.015625,
+          "predicted": 64,
+          "recall": 0.25
+        },
+        "033": {
+          "correct": 0.5,
+          "f1": 0.023255813953488372,
+          "gold": 3,
+          "precision": 0.0125,
+          "predicted": 40,
+          "recall": 0.16666666666666666
+        },
+        "034": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 102,
+          "recall": 0.0
+        },
+        "035": {
+          "correct": 1.5,
+          "f1": 0.03125,
+          "gold": 5,
+          "precision": 0.016483516483516484,
+          "predicted": 91,
+          "recall": 0.3
+        }
+      }
+    },
+    "formal_schema_1_2": {
+      "clips": 0,
+      "reason": "no usable human gold document declares schema 1.2",
+      "status": "unavailable"
+    },
+    "layer2_three_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 25,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 403,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "wrong_note"
+      ]
+    },
+    "onset_tolerances": {
+      "onset_100ms": {
+        "f1": 0.006396588486140725,
+        "gold": 49,
+        "matched": 3,
+        "precision": 0.003374578177727784,
+        "predicted": 889,
+        "recall": 0.061224489795918366
+      },
+      "onset_250ms": {
+        "f1": 0.01279317697228145,
+        "gold": 49,
+        "matched": 6,
+        "precision": 0.006749156355455568,
+        "predicted": 889,
+        "recall": 0.12244897959183673
+      },
+      "onset_500ms": {
+        "f1": 0.019189765458422176,
+        "gold": 49,
+        "matched": 9,
+        "precision": 0.010123734533183352,
+        "predicted": 889,
+        "recall": 0.1836734693877551
+      },
+      "onset_50ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 889,
+        "recall": 0.0
+      }
+    },
+    "per_type_enhanced_range": {
+      "extra_note": {
+        "f1": 0.018691588785046728,
+        "gold": 10,
+        "matched": 1.0,
+        "precision": 0.010309278350515464,
+        "predicted": 97,
+        "recall": 0.1
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 305,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0041753653444676405,
+        "gold": 5,
+        "matched": 1.0,
+        "precision": 0.002109704641350211,
+        "predicted": 474,
+        "recall": 0.2
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0
+      }
+    },
+    "per_type_timestamp_iou_0.3": {
+      "extra_note": {
+        "f1": 0.0,
+        "gold": 10,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 97,
+        "recall": 0.0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 9,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 305,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.012526096033402922,
+        "gold": 5,
+        "matched": 3,
+        "precision": 0.006329113924050633,
+        "predicted": 474,
+        "recall": 0.6
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0
+      }
+    },
+    "repetition": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 2,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 12,
+      "recall": 0.0,
+      "types": [
+        "repetition"
+      ]
+    },
+    "requested_four_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.006514657980456026,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.014768322350393645
+      },
+      "f1": 0.006615214994487321,
+      "gold": 30,
+      "matched": 3,
+      "precision": 0.0034207525655644243,
+      "predicted": 877,
+      "recall": 0.1,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "rhythm_error",
+        "wrong_note"
+      ]
+    },
+    "rhythm": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.012096774193548387,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.027212430426716134
+      },
+      "f1": 0.012526096033402922,
+      "gold": 5,
+      "matched": 3,
+      "precision": 0.006329113924050633,
+      "predicted": 474,
+      "recall": 0.6,
+      "types": [
+        "rhythm_error"
+      ]
+    },
+    "timestamp_iou_0.3": {
+      "apparent_false_labels": 886.0,
+      "apparent_false_labels_per_clip": 49.22222222222222,
+      "apparent_false_labels_per_minute": 91.09758170317126,
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.00631578947368421,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.01398642197942081
+      },
+      "evaluated_audio_minutes": 9.725834467120183,
+      "macro_f1": 0.0012526096033402922,
+      "micro": {
+        "f1": 0.006396588486140725,
+        "gold": 49,
+        "matched": 3,
+        "precision": 0.003374578177727784,
+        "predicted": 889,
+        "recall": 0.061224489795918366
+      },
+      "per_type": {
+        "bad_start": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "bad_timbre": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "click": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "extra_note": {
+          "f1": 0.0,
+          "gold": 10,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 97,
+          "recall": 0.0
+        },
+        "missed_note": {
+          "f1": 0.0,
+          "gold": 9,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 305,
+          "recall": 0.0
+        },
+        "repetition": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 12,
+          "recall": 0.0
+        },
+        "rhythm_error": {
+          "f1": 0.012526096033402922,
+          "gold": 5,
+          "matched": 3,
+          "precision": 0.006329113924050633,
+          "predicted": 474,
+          "recall": 0.6
+        },
+        "sliding": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "squeak": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "wrong_note": {
+          "f1": 0.0,
+          "gold": 6,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "sample_007": {
+    "included": false
+  },
+  "schema_version": "align-datacreate-error-heads-v3-headline-v1",
+  "source_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\report.json",
+  "source_report_sha256": "ebd019870ce54b9be31068de432676d673e58c9989bb1e288877d9d27daa822c",
+  "subset": {
+    "alternate_ambiguous_sample_ids": [],
+    "inclusion_rule": "Strict: non-empty document-level metadata explicitly names an AI/LLM/agent and does not name human review. If strict is empty, score the separately named alternate containing non-empty labels with no explicit human/manual provenance. Label source alone and non-emptiness never prove agent origin.",
+    "label_type_distribution": {
+      "bad_start": 5,
+      "bad_timbre": 4,
+      "click": 2,
+      "extra_note": 10,
+      "missed_note": 9,
+      "repetition": 2,
+      "rhythm_error": 5,
+      "sliding": 4,
+      "squeak": 2,
+      "wrong_note": 6
+    },
+    "sample_ids": [
+      "001",
+      "002",
+      "003",
+      "006",
+      "008",
+      "010",
+      "012",
+      "013",
+      "014",
+      "016",
+      "017",
+      "019",
+      "020",
+      "029",
+      "030",
+      "033",
+      "034",
+      "035"
+    ],
+    "schema_distribution": {
+      "1.1": 18
+    },
+    "selection": "strict_explicit_agent_metadata",
+    "strict_explicit_agent_sample_ids": [
+      "001",
+      "002",
+      "003",
+      "006",
+      "008",
+      "010",
+      "012",
+      "013",
+      "014",
+      "016",
+      "017",
+      "019",
+      "020",
+      "029",
+      "030",
+      "033",
+      "034",
+      "035"
+    ]
+  },
+  "upstream_summary": {
+    "mapped_score_coverage_mean": 0.8237025785859837,
+    "ratios_of_totals": {
+      "canonical_to_score": 1.0246166263115415,
+      "mapped_events_to_score": 0.7631154156577885,
+      "retained_candidates_to_score": 0.8066989507667474
+    },
+    "runtime_seconds_per_clip": {
+      "mean": 4.3055477777787825,
+      "median": 3.549174750001839
+    },
+    "totals": {
+      "candidate_union_all_count": 3116,
+      "canonical_transcription_count": 2539,
+      "decoded_event_count": 1999,
+      "deleted_score_event_count": 819,
+      "mapped_event_count": 1891,
+      "retained_candidate_count": 1999,
+      "score_event_count": 2478
+    }
+  },
+  "v2_identical_subset_rerun": {
+    "enhanced_schema_1_1_range": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.011363636363636362,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.03488372093023255
+      },
+      "clips": 18,
+      "macro_clip_f1": 0.006944444444444444,
+      "micro": {
+        "f1": 0.011627906976744186,
+        "gold": 45,
+        "matched": 0.5,
+        "precision": 0.012195121951219513,
+        "predicted": 41,
+        "recall": 0.011111111111111112
+      },
+      "samples": {
+        "001": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "002": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "003": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "006": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "008": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 5,
+          "recall": 0.0
+        },
+        "010": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "012": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "013": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 6,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "014": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "016": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "017": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "019": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "020": {
+          "correct": 0.5,
+          "f1": 0.125,
+          "gold": 3,
+          "precision": 0.1,
+          "predicted": 5,
+          "recall": 0.16666666666666666
+        },
+        "029": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "030": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "033": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "034": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "035": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 5,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        }
+      }
+    },
+    "formal_schema_1_2": {
+      "clips": 0,
+      "reason": "no usable human gold document declares schema 1.2",
+      "status": "unavailable"
+    },
+    "layer2_three_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 25,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 25,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "wrong_note"
+      ]
+    },
+    "onset_tolerances": {
+      "onset_100ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 41,
+        "recall": 0.0
+      },
+      "onset_250ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 41,
+        "recall": 0.0
+      },
+      "onset_500ms": {
+        "f1": 0.02222222222222222,
+        "gold": 49,
+        "matched": 1,
+        "precision": 0.024390243902439025,
+        "predicted": 41,
+        "recall": 0.02040816326530612
+      },
+      "onset_50ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 41,
+        "recall": 0.0
+      }
+    },
+    "per_type_enhanced_range": {
+      "extra_note": {
+        "f1": 0.0,
+        "gold": 10,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 22,
+        "recall": 0.0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 4,
+        "recall": 0.0
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 3,
+        "recall": 0.0
+      }
+    },
+    "per_type_timestamp_iou_0.3": {
+      "extra_note": {
+        "f1": 0.0,
+        "gold": 10,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 22,
+        "recall": 0.0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 9,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 4,
+        "recall": 0.0
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 3,
+        "recall": 0.0
+      }
+    },
+    "repetition": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 2,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 12,
+      "recall": 0.0,
+      "types": [
+        "repetition"
+      ]
+    },
+    "requested_four_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 30,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 29,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "rhythm_error",
+        "wrong_note"
+      ]
+    },
+    "rhythm": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 5,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 4,
+      "recall": 0.0,
+      "types": [
+        "rhythm_error"
+      ]
+    },
+    "timestamp_iou_0.3": {
+      "apparent_false_labels": 41.0,
+      "apparent_false_labels_per_clip": 2.2777777777777777,
+      "apparent_false_labels_per_minute": 4.215576579943591,
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "evaluated_audio_minutes": 9.725834467120183,
+      "macro_f1": 0.0,
+      "micro": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 41,
+        "recall": 0.0
+      },
+      "per_type": {
+        "bad_start": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "bad_timbre": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "click": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "extra_note": {
+          "f1": 0.0,
+          "gold": 10,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 22,
+          "recall": 0.0
+        },
+        "missed_note": {
+          "f1": 0.0,
+          "gold": 9,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "repetition": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 12,
+          "recall": 0.0
+        },
+        "rhythm_error": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 4,
+          "recall": 0.0
+        },
+        "sliding": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "squeak": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "wrong_note": {
+          "f1": 0.0,
+          "gold": 6,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "v3": {
+    "enhanced_schema_1_1_range": {
+      "bootstrap_f1": {
+        "lower_95": 0.024764803994244106,
+        "median": 0.04415994100536687,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.06338078905710923
+      },
+      "clips": 18,
+      "macro_clip_f1": 0.04294883202044382,
+      "micro": {
+        "f1": 0.044164037854889586,
+        "gold": 45,
+        "matched": 7.0,
+        "precision": 0.025735294117647058,
+        "predicted": 272,
+        "recall": 0.15555555555555556
+      },
+      "samples": {
+        "001": {
+          "correct": 0.5,
+          "f1": 0.2,
+          "gold": 2,
+          "precision": 0.16666666666666666,
+          "predicted": 3,
+          "recall": 0.25
+        },
+        "002": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 7,
+          "recall": 0.0
+        },
+        "003": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 12,
+          "recall": 0.0
+        },
+        "006": {
+          "correct": 1.0,
+          "f1": 0.09523809523809523,
+          "gold": 4,
+          "precision": 0.058823529411764705,
+          "predicted": 17,
+          "recall": 0.25
+        },
+        "008": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 10,
+          "recall": 0.0
+        },
+        "010": {
+          "correct": 1.0,
+          "f1": 0.07142857142857144,
+          "gold": 2,
+          "precision": 0.038461538461538464,
+          "predicted": 26,
+          "recall": 0.5
+        },
+        "012": {
+          "correct": 1.0,
+          "f1": 0.10526315789473684,
+          "gold": 3,
+          "precision": 0.0625,
+          "predicted": 16,
+          "recall": 0.3333333333333333
+        },
+        "013": {
+          "correct": 0.5,
+          "f1": 0.04347826086956522,
+          "gold": 6,
+          "precision": 0.029411764705882353,
+          "predicted": 17,
+          "recall": 0.08333333333333333
+        },
+        "014": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 8,
+          "recall": 0.0
+        },
+        "016": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 8,
+          "recall": 0.0
+        },
+        "017": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 9,
+          "recall": 0.0
+        },
+        "019": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 14,
+          "recall": 0.0
+        },
+        "020": {
+          "correct": 0.5,
+          "f1": 0.03125,
+          "gold": 3,
+          "precision": 0.017241379310344827,
+          "predicted": 29,
+          "recall": 0.16666666666666666
+        },
+        "029": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 7,
+          "recall": 0.0
+        },
+        "030": {
+          "correct": 1.0,
+          "f1": 0.06451612903225806,
+          "gold": 4,
+          "precision": 0.037037037037037035,
+          "predicted": 27,
+          "recall": 0.25
+        },
+        "033": {
+          "correct": 0.5,
+          "f1": 0.06666666666666667,
+          "gold": 3,
+          "precision": 0.041666666666666664,
+          "predicted": 12,
+          "recall": 0.16666666666666666
+        },
+        "034": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 34,
+          "recall": 0.0
+        },
+        "035": {
+          "correct": 1.0,
+          "f1": 0.09523809523809523,
+          "gold": 5,
+          "precision": 0.0625,
+          "predicted": 16,
+          "recall": 0.2
+        }
+      }
+    },
+    "formal_schema_1_2": {
+      "clips": 0,
+      "reason": "no usable human gold document declares schema 1.2",
+      "status": "unavailable"
+    },
+    "layer2_three_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 25,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 256,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "wrong_note"
+      ]
+    },
+    "onset_tolerances": {
+      "onset_100ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 272,
+        "recall": 0.0
+      },
+      "onset_250ms": {
+        "f1": 0.01869158878504673,
+        "gold": 49,
+        "matched": 3,
+        "precision": 0.011029411764705883,
+        "predicted": 272,
+        "recall": 0.061224489795918366
+      },
+      "onset_500ms": {
+        "f1": 0.024922118380062305,
+        "gold": 49,
+        "matched": 4,
+        "precision": 0.014705882352941176,
+        "predicted": 272,
+        "recall": 0.08163265306122448
+      },
+      "onset_50ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 272,
+        "recall": 0.0
+      }
+    },
+    "per_type_enhanced_range": {
+      "extra_note": {
+        "f1": 0.030769230769230767,
+        "gold": 10,
+        "matched": 1.0,
+        "precision": 0.01818181818181818,
+        "predicted": 55,
+        "recall": 0.1
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 199,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 4,
+        "recall": 0.0
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 2,
+        "recall": 0.0
+      }
+    },
+    "per_type_timestamp_iou_0.3": {
+      "extra_note": {
+        "f1": 0.0,
+        "gold": 10,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 55,
+        "recall": 0.0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 9,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 199,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 4,
+        "recall": 0.0
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 2,
+        "recall": 0.0
+      }
+    },
+    "repetition": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 2,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 12,
+      "recall": 0.0,
+      "types": [
+        "repetition"
+      ]
+    },
+    "requested_four_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 30,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 260,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "rhythm_error",
+        "wrong_note"
+      ]
+    },
+    "rhythm": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 5,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 4,
+      "recall": 0.0,
+      "types": [
+        "rhythm_error"
+      ]
+    },
+    "timestamp_iou_0.3": {
+      "apparent_false_labels": 272.0,
+      "apparent_false_labels_per_clip": 15.11111111111111,
+      "apparent_false_labels_per_minute": 27.96675194499163,
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "evaluated_audio_minutes": 9.725834467120183,
+      "macro_f1": 0.0,
+      "micro": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 272,
+        "recall": 0.0
+      },
+      "per_type": {
+        "bad_start": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "bad_timbre": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "click": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "extra_note": {
+          "f1": 0.0,
+          "gold": 10,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 55,
+          "recall": 0.0
+        },
+        "missed_note": {
+          "f1": 0.0,
+          "gold": 9,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 199,
+          "recall": 0.0
+        },
+        "repetition": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 12,
+          "recall": 0.0
+        },
+        "rhythm_error": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 4,
+          "recall": 0.0
+        },
+        "sliding": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "squeak": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "wrong_note": {
+          "f1": 0.0,
+          "gold": 6,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "v3_balanced": {
+    "enhanced_schema_1_1_range": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.01818181818181818,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.03973604003612281
+      },
+      "clips": 18,
+      "macro_clip_f1": 0.020940170940170942,
+      "micro": {
+        "f1": 0.018867924528301886,
+        "gold": 45,
+        "matched": 1.5,
+        "precision": 0.013157894736842105,
+        "predicted": 114,
+        "recall": 0.03333333333333333
+      },
+      "samples": {
+        "001": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "002": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 4,
+          "recall": 0.0
+        },
+        "003": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 7,
+          "recall": 0.0
+        },
+        "006": {
+          "correct": 0.5,
+          "f1": 0.07692307692307691,
+          "gold": 4,
+          "precision": 0.05555555555555555,
+          "predicted": 9,
+          "recall": 0.125
+        },
+        "008": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 6,
+          "recall": 0.0
+        },
+        "010": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 9,
+          "recall": 0.0
+        },
+        "012": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 9,
+          "recall": 0.0
+        },
+        "013": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 6,
+          "precision": 0.0,
+          "predicted": 7,
+          "recall": 0.0
+        },
+        "014": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 9,
+          "recall": 0.0
+        },
+        "016": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "017": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 5,
+          "recall": 0.0
+        },
+        "019": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 4,
+          "recall": 0.0
+        },
+        "020": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 7,
+          "recall": 0.0
+        },
+        "029": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 6,
+          "recall": 0.0
+        },
+        "030": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 6,
+          "recall": 0.0
+        },
+        "033": {
+          "correct": 0.5,
+          "f1": 0.2,
+          "gold": 3,
+          "precision": 0.25,
+          "predicted": 2,
+          "recall": 0.16666666666666666
+        },
+        "034": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 14,
+          "recall": 0.0
+        },
+        "035": {
+          "correct": 0.5,
+          "f1": 0.10000000000000002,
+          "gold": 5,
+          "precision": 0.1,
+          "predicted": 5,
+          "recall": 0.1
+        }
+      }
+    },
+    "formal_schema_1_2": {
+      "clips": 0,
+      "reason": "no usable human gold document declares schema 1.2",
+      "status": "unavailable"
+    },
+    "layer2_three_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 25,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 101,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "wrong_note"
+      ]
+    },
+    "onset_tolerances": {
+      "onset_100ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 114,
+        "recall": 0.0
+      },
+      "onset_250ms": {
+        "f1": 0.012269938650306749,
+        "gold": 49,
+        "matched": 1,
+        "precision": 0.008771929824561403,
+        "predicted": 114,
+        "recall": 0.02040816326530612
+      },
+      "onset_500ms": {
+        "f1": 0.024539877300613498,
+        "gold": 49,
+        "matched": 2,
+        "precision": 0.017543859649122806,
+        "predicted": 114,
+        "recall": 0.04081632653061224
+      },
+      "onset_50ms": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 114,
+        "recall": 0.0
+      }
+    },
+    "per_type_enhanced_range": {
+      "extra_note": {
+        "f1": 0.0,
+        "gold": 10,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 22,
+        "recall": 0.0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 78,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0
+      }
+    },
+    "per_type_timestamp_iou_0.3": {
+      "extra_note": {
+        "f1": 0.0,
+        "gold": 10,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 22,
+        "recall": 0.0
+      },
+      "missed_note": {
+        "f1": 0.0,
+        "gold": 9,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 78,
+        "recall": 0.0
+      },
+      "repetition": {
+        "f1": 0.0,
+        "gold": 2,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 12,
+        "recall": 0.0
+      },
+      "rhythm_error": {
+        "f1": 0.0,
+        "gold": 5,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0
+      },
+      "wrong_note": {
+        "f1": 0.0,
+        "gold": 6,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0
+      }
+    },
+    "repetition": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 2,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 12,
+      "recall": 0.0,
+      "types": [
+        "repetition"
+      ]
+    },
+    "requested_four_type": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 30,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 102,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "rhythm_error",
+        "wrong_note"
+      ]
+    },
+    "rhythm": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 5,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 1,
+      "recall": 0.0,
+      "types": [
+        "rhythm_error"
+      ]
+    },
+    "timestamp_iou_0.3": {
+      "apparent_false_labels": 114.0,
+      "apparent_false_labels_per_clip": 6.333333333333333,
+      "apparent_false_labels_per_minute": 11.721359271062667,
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "evaluated_audio_minutes": 9.725834467120183,
+      "macro_f1": 0.0,
+      "micro": {
+        "f1": 0.0,
+        "gold": 49,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 114,
+        "recall": 0.0
+      },
+      "per_type": {
+        "bad_start": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "bad_timbre": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "click": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "extra_note": {
+          "f1": 0.0,
+          "gold": 10,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 22,
+          "recall": 0.0
+        },
+        "missed_note": {
+          "f1": 0.0,
+          "gold": 9,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 78,
+          "recall": 0.0
+        },
+        "repetition": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 12,
+          "recall": 0.0
+        },
+        "rhythm_error": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "sliding": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "squeak": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "wrong_note": {
+          "f1": 0.0,
+          "gold": 6,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        }
+      }
+    }
+  }
+}

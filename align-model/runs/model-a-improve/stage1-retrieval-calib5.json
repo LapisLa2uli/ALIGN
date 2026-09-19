@@ -1,0 +1,357 @@
+{
+  "n_samples": 5,
+  "mean_melody_f1": 0.6,
+  "mean_melody_precision": 0.6,
+  "mean_melody_recall": 0.6,
+  "mean_n_gold": 0.8,
+  "mean_n_pred": 0.6,
+  "per_type": {
+    "repetition": {
+      "n_gold": 4,
+      "n_pred": 3,
+      "n_matched": 2.0,
+      "melody_f1": 0.5714,
+      "melody_precision": 0.6667,
+      "melody_recall": 0.5
+    }
+  },
+  "samples": [
+    {
+      "sample": "synth_gen_9885",
+      "n_gold": 1,
+      "n_pred": 1,
+      "n_matched": 1.0,
+      "melody_f1": 1.0,
+      "melody_precision": 1.0,
+      "melody_recall": 1.0,
+      "melody_similarity": 1.0,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition"
+      ],
+      "per_type": {
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 18.5527,
+          "end_time": 35.8748,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.976",
+          "repeats_label_range": {
+            "start_time": 0.0,
+            "end_time": 17.3221
+          },
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 21,
+            "pad_notes": 2,
+            "start_measure": 1,
+            "end_measure": 13
+          },
+          "pitches": [
+            64,
+            65,
+            62,
+            62,
+            67,
+            69,
+            70,
+            69,
+            67,
+            65,
+            64,
+            62,
+            57,
+            55,
+            53,
+            58,
+            58,
+            58,
+            57,
+            57,
+            62,
+            64
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021"
+          ],
+          "extra_copies": 1
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_1946",
+      "n_gold": 0,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 1.0,
+      "melody_precision": 1.0,
+      "melody_recall": 1.0,
+      "melody_similarity": 1.0,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [],
+      "pred_types": [],
+      "per_type": {},
+      "label_counts": {},
+      "pred_labels": []
+    },
+    {
+      "sample": "synth_gen_0793",
+      "n_gold": 1,
+      "n_pred": 1,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition"
+      ],
+      "per_type": {
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 81.9432,
+          "end_time": 83.1375,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.868",
+          "repeats_label_range": {
+            "start_time": 79.1932,
+            "end_time": 80.3875
+          },
+          "score_part": {
+            "start_note_index": 37,
+            "end_note_index": 39,
+            "pad_notes": 2,
+            "start_measure": 11,
+            "end_measure": 12
+          },
+          "pitches": [
+            69,
+            64,
+            62
+          ],
+          "note_ids": [
+            "note_0037",
+            "note_0038",
+            "note_0039"
+          ],
+          "extra_copies": 1
+        }
+      ]
+    },
+    {
+      "sample": "synth_gen_11431",
+      "n_gold": 1,
+      "n_pred": 0,
+      "n_matched": 0.0,
+      "melody_f1": 0.0,
+      "melody_precision": 0.0,
+      "melody_recall": 0.0,
+      "melody_similarity": 0.0,
+      "note_set_iou": 0.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 0.0,
+      "gold_types": [
+        "repetition"
+      ],
+      "pred_types": [],
+      "per_type": {
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 0,
+          "n_matched": 0.0,
+          "melody_f1": 0.0,
+          "melody_precision": 0.0,
+          "melody_recall": 0.0
+        }
+      },
+      "label_counts": {},
+      "pred_labels": []
+    },
+    {
+      "sample": "synth_gen_2662",
+      "n_gold": 1,
+      "n_pred": 1,
+      "n_matched": 1.0,
+      "melody_f1": 1.0,
+      "melody_precision": 1.0,
+      "melody_recall": 1.0,
+      "melody_similarity": 1.0,
+      "note_set_iou": 1.0,
+      "soft": false,
+      "ignore_type": false,
+      "similarity_sum": 1.0,
+      "gold_types": [
+        "repetition"
+      ],
+      "pred_types": [
+        "repetition"
+      ],
+      "per_type": {
+        "repetition": {
+          "n_gold": 1,
+          "n_pred": 1,
+          "n_matched": 1.0,
+          "melody_f1": 1.0,
+          "melody_precision": 1.0,
+          "melody_recall": 1.0
+        }
+      },
+      "label_counts": {
+        "repetition": 1
+      },
+      "pred_labels": [
+        {
+          "id": "pipe_000",
+          "source": "pipeline",
+          "start_time": 22.384,
+          "end_time": 39.1642,
+          "type": "repetition",
+          "comment": "past-span retrieval confidence=0.937",
+          "repeats_label_range": {
+            "start_time": 4.884,
+            "end_time": 21.6642
+          },
+          "score_part": {
+            "start_note_index": 4,
+            "end_note_index": 28,
+            "pad_notes": 2,
+            "start_measure": 2,
+            "end_measure": 9
+          },
+          "pitches": [
+            75,
+            77,
+            75,
+            77,
+            77,
+            75,
+            77,
+            75,
+            74,
+            72,
+            70,
+            72,
+            70,
+            69,
+            72,
+            74,
+            74,
+            75,
+            70,
+            69,
+            69,
+            70,
+            74,
+            72,
+            72
+          ],
+          "note_ids": [
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007",
+            "note_0008",
+            "note_0009",
+            "note_0010",
+            "note_0011",
+            "note_0012",
+            "note_0013",
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018",
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028"
+          ],
+          "extra_copies": 1
+        }
+      ]
+    }
+  ],
+  "soft": false,
+  "ignore_type": false,
+  "stages": [
+    1
+  ],
+  "weights_dir": null,
+  "types": [
+    "repetition"
+  ],
+  "pool": "calib",
+  "n_requested": 5
+}

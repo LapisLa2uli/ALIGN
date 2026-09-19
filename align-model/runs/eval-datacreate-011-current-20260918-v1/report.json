@@ -1,0 +1,1850 @@
+{
+  "annotation_limitations": {
+    "empty_unreviewed_are_clean_negatives": false,
+    "formal_schema_1_2": "unavailable unless a usable human labels document declares schema 1.2",
+    "note_f1": "not reported: DataCreate has no independent human note transcription ground truth",
+    "precision_warning": "Agreement against an agent annotation is not independent accuracy; unmatched predictions may be valid unannotated errors and timestamp false-label rates are apparent values.",
+    "single_sample_smoke_test": true,
+    "sparse_non_exhaustive": true,
+    "threshold_tuning_performed": false,
+    "unsupported_human_types": [],
+    "validation_estimate": false
+  },
+  "counts": {
+    "discovered": 1,
+    "empty_unreviewed": 0,
+    "expected": 1,
+    "formal_schema_1_2_gold_clips": 0,
+    "gold_evaluable": 1,
+    "inference_failed": 0,
+    "inference_succeeded": 1,
+    "missing_labels": 0,
+    "note_alignment_artifacts": 1,
+    "partial_take_metadata": 0,
+    "reviewed_clean_empty": 0,
+    "usable_human_labels": 1
+  },
+  "created_utc": "2026-09-18T16:10:46.045852+00:00",
+  "data_inventory": [
+    {
+      "directory_present": true,
+      "explicit_completeness_marker": false,
+      "gold_source": "agent",
+      "human_labels": 1,
+      "human_range_labels": 1,
+      "human_types": {
+        "wrong_note": 1
+      },
+      "inference_status": "succeeded",
+      "label_schema_version": "1.1",
+      "label_status": "usable_agent_gold",
+      "labels_total": 1,
+      "note_alignment": {
+        "present": true
+      },
+      "partial_take": null,
+      "required": {
+        "labels.json": true,
+        "metadata.json": true,
+        "performance_audio.wav": true,
+        "verified_score.musicxml": true
+      },
+      "sample": "011",
+      "selected_labels": 1,
+      "validation_errors": []
+    }
+  ],
+  "evaluation_started_utc": "2026-09-18T16:10:45.981747+00:00",
+  "freeze_created_utc": "2026-09-18T16:09:02.990039+00:00",
+  "historical_comparison": {
+    "reason": "strict subset evaluation forbids prior predictions",
+    "status": "not_opened"
+  },
+  "inference_samples": [
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 14.664172335600908,
+          "frames": 323345,
+          "sample_rate": 22050,
+          "sha256": "ed55e5b0ed4330bfeafdb4d95514c783cdb09dbec783d7112b3617d85234f6e9"
+        },
+        "candidate_count": 72,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8470588235294118,
+        "candidate_union_all_count": 95,
+        "canonical_to_score_count_ratio": 0.9764705882352941,
+        "canonical_transcription_count": 83,
+        "copy_event_count": 17,
+        "decoded_event_count": 72,
+        "deleted_score_event_count": 30,
+        "mapped_event_count": 66,
+        "mapped_score_coverage": 0.8117647058823529,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 66
+        },
+        "path_score": 30.293575286865234,
+        "retained_candidate_count": 72,
+        "score_event_count": 85,
+        "score_measure_max": 196,
+        "score_measure_min": 188,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-current-20260918-v1\\feature-cache\\011.npz",
+        "frozen_copy_sha256": "4216ed664cbcbe4b561ab56a162ebd7f6c57e39d6b28ad5a619c972721c8663e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "ed55e5b0ed4330bfeafdb4d95514c783cdb09dbec783d7112b3617d85234f6e9"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "8fb8d400548a8d8d698a8460b2cde7b489428b8346d99d0cae697af12599ac93",
+        "rules": "1a88af68e64ade3e85091282fd4f6cf4655eebd02efb3278dd68c353c490d30d"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-current-20260918-v1\\predictions\\011.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-current-20260918-v1\\rules-baseline\\011.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3490139999994426,
+        "current_stack": 1.7781956999988324,
+        "features": 16.550796599998648,
+        "production_alignment": 0.0,
+        "total": 18.70681070000137
+      },
+      "sample": "011",
+      "status": "succeeded"
+    }
+  ],
+  "metrics": {
+    "configured_production_datacreate_bridge": {
+      "note": "The configured production DataCreate bridge performs alignment but emits no error labels.",
+      "timestamp_event": {
+        "iou_0.3": {
+          "bootstrap_f1": null,
+          "macro_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "per_type": {
+            "wrong_note": {
+              "f1": 0.0,
+              "gold": 1,
+              "matched": 0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0
+            }
+          }
+        },
+        "layer2": {
+          "bootstrap_f1": null,
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "types": [
+            "extra_note",
+            "missed_note",
+            "wrong_note"
+          ]
+        },
+        "layer3_rhythm": {
+          "bootstrap_f1": null,
+          "f1": 0.0,
+          "gold": 0,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "types": [
+            "rhythm_error"
+          ]
+        },
+        "onset_100ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          }
+        },
+        "onset_250ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          }
+        },
+        "onset_500ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          }
+        },
+        "onset_50ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          }
+        },
+        "repetition": {
+          "bootstrap_f1": null,
+          "f1": 0.0,
+          "gold": 0,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0,
+          "types": [
+            "repetition"
+          ]
+        }
+      }
+    },
+    "current_rules_same_upstream": {
+      "score_range": {
+        "enhanced_schema_1_1_diagnostic": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 1,
+              "precision": 0.0,
+              "predicted": 28,
+              "recall": 0.0
+            }
+          }
+        },
+        "formal_schema_1_2": {
+          "clips": 0,
+          "reason": "no usable human gold document declares schema 1.2",
+          "status": "unavailable"
+        },
+        "metric": "codebase official exclusive pitch-list assignment: hard LCS-Dice range hit, type mismatch receives half credit",
+        "model_supported_types": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 1,
+              "precision": 0.0,
+              "predicted": 28,
+              "recall": 0.0
+            }
+          }
+        },
+        "per_type": {
+          "extra_note": {
+            "bootstrap_f1": null,
+            "clips": 1,
+            "macro_clip_f1": 0.0,
+            "micro": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0.0,
+              "precision": 0.0,
+              "predicted": 6,
+              "recall": 0.0
+            },
+            "samples": {
+              "011": {
+                "correct": 0.0,
+                "f1": 0.0,
+                "gold": 0,
+                "precision": 0.0,
+                "predicted": 6,
+                "recall": 0.0
+              }
+            }
+          },
+          "missed_note": {
+            "bootstrap_f1": null,
+            "clips": 1,
+            "macro_clip_f1": 0.0,
+            "micro": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0.0,
+              "precision": 0.0,
+              "predicted": 7,
+              "recall": 0.0
+            },
+            "samples": {
+              "011": {
+                "correct": 0.0,
+                "f1": 0.0,
+                "gold": 0,
+                "precision": 0.0,
+                "predicted": 7,
+                "recall": 0.0
+              }
+            }
+          },
+          "repetition": {
+            "bootstrap_f1": null,
+            "clips": 1,
+            "macro_clip_f1": 0.0,
+            "micro": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0.0,
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0
+            },
+            "samples": {
+              "011": {
+                "correct": 0.0,
+                "f1": 0.0,
+                "gold": 0,
+                "precision": 0.0,
+                "predicted": 1,
+                "recall": 0.0
+              }
+            }
+          },
+          "rhythm_error": {
+            "bootstrap_f1": null,
+            "clips": 1,
+            "macro_clip_f1": 0.0,
+            "micro": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0.0,
+              "precision": 0.0,
+              "predicted": 14,
+              "recall": 0.0
+            },
+            "samples": {
+              "011": {
+                "correct": 0.0,
+                "f1": 0.0,
+                "gold": 0,
+                "precision": 0.0,
+                "predicted": 14,
+                "recall": 0.0
+              }
+            }
+          },
+          "wrong_note": {
+            "bootstrap_f1": null,
+            "clips": 1,
+            "macro_clip_f1": 0.0,
+            "micro": {
+              "f1": 0.0,
+              "gold": 1,
+              "matched": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0
+            },
+            "samples": {
+              "011": {
+                "correct": 0.0,
+                "f1": 0.0,
+                "gold": 1,
+                "precision": 0.0,
+                "predicted": 0,
+                "recall": 0.0
+              }
+            }
+          }
+        }
+      },
+      "timestamp_event": {
+        "iou_0.3": {
+          "bootstrap_f1": null,
+          "macro_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          },
+          "per_type": {
+            "extra_note": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0,
+              "precision": 0.0,
+              "predicted": 6,
+              "recall": 0.0
+            },
+            "missed_note": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0,
+              "precision": 0.0,
+              "predicted": 7,
+              "recall": 0.0
+            },
+            "repetition": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0,
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0
+            },
+            "rhythm_error": {
+              "f1": 0.0,
+              "gold": 0,
+              "matched": 0,
+              "precision": 0.0,
+              "predicted": 14,
+              "recall": 0.0
+            },
+            "wrong_note": {
+              "f1": 0.0,
+              "gold": 1,
+              "matched": 0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0
+            }
+          }
+        },
+        "layer2": {
+          "bootstrap_f1": null,
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 13,
+          "recall": 0.0,
+          "types": [
+            "extra_note",
+            "missed_note",
+            "wrong_note"
+          ]
+        },
+        "layer3_rhythm": {
+          "bootstrap_f1": null,
+          "f1": 0.0,
+          "gold": 0,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 14,
+          "recall": 0.0,
+          "types": [
+            "rhythm_error"
+          ]
+        },
+        "onset_100ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          }
+        },
+        "onset_250ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          }
+        },
+        "onset_500ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          }
+        },
+        "onset_50ms": {
+          "bootstrap_f1": null,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 28,
+            "recall": 0.0
+          }
+        },
+        "repetition": {
+          "bootstrap_f1": null,
+          "f1": 0.0,
+          "gold": 0,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0,
+          "types": [
+            "repetition"
+          ]
+        }
+      }
+    },
+    "diagnostic_inferred_score_range": {
+      "enhanced_schema_1_1_diagnostic": {
+        "bootstrap_f1": null,
+        "clips": 1,
+        "macro_clip_f1": 0.0,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "samples": {
+          "011": {
+            "correct": 0.0,
+            "f1": 0.0,
+            "gold": 1,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0
+          }
+        }
+      },
+      "formal_schema_1_2": {
+        "clips": 0,
+        "reason": "no usable human gold document declares schema 1.2",
+        "status": "unavailable"
+      },
+      "metric": "codebase official exclusive pitch-list assignment: hard LCS-Dice range hit, type mismatch receives half credit",
+      "model_supported_types": {
+        "bootstrap_f1": null,
+        "clips": 1,
+        "macro_clip_f1": 0.0,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "samples": {
+          "011": {
+            "correct": 0.0,
+            "f1": 0.0,
+            "gold": 1,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0
+          }
+        }
+      },
+      "per_type": {
+        "extra_note": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 0,
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0
+            }
+          }
+        },
+        "missed_note": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 1.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 1.0,
+              "gold": 0,
+              "precision": 1.0,
+              "predicted": 0,
+              "recall": 1.0
+            }
+          }
+        },
+        "repetition": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 0,
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0
+            }
+          }
+        },
+        "rhythm_error": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 1.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 1.0,
+              "gold": 0,
+              "precision": 1.0,
+              "predicted": 0,
+              "recall": 1.0
+            }
+          }
+        },
+        "wrong_note": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 1,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0
+            }
+          }
+        }
+      }
+    },
+    "legacy_timestamp_event": {
+      "iou_0.3": {
+        "apparent_false_labels_per_minute": 8.183209884179435,
+        "bootstrap_f1": null,
+        "evaluated_audio_minutes": 0.24440287226001514,
+        "macro_f1": 0.0,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "per_type": {
+          "extra_note": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "repetition": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "wrong_note": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          }
+        }
+      },
+      "layer2": {
+        "bootstrap_f1": null,
+        "f1": 0.0,
+        "gold": 1,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0,
+        "types": [
+          "extra_note",
+          "missed_note",
+          "wrong_note"
+        ]
+      },
+      "layer3_rhythm": {
+        "bootstrap_f1": null,
+        "f1": 0.0,
+        "gold": 0,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0,
+        "types": [
+          "rhythm_error"
+        ]
+      },
+      "onset_100ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "onset_250ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "onset_500ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "onset_50ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "repetition": {
+        "bootstrap_f1": null,
+        "f1": 0.0,
+        "gold": 0,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0,
+        "types": [
+          "repetition"
+        ]
+      }
+    },
+    "official_note_wise": {
+      "canonical_projection": "score_event_indices derived from audited score_part core indices or core_note_ids; declared context padding is excluded",
+      "matching_policy": "exclusive maximum-weight one-to-one canonical score-event identity; exact location+type=1.0, exact location+different type=0.5, different location=0.0",
+      "metric_schema": "align-note-wise-score-event-metric-v1",
+      "micro": {
+        "f1": 0.0,
+        "gold": 1,
+        "matched": 0.0,
+        "precision": 0.0,
+        "predicted": 2,
+        "recall": 0.0
+      },
+      "per_type": {
+        "extra_note": {
+          "f1": 0.0,
+          "gold": 0,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "repetition": {
+          "f1": 0.0,
+          "gold": 0,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "wrong_note": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        }
+      },
+      "samples": {
+        "011": {
+          "gold": [
+            {
+              "accepted": true,
+              "canonical_location": [
+                "score_events",
+                [
+                  39
+                ],
+                0
+              ],
+              "label_id": "lbl_1789746931507_y3vfw",
+              "projection_basis": "score_part_explicit_core",
+              "reasons": [],
+              "score_event_indices": [
+                39
+              ],
+              "type": "wrong_note",
+              "warnings": [
+                "core_note_ids_disagree_with_core_score_part"
+              ]
+            }
+          ],
+          "metrics": {
+            "credit": 0.0,
+            "f1": 0.0,
+            "gold": 1,
+            "pair_counts": {
+              "full_credit": 0,
+              "half_credit": 0,
+              "zero_credit": 1
+            },
+            "pairs": [
+              {
+                "credit": 0.0,
+                "gold_index": 0,
+                "location": [
+                  "score_events_with_copies",
+                  [
+                    53,
+                    54,
+                    55,
+                    56,
+                    57,
+                    58,
+                    59,
+                    60,
+                    61,
+                    62,
+                    63,
+                    64,
+                    65,
+                    66,
+                    67,
+                    68,
+                    69,
+                    70,
+                    71,
+                    72,
+                    73,
+                    74,
+                    75,
+                    76
+                  ],
+                  1
+                ],
+                "prediction_index": 0,
+                "type_match": false
+              }
+            ],
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0,
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5,
+            "unevaluable_prediction_indices": []
+          },
+          "per_type": {
+            "extra_note": {
+              "credit": 0.0,
+              "f1": 0.0,
+              "gold": 0,
+              "pair_counts": {
+                "full_credit": 0,
+                "half_credit": 0,
+                "zero_credit": 0
+              },
+              "pairs": [],
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0,
+              "schema_version": "align-note-wise-score-event-metric-v1",
+              "status": "available",
+              "type_mismatch_credit": 0.5,
+              "unevaluable_prediction_indices": []
+            },
+            "repetition": {
+              "credit": 0.0,
+              "f1": 0.0,
+              "gold": 0,
+              "pair_counts": {
+                "full_credit": 0,
+                "half_credit": 0,
+                "zero_credit": 0
+              },
+              "pairs": [],
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0,
+              "schema_version": "align-note-wise-score-event-metric-v1",
+              "status": "available",
+              "type_mismatch_credit": 0.5,
+              "unevaluable_prediction_indices": []
+            },
+            "wrong_note": {
+              "credit": 0.0,
+              "f1": 0.0,
+              "gold": 1,
+              "pair_counts": {
+                "full_credit": 0,
+                "half_credit": 0,
+                "zero_credit": 0
+              },
+              "pairs": [],
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "schema_version": "align-note-wise-score-event-metric-v1",
+              "status": "available",
+              "type_mismatch_credit": 0.5,
+              "unevaluable_prediction_indices": []
+            }
+          },
+          "predicted": [
+            {
+              "accepted": true,
+              "canonical_location": [
+                "score_events_with_copies",
+                [
+                  53,
+                  54,
+                  55,
+                  56,
+                  57,
+                  58,
+                  59,
+                  60,
+                  61,
+                  62,
+                  63,
+                  64,
+                  65,
+                  66,
+                  67,
+                  68,
+                  69,
+                  70,
+                  71,
+                  72,
+                  73,
+                  74,
+                  75,
+                  76
+                ],
+                1
+              ],
+              "label_id": "error_head_0000",
+              "projection_basis": "score_part_explicit_core",
+              "reasons": [],
+              "score_event_indices": [
+                53,
+                54,
+                55,
+                56,
+                57,
+                58,
+                59,
+                60,
+                61,
+                62,
+                63,
+                64,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                71,
+                72,
+                73,
+                74,
+                75,
+                76
+              ],
+              "type": "repetition",
+              "warnings": []
+            },
+            {
+              "accepted": true,
+              "canonical_location": [
+                "score_events",
+                [
+                  82,
+                  83
+                ],
+                0
+              ],
+              "label_id": "error_head_0001",
+              "projection_basis": "score_part_explicit_core",
+              "reasons": [],
+              "score_event_indices": [
+                82,
+                83
+              ],
+              "type": "extra_note",
+              "warnings": []
+            }
+          ],
+          "score_event_count": 85
+        }
+      },
+      "status": "available"
+    },
+    "score_range": {
+      "enhanced_schema_1_1_diagnostic": {
+        "bootstrap_f1": null,
+        "clips": 1,
+        "macro_clip_f1": 0.0,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "samples": {
+          "011": {
+            "correct": 0.0,
+            "f1": 0.0,
+            "gold": 1,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0
+          }
+        }
+      },
+      "formal_schema_1_2": {
+        "clips": 0,
+        "reason": "no usable human gold document declares schema 1.2",
+        "status": "unavailable"
+      },
+      "metric": "codebase official exclusive pitch-list assignment: hard LCS-Dice range hit, type mismatch receives half credit",
+      "model_supported_types": {
+        "bootstrap_f1": null,
+        "clips": 1,
+        "macro_clip_f1": 0.0,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0.0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "samples": {
+          "011": {
+            "correct": 0.0,
+            "f1": 0.0,
+            "gold": 1,
+            "precision": 0.0,
+            "predicted": 2,
+            "recall": 0.0
+          }
+        }
+      },
+      "per_type": {
+        "extra_note": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 0,
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0
+            }
+          }
+        },
+        "missed_note": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 1.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 1.0,
+              "gold": 0,
+              "precision": 1.0,
+              "predicted": 0,
+              "recall": 1.0
+            }
+          }
+        },
+        "repetition": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 0,
+              "precision": 0.0,
+              "predicted": 1,
+              "recall": 0.0
+            }
+          }
+        },
+        "rhythm_error": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 1.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 1.0,
+              "gold": 0,
+              "precision": 1.0,
+              "predicted": 0,
+              "recall": 1.0
+            }
+          }
+        },
+        "wrong_note": {
+          "bootstrap_f1": null,
+          "clips": 1,
+          "macro_clip_f1": 0.0,
+          "micro": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0.0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          },
+          "samples": {
+            "011": {
+              "correct": 0.0,
+              "f1": 0.0,
+              "gold": 1,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0
+            }
+          }
+        }
+      }
+    },
+    "timestamp_event": {
+      "iou_0.3": {
+        "apparent_false_labels_per_minute": 8.183209884179435,
+        "bootstrap_f1": null,
+        "evaluated_audio_minutes": 0.24440287226001514,
+        "macro_f1": 0.0,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "per_type": {
+          "extra_note": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "repetition": {
+            "f1": 0.0,
+            "gold": 0,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 1,
+            "recall": 0.0
+          },
+          "wrong_note": {
+            "f1": 0.0,
+            "gold": 1,
+            "matched": 0,
+            "precision": 0.0,
+            "predicted": 0,
+            "recall": 0.0
+          }
+        }
+      },
+      "layer2": {
+        "bootstrap_f1": null,
+        "f1": 0.0,
+        "gold": 1,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0,
+        "types": [
+          "extra_note",
+          "missed_note",
+          "wrong_note"
+        ]
+      },
+      "layer3_rhythm": {
+        "bootstrap_f1": null,
+        "f1": 0.0,
+        "gold": 0,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0,
+        "types": [
+          "rhythm_error"
+        ]
+      },
+      "onset_100ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "onset_250ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "onset_500ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "onset_50ms": {
+        "bootstrap_f1": null,
+        "micro": {
+          "f1": 0.0,
+          "gold": 1,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        }
+      },
+      "repetition": {
+        "bootstrap_f1": null,
+        "f1": 0.0,
+        "gold": 0,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 1,
+        "recall": 0.0,
+        "types": [
+          "repetition"
+        ]
+      }
+    }
+  },
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "production_baseline": {
+      "checkpoint_read": false,
+      "reason": "single-stack evaluation requested",
+      "status": "skipped"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "protocol": {
+    "audit_targets_opened": false,
+    "environment": {
+      "basic_pitch": "0.4.0",
+      "basic_pitch_runtime": "tensorflow",
+      "cuda_visible_devices": "-1",
+      "executable": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "numpy": "1.26.4",
+      "platform": "Windows-10-10.0.26200-SP0",
+      "python": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:27:10) [MSC v.1944 64 bit (AMD64)]",
+      "tensorflow": "2.15.0",
+      "torch": "2.6.0+cu124"
+    },
+    "evaluate_command": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts/eval_datacreate_current.py",
+      "evaluate",
+      "--freeze-manifest",
+      "runs/eval-datacreate-011-current-20260918-v1/freeze_manifest.json",
+      "--gold-source",
+      "agent"
+    ],
+    "evaluate_process_pid": 30936,
+    "forbidden_sample_inputs_opened": [],
+    "freeze_command": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts/eval_datacreate_current.py",
+      "freeze",
+      "--sample-id",
+      "011",
+      "--output",
+      "runs/eval-datacreate-011-current-20260918-v1",
+      "--fresh-features",
+      "--skip-production-baseline",
+      "--cpu-threads",
+      "1"
+    ],
+    "freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-current-20260918-v1\\freeze_manifest.json",
+    "freeze_prediction_hashes_verified_before_gold": true,
+    "freeze_process_pid": 39088,
+    "gold_source": "agent",
+    "lockbox_accessed": false,
+    "midi_opened": false,
+    "note_maps_opened": false,
+    "old_predictions_opened": false,
+    "opened_sample_inputs": [
+      "labels.json"
+    ],
+    "prediction_files_mutated_during_evaluation": false,
+    "prior_alignments_opened": false,
+    "process_separation_passed": true,
+    "resource_coordination": {
+      "cpu_threads": 1,
+      "decision": "active GPU training observed; bounded CPU-only inference lease acquired",
+      "device": "cpu",
+      "lease": {
+        "lease_id": "c4fc6fa3-075a-401b-9340-59c102c7628a",
+        "resource": "cpu",
+        "track": "eval-datacreate-current:eval-datacreate-011-current-20260918-v1"
+      },
+      "status_before": {
+        "active_gpu_training": [
+          {
+            "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe -u scripts\\train_activation_candidate_scorer_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json --expected-release-sha256 5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705 --candidate-pool runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\candidate_pool.jsonl.gz --expected-pool-sha256 1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0 --sequence-supervision runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\sequence_supervision.jsonl.gz --expected-supervision-sha256 1b073c6d0cfe7cf1c4b0bdf4cf8608014bd65b1d11949124a2220f7211f2f81b --crf-checkpoint runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\activation-candidate-scorer-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 4 --batch-size 4096 --learning-rate 0.0005 --checkpoint-every-batches 50 --bootstrap-replicates 500 --device cuda --seed 20260919",
+            "phase": "gpu_active",
+            "pid": 33416,
+            "role": "other_training"
+          }
+        ],
+        "gpu_lease": null,
+        "gpu_lease_active": false,
+        "gpu_training_active": true,
+        "leases": {},
+        "ownership": {
+          "gpu_physical_pids": [
+            1888,
+            2408,
+            2648,
+            3088,
+            5376,
+            5476,
+            6248,
+            11096,
+            12944,
+            14144,
+            14308,
+            14784,
+            14816,
+            14896,
+            14940,
+            16520,
+            16544,
+            16776,
+            17624,
+            18324,
+            18600,
+            20596,
+            21044,
+            21100,
+            21320,
+            22172,
+            24168,
+            24516,
+            32052,
+            33416,
+            33968,
+            38324,
+            38540
+          ],
+          "gpu_reserved": [
+            {
+              "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe -u scripts\\train_activation_candidate_scorer_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json --expected-release-sha256 5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705 --candidate-pool runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\candidate_pool.jsonl.gz --expected-pool-sha256 1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0 --sequence-supervision runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\sequence_supervision.jsonl.gz --expected-supervision-sha256 1b073c6d0cfe7cf1c4b0bdf4cf8608014bd65b1d11949124a2220f7211f2f81b --crf-checkpoint runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\activation-candidate-scorer-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 4 --batch-size 4096 --learning-rate 0.0005 --checkpoint-every-batches 50 --bootstrap-replicates 500 --device cuda --seed 20260919",
+              "phase": "gpu_active",
+              "pid": 33416,
+              "role": "other_training"
+            }
+          ],
+          "heavy_cpu_pids": [
+            33416
+          ],
+          "paused_pids": [],
+          "waiting_or_stalled_pids": []
+        },
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+        "policy": {
+          "gpu_exclusive": true,
+          "max_heavy_cpu_jobs_during_gpu_training": 1,
+          "max_simultaneous_gpu_trainers": 1,
+          "physical_cpu_reserve_for_os": 2,
+          "recommended_loader_workers": 4,
+          "recommended_prefetch": 16,
+          "threads_per_loader_worker": 1
+        },
+        "recommended_concurrency": {
+          "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+          "current_heavy_jobs": 1,
+          "oversubscribed": false
+        },
+        "schema_version": "align-training-resource-status-v1",
+        "updated_utc": "2026-09-18T16:07:12.264508+00:00"
+      },
+      "status_snapshot": {
+        "active_gpu_training": [
+          {
+            "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe -u scripts\\train_activation_candidate_scorer_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json --expected-release-sha256 5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705 --candidate-pool runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\candidate_pool.jsonl.gz --expected-pool-sha256 1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0 --sequence-supervision runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\sequence_supervision.jsonl.gz --expected-supervision-sha256 1b073c6d0cfe7cf1c4b0bdf4cf8608014bd65b1d11949124a2220f7211f2f81b --crf-checkpoint runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\activation-candidate-scorer-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 4 --batch-size 4096 --learning-rate 0.0005 --checkpoint-every-batches 50 --bootstrap-replicates 500 --device cuda --seed 20260919",
+            "phase": "gpu_active",
+            "pid": 33416,
+            "role": "other_training"
+          }
+        ],
+        "gpu_lease": null,
+        "gpu_lease_active": false,
+        "gpu_training_active": true,
+        "leases": {
+          "cpu": {
+            "claimed_utc": "2026-09-18T16:08:43.973463+00:00",
+            "command": [
+              "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+              "scripts/eval_datacreate_current.py",
+              "freeze",
+              "--sample-id",
+              "011",
+              "--output",
+              "runs/eval-datacreate-011-current-20260918-v1",
+              "--fresh-features",
+              "--skip-production-baseline",
+              "--cpu-threads",
+              "1"
+            ],
+            "heartbeat_utc": "2026-09-18T16:08:43.973463+00:00",
+            "lease_id": "c4fc6fa3-075a-401b-9340-59c102c7628a",
+            "metadata": {
+              "cpu_threads": 1,
+              "device": "cpu",
+              "sample_ids": [
+                "011"
+              ]
+            },
+            "pid": 39088,
+            "track": "eval-datacreate-current:eval-datacreate-011-current-20260918-v1"
+          }
+        },
+        "ownership": {
+          "gpu_physical_pids": [
+            1888,
+            2408,
+            2648,
+            3088,
+            5376,
+            5476,
+            6248,
+            11096,
+            12944,
+            14144,
+            14308,
+            14784,
+            14816,
+            14896,
+            14940,
+            16520,
+            16544,
+            16776,
+            17624,
+            18324,
+            18600,
+            20596,
+            21044,
+            21100,
+            21320,
+            22172,
+            24168,
+            24516,
+            32052,
+            33416,
+            33968,
+            38324,
+            38540
+          ],
+          "gpu_reserved": [
+            {
+              "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe -u scripts\\train_activation_candidate_scorer_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json --expected-release-sha256 5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705 --candidate-pool runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\candidate_pool.jsonl.gz --expected-pool-sha256 1ff56ce5e63269dda8f6582187cd9bea204b3611d808f5c87f3b8f4a2b144fa0 --sequence-supervision runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\basic-pitch-activation-lattice-v1\\sequence_supervision.jsonl.gz --expected-supervision-sha256 1b073c6d0cfe7cf1c4b0bdf4cf8608014bd65b1d11949124a2220f7211f2f81b --crf-checkpoint runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\activation-candidate-scorer-v1 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 4 --batch-size 4096 --learning-rate 0.0005 --checkpoint-every-batches 50 --bootstrap-replicates 500 --device cuda --seed 20260919",
+              "phase": "gpu_active",
+              "pid": 33416,
+              "role": "other_training"
+            }
+          ],
+          "heavy_cpu_pids": [
+            33416
+          ],
+          "paused_pids": [],
+          "waiting_or_stalled_pids": []
+        },
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+        "policy": {
+          "gpu_exclusive": true,
+          "max_heavy_cpu_jobs_during_gpu_training": 1,
+          "max_simultaneous_gpu_trainers": 1,
+          "physical_cpu_reserve_for_os": 2,
+          "recommended_loader_workers": 4,
+          "recommended_prefetch": 16,
+          "threads_per_loader_worker": 1
+        },
+        "recommended_concurrency": {
+          "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+          "current_heavy_jobs": 1,
+          "oversubscribed": false
+        },
+        "schema_version": "align-training-resource-status-v1",
+        "updated_utc": "2026-09-18T16:08:43.973463+00:00"
+      },
+      "tensorflow_gpu_hidden": true
+    },
+    "sample_files_mutated": false,
+    "sample_read_guard_enforced": true,
+    "schema_1_1_scoreability": "official only after score_part/core note projection audit",
+    "tuning_performed": false,
+    "two_process_freeze_evaluate": true
+  },
+  "sample_007": {
+    "current": {
+      "candidate_union_all_count": null,
+      "canonical_predicted_note_count": null,
+      "decoded_event_count": null,
+      "error_label_count": 0,
+      "retained_candidate_count": null,
+      "score_count": null
+    },
+    "reason": "strict subset evaluation forbids prior diagnostics",
+    "status": "not_opened"
+  },
+  "schema_version": "align-datacreate-real-evaluation-v2"
+}

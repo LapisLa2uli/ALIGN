@@ -1,0 +1,241 @@
+{
+  "audio_inference_rerun": false,
+  "gold_opened_only_after_source_freeze_verification": true,
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "error_heads_v3": {
+      "balanced_policy_evaluated_as_alternate": true,
+      "classifier_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "classifier_checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "classifier_retrained": false,
+      "compatible": true,
+      "decode_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\decode_config.json",
+      "decode_config_schema_version": "align-error-heads-v3-decode-config-v1",
+      "decode_config_sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4",
+      "experiment_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\config.json",
+      "experiment_config_sha256": "456224d716596bad8106d275cee362a4f1fa8953565dde4be9635a3558f7bc81",
+      "experiment_schema_version": "align-error-heads-v3-experiment-v1",
+      "policy": "completed v3 maximum-F1 sequence-cluster decoder applied to the exact completed v2 head and hash-compatible frozen upstream",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\report.json",
+      "report_schema_version": "align-error-heads-v3-report-v1",
+      "report_sha256": "40784dc0a0877def80f50696b97ca6e0f8f43d3718158f84650699377b60b1bd",
+      "source_v2_freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\integrated-validation-rerun-20260915\\freeze_manifest.json",
+      "source_v2_freeze_manifest_sha256": "9e9e10405d0a16de3be11ba88f74302c6e13c4ad53f3a7404b21d1bc4b5f188e"
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "prediction_hashes": {
+    "rules": {
+      "aggregate_sha256": "d211c8171cac15c081989b3a706661ff27aa0fa5e160b44e1dd8f34af576d656",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\rules\\005.json",
+          "sample": "005",
+          "sha256": "c50a2675747b456b6781685b4564fc2a511b1b27e8d1d8ea0bf2cdd5f1b0a34e"
+        }
+      ]
+    },
+    "v2": {
+      "aggregate_sha256": "fe9a5e293d278b02aec2a1729c04c33ad4395e2cb76345fae5460f8f95b74abb",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v2\\005.json",
+          "sample": "005",
+          "sha256": "412979a72545163b98aa4db66ea2778447066a57c6e88ab6a9211230f2b57b25"
+        }
+      ]
+    },
+    "v3": {
+      "aggregate_sha256": "a156c5c5281c35ca7adabae1067ca2cddf34826cd3bbc38c940a65ba4e3de1fe",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3\\005.json",
+          "sample": "005",
+          "sha256": "7c5209617e30387889f5f8d7df08dca10adcfc9fef52ed7d354458145c0207f1"
+        }
+      ]
+    },
+    "v3_balanced": {
+      "aggregate_sha256": "e7ded03bf10f1809218f74bfe85640b73995c0e8272a21dd099bb6c3ea035fcc",
+      "files": [
+        {
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\predictions\\v3_balanced\\005.json",
+          "sample": "005",
+          "sha256": "da3123ff58abec711e7a79b8010593ca5805952ed91fe9faff7ed5117cbdc97c"
+        }
+      ]
+    }
+  },
+  "prediction_models": [
+    "v3",
+    "v3_balanced",
+    "v2",
+    "rules"
+  ],
+  "sample_ids": [
+    "005"
+  ],
+  "schema_version": "align-datacreate-canonical-note-wise-freeze-reference-v1",
+  "source_freeze_integrity_verified": true,
+  "source_freeze_manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-error-heads-v3-agent-labels-20260915\\freeze_manifest.json",
+  "source_freeze_manifest_sha256": "af801c43bc6abc85d2eb161e74f363f5a42e5abf483342726f6f5e6e3e3adf1a"
+}

@@ -1,0 +1,41 @@
+{
+  "status": "interrupted_for_optimization",
+  "interrupted_at_local": "2026-09-14T23:41:35+08:00",
+  "requested_scope": "end-to-end process chain only",
+  "observed_process_chain": {
+    "wrapper_pid": 8500,
+    "child_pid": 24284,
+    "stopped": true
+  },
+  "mid_epoch_progress": {
+    "stage": "vectorized_local",
+    "epoch": 1,
+    "rows_completed": 13750,
+    "rows_total": 14718,
+    "candidate_groups_constructed": 1034326,
+    "resumable": false,
+    "reason": "v1 wrote optimizer and RNG state only at completed epoch boundaries"
+  },
+  "latest_valid_completed_phase": {
+    "stage": "initialized_alignment",
+    "local_epoch": 0,
+    "path_epoch": 0,
+    "validation_rows": 100,
+    "validation_joint_f1_50ms": 0.7385287691187181,
+    "last_checkpoint": {
+      "path": "last_checkpoint.pt",
+      "sha256": "41488bf544ba480c91668ff34e9fe6f9395c780ed96220f99aaed141274eec93",
+      "schema_version": "align-end-to-end-joint-v1",
+      "optimizer_stage": "vectorized_local",
+      "optimizer_state_present": true,
+      "history_rows": 1
+    },
+    "selected_checkpoint": {
+      "path": "joint_decoder.pt",
+      "sha256": "cd6177414b2cd2544bd9d8b1084442d561265dab30a25cf62927082ab9264963"
+    }
+  },
+  "half_written_artifacts_accepted": false,
+  "alignment_only_process_touched": false,
+  "locked_test_touched": false
+}

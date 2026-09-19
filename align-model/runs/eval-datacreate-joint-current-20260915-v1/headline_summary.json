@@ -1,0 +1,932 @@
+{
+  "counts": {
+    "discovered": 94,
+    "empty_unreviewed": 75,
+    "expected": 94,
+    "formal_schema_1_2_gold_clips": 0,
+    "gold_evaluable": 19,
+    "inference_failed": 0,
+    "inference_succeeded": 94,
+    "missing_labels": 0,
+    "note_alignment_artifacts": 94,
+    "partial_take_metadata": 94,
+    "reviewed_clean_empty": 0,
+    "usable_human_labels": 55
+  },
+  "data_integrity": {
+    "label_validation_failure_samples": [],
+    "low_candidate_pitch_overlap_samples": [],
+    "metadata_sample_id_mismatches": [],
+    "score_audio_structural_failures": 0
+  },
+  "feature_cache_sources": {
+    "sample_hash_validated_cache": 94
+  },
+  "headline_metrics": {
+    "enhanced_schema_1_1_score_range": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.009950495049504949,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.030927835051546393
+      },
+      "clips": 19,
+      "macro_clip_f1": 0.006578947368421052,
+      "micro": {
+        "f1": 0.01020408163265306,
+        "gold": 51,
+        "matched": 0.5,
+        "precision": 0.010638297872340425,
+        "predicted": 47,
+        "recall": 0.00980392156862745
+      },
+      "samples": {
+        "001": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "002": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "003": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "005": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 6,
+          "precision": 0.0,
+          "predicted": 6,
+          "recall": 0.0
+        },
+        "006": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "008": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 5,
+          "recall": 0.0
+        },
+        "010": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "012": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "013": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 6,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "014": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "016": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "017": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "019": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "020": {
+          "correct": 0.5,
+          "f1": 0.125,
+          "gold": 3,
+          "precision": 0.1,
+          "predicted": 5,
+          "recall": 0.16666666666666666
+        },
+        "029": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "030": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "033": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "034": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "035": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 5,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        }
+      }
+    },
+    "formal_schema_1_2": {
+      "clips": 0,
+      "reason": "no usable human gold document declares schema 1.2",
+      "status": "unavailable"
+    },
+    "layer2": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 31,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 30,
+      "recall": 0.0,
+      "types": [
+        "extra_note",
+        "missed_note",
+        "wrong_note"
+      ]
+    },
+    "layer3_rhythm": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 5,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 4,
+      "recall": 0.0,
+      "types": [
+        "rhythm_error"
+      ]
+    },
+    "model_supported_score_range": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.012048192771084336,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.03658536585365854
+      },
+      "clips": 19,
+      "macro_clip_f1": 0.006578947368421052,
+      "micro": {
+        "f1": 0.01234567901234568,
+        "gold": 34,
+        "matched": 0.5,
+        "precision": 0.010638297872340425,
+        "predicted": 47,
+        "recall": 0.014705882352941176
+      },
+      "samples": {
+        "001": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "002": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "003": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "005": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 6,
+          "precision": 0.0,
+          "predicted": 6,
+          "recall": 0.0
+        },
+        "006": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "008": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 5,
+          "recall": 0.0
+        },
+        "010": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "012": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "013": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "014": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "016": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 2,
+          "recall": 0.0
+        },
+        "017": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 0,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "019": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 2,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "020": {
+          "correct": 0.5,
+          "f1": 0.125,
+          "gold": 3,
+          "precision": 0.1,
+          "predicted": 5,
+          "recall": 0.16666666666666666
+        },
+        "029": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        },
+        "030": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "033": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 3,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "034": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 1,
+          "precision": 0.0,
+          "predicted": 1,
+          "recall": 0.0
+        },
+        "035": {
+          "correct": 0.0,
+          "f1": 0.0,
+          "gold": 4,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        }
+      }
+    },
+    "repetition": {
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "f1": 0.0,
+      "gold": 2,
+      "matched": 0,
+      "precision": 0.0,
+      "predicted": 13,
+      "recall": 0.0,
+      "types": [
+        "repetition"
+      ]
+    },
+    "timestamp_iou_0.3": {
+      "apparent_false_labels_per_minute": 4.536025589250739,
+      "bootstrap_f1": {
+        "lower_95": 0.0,
+        "median": 0.0,
+        "replicates": 2000,
+        "unit": "clip",
+        "upper_95": 0.0
+      },
+      "evaluated_audio_minutes": 10.361493575207863,
+      "macro_f1": 0.0,
+      "micro": {
+        "f1": 0.0,
+        "gold": 55,
+        "matched": 0,
+        "precision": 0.0,
+        "predicted": 47,
+        "recall": 0.0
+      },
+      "per_type": {
+        "bad_start": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "bad_timbre": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "click": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "extra_note": {
+          "f1": 0.0,
+          "gold": 10,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 27,
+          "recall": 0.0
+        },
+        "missed_note": {
+          "f1": 0.0,
+          "gold": 9,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "repetition": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 13,
+          "recall": 0.0
+        },
+        "rhythm_error": {
+          "f1": 0.0,
+          "gold": 5,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 4,
+          "recall": 0.0
+        },
+        "sliding": {
+          "f1": 0.0,
+          "gold": 4,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "squeak": {
+          "f1": 0.0,
+          "gold": 2,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 0,
+          "recall": 0.0
+        },
+        "wrong_note": {
+          "f1": 0.0,
+          "gold": 12,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 3,
+          "recall": 0.0
+        }
+      }
+    },
+    "timestamp_onset_tolerances": {
+      "onset_100ms": {
+        "bootstrap_f1": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "micro": {
+          "f1": 0.0,
+          "gold": 55,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 47,
+          "recall": 0.0
+        }
+      },
+      "onset_250ms": {
+        "bootstrap_f1": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "micro": {
+          "f1": 0.0,
+          "gold": 55,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 47,
+          "recall": 0.0
+        }
+      },
+      "onset_500ms": {
+        "bootstrap_f1": {
+          "lower_95": 0.0,
+          "median": 0.01923076923076923,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.061224489795918366
+        },
+        "micro": {
+          "f1": 0.019607843137254905,
+          "gold": 55,
+          "matched": 1,
+          "precision": 0.02127659574468085,
+          "predicted": 47,
+          "recall": 0.01818181818181818
+        }
+      },
+      "onset_50ms": {
+        "bootstrap_f1": {
+          "lower_95": 0.0,
+          "median": 0.0,
+          "replicates": 2000,
+          "unit": "clip",
+          "upper_95": 0.0
+        },
+        "micro": {
+          "f1": 0.0,
+          "gold": 55,
+          "matched": 0,
+          "precision": 0.0,
+          "predicted": 47,
+          "recall": 0.0
+        }
+      }
+    }
+  },
+  "historical_comparison": {
+    "current_macro_clip_f1": 0.006578947368421052,
+    "delta": -0.018921052631578946,
+    "historical_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\stages-random12k-setsoft",
+    "historical_macro_clip_f1": 0.0255,
+    "intersection_clips": 19,
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-typed\\summary.json",
+    "status": "comparable_under_same_codebase_pitch_list_definition",
+    "warning": "Both are sparse enhanced-1.1 score-range diagnostics, not a formal schema-1.2 real-test score."
+  },
+  "limitations": {
+    "empty_unreviewed_are_clean_negatives": false,
+    "formal_schema_1_2": "unavailable unless a usable human labels document declares schema 1.2",
+    "note_f1": "not reported: DataCreate has no independent human note transcription ground truth",
+    "precision_warning": "Human files have no corpus-level exhaustive review marker. Unmatched predictions and false-labels/minute may be valid unannotated errors and are reported as apparent values.",
+    "sparse_non_exhaustive": true,
+    "unsupported_human_types": [
+      "bad_start",
+      "bad_timbre",
+      "click",
+      "sliding",
+      "squeak"
+    ]
+  },
+  "model_assets": {
+    "basic_pitch": {
+      "files": 3,
+      "hash_definition": "SHA-256 over sorted relative path lengths, relative paths, and file bytes; plain file SHA-256 when the asset is one file",
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Lib\\site-packages\\basic_pitch\\saved_models\\icassp_2022\\nmp",
+      "tree_sha256": "ac3c00be17efba35f5c433df3cb304a52b89f3a79e0df5cfa115f245480c4bd3"
+    },
+    "selection": {
+      "active_checkpoint_read": false,
+      "error_heads_v2": {
+        "checkpoint_schema_version": "align-frozen-error-heads-v1",
+        "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+        "compatibility_basis": {
+          "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+          "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+          "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+        },
+        "compatible": true,
+        "history_epochs": 8,
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+        "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+        "report_schema_version": "align-frozen-error-heads-report-v2",
+        "schema_thresholds": {
+          "extra_note": 0.4,
+          "missed_note": 1.01,
+          "rhythm_error": 0.5,
+          "wrong_note": 0.4
+        }
+      },
+      "excluded_active_training": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+        "read": false,
+        "reason": "last_checkpoint.pt is active/half-written by policy"
+      },
+      "joint_aligner_decoder": {
+        "checkpoint_schema_version": "align-end-to-end-joint-v2",
+        "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+        "completion": {
+          "best_validation_present": true,
+          "history_epochs": 1,
+          "progress": {
+            "local_cursor": 0,
+            "local_epoch": 0,
+            "local_in_epoch": 0,
+            "local_total_groups": 0,
+            "local_total_loss": 0.0,
+            "path_cursor": 0,
+            "path_epoch": 0,
+            "path_in_epoch": 0,
+            "path_total_loss": 0.0,
+            "path_trained": 0
+          },
+          "schema_version": "align-end-to-end-joint-v2"
+        },
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+        "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+        "report_schema_version": "align-end-to-end-experiment-report-v2"
+      },
+      "production_baseline": {
+        "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\path-1000-v4-interval\\joint_decoder.pt",
+        "reason": "checkpoint lacks completed sibling report",
+        "status": "not_runnable"
+      },
+      "report_selection_evidence": {
+        "eligible_non_diagnostic_checkpoints": [
+          {
+            "modified_ns": 1789408130276316800,
+            "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+          }
+        ],
+        "selected_rank": 1
+      },
+      "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+      "transcriber": {
+        "basic_pitch_version": "0.4.0",
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "candidate_version": "align-joint-candidates-v2-short-rescue",
+        "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+        "config": {
+          "candidate_generation": "align-joint-candidates-v2-short-rescue",
+          "decode_configs": [
+            {
+              "adaptive_short_note_rescue": true,
+              "frame_threshold": 0.25,
+              "harmonic_overlap_ratio": 0.55,
+              "infer_onsets": true,
+              "maximum_frequency": 2600.0,
+              "melodia_trick": true,
+              "merge_boundary_window_frames": 2,
+              "merge_contour_continuity_threshold": 0.2,
+              "merge_frame_continuity_threshold": 0.18,
+              "merge_onset_threshold": 0.6,
+              "merge_same_pitch_gap_sec": 0.06,
+              "merge_unconditional_gap_sec": 0.025,
+              "minimum_frequency": 45.0,
+              "minimum_note_length_ms": 30.0,
+              "multiple_pitch_bends": true,
+              "onset_threshold": 0.25,
+              "rescue_combined_threshold": 0.31,
+              "rescue_confidence_floor": 0.65,
+              "rescue_contour_threshold": 0.2,
+              "rescue_frame_threshold": 0.18,
+              "rescue_max_note_length_ms": 110.0,
+              "rescue_min_note_length_ms": 20.0,
+              "rescue_onset_threshold": 0.28,
+              "rescue_overlap_ratio": 0.35,
+              "rescue_pitch_margin_threshold": -0.08,
+              "written_midi_max": 96,
+              "written_midi_min": 50
+            },
+            {
+              "adaptive_short_note_rescue": false,
+              "frame_threshold": 0.3,
+              "harmonic_overlap_ratio": 0.55,
+              "infer_onsets": true,
+              "maximum_frequency": 2600.0,
+              "melodia_trick": true,
+              "merge_boundary_window_frames": 2,
+              "merge_contour_continuity_threshold": 0.2,
+              "merge_frame_continuity_threshold": 0.18,
+              "merge_onset_threshold": 0.6,
+              "merge_same_pitch_gap_sec": 0.1,
+              "merge_unconditional_gap_sec": 0.025,
+              "minimum_frequency": 45.0,
+              "minimum_note_length_ms": 45.0,
+              "multiple_pitch_bends": true,
+              "onset_threshold": 0.35,
+              "rescue_combined_threshold": 0.31,
+              "rescue_confidence_floor": 0.65,
+              "rescue_contour_threshold": 0.2,
+              "rescue_frame_threshold": 0.18,
+              "rescue_max_note_length_ms": 110.0,
+              "rescue_min_note_length_ms": 20.0,
+              "rescue_onset_threshold": 0.28,
+              "rescue_overlap_ratio": 0.35,
+              "rescue_pitch_margin_threshold": -0.08,
+              "written_midi_max": 96,
+              "written_midi_min": 50
+            },
+            {
+              "adaptive_short_note_rescue": false,
+              "frame_threshold": 0.4,
+              "harmonic_overlap_ratio": 0.55,
+              "infer_onsets": true,
+              "maximum_frequency": 2600.0,
+              "melodia_trick": true,
+              "merge_boundary_window_frames": 2,
+              "merge_contour_continuity_threshold": 0.2,
+              "merge_frame_continuity_threshold": 0.18,
+              "merge_onset_threshold": 0.6,
+              "merge_same_pitch_gap_sec": 0.1,
+              "merge_unconditional_gap_sec": 0.025,
+              "minimum_frequency": 45.0,
+              "minimum_note_length_ms": 55.0,
+              "multiple_pitch_bends": true,
+              "onset_threshold": 0.5,
+              "rescue_combined_threshold": 0.31,
+              "rescue_confidence_floor": 0.65,
+              "rescue_contour_threshold": 0.2,
+              "rescue_frame_threshold": 0.18,
+              "rescue_max_note_length_ms": 110.0,
+              "rescue_min_note_length_ms": 20.0,
+              "rescue_onset_threshold": 0.28,
+              "rescue_overlap_ratio": 0.35,
+              "rescue_pitch_margin_threshold": -0.08,
+              "written_midi_max": 96,
+              "written_midi_min": 50
+            }
+          ],
+          "frozen": true,
+          "name": "Basic Pitch 0.4.0 activation cache"
+        },
+        "implementation": "Basic Pitch 0.4.0 frozen frontend"
+      }
+    }
+  },
+  "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-joint-current-20260915-v1\\report.json",
+  "report_sha256": "7344ce5ed0c85993819aca4840645d2f79f5425cb6b075fb1bc8b94b2277d802",
+  "runtime_seconds_per_sample": {
+    "maximum": 10.898450699998648,
+    "mean": 2.3425162680852853,
+    "median": 2.045072849999997,
+    "minimum": 0.5723940999996557,
+    "p95": 4.907368345000941
+  },
+  "runtime_seconds_sum": 220.1965292000168,
+  "sample_007": {
+    "current": {
+      "candidate_union_all_count": 284,
+      "canonical_predicted_note_count": 244,
+      "decoded_event_count": 139,
+      "error_label_count": 4,
+      "error_labels": [
+        {
+          "end_time": 9.6066,
+          "score_part": {
+            "core_end_note_index": 76,
+            "core_start_note_index": 76,
+            "end_measure": 119,
+            "end_note_index": 77,
+            "pad_notes": 1,
+            "start_measure": 119,
+            "start_note_index": 75
+          },
+          "start_time": 9.386,
+          "type": "rhythm_error"
+        },
+        {
+          "end_time": 18.3437,
+          "score_part": {
+            "core_end_note_index": 118,
+            "core_start_note_index": 103,
+            "end_measure": 122,
+            "end_note_index": 119,
+            "pad_notes": 1,
+            "start_measure": 121,
+            "start_note_index": 102
+          },
+          "start_time": 15.6941,
+          "type": "repetition"
+        },
+        {
+          "end_time": 18.8662,
+          "score_part": {
+            "core_end_note_index": 122,
+            "core_start_note_index": 121,
+            "end_measure": 123,
+            "end_note_index": 123,
+            "pad_notes": 1,
+            "start_measure": 122,
+            "start_note_index": 120
+          },
+          "start_time": 18.4366,
+          "type": "extra_note"
+        },
+        {
+          "end_time": 33.7707,
+          "score_part": {
+            "core_end_note_index": 230,
+            "core_start_note_index": 229,
+            "end_measure": 130,
+            "end_note_index": 231,
+            "pad_notes": 1,
+            "start_measure": 129,
+            "start_note_index": 228
+          },
+          "start_time": 33.4921,
+          "type": "extra_note"
+        }
+      ],
+      "retained_candidate_count": 139,
+      "score_count": 238
+    },
+    "prior": {
+      "candidate_union_all_count": 284,
+      "canonical_predicted_note_count": 244,
+      "independent_timing_reference_fitness": "insufficient",
+      "old_production_decoder_event_count": 139,
+      "retained_candidate_count_0.65": 139,
+      "score_count": 238,
+      "timing_free_coverage_upper_bound_0.65": 0.5630252100840336
+    },
+    "prior_diagnostic_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\real-audio-diagnostics\\007\\diagnostic-v1-20260915\\report.json",
+    "tuning_use": false
+  },
+  "schema_version": "align-datacreate-real-headline-v1",
+  "upstream_counts": {
+    "mapped_score_coverage": {
+      "maximum": 1.0,
+      "mean": 0.7472364101985541,
+      "median": 0.8189655172413793,
+      "minimum": 0.10606060606060606,
+      "p95": 0.9833333333333332
+    },
+    "per_clip_canonical_to_score": {
+      "maximum": 2.25,
+      "mean": 1.0961603486337996,
+      "median": 1.053458671604235,
+      "minimum": 0.5404040404040404,
+      "p95": 1.5533567774936057
+    },
+    "per_clip_retained_to_score": {
+      "maximum": 2.0,
+      "mean": 0.9573479309980345,
+      "median": 0.9368750374229089,
+      "minimum": 0.4540229885057471,
+      "p95": 1.47126168224299
+    },
+    "ratios_of_totals": {
+      "candidate_union_all_to_score": 1.3075408221875768,
+      "canonical_to_score": 1.0723721998851234,
+      "decoded_events_to_score": 0.8971034709116271,
+      "retained_candidates_to_score": 0.8971034709116271
+    },
+    "totals": {
+      "candidate_union_all": 15935,
+      "canonical_transcription": 13069,
+      "decoded_events": 10933,
+      "retained_candidates": 10933,
+      "score": 12187
+    }
+  }
+}

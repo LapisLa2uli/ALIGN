@@ -1,0 +1,61 @@
+{
+  "schema_version": "align-note-wise-promotion-hold-v1",
+  "created_utc": "2026-09-15T12:41:00Z",
+  "active": true,
+  "migration_execution_hold_active": false,
+  "official_metric": "note-wise canonical score-event scoring",
+  "timestamp_metrics": "diagnostic_only",
+  "requires_note_wise_rescore": true,
+  "heavy_restart_allowed": true,
+  "ordinary_validation_promotion_gate_active": true,
+  "promotion_allowed": false,
+  "lockbox_access_allowed": false,
+  "production_mutation_allowed": false,
+  "preserve": [
+    "packed caches",
+    "prepared local lattices",
+    "atomic model checkpoints",
+    "optimizer and scheduler state",
+    "deterministic sampler cursors"
+  ],
+  "migration_verification": {
+    "report": "../NOTE_WISE_METRIC_MIGRATION.md",
+    "schema": "align-note-wise-score-event-metric-v1",
+    "tests": {
+      "DataCreate": 72,
+      "align-model": 226,
+      "synth-pipeline": 35,
+      "total": 333
+    },
+    "verified": true
+  },
+  "execution_status": "unblocked_for_serial_note_wise_validation_or_retraining",
+  "next_job": "exact32-full358-note-wise-validation",
+  "jobs_requiring_note_wise_rerun": [
+    {
+      "job": "outputraw-full-validation-promotion",
+      "artifact": "runs/joint-outputraw-full-v1/training-v1-optimized/last_checkpoint.pt",
+      "action": "Rerun validation, bootstrap, and promotion gate with note-wise canonical score-event scoring; training loss is reusable.",
+      "retrain_required": false
+    },
+    {
+      "job": "candidate-rescorer-training-selection",
+      "artifact": "runs/joint-audit-v2/components/candidate-rescorer-v1/pause_checkpoint.pt",
+      "action": "Rerun deterministic training from the verified epoch-start checkpoint and select epoch/threshold using the note-wise metric.",
+      "retrain_required": true
+    },
+    {
+      "job": "weak-note-continuation-model-selection",
+      "artifact": "runs/joint-audit-v2/end-to-end-v2/weak-note-continuation-optimized/joint_decoder.pt",
+      "action": "Rerun validation/bootstrap/model comparison using note-wise canonical events before this checkpoint is eligible as an initializer or promoted model.",
+      "retrain_required": false
+    },
+    {
+      "job": "legacy-path-fallback-selection",
+      "artifact": "runs/joint-audit-v2/path-1000-v4-interval/joint_decoder.pt",
+      "action": "Rerun fallback comparison using note-wise canonical score-event scoring before fallback eligibility.",
+      "retrain_required": false
+    }
+  ],
+  "locked_test_touched": false
+}

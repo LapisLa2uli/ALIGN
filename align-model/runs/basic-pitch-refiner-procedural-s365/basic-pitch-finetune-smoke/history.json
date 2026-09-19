@@ -1,0 +1,169 @@
+{
+  "basic_pitch_version": "0.4.0",
+  "tensorflow_version": "2.15.0",
+  "device": "cpu",
+  "manifest": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\split.json",
+  "procedural_only": true,
+  "seed": 365,
+  "smoke": true,
+  "train_windows": 2,
+  "val_windows": 1,
+  "phases": [
+    {
+      "name": "heads",
+      "epochs": 1,
+      "learning_rate": 0.0003,
+      "checkpoint": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\checkpoints\\heads.best.keras",
+      "trainable_layers": [
+        "contours-reduced",
+        "conv2d_3",
+        "conv2d_5"
+      ],
+      "frozen_frontend": [
+        "batch_normalization",
+        "cq_t2010v2_1",
+        "flatten_audio_ch_1",
+        "harmonic-stacking-diff",
+        "harmonic_stacking",
+        "input_2",
+        "normalized_log_1",
+        "tf.expand_dims_1"
+      ],
+      "history": {
+        "loss": [
+          0.2613866925239563
+        ],
+        "contour_loss": [
+          0.1085047721862793
+        ],
+        "note_loss": [
+          0.10459327697753906
+        ],
+        "onset_loss": [
+          0.10254104435443878
+        ],
+        "val_loss": [
+          0.24240902066230774
+        ],
+        "val_contour_loss": [
+          0.10979916155338287
+        ],
+        "val_note_loss": [
+          0.09746024757623672
+        ],
+        "val_onset_loss": [
+          0.09004919230937958
+        ]
+      }
+    },
+    {
+      "name": "branches",
+      "epochs": 1,
+      "learning_rate": 0.0001,
+      "checkpoint": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\checkpoints\\branches.best.keras",
+      "trainable_layers": [
+        "batch_normalization_3",
+        "contours-reduced",
+        "conv2d_2",
+        "conv2d_3",
+        "conv2d_4",
+        "conv2d_5"
+      ],
+      "frozen_frontend": [
+        "batch_normalization",
+        "cq_t2010v2_1",
+        "flatten_audio_ch_1",
+        "harmonic-stacking-diff",
+        "harmonic_stacking",
+        "input_2",
+        "normalized_log_1",
+        "tf.expand_dims_1"
+      ],
+      "history": {
+        "loss": [
+          0.25025585293769836
+        ],
+        "contour_loss": [
+          0.10337597876787186
+        ],
+        "note_loss": [
+          0.09451284259557724
+        ],
+        "onset_loss": [
+          0.10405503213405609
+        ],
+        "val_loss": [
+          0.23224307596683502
+        ],
+        "val_contour_loss": [
+          0.10810928791761398
+        ],
+        "val_note_loss": [
+          0.09348616749048233
+        ],
+        "val_onset_loss": [
+          0.084702268242836
+        ]
+      }
+    },
+    {
+      "name": "trunk",
+      "epochs": 1,
+      "learning_rate": 3e-05,
+      "checkpoint": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\checkpoints\\trunk.best.keras",
+      "trainable_layers": [
+        "batch_normalization_2",
+        "batch_normalization_3",
+        "contours-reduced",
+        "conv2d_1",
+        "conv2d_2",
+        "conv2d_3",
+        "conv2d_4",
+        "conv2d_5"
+      ],
+      "frozen_frontend": [
+        "batch_normalization",
+        "cq_t2010v2_1",
+        "flatten_audio_ch_1",
+        "harmonic-stacking-diff",
+        "harmonic_stacking",
+        "input_2",
+        "normalized_log_1",
+        "tf.expand_dims_1"
+      ],
+      "history": {
+        "loss": [
+          0.2503189444541931
+        ],
+        "contour_loss": [
+          0.10934390127658844
+        ],
+        "note_loss": [
+          0.0955771952867508
+        ],
+        "onset_loss": [
+          0.1000697910785675
+        ],
+        "val_loss": [
+          0.23006971180438995
+        ],
+        "val_contour_loss": [
+          0.10795055329799652
+        ],
+        "val_note_loss": [
+          0.09258219599723816
+        ],
+        "val_onset_loss": [
+          0.08351223170757294
+        ]
+      }
+    }
+  ],
+  "saved_model": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\saved_model",
+  "final_checkpoint": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\checkpoints\\final.weights.h5",
+  "onnx": {
+    "status": "exported",
+    "path": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\basic_pitch_finetuned.onnx"
+  },
+  "history": "align-model\\runs\\basic-pitch-refiner-procedural-s365\\basic-pitch-finetune-smoke\\history.json"
+}

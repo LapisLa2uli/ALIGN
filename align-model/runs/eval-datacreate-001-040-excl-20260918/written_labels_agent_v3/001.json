@@ -1,0 +1,179 @@
+{
+  "agent_labeling": {
+    "kept_counts_by_type": {
+      "extra_note": 3
+    },
+    "method": "align_error_heads_v3",
+    "pipeline": {
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 15.82517006802721,
+          "frames": 348945,
+          "sample_rate": 22050,
+          "sha256": "b3afa8725fd38cddd489e40e8088e1be573313558c122423c8013888b1152a76"
+        },
+        "candidate_count": 51,
+        "candidate_pitch_in_score_ratio": 0.9803921568627451,
+        "candidate_to_score_count_ratio": 1.0408163265306123,
+        "candidate_union_all_count": 69,
+        "canonical_to_score_count_ratio": 1.0816326530612246,
+        "canonical_transcription_count": 53,
+        "copy_event_count": 0,
+        "decoded_event_count": 51,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 47,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 47
+        },
+        "path_score": 31.64092254638672,
+        "retained_candidate_count": 51,
+        "score_event_count": 49,
+        "unmapped_event_count": 4
+      },
+      "error_heads_checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "evaluation_model": "v3",
+      "intonation_masked": true,
+      "joint_checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "range_decoder": "sequence_cluster_v3",
+      "sample_id": "001",
+      "upstream_frozen": true,
+      "v3_decode_config_sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4"
+    },
+    "replaced_previous_agent_labels": true,
+    "source_eval": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-001-040-excl-20260918\\report.json",
+    "source_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-all94-agent-note-wise-20260915\\predictions\\v3\\001.json",
+    "transcriber": "basic-pitch-frozen",
+    "uses_project_alignment_or_error_models": true,
+    "written_utc": "2026-09-18T13:49:08.947859+00:00"
+  },
+  "annotator_id": "cursor_agent_error_heads_v3",
+  "audio_reference": "performance_audio.wav",
+  "labels": [
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0022",
+        "note_0023"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 8.1205,
+      "extra_copies": null,
+      "id": "agent_0000",
+      "measure_number": 2,
+      "note_id": "note_0022",
+      "note_ids": [
+        "note_0021",
+        "note_0022",
+        "note_0023",
+        "note_0024"
+      ],
+      "pitches": [
+        91,
+        90,
+        88,
+        86
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 23,
+        "core_start_note_index": 22,
+        "end_measure": 2,
+        "end_note_index": 24,
+        "pad_notes": 1,
+        "start_measure": 2,
+        "start_note_index": 21
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 5.854,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0026",
+        "note_0027"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 9.3744,
+      "extra_copies": null,
+      "id": "agent_0001",
+      "measure_number": 2,
+      "note_id": "note_0026",
+      "note_ids": [
+        "note_0025",
+        "note_0026",
+        "note_0027",
+        "note_0028"
+      ],
+      "pitches": [
+        84,
+        83,
+        81,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 27,
+        "core_start_note_index": 26,
+        "end_measure": 2,
+        "end_note_index": 28,
+        "pad_notes": 1,
+        "start_measure": 2,
+        "start_note_index": 25
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 9.1422,
+      "type": "extra_note"
+    },
+    {
+      "comment": "ALIGN error-heads v3 prediction from the DataCreate 001-040 exclusion eval.",
+      "core_note_ids": [
+        "note_0029",
+        "note_0030"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 10.1303,
+      "extra_copies": null,
+      "id": "agent_0002",
+      "measure_number": 2,
+      "note_id": "note_0029",
+      "note_ids": [
+        "note_0028",
+        "note_0029",
+        "note_0030",
+        "note_0031"
+      ],
+      "pitches": [
+        79,
+        78,
+        76,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 30,
+        "core_start_note_index": 29,
+        "end_measure": 2,
+        "end_note_index": 31,
+        "pad_notes": 1,
+        "start_measure": 2,
+        "start_note_index": 28
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 9.8504,
+      "type": "extra_note"
+    }
+  ],
+  "schema_version": "1.2",
+  "self_reported": []
+}

@@ -1,0 +1,480 @@
+{
+  "command": [
+    "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+    "scripts\\eval_datacreate_current.py",
+    "freeze",
+    "--sample-id",
+    "011",
+    "--output",
+    "runs\\eval-datacreate-011-predict-20260919-130111",
+    "--device",
+    "cpu",
+    "--cpu-threads",
+    "2",
+    "--skip-production-baseline"
+  ],
+  "created_utc": "2026-09-19T05:01:40.211694+00:00",
+  "discovered_expected": 1,
+  "environment": {
+    "basic_pitch": "0.4.0",
+    "basic_pitch_runtime": "tensorflow",
+    "cuda_visible_devices": "-1",
+    "executable": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+    "numpy": "1.26.4",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:27:10) [MSC v.1944 64 bit (AMD64)]",
+    "tensorflow": "2.15.0",
+    "torch": "2.6.0+cu124"
+  },
+  "expected": 1,
+  "gold_access": {
+    "forbidden_inputs_opened": [
+      "basic_pitch_cache.npz"
+    ],
+    "labels_opened": false,
+    "opened_sample_inputs": [
+      "metadata.json",
+      "performance_audio.wav"
+    ],
+    "phase": "freeze",
+    "process_separation_required": true,
+    "read_guard_enforced": true,
+    "source_contract": "Only verified_score.musicxml, performance_audio.wav, hash-validated Basic Pitch activations, metadata pitch convention, completed checkpoint/config/report files, and training resource status were read."
+  },
+  "inference_failed": 0,
+  "inference_succeeded": 1,
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "production_baseline": {
+      "checkpoint_read": false,
+      "reason": "single-stack evaluation requested",
+      "status": "skipped"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "output": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-predict-20260919-130111",
+  "process": {
+    "phase": "inference_freeze",
+    "pid": 53704
+  },
+  "resource_coordination": {
+    "cpu_threads": 2,
+    "decision": "CPU-only lease acquired; no active GPU lease observed",
+    "device": "cpu",
+    "lease": {
+      "lease_id": "ac9ea047-3651-455e-991f-750f0bc64873",
+      "resource": "cpu",
+      "track": "eval-datacreate-current:eval-datacreate-011-predict-20260919-130111"
+    },
+    "status_before": {
+      "active_gpu_training": [],
+      "gpu_lease": null,
+      "gpu_lease_active": false,
+      "gpu_training_active": false,
+      "leases": {
+        "gpu_training": {
+          "claimed_utc": "2026-09-19T04:58:17.501260+00:00",
+          "command": [
+            "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\train_drop_emit_lattice_v1.py"
+          ],
+          "heartbeat_utc": "2026-09-19T04:58:17.501260+00:00",
+          "lease_id": "a36226ce-4571-4188-82f8-c3a2986fda40",
+          "metadata": {
+            "device": "cuda",
+            "epochs": 2
+          },
+          "pid": 50244,
+          "track": "orn-v2-drop-emit-lattice-train"
+        }
+      },
+      "ownership": {
+        "gpu_physical_pids": [
+          1888,
+          2408,
+          2648,
+          3088,
+          5376,
+          5476,
+          6248,
+          11096,
+          12944,
+          14144,
+          14308,
+          14784,
+          14816,
+          14896,
+          14940,
+          16520,
+          16544,
+          16776,
+          17624,
+          18324,
+          18600,
+          20596,
+          21044,
+          21100,
+          21320,
+          22172,
+          24168,
+          24516,
+          32052,
+          33968,
+          38540
+        ],
+        "gpu_reserved": [],
+        "heavy_cpu_pids": [],
+        "paused_pids": [],
+        "waiting_or_stalled_pids": []
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+      "policy": {
+        "gpu_exclusive": true,
+        "max_heavy_cpu_jobs_during_gpu_training": 1,
+        "max_simultaneous_gpu_trainers": 1,
+        "physical_cpu_reserve_for_os": 2,
+        "recommended_loader_workers": 4,
+        "recommended_prefetch": 16,
+        "threads_per_loader_worker": 1
+      },
+      "recommended_concurrency": {
+        "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+        "current_heavy_jobs": 0,
+        "oversubscribed": false
+      },
+      "schema_version": "align-training-resource-status-v1",
+      "updated_utc": "2026-09-19T04:58:17.501260+00:00"
+    },
+    "status_snapshot": {
+      "active_gpu_training": [],
+      "gpu_lease": null,
+      "gpu_lease_active": false,
+      "gpu_training_active": false,
+      "leases": {
+        "cpu": {
+          "claimed_utc": "2026-09-19T05:01:17.295955+00:00",
+          "command": [
+            "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+            "scripts\\eval_datacreate_current.py",
+            "freeze",
+            "--sample-id",
+            "011",
+            "--output",
+            "runs\\eval-datacreate-011-predict-20260919-130111",
+            "--device",
+            "cpu",
+            "--cpu-threads",
+            "2",
+            "--skip-production-baseline"
+          ],
+          "heartbeat_utc": "2026-09-19T05:01:17.295955+00:00",
+          "lease_id": "ac9ea047-3651-455e-991f-750f0bc64873",
+          "metadata": {
+            "cpu_threads": 2,
+            "device": "cpu",
+            "sample_ids": [
+              "011"
+            ]
+          },
+          "pid": 53704,
+          "track": "eval-datacreate-current:eval-datacreate-011-predict-20260919-130111"
+        }
+      },
+      "ownership": {
+        "gpu_physical_pids": [
+          1888,
+          2408,
+          2648,
+          3088,
+          5376,
+          5476,
+          6248,
+          11096,
+          12944,
+          14144,
+          14308,
+          14784,
+          14816,
+          14896,
+          14940,
+          16520,
+          16544,
+          16776,
+          17624,
+          18324,
+          18600,
+          20596,
+          21044,
+          21100,
+          21320,
+          22172,
+          24168,
+          24516,
+          32052,
+          33968,
+          38540
+        ],
+        "gpu_reserved": [],
+        "heavy_cpu_pids": [],
+        "paused_pids": [],
+        "waiting_or_stalled_pids": []
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+      "policy": {
+        "gpu_exclusive": true,
+        "max_heavy_cpu_jobs_during_gpu_training": 1,
+        "max_simultaneous_gpu_trainers": 1,
+        "physical_cpu_reserve_for_os": 2,
+        "recommended_loader_workers": 4,
+        "recommended_prefetch": 16,
+        "threads_per_loader_worker": 1
+      },
+      "recommended_concurrency": {
+        "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+        "current_heavy_jobs": 0,
+        "oversubscribed": false
+      },
+      "schema_version": "align-training-resource-status-v1",
+      "updated_utc": "2026-09-19T05:01:17.295955+00:00"
+    },
+    "tensorflow_gpu_hidden": true
+  },
+  "samples": [
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 14.664172335600908,
+          "frames": 323345,
+          "sample_rate": 22050,
+          "sha256": "ed55e5b0ed4330bfeafdb4d95514c783cdb09dbec783d7112b3617d85234f6e9"
+        },
+        "candidate_count": 72,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8470588235294118,
+        "candidate_union_all_count": 95,
+        "canonical_to_score_count_ratio": 0.9764705882352941,
+        "canonical_transcription_count": 83,
+        "copy_event_count": 17,
+        "decoded_event_count": 72,
+        "deleted_score_event_count": 30,
+        "mapped_event_count": 66,
+        "mapped_score_coverage": 0.8117647058823529,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 66
+        },
+        "path_score": 30.293575286865234,
+        "retained_candidate_count": 72,
+        "score_event_count": 85,
+        "score_measure_max": 196,
+        "score_measure_min": 188,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-predict-20260919-130111\\feature-cache\\011.npz",
+        "frozen_copy_sha256": "4216ed664cbcbe4b561ab56a162ebd7f6c57e39d6b28ad5a619c972721c8663e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "ed55e5b0ed4330bfeafdb4d95514c783cdb09dbec783d7112b3617d85234f6e9"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\011\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "8fb8d400548a8d8d698a8460b2cde7b489428b8346d99d0cae697af12599ac93",
+        "rules": "1a88af68e64ade3e85091282fd4f6cf4655eebd02efb3278dd68c353c490d30d"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-predict-20260919-130111\\predictions\\011.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-011-predict-20260919-130111\\rules-baseline\\011.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3067016000059084,
+        "current_stack": 1.3984557000003406,
+        "features": 20.862845200004813,
+        "production_alignment": 0.0,
+        "total": 22.598150999998325
+      },
+      "sample": "011",
+      "status": "succeeded"
+    }
+  ],
+  "samples_root": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples",
+  "schema_version": "align-datacreate-real-freeze-v1",
+  "subset": {
+    "requested": true,
+    "sample_ids": [
+      "011"
+    ]
+  }
+}

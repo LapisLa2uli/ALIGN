@@ -1,0 +1,78 @@
+{
+  "status": "completed_timestamp_selection_held",
+  "requires_note_wise_rescore": true,
+  "promotion_allowed": false,
+  "restart_allowed": false,
+  "paused_at_local": "2026-09-15T12:40:32+08:00",
+  "owned_processes_stopped": true,
+  "owned_processes_remaining": 0,
+  "active_command": null,
+  "exact_restart_command": "& '.\\.venv-amt-bench\\Scripts\\python.exe' scripts/train_candidate_rescorer.py --manifest data-audit/2026-09-14-v2/split.json --basic-cache-root runs/joint-audit-v2/basic-pitch-cache --example-cache-path runs/joint-audit-v2/components/candidate-rescorer-v1/examples-floor-050.sqlite --output-dir runs/joint-audit-v2/components/candidate-rescorer-v1 --epochs 3 --batch-candidates 16384 --learning-rate 0.0003 --hidden-dim 64 --dropout 0.05 --candidate-floor 0.50 --global-candidate-gate 0.65 --hard-negative-ratio 1.0 --short-weight-lt-80ms 4 --short-weight-lt-120ms 3 --short-weight-lt-180ms 2 --workers 1 --prefetch 1 --device cuda --seed 365",
+  "interrupted_phase": {
+    "stage": "epoch_1_full_validation_threshold_calibration",
+    "train_epoch": 1,
+    "train_clips_completed": 14718,
+    "train_clips_total": 14718,
+    "validation_forward_clips_completed": 1871,
+    "validation_forward_clips_total": 1871,
+    "calibration_completed": false,
+    "verified_candidate_metrics_available": false
+  },
+  "pause_checkpoint": {
+    "path": "pause_checkpoint.pt",
+    "sha256": "5ac208ac07a17fa898f7321d217a8df6aa9c9e3ce7f74483432061dcc8ccc7fb",
+    "schema_version": "align-candidate-rescorer-pause-v1",
+    "contains_optimizer": true,
+    "contains_scheduler": true,
+    "contains_scaler": true,
+    "contains_rng": true,
+    "contains_sampler_cursor": true,
+    "recoverable_training_state": false,
+    "sampler_cursor": 0,
+    "discarded_in_memory_cursor": 14718,
+    "restart_required": true,
+    "reason": "The running v1 component trainer predated signal-safe mid-epoch checkpoint support and had not atomically serialized its trained model or optimizer before the requested pause. The pause checkpoint is an honest deterministic epoch-start state; it does not claim to contain the discarded in-memory epoch."
+  },
+  "example_cache": {
+    "path": "examples-floor-050.sqlite",
+    "schema_version": "align-joint-example-cache-v2",
+    "integrity_check": "ok",
+    "rows": 16589,
+    "candidate_floor": 0.5,
+    "locked_test_rows": 0
+  },
+  "latest_valid_verified_metrics": {
+    "source_report": "../../end-to-end-v2/weak-note-continuation-optimized/report.json",
+    "validation_rows": 1871,
+    "transcriber_note_f1_50ms": 0.8639180268113889,
+    "transcriber_precision_50ms": 0.8390895931019291,
+    "transcriber_recall_50ms": 0.8902605966511411,
+    "strict_joint_f1_50ms": 0.7049532218217164,
+    "conditional_mapping_accuracy_50ms": 0.8884565906309811,
+    "bootstrap_strict_joint_f1_50ms_lower_95": 0.6969169599478022
+  },
+  "candidate_checkpoint_written": true,
+  "completed_checkpoint": {
+    "path": "candidate_rescorer.pt",
+    "sha256": "9ae46bd9514e2594a48dcd46d1276a361fc9760c8c8d91619a6ca3721b749bde",
+    "schema_version": "align-candidate-rescorer-v1",
+    "timestamp_selected_threshold": 0.6799999999999999,
+    "timestamp_selection_valid_for_promotion": false
+  },
+  "latest_atomic_training_checkpoint": {
+    "path": "mid_epoch_checkpoint.pt",
+    "sha256": "3d0a0fae576ce00659244826b714811879ac35aeb0d99931f84df341d66f5754",
+    "schema_version": "align-candidate-rescorer-mid-epoch-v1",
+    "epoch": 3,
+    "cursor": 14500
+  },
+  "metric_hold": {
+    "official_metric": "note-wise canonical score-event scoring",
+    "timestamp_metrics": "diagnostic_only",
+    "reason": "Epoch and threshold selection directly maximized timestamp-tolerance F1.",
+    "required_rerun": "deterministic training from pause_checkpoint.pt with note-wise epoch and threshold selection",
+    "hold_marker": "runs/NOTE_WISE_PROMOTION_HOLD.json"
+  },
+  "half_written_artifacts_accepted": false,
+  "locked_test_touched": false
+}

@@ -1,0 +1,38 @@
+{
+  "config": {
+    "onset_threshold": 0.55,
+    "frame_threshold": 0.35,
+    "minimum_note_length_ms": 55.0,
+    "minimum_frequency": 45.0,
+    "maximum_frequency": 2600.0,
+    "infer_onsets": true,
+    "melodia_trick": true,
+    "multiple_pitch_bends": true,
+    "written_midi_min": 50,
+    "written_midi_max": 96,
+    "merge_same_pitch_gap_sec": 0.1,
+    "merge_onset_threshold": 0.6,
+    "harmonic_overlap_ratio": 0.55
+  },
+  "monophonic_pruning": true,
+  "validation": {
+    "precision": 0.6076845298281092,
+    "recall": 0.6438710829390233,
+    "f1": 0.6252546707702978,
+    "n_pred": 11868,
+    "n_target": 11201,
+    "n_matched": 7212,
+    "pred_target_ratio": 1.0595482546201231,
+    "n_clips": 100
+  },
+  "test_id": {
+    "precision": 0.6491931807822044,
+    "recall": 0.6646443905170805,
+    "f1": 0.6568279297145229,
+    "n_pred": 21938,
+    "n_target": 21428,
+    "n_matched": 14242,
+    "pred_target_ratio": 1.0238006346835915,
+    "n_clips": 200
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "holdout": "E:/output_2k_rawdata seed=365 first 10% then 100",
+  "weights": "align-model/runs/stages-random12k-typed",
+  "baseline_typed_stage2_dtw": {
+    "mean_melody_f1": 0.0739,
+    "mean_n_pred": 16.84,
+    "mean_n_gold": 5.18,
+    "mean_n_pred_rhythm": 12.38,
+    "mean_n_gold_rhythm": 0.63
+  },
+  "f1_winner": "heuristic_ewma_0.35",
+  "recommended": "gated_net_1.0",
+  "reason": "Official set-F1 is slightly higher for heuristic_ewma_0.35 (0.100 vs 0.092), but that still emits ~6.4 rhythm labels per clip against 0.63 gold. gated_net_1.0 keeps overall F1 above the old stage-2 DTW baseline (0.092 vs 0.074), matches n_pred to n_gold (5.80 vs 5.18), and raises rhythm-only F1 from 0.05 to 0.294.",
+  "pipeline_defaults": {
+    "use_dc_rhythm_alignment": true,
+    "rhythm_detector": "gated_net",
+    "rhythm_logit_override": 1.0,
+    "ewma_log_threshold": 0.25
+  },
+  "variants": {
+    "heuristic": {"mean_melody_f1": 0.098, "mean_n_pred": 11.82, "mean_rhythm_f1": 0.135, "mean_n_pred_rhythm": 7.36},
+    "gated_net_ckpt": {"mean_melody_f1": 0.093, "mean_n_pred": 9.08, "mean_rhythm_f1": 0.169, "mean_n_pred_rhythm": 4.62},
+    "gated_net_0.5": {"mean_melody_f1": 0.091, "mean_n_pred": 7.30, "mean_rhythm_f1": 0.213, "mean_n_pred_rhythm": 2.84},
+    "gated_net_1.0": {"mean_melody_f1": 0.092, "mean_n_pred": 5.80, "mean_rhythm_f1": 0.294, "mean_n_pred_rhythm": 1.34},
+    "net_ckpt": {"mean_melody_f1": 0.089, "mean_n_pred": 10.64, "mean_rhythm_f1": 0.051, "mean_n_pred_rhythm": 6.18},
+    "net_0.5": {"mean_melody_f1": 0.083, "mean_n_pred": 8.01, "mean_rhythm_f1": 0.066, "mean_n_pred_rhythm": 3.55},
+    "heuristic_ewma_0.35": {"mean_melody_f1": 0.100, "mean_n_pred": 10.90, "mean_rhythm_f1": 0.139, "mean_n_pred_rhythm": 6.44}
+  }
+}
