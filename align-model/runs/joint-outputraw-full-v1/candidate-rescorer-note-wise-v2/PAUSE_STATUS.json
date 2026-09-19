@@ -1,0 +1,49 @@
+{
+  "schema_version": "align-canonical-rescorer-pause-status-v1",
+  "updated_utc": "2026-09-16T14:50:00Z",
+  "status": "paused_for_external_transcriber_selection",
+  "owned_processes_stopped": true,
+  "resource_leases_cleared": true,
+  "gpu_compute_processes": [],
+  "heavy_cpu_processes": [],
+  "lockbox_touched": false,
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "final_model": {
+    "path": "candidate_rescorer.pt",
+    "sha256": "50880dadaf8f2a6166e149b85b11ab10193a04f09afec80dd1633fc4ee790bf7",
+    "completed_epochs": 6,
+    "best_train_only_canonical_holdout_f1": 0.9365145008218015,
+    "official_full_validation_completed": false
+  },
+  "resumable_checkpoint": {
+    "path": "pause_checkpoint.pt",
+    "sha256": "c46a6a95b13e9f912d8fab3b884ebf92941dea70f458130809b124e9136f4971",
+    "epoch": 6,
+    "position": 4000,
+    "ordinal": 3223,
+    "optimizer_state_present": true,
+    "scheduler_policy": "constant_learning_rate_no_scheduler",
+    "scheduler_state_key_present": true,
+    "scheduler_state_present": false,
+    "scaler_state_key_present": true,
+    "scaler_state_present": false,
+    "rng_state_present": true,
+    "data_cursor_present": true
+  },
+  "latest_official_full_validation": {
+    "candidate": "exact32_epoch10_fallback",
+    "rows": 358,
+    "transcription_f1": 0.6433616388796073,
+    "alignment_f1": 0.6322524276139706,
+    "combined_f1": 0.6104315512397973,
+    "combined_lower_95": 0.5937391114294557,
+    "combined_upper_95": 0.6271841365187758
+  },
+  "interrupted_followup": {
+    "operation": "full_358_note_wise_validation_of_new_rescorer",
+    "checkpoint_or_metrics_written": false,
+    "restart_allowed": false,
+    "restart_condition": "A new transcriber candidate is selected."
+  },
+  "exact_resume_command": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_canonical_candidate_rescorer.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --output-dir runs\\joint-outputraw-full-v1\\candidate-rescorer-note-wise-v2 --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 6 --batch-size 8192 --learning-rate 0.0002 --device cuda --checkpoint-every-rows 250 --resume-checkpoint runs\\joint-outputraw-full-v1\\candidate-rescorer-note-wise-v2\\pause_checkpoint.pt"
+}

@@ -1,0 +1,75 @@
+{
+  "schema_version": "align-outputraw-corrected-candidate-comparison-v1",
+  "metric_status": "legacy_timestamp_diagnostics_only",
+  "locked_test_touched": false,
+  "selection_set": {
+    "full_validation_rows": 358,
+    "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd"
+  },
+  "candidate_rescorer": {
+    "checkpoint_sha256": "9ae46bd9514e2594a48dcd46d1276a361fc9760c8c8d91619a6ca3721b749bde",
+    "validation_note_f1_50ms": 0.891413170632903,
+    "validation_note_f1_lower_95": 0.8869831525208917,
+    "count_ratio": 1.0193068563129164,
+    "same_pitch_split_rate": 0.1076362445236048,
+    "accepted": true
+  },
+  "failed_v1_full_358": {
+    "report": "../training-v1-optimized/report.json",
+    "note_f1_50ms": 0.8054830733469308,
+    "mapping_f1_50ms": 0.5892108450572999,
+    "strict_joint_f1_50ms": 0.5179065872084412,
+    "copy_f1_50ms": 0.41699939834819233,
+    "resume_accuracy": 0.0162900683131897,
+    "combined_f1": 0.38069464181225443,
+    "combined_lower_95": 0.36402551010969864
+  },
+  "exact32_rescored_full_358": {
+    "report": "../training-v2-exact32-rescored/report.json",
+    "transfer_coverage": 1.0,
+    "note_f1_50ms": 0.8432151136980219,
+    "count_ratio": 1.0068303306275985,
+    "same_pitch_split_rate": 0.09123979942975126,
+    "mapping_f1_50ms": 0.6033561321407804,
+    "strict_joint_f1_50ms": 0.5531495091994277,
+    "copy_f1_50ms": 0.4668765489985933,
+    "resume_accuracy": 0.017465293327362293,
+    "combined_f1": 0.46948091008810733,
+    "combined_lower_95": 0.4543445505054036
+  },
+  "exact32_rescored_residual_005_full_358": {
+    "report": "v2-residual-005-full358.json",
+    "note_f1_50ms": 0.8409677023210118,
+    "count_ratio": 1.015195010888933,
+    "same_pitch_split_rate": 0.09797181999902492,
+    "mapping_f1_50ms": 0.6411268071956737,
+    "strict_joint_f1_50ms": 0.5837651971018052,
+    "copy_f1_50ms": 0.5035326442496402,
+    "resume_accuracy": 0.014349775784753363,
+    "combined_f1": 0.48893885629296513,
+    "combined_lower_95": 0.472392417972656
+  },
+  "balanced_64_architecture_comparison": {
+    "selection_seed": 20260915,
+    "exact32_residual_005": {
+      "mapping_f1_50ms": 0.6533369853008307,
+      "strict_joint_f1_50ms": 0.5958139913673752,
+      "copy_f1_50ms": 0.45223325062034736,
+      "combined_f1": 0.5142945929148539,
+      "combined_lower_95": 0.47152631406486445
+    },
+    "inflated64_low_path_lr_residual_005": {
+      "mapping_f1_50ms": 0.6435417617526243,
+      "strict_joint_f1_50ms": 0.5871813665607949,
+      "copy_f1_50ms": 0.4395136778115501,
+      "combined_f1": 0.5030256012412723,
+      "combined_lower_95": 0.4589653668112746
+    },
+    "selected": "exact32_residual_005"
+  },
+  "promotion": {
+    "eligible": false,
+    "locked_test_evaluated": false,
+    "reason": "Best full-validation combined F1 and lower bound remain below 0.83 and 0.80."
+  }
+}

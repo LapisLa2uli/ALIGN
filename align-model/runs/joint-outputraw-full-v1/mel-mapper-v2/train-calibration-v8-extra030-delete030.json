@@ -1,0 +1,155 @@
+{
+  "schema_version": "align-grammar-mapper-v2-calibration-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "split": "train",
+  "selection": "deterministic hash-ordered group-disjoint train calibration",
+  "rows": 64,
+  "input": "oracle_notes",
+  "costs": {
+    "substitution": 1.5,
+    "extra": 0.3,
+    "deletion": 0.3,
+    "repeat": 0.2,
+    "no_restart_gap": 0.25,
+    "timing": 0.0,
+    "duration": 0.0
+  },
+  "operation_checkpoint": null,
+  "overall": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5380.5,
+    "predicted": 6407,
+    "gold": 6407,
+    "precision": 0.8397846105821758,
+    "recall": 0.8397846105821758,
+    "f1": 0.8397846105821758
+  },
+  "bootstrap_95": {
+    "replicates": 1000,
+    "lower": 0.8148741375065627,
+    "median": 0.8400521110170549,
+    "upper": 0.8638405387496935
+  },
+  "first_pass_only": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 3360.5,
+    "predicted": 3937,
+    "gold": 4070,
+    "precision": 0.8535687071374143,
+    "recall": 0.8256756756756757,
+    "f1": 0.8393905332833772
+  },
+  "by_copy_count": {
+    "2": {
+      "rows": 17,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 1895.5,
+        "predicted": 2283,
+        "gold": 2283,
+        "precision": 0.8302671922908453,
+        "recall": 0.8302671922908453,
+        "f1": 0.8302671922908453
+      }
+    },
+    "1": {
+      "rows": 32,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2718.5,
+        "predicted": 3257,
+        "gold": 3257,
+        "precision": 0.8346638010439055,
+        "recall": 0.8346638010439055,
+        "f1": 0.8346638010439055
+      }
+    },
+    "0": {
+      "rows": 15,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 766.5,
+        "predicted": 867,
+        "gold": 867,
+        "precision": 0.884083044982699,
+        "recall": 0.884083044982699,
+        "f1": 0.8840830449826991
+      }
+    }
+  },
+  "by_type": {
+    "match": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 3290.0,
+        "predicted": 3682,
+        "gold": 3512,
+        "precision": 0.8935361216730038,
+        "recall": 0.9367881548974943,
+        "f1": 0.9146510981373367
+      }
+    },
+    "copy": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2002.0,
+        "predicted": 2470,
+        "gold": 2337,
+        "precision": 0.8105263157894737,
+        "recall": 0.8566538296961917,
+        "f1": 0.8329519450800915
+      }
+    },
+    "substitute": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 0.0,
+        "predicted": 0,
+        "gold": 58,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "extra": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 61.0,
+        "predicted": 255,
+        "gold": 500,
+        "precision": 0.23921568627450981,
+        "recall": 0.122,
+        "f1": 0.1615894039735099
+      }
+    }
+  },
+  "repeat_structure": {
+    "rows": 49,
+    "source_accuracy": 0.20408163265306123,
+    "resume_accuracy": 0.5510204081632653
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

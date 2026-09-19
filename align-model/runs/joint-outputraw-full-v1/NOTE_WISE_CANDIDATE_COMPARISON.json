@@ -1,0 +1,50 @@
+{
+  "schema_version": "align-outputraw-note-wise-candidate-comparison-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "old_timestamp_results_used_for_selection": false,
+  "locked_test_touched": false,
+  "full_validation": {
+    "exact32_epoch10": {
+      "rows": 358,
+      "combined_f1": 0.636495523866813,
+      "combined_lower_95": 0.6192913169179842,
+      "mapping_f1": 0.664814880341578,
+      "integrity_passed": true,
+      "adapter_equivalence_exact": true,
+      "report": "validation-v3-exact32-full358-note-wise/report.json"
+    },
+    "candidate_rescorer_plus_weak_note_path": {
+      "rows": 358,
+      "combined_f1": 0.33645630511968844,
+      "mapping_f1": 0.6247852479670141,
+      "report": "note-wise-comparison-v1/candidate-rescorer-weak-path-full358.json"
+    },
+    "structured_path_250": {
+      "rows": 358,
+      "combined_f1": 0.630028,
+      "mapping_f1": 0.6661042567401315,
+      "selected": false,
+      "report": "training-v4-note-wise-path250/report.json"
+    },
+    "isolated_error_heads": {
+      "rows": 358,
+      "combined_f1": 0.634732,
+      "selected": false,
+      "report": "training-v5-note-wise-errors/report.json"
+    }
+  },
+  "diagnostic_subset_only": {
+    "candidate_rescorer_plus_legacy_note_aligner": {
+      "rows": 64,
+      "official_note_wise_f1": 0.6709681733083713,
+      "selection_eligible": false,
+      "report": "note-wise-comparison-v1/candidate-rescorer-legacy-fallback-64.json"
+    }
+  },
+  "selected": "exact32_epoch10",
+  "promotion": {
+    "eligible": false,
+    "required_f1": 0.83,
+    "required_lower_95": 0.8
+  }
+}

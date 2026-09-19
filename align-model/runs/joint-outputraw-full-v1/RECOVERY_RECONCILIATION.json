@@ -1,0 +1,79 @@
+{
+  "schema_version": "align-outputraw-recovery-reconciliation-v1",
+  "created_local": "2026-09-15T09:35:42+08:00",
+  "run_root": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1",
+  "process_reconciliation": {
+    "duplicate_training_processes_found": 0,
+    "active_gpu_training_processes_found": 0,
+    "stale_pid_or_running_status_accepted": false
+  },
+  "artifacts": {
+    "DATA_READY.json": {
+      "status": "verified",
+      "action": "accepted",
+      "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+      "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+      "packed_metadata_sha256": "ede67d0f31318163b8f1c34727d737c946a39e10caaafe9ea1fa585daf5cd226",
+      "locked_test_features_materialized": false,
+      "locked_test_targets_materialized": false
+    },
+    "profiles/architecture-cpu.json": {
+      "status": "complete_pre_crash_diagnostic",
+      "action": "stale_process_snapshot_removed",
+      "eligible_for_new_stage_launch": false,
+      "reason": "hardware and throughput must be remeasured after reboot"
+    },
+    "training-v1/last_checkpoint.pt": {
+      "status": "absent",
+      "accepted": false
+    },
+    "training-v1/joint_outputraw_full.pt": {
+      "status": "absent",
+      "accepted": false
+    },
+    "training-v1/progress.json": {
+      "status": "absent",
+      "accepted": false
+    },
+    "training-v1/report.json": {
+      "status": "absent",
+      "accepted": false
+    },
+    "smoke-overfit-cpu/last_checkpoint.pt": {
+      "status": "hash_valid_atomic_checkpoint",
+      "accepted": true,
+      "sha256": "63fd0da2ba1de31c7c1e12bb2d0bb5a8ec256dfccdc52be636d78fe83d3caa98",
+      "has_optimizer": true,
+      "has_scheduler": true,
+      "has_scaler_field": true,
+      "has_rng": true,
+      "has_data_cursor": true
+    },
+    "smoke-overfit-cpu/joint_outputraw_full.pt": {
+      "status": "rejected_non_resumable_checkpoint",
+      "accepted": false,
+      "sha256": "0b331906b342aeb7f1f14131b04332a50d3a393aa7266e7658ff8925c6a11d12",
+      "action": "deleted"
+    }
+  },
+  "checkpoint_policy": {
+    "accepted_checkpoint_count": 1,
+    "required_fields": [
+      "schema_version",
+      "state_dict",
+      "optimizer_state_dict",
+      "scheduler_state_dict",
+      "scaler_state_dict",
+      "rng_state",
+      "progress",
+      "data_fingerprint"
+    ],
+    "atomic_temp_files_accepted": false
+  },
+  "quarantine": {
+    "run_root_half_written_artifacts_found": 0,
+    "run_root_half_written_artifacts_quarantined": 0,
+    "external_packed_release": "owned_by_parallel_data_worker; not accepted until DATA_READY.json verifies"
+  },
+  "locked_test_touched": false
+}

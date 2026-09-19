@@ -1,0 +1,16 @@
+{
+  "blocked_by": "outputraw-full-training",
+  "command": [
+    "scripts/train_error_heads_v2.py",
+    "--phase",
+    "train",
+    "--output-dir",
+    "runs\\joint-outputraw-full-v1\\error-heads-v2",
+    "--resume"
+  ],
+  "launch_condition": "GPU lease absent and frozen v2 baseline below promotion gates",
+  "note": "Staged unfreezing needs a separately versioned implementation; this queue never modifies production or the active upstream checkpoint.",
+  "schema_version": "align-error-heads-staged-unfreezing-queue-v1",
+  "state": "not_required",
+  "upstream_mutation_allowed": false
+}

@@ -1,0 +1,1562 @@
+{
+  "balanced": {
+    "false_budget": 1439.5,
+    "false_labels": 1225.0,
+    "metric": {
+      "correct": 326.0,
+      "f1": 0.2261533125216788,
+      "precision": 0.21018697614442294,
+      "predicted": 1551,
+      "recall": 0.24474474474474475,
+      "target": 1332
+    },
+    "minimum_f1": 0.1636704621567314,
+    "searched": 256
+  },
+  "first_deterministic_hybrid": {
+    "metric": {
+      "correct": 421.0,
+      "f1": 0.20591831743702615,
+      "precision": 0.15270221254987304,
+      "predicted": 2757,
+      "recall": 0.3160660660660661,
+      "target": 1332
+    },
+    "name": "hybrid_075"
+  },
+  "operation_selector": {
+    "classes": {
+      "extra_note": {
+        "candidate_rows": 4920,
+        "coefficient": [
+          0.06873877157343326,
+          -0.2583742810007414,
+          0.09749101415615422,
+          0.09036187715806226,
+          0.00886119558763922,
+          0.07018610196364848,
+          0.04135910828886024,
+          0.24584536172580598,
+          0.15786064959146703,
+          0.0,
+          -0.21073133126110385,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "intercept": -0.22322452416149824,
+        "mean": [
+          0.22435101866722107,
+          0.2768426835536957,
+          0.31786924600601196,
+          0.3526679575443268,
+          0.0013393444241955876,
+          0.16500981152057648,
+          0.7455819845199585,
+          0.6788293123245239,
+          0.7300338745117188,
+          -1.0,
+          0.5044715404510498,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "negative_rows": 4577,
+        "positive_rows": 343,
+        "scale": [
+          0.19067656993865967,
+          0.07124098390340805,
+          1.633989691734314,
+          0.27267584204673767,
+          0.0010519693605601788,
+          0.3007539212703705,
+          0.14566732943058014,
+          0.15138886868953705,
+          0.12796373665332794,
+          1.0,
+          0.49998998641967773,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "missed_note": {
+        "candidate_rows": 7020,
+        "coefficient": [
+          0.5019275448807926,
+          0.04195001542284365,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          -0.0844778353980905,
+          -0.07209751513994218,
+          -0.03669054820983228,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "intercept": -0.22716309648432517,
+        "mean": [
+          0.29633647203445435,
+          0.3727318346500397,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.7309974431991577,
+          0.744926393032074,
+          0.5072146654129028,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "negative_rows": 6791,
+        "positive_rows": 229,
+        "scale": [
+          0.19458971917629242,
+          0.04597918689250946,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.1144096702337265,
+          0.130700021982193,
+          0.25171560049057007,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "wrong_note": {
+        "candidate_rows": 300,
+        "coefficient": [
+          -0.008296024286711017,
+          0.3912611665204226,
+          0.04558939987222192,
+          -0.048164741484358654,
+          -0.010819242079580748,
+          -0.05410548263188008,
+          0.5403384458777774,
+          0.28673740376186974,
+          0.4716702447058519,
+          -0.04278363197122027,
+          -0.1422287937356807,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "intercept": -0.3409232158954545,
+        "mean": [
+          0.1315208524465561,
+          0.4836510121822357,
+          0.32572588324546814,
+          0.18460184335708618,
+          0.0006651822477579117,
+          0.23068232834339142,
+          0.6564903855323792,
+          0.6944983601570129,
+          0.6956365704536438,
+          0.4747217297554016,
+          0.009999999776482582,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "negative_rows": 210,
+        "positive_rows": 90,
+        "scale": [
+          0.06527039408683777,
+          0.17725102603435516,
+          0.6054926514625549,
+          0.10103137791156769,
+          0.0003726174181792885,
+          0.2305358648300171,
+          0.177602618932724,
+          0.16336964070796967,
+          0.15213744342327118,
+          0.28481525182724,
+          0.0994986891746521,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "features": [
+      "direct_reliability",
+      "learned_probability",
+      "upstream_path_margin",
+      "upstream_extra_probability",
+      "upstream_noise_probability",
+      "upstream_delete_probability",
+      "candidate_confidence",
+      "previous_confidence",
+      "next_confidence",
+      "normalized_score_position",
+      "is_replay_state",
+      "path_operation_wrong",
+      "path_operation_extra",
+      "path_operation_missed"
+    ],
+    "schema_version": "align-error-heads-v4-operation-selector-v1"
+  },
+  "schema_version": "align-error-heads-v4-calibration-v1",
+  "selected_hybrid": "selector_hybrid_075",
+  "source_render": {
+    "calibration_effect": "constant on this validation split",
+    "render": {
+      "soundfont_v1": 358
+    },
+    "source": {
+      "MozartClConcertoA": 358
+    }
+  },
+  "v3_balanced_reference": {
+    "correct": 214.5,
+    "f1": 0.1436704621567314,
+    "precision": 0.1296856106408706,
+    "predicted": 1654,
+    "recall": 0.16103603603603603,
+    "target": 1332
+  },
+  "variants": {
+    "direct_only": {
+      "calibration": {
+        "final": {
+          "correct": 422.5,
+          "f1": 0.20549610894941633,
+          "precision": 0.15197841726618705,
+          "predicted": 2780,
+          "recall": 0.3171921921921922,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 335.5,
+              "f1": 0.19073337123365547,
+              "precision": 0.15347666971637694,
+              "predicted": 2186,
+              "recall": 0.2518768768768769,
+              "target": 1332
+            },
+            "threshold": 0.05,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 333.0,
+              "f1": 0.19445255474452555,
+              "precision": 0.15910176779741997,
+              "predicted": 2093,
+              "recall": 0.25,
+              "target": 1332
+            },
+            "threshold": 0.6,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 418.5,
+              "f1": 0.2037487828627069,
+              "precision": 0.1507564841498559,
+              "predicted": 2776,
+              "recall": 0.3141891891891892,
+              "target": 1332
+            },
+            "threshold": 0.05,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 422.5,
+              "f1": 0.20549610894941633,
+              "precision": 0.15197841726618705,
+              "predicted": 2780,
+              "recall": 0.3171921921921922,
+              "target": 1332
+            },
+            "threshold": 0.2,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 101.0,
+              "f1": 0.17413793103448275,
+              "precision": 0.12227602905569007,
+              "predicted": 826,
+              "recall": 0.3023952095808383,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.2
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 69.0,
+              "f1": 0.13105413105413105,
+              "precision": 0.09212283044058744,
+              "predicted": 749,
+              "recall": 0.22697368421052633,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.3
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.09406952965235175,
+              "precision": 0.07109737248840804,
+              "predicted": 647,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.15
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 53.0,
+              "f1": 0.17755443886097153,
+              "precision": 0.2264957264957265,
+              "predicted": 234,
+              "recall": 0.14600550964187328,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.05
+          }
+        }
+      },
+      "direct_source": "deterministic",
+      "direct_weight": 1.0,
+      "metric": {
+        "correct": 422.5,
+        "f1": 0.20549610894941633,
+        "precision": 0.15197841726618705,
+        "predicted": 2780,
+        "recall": 0.3171921921921922,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.05,
+          "missed_note": 0.6,
+          "rhythm_error": 0.2,
+          "wrong_note": 0.05
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "hybrid_025": {
+      "calibration": {
+        "final": {
+          "correct": 429.0,
+          "f1": 0.20117233294255568,
+          "precision": 0.14626662120695533,
+          "predicted": 2933,
+          "recall": 0.32207207207207206,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 411.5,
+              "f1": 0.1979316979316979,
+              "precision": 0.14561217268223636,
+              "predicted": 2826,
+              "recall": 0.3089339339339339,
+              "target": 1332
+            },
+            "threshold": 0.3,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 411.5,
+              "f1": 0.1979316979316979,
+              "precision": 0.14561217268223636,
+              "predicted": 2826,
+              "recall": 0.3089339339339339,
+              "target": 1332
+            },
+            "threshold": 0.4,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 426.5,
+              "f1": 0.2008949599623175,
+              "precision": 0.1463623884694578,
+              "predicted": 2914,
+              "recall": 0.3201951951951952,
+              "target": 1332
+            },
+            "threshold": 0.1,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 429.0,
+              "f1": 0.20117233294255568,
+              "precision": 0.14626662120695533,
+              "predicted": 2933,
+              "recall": 0.32207207207207206,
+              "target": 1332
+            },
+            "threshold": 0.4,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 163.0,
+              "f1": 0.16658150229943794,
+              "precision": 0.1004313000616143,
+              "predicted": 1623,
+              "recall": 0.4880239520958084,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.15
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 64.0,
+              "f1": 0.12121212121212122,
+              "precision": 0.0851063829787234,
+              "predicted": 752,
+              "recall": 0.21052631578947367,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.4
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.09172482552342971,
+              "precision": 0.06845238095238096,
+              "predicted": 672,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.15
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 53.0,
+              "f1": 0.1830742659758204,
+              "precision": 0.24537037037037038,
+              "predicted": 216,
+              "recall": 0.14600550964187328,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.3
+          }
+        }
+      },
+      "direct_source": "deterministic",
+      "direct_weight": 0.25,
+      "metric": {
+        "correct": 429.0,
+        "f1": 0.20117233294255568,
+        "precision": 0.14626662120695533,
+        "predicted": 2933,
+        "recall": 0.32207207207207206,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.1,
+          "missed_note": 0.4,
+          "rhythm_error": 0.4,
+          "wrong_note": 0.3
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "hybrid_050": {
+      "calibration": {
+        "final": {
+          "correct": 394.5,
+          "f1": 0.20568300312825863,
+          "precision": 0.15754792332268372,
+          "predicted": 2504,
+          "recall": 0.29617117117117114,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 415.5,
+              "f1": 0.20204230488694383,
+              "precision": 0.1494066882416397,
+              "predicted": 2781,
+              "recall": 0.3119369369369369,
+              "target": 1332
+            },
+            "threshold": 0.2,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 415.5,
+              "f1": 0.20204230488694383,
+              "precision": 0.1494066882416397,
+              "predicted": 2781,
+              "recall": 0.3119369369369369,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 415.5,
+              "f1": 0.20204230488694383,
+              "precision": 0.1494066882416397,
+              "predicted": 2781,
+              "recall": 0.3119369369369369,
+              "target": 1332
+            },
+            "threshold": 0.1,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 394.5,
+              "f1": 0.20568300312825863,
+              "precision": 0.15754792332268372,
+              "predicted": 2504,
+              "recall": 0.29617117117117114,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 174.0,
+              "f1": 0.16634799235181644,
+              "precision": 0.09897610921501707,
+              "predicted": 1758,
+              "recall": 0.5209580838323353,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.1
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 60.0,
+              "f1": 0.13043478260869565,
+              "precision": 0.09740259740259741,
+              "predicted": 616,
+              "recall": 0.19736842105263158,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.5
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.09172482552342971,
+              "precision": 0.06845238095238096,
+              "predicted": 672,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.05
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 48.0,
+              "f1": 0.18320610687022904,
+              "precision": 0.2981366459627329,
+              "predicted": 161,
+              "recall": 0.1322314049586777,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.3
+          }
+        }
+      },
+      "direct_source": "deterministic",
+      "direct_weight": 0.5,
+      "metric": {
+        "correct": 394.5,
+        "f1": 0.20568300312825863,
+        "precision": 0.15754792332268372,
+        "predicted": 2504,
+        "recall": 0.29617117117117114,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.1,
+          "missed_note": 0.5,
+          "rhythm_error": 0.5,
+          "wrong_note": 0.2
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "hybrid_075": {
+      "calibration": {
+        "final": {
+          "correct": 421.0,
+          "f1": 0.20591831743702615,
+          "precision": 0.15270221254987304,
+          "predicted": 2757,
+          "recall": 0.3160660660660661,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 405.5,
+              "f1": 0.20249687890137325,
+              "precision": 0.15170220725776282,
+              "predicted": 2673,
+              "recall": 0.3044294294294294,
+              "target": 1332
+            },
+            "threshold": 0.15,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 405.5,
+              "f1": 0.20249687890137325,
+              "precision": 0.15170220725776282,
+              "predicted": 2673,
+              "recall": 0.3044294294294294,
+              "target": 1332
+            },
+            "threshold": 0.6,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 417.0,
+              "f1": 0.20476307390130125,
+              "precision": 0.15213425757022983,
+              "predicted": 2741,
+              "recall": 0.3130630630630631,
+              "target": 1332
+            },
+            "threshold": 0.05,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 421.0,
+              "f1": 0.20591831743702615,
+              "precision": 0.15270221254987304,
+              "predicted": 2757,
+              "recall": 0.3160660660660661,
+              "target": 1332
+            },
+            "threshold": 0.2,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 169.0,
+              "f1": 0.1695085255767302,
+              "precision": 0.10180722891566266,
+              "predicted": 1660,
+              "recall": 0.5059880239520959,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.1
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 57.0,
+              "f1": 0.13302217036172692,
+              "precision": 0.10307414104882459,
+              "predicted": 553,
+              "recall": 0.1875,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.6
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.09172482552342971,
+              "precision": 0.06845238095238096,
+              "predicted": 672,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.05
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 55.0,
+              "f1": 0.18612521150592215,
+              "precision": 0.2412280701754386,
+              "predicted": 228,
+              "recall": 0.15151515151515152,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.15
+          }
+        }
+      },
+      "direct_source": "deterministic",
+      "direct_weight": 0.75,
+      "metric": {
+        "correct": 421.0,
+        "f1": 0.20591831743702615,
+        "precision": 0.15270221254987304,
+        "predicted": 2757,
+        "recall": 0.3160660660660661,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.05,
+          "missed_note": 0.6,
+          "rhythm_error": 0.2,
+          "wrong_note": 0.15
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "learned_only": {
+      "calibration": "verified_v3_max_f1",
+      "direct_source": "deterministic",
+      "direct_weight": 0.0,
+      "metric": {
+        "correct": 435.5,
+        "f1": 0.1929125138427464,
+        "precision": 0.1368206094879045,
+        "predicted": 3183,
+        "recall": 0.3269519519519519,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.1,
+          "missed_note": 0.25,
+          "rhythm_error": 0.3,
+          "wrong_note": 0.3
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "selector_hybrid_025": {
+      "calibration": {
+        "final": {
+          "correct": 445.5,
+          "f1": 0.1952662721893491,
+          "precision": 0.13788300835654596,
+          "predicted": 3231,
+          "recall": 0.3344594594594595,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 408.5,
+              "f1": 0.18505096262740658,
+              "precision": 0.1325008108984755,
+              "predicted": 3083,
+              "recall": 0.3066816816816817,
+              "target": 1332
+            },
+            "threshold": 0.25,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 433.0,
+              "f1": 0.19189009528030135,
+              "precision": 0.1361207167557372,
+              "predicted": 3181,
+              "recall": 0.32507507507507505,
+              "target": 1332
+            },
+            "threshold": 0.4,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 443.0,
+              "f1": 0.19434086422461067,
+              "precision": 0.1372792066935234,
+              "predicted": 3227,
+              "recall": 0.3325825825825826,
+              "target": 1332
+            },
+            "threshold": 0.15,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 445.5,
+              "f1": 0.1952662721893491,
+              "precision": 0.13788300835654596,
+              "predicted": 3231,
+              "recall": 0.3344594594594595,
+              "target": 1332
+            },
+            "threshold": 0.4,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 158.0,
+              "f1": 0.16853333333333334,
+              "precision": 0.10253082414016872,
+              "predicted": 1541,
+              "recall": 0.47305389221556887,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.25
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 74.0,
+              "f1": 0.1069364161849711,
+              "precision": 0.06851851851851852,
+              "predicted": 1080,
+              "recall": 0.24342105263157895,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.25
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 45.0,
+              "f1": 0.09211873080859775,
+              "precision": 0.0696594427244582,
+              "predicted": 646,
+              "recall": 0.13595166163141995,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.25
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 52.0,
+              "f1": 0.18943533697632056,
+              "precision": 0.27956989247311825,
+              "predicted": 186,
+              "recall": 0.14325068870523416,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.4
+          }
+        }
+      },
+      "direct_source": "selector",
+      "direct_weight": 0.25,
+      "metric": {
+        "correct": 445.5,
+        "f1": 0.1952662721893491,
+        "precision": 0.13788300835654596,
+        "predicted": 3231,
+        "recall": 0.3344594594594595,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.15,
+          "missed_note": 0.4,
+          "rhythm_error": 0.4,
+          "wrong_note": 0.25
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "selector_hybrid_050": {
+      "calibration": {
+        "final": {
+          "correct": 331.0,
+          "f1": 0.21479558728098636,
+          "precision": 0.18914285714285714,
+          "predicted": 1750,
+          "recall": 0.2484984984984985,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 365.0,
+              "f1": 0.21159420289855074,
+              "precision": 0.17233238904627007,
+              "predicted": 2118,
+              "recall": 0.27402402402402404,
+              "target": 1332
+            },
+            "threshold": 0.3,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 365.0,
+              "f1": 0.21159420289855074,
+              "precision": 0.17233238904627007,
+              "predicted": 2118,
+              "recall": 0.27402402402402404,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 365.0,
+              "f1": 0.21159420289855074,
+              "precision": 0.17233238904627007,
+              "predicted": 2118,
+              "recall": 0.27402402402402404,
+              "target": 1332
+            },
+            "threshold": 0.4,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 331.0,
+              "f1": 0.21479558728098636,
+              "precision": 0.18914285714285714,
+              "predicted": 1750,
+              "recall": 0.2484984984984985,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 128.0,
+              "f1": 0.21368948247078465,
+              "precision": 0.14814814814814814,
+              "predicted": 864,
+              "recall": 0.38323353293413176,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.4
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 59.0,
+              "f1": 0.12407991587802314,
+              "precision": 0.09119010819165378,
+              "predicted": 647,
+              "recall": 0.19407894736842105,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.5
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.09368635437881873,
+              "precision": 0.0706605222734255,
+              "predicted": 651,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.4
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 54.0,
+              "f1": 0.1981651376146789,
+              "precision": 0.2967032967032967,
+              "predicted": 182,
+              "recall": 0.1487603305785124,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.4
+          }
+        }
+      },
+      "direct_source": "selector",
+      "direct_weight": 0.5,
+      "metric": {
+        "correct": 331.0,
+        "f1": 0.21479558728098636,
+        "precision": 0.18914285714285714,
+        "predicted": 1750,
+        "recall": 0.2484984984984985,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.4,
+          "missed_note": 0.5,
+          "rhythm_error": 0.5,
+          "wrong_note": 0.3
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "selector_hybrid_075": {
+      "calibration": {
+        "final": {
+          "correct": 326.0,
+          "f1": 0.2261533125216788,
+          "precision": 0.21018697614442294,
+          "predicted": 1551,
+          "recall": 0.24474474474474475,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 357.0,
+              "f1": 0.21854912764003676,
+              "precision": 0.18449612403100776,
+              "predicted": 1935,
+              "recall": 0.268018018018018,
+              "target": 1332
+            },
+            "threshold": 0.3,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 357.0,
+              "f1": 0.21854912764003676,
+              "precision": 0.18449612403100776,
+              "predicted": 1935,
+              "recall": 0.268018018018018,
+              "target": 1332
+            },
+            "threshold": 0.6,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 357.0,
+              "f1": 0.21854912764003676,
+              "precision": 0.18449612403100776,
+              "predicted": 1935,
+              "recall": 0.268018018018018,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 326.0,
+              "f1": 0.2261533125216788,
+              "precision": 0.21018697614442294,
+              "predicted": 1551,
+              "recall": 0.24474474474474475,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 130.0,
+              "f1": 0.24299065420560748,
+              "precision": 0.1766304347826087,
+              "predicted": 736,
+              "recall": 0.38922155688622756,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.5
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 57.0,
+              "f1": 0.1296928327645051,
+              "precision": 0.09913043478260869,
+              "predicted": 575,
+              "recall": 0.1875,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.6
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.09378185524974517,
+              "precision": 0.07076923076923076,
+              "predicted": 650,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.4
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 55.0,
+              "f1": 0.20295202952029517,
+              "precision": 0.30726256983240224,
+              "predicted": 179,
+              "recall": 0.15151515151515152,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.4
+          }
+        }
+      },
+      "direct_source": "selector",
+      "direct_weight": 0.75,
+      "metric": {
+        "correct": 326.0,
+        "f1": 0.2261533125216788,
+        "precision": 0.21018697614442294,
+        "predicted": 1551,
+        "recall": 0.24474474474474475,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.5,
+          "missed_note": 0.6,
+          "rhythm_error": 0.5,
+          "wrong_note": 0.3
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "selector_hybrid_100": {
+      "calibration": {
+        "final": {
+          "correct": 327.0,
+          "f1": 0.2242798353909465,
+          "precision": 0.20643939393939395,
+          "predicted": 1584,
+          "recall": 0.24549549549549549,
+          "target": 1332
+        },
+        "joint_refinement": [
+          {
+            "combined": {
+              "correct": 357.0,
+              "f1": 0.21402877697841727,
+              "precision": 0.1781437125748503,
+              "predicted": 2004,
+              "recall": 0.268018018018018,
+              "target": 1332
+            },
+            "threshold": 0.3,
+            "type": "wrong_note"
+          },
+          {
+            "combined": {
+              "correct": 355.0,
+              "f1": 0.2147610405323654,
+              "precision": 0.17983789260385005,
+              "predicted": 1974,
+              "recall": 0.26651651651651653,
+              "target": 1332
+            },
+            "threshold": 0.6,
+            "type": "missed_note"
+          },
+          {
+            "combined": {
+              "correct": 355.0,
+              "f1": 0.2147610405323654,
+              "precision": 0.17983789260385005,
+              "predicted": 1974,
+              "recall": 0.26651651651651653,
+              "target": 1332
+            },
+            "threshold": 0.6,
+            "type": "extra_note"
+          },
+          {
+            "combined": {
+              "correct": 327.0,
+              "f1": 0.2242798353909465,
+              "precision": 0.20643939393939395,
+              "predicted": 1584,
+              "recall": 0.24549549549549549,
+              "target": 1332
+            },
+            "threshold": 0.5,
+            "type": "rhythm_error"
+          }
+        ],
+        "per_type": {
+          "extra_note": {
+            "metric": {
+              "correct": 125.0,
+              "f1": 0.248015873015873,
+              "precision": 0.18545994065281898,
+              "predicted": 674,
+              "recall": 0.37425149700598803,
+              "target": 334
+            },
+            "support": 1,
+            "threshold": 0.6
+          },
+          "missed_note": {
+            "metric": {
+              "correct": 66.0,
+              "f1": 0.1318681318681319,
+              "precision": 0.09469153515064563,
+              "predicted": 697,
+              "recall": 0.21710526315789475,
+              "target": 304
+            },
+            "support": 1,
+            "threshold": 0.5
+          },
+          "rhythm_error": {
+            "metric": {
+              "correct": 46.0,
+              "f1": 0.0920920920920921,
+              "precision": 0.0688622754491018,
+              "predicted": 668,
+              "recall": 0.13897280966767372,
+              "target": 331
+            },
+            "support": 2,
+            "threshold": 0.3
+          },
+          "wrong_note": {
+            "metric": {
+              "correct": 55.0,
+              "f1": 0.20522388059701493,
+              "precision": 0.3179190751445087,
+              "predicted": 173,
+              "recall": 0.15151515151515152,
+              "target": 363
+            },
+            "support": 1,
+            "threshold": 0.4
+          }
+        }
+      },
+      "direct_source": "selector",
+      "direct_weight": 1.0,
+      "metric": {
+        "correct": 327.0,
+        "f1": 0.2242798353909465,
+        "precision": 0.20643939393939395,
+        "predicted": 1584,
+        "recall": 0.24549549549549549,
+        "target": 1332
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.6,
+          "missed_note": 0.6,
+          "rhythm_error": 0.5,
+          "wrong_note": 0.3
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    }
+  }
+}

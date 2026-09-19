@@ -1,0 +1,62 @@
+{
+  "schema_version": "align-mel-mapper-v4-status-v1",
+  "status": "latent_lattice_representation_blocked",
+  "target_f1": 0.85,
+  "current_full_validation_f1": 0.8262698756418982,
+  "full_validation_reopened": false,
+  "locked_test_touched": false,
+  "implemented": {
+    "model": "differentiable semi-Markov span CRF",
+    "loss": "logZ(all paths) - logZ(gold-consistent paths)",
+    "operations": [
+      "MATCH",
+      "COPY",
+      "SUBSTITUTE",
+      "EXTRA",
+      "DELETE"
+    ],
+    "latent_spans": true,
+    "rendered_extra_identity": true,
+    "copy_pass_state": true,
+    "global_log_space_forward": true,
+    "atomic_checkpoint_support_required_before_training": true
+  },
+  "exact_tests": {
+    "bruteforce_forward_equivalence": true,
+    "gradient_flow": true,
+    "deletion_folded_span": true,
+    "rendered_extra": true,
+    "one_copy": true,
+    "two_copy": true,
+    "test_file": "../../../../../tests/test_latent_crf_v4.py",
+    "test_file_sha256": "677f7bfd214c38332add66a22c1be1204384e93636f74f5fafed886c25a22b88"
+  },
+  "real_train_coverage": {
+    "requested_rows": 64,
+    "admitted_rows": 8,
+    "gold_path_coverage": 0.125,
+    "coverage_report": "coverage-audit-64.json",
+    "coverage_report_sha256": "e057741ef6b23ebd6485f834748f6f8b25de8b27c2992f7952c9a43798ce45c8"
+  },
+  "ordering_audit": {
+    "rows": 64,
+    "rows_without_structural_violation": 11,
+    "within_pass_nonmonotonic_events": 629,
+    "span_width_gt_8_events": 4,
+    "report": "ordering-audit-64.json",
+    "report_sha256": "6b25de5281023e1b8c861bd6757d859726fbb63451fed117a3af25110932c02d"
+  },
+  "definitive_blocker": {
+    "scope": "monotonic unfolded-score semi-Markov lattice",
+    "reason": "Repaired rendered lineage contains 629 within-pass backward score-order transitions across 64 train rows. A monotonic (performance index, unfolded-score index) grid cannot contain those gold paths, regardless of optimizer or scoring model.",
+    "optimization_attempted": false,
+    "fail_closed": true
+  },
+  "next_architecture": "Event-layer CRF whose state is canonical score identity plus copy pass/resume and permits bounded within-pass reorder transitions; gold-preserving candidate generation must establish 100% coverage before training.",
+  "code": {
+    "path": "../../../src/alignmodel/joint/latent_crf_v4.py",
+    "sha256": "ceb02192ce1c53b762a0044bc071b0593b7cf4f24fc3c6348d97af0eaaffc018"
+  },
+  "timestamp_metrics_used": false,
+  "production_mutated": false
+}

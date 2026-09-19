@@ -1,0 +1,37 @@
+{
+  "schema_version": "align-monotonic-render-supervision-v3-report",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+  "admitted": {
+    "train": 4544,
+    "val": 358
+  },
+  "excluded": [],
+  "totals": {
+    "train": {
+      "raw_midi_events": 507104,
+      "performed_notes": 507104,
+      "mapped_performed_notes": 507104,
+      "unmapped_performed_notes": 0,
+      "folded_tied_notes": 0,
+      "strictly_monotonic_performed_order": 4544,
+      "backward_transfers": 0,
+      "edit_cost": 0
+    },
+    "val": {
+      "raw_midi_events": 40408,
+      "performed_notes": 40408,
+      "mapped_performed_notes": 40408,
+      "unmapped_performed_notes": 0,
+      "folded_tied_notes": 0,
+      "strictly_monotonic_performed_order": 358,
+      "backward_transfers": 0,
+      "edit_cost": 0
+    }
+  },
+  "train_supervision": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v6\\monotonic-supervision-v3\\train-monotonic-structural-supervision.jsonl.gz",
+  "train_supervision_sha256": "7dabc8055d10b65aa7f888b69df2aafecf67f73d80f541cf908edb4a20e787cd",
+  "validation_targets_materialized": false,
+  "test_targets_materialized": false,
+  "locked_test_touched": false
+}

@@ -1,0 +1,145 @@
+{
+  "schema_version": "align-grammar-mapper-v2-calibration-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "split": "train",
+  "selection": "deterministic hash-ordered group-disjoint train calibration",
+  "rows": 256,
+  "costs": {
+    "substitution": 1.5,
+    "extra": 1.0,
+    "deletion": 1.0,
+    "repeat": 0.75,
+    "no_restart_gap": 0.25
+  },
+  "overall": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 17148.0,
+    "predicted": 29560,
+    "gold": 29560,
+    "precision": 0.5801082543978349,
+    "recall": 0.5801082543978349,
+    "f1": 0.5801082543978349
+  },
+  "first_pass_only": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 15796.5,
+    "predicted": 27472,
+    "gold": 17799,
+    "precision": 0.5750036400698894,
+    "recall": 0.8874936794201922,
+    "f1": 0.6978639747299598
+  },
+  "by_copy_count": {
+    "2": {
+      "rows": 83,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 5864.0,
+        "predicted": 12791,
+        "gold": 12791,
+        "precision": 0.4584473457900086,
+        "recall": 0.4584473457900086,
+        "f1": 0.4584473457900086
+      }
+    },
+    "1": {
+      "rows": 133,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 8934.0,
+        "predicted": 14177,
+        "gold": 14177,
+        "precision": 0.6301756365944841,
+        "recall": 0.6301756365944841,
+        "f1": 0.6301756365944841
+      }
+    },
+    "0": {
+      "rows": 40,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2350.0,
+        "predicted": 2592,
+        "gold": 2592,
+        "precision": 0.9066358024691358,
+        "recall": 0.9066358024691358,
+        "f1": 0.9066358024691358
+      }
+    }
+  },
+  "by_type": {
+    "match": {
+      "support_rows": 256,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 14823.0,
+        "predicted": 16269,
+        "gold": 15414,
+        "precision": 0.911119306656832,
+        "recall": 0.961658232775399,
+        "f1": 0.9357068459426191
+      }
+    },
+    "copy": {
+      "support_rows": 256,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 1247.0,
+        "predicted": 2088,
+        "gold": 11761,
+        "precision": 0.5972222222222222,
+        "recall": 0.10602839894566789,
+        "f1": 0.18008520470792116
+      }
+    },
+    "substitute": {
+      "support_rows": 256,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 119.0,
+        "predicted": 187,
+        "gold": 219,
+        "precision": 0.6363636363636364,
+        "recall": 0.54337899543379,
+        "f1": 0.5862068965517241
+      }
+    },
+    "extra": {
+      "support_rows": 256,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 808.0,
+        "predicted": 11016,
+        "gold": 2166,
+        "precision": 0.07334785766158315,
+        "recall": 0.37303785780240073,
+        "f1": 0.12259141253224093
+      }
+    }
+  },
+  "repeat_structure": {
+    "rows": 216,
+    "source_accuracy": 0.12962962962962962,
+    "resume_accuracy": 0.22685185185185186
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

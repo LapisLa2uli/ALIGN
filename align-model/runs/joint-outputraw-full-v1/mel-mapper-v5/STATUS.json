@@ -1,0 +1,42 @@
+{
+  "schema_version": "align-mel-mapper-v5-status-v1",
+  "status": "canonical_event_layer_single_state_blocked",
+  "target_full_validation_f1": 0.85,
+  "current_full_validation_f1": 0.8262698756418982,
+  "full_validation_reopened": false,
+  "locked_test_touched": false,
+  "bounds": {
+    "source": "event-layer-bounds.json",
+    "sha256": "ece5d7ad6311bbdb90e815ae9a0ab836f588e5ac0ee27e0daf3ce81a7841d8c7",
+    "train_rows": 4544,
+    "rendered_events": 507104,
+    "minimum_within_pass_jump": -167,
+    "maximum_within_pass_jump": 171,
+    "jump_99_8_percent_interval": [-71, 70],
+    "backward_transitions": 30482,
+    "forward_transitions": 389041,
+    "allowed_span_width_max": 136
+  },
+  "non_markov_pass_evidence": {
+    "0_to_2": 1248,
+    "2_to_1": 5374,
+    "2_to_0": 1795,
+    "0_to_1": 11309,
+    "1_to_0": 9343,
+    "interpretation": "Raw-MIDI repair interleaves first-pass and replay strands in rendered-event order; one scalar current-pass state is not a valid Markov representation."
+  },
+  "complexity_blocker": {
+    "gold_guarantee": "Requires retaining jumps through ±171, all observed span widths through 136, and concurrent pass strands.",
+    "sparse_bound_failure": "A ±70 bound drops train gold transitions; full bounds approach dense all-score connectivity.",
+    "single_pass_state_failure": "Observed 0->2 and 2->1 transitions violate a sequential 0->1->2->0 pass machine even though provenance is valid.",
+    "required_state": "Concurrent-strand/set-valued replay state with per-strand cursor and copy pass, plus event ownership.",
+    "consequence": "The requested bounded-reorder single-identity CRF cannot simultaneously be sparse and guarantee gold retention."
+  },
+  "next_technical_implication": "Canonical supervision must expose renderer strand/voice ownership, or the model must use a factorial/multi-strand CRF. Training another single-cursor CRF would silently exclude valid gold paths.",
+  "code": {
+    "bounds_derivation": "../../../../../scripts/derive_event_layer_bounds_v5.py",
+    "bounds_derivation_sha256": "bbccd630dd9fa1e7ccb2255bea63d521ac80d679b2b9427da4d0507c507acfc8"
+  },
+  "timestamp_metrics_used": false,
+  "production_mutated": false
+}

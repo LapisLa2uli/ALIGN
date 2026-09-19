@@ -1,0 +1,31 @@
+{
+  "schema_version": "align-mel-mapper-v6-lockbox-result-v1",
+  "status": "aborted_fail_closed",
+  "attempt_count": 1,
+  "split": "test",
+  "intended_rows": 4022,
+  "gold_opened_rows": 1,
+  "rows_scored": 0,
+  "official_f1": null,
+  "failure_stage": "prespecified_target_repair_invariant_before_metric",
+  "failure": {
+    "type": "ValueError",
+    "message": "Validation repair is not exact: synth_WeberITAV_3580",
+    "invariant": "edit_cost == 0 and unmapped_performed_notes == 0"
+  },
+  "candidate": {
+    "validation_f1": 0.9703891813261998,
+    "validation_report_sha256": "d13f55016a67eaa276cb788063fe48c0edf976a8477c5ebde3cafa99bb8dcbb3",
+    "frozen_candidate_sha256": "39554480001221fb25f5fd4b6eb044d3dc89f1b21364e55d5a3a7af549371d6e",
+    "mapper_predictions_sha256": "fe5759dff4aee1ad7dbc236429da3e22da7a898a5bd8f4d31ccd0c9348d45777",
+    "frontend_predictions_sha256": "e58197e486fda0be687cefaf410c96ca20193394164ad273c949c11695d70611"
+  },
+  "protocol": {
+    "exclusive_one_to_one_canonical_note_wise": true,
+    "metric_computed": false,
+    "post_lockbox_tuning_allowed": false,
+    "retry_allowed": false,
+    "reason_no_retry": "Changing or relaxing the repair policy after observing a sealed-row invariant failure would tune the evaluator on the lockbox."
+  },
+  "conclusion": "Mapper-v6 passed open validation but has no valid sealed-test F1. The locked held-out verification requirement remains unmet."
+}

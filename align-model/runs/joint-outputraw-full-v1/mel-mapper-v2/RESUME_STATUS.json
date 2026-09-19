@@ -1,0 +1,91 @@
+{
+  "schema_version": "align-mel-mapper-v2-resume-status-v1",
+  "updated_utc": "2026-09-17T09:05:00Z",
+  "status": "superseded_by_paused_mel_mapper_v3",
+  "active_owned_processes": [],
+  "resource_leases": {},
+  "gpu_training_processes": [],
+  "heavy_cpu_processes": [],
+  "locked_test_touched": false,
+  "production_mutated": false,
+  "completed_steps": [
+    "Verified and froze Track B epoch-18 frontend.",
+    "Cached score-free Track B outputs for all 4,544 train rows.",
+    "Trained and compared hidden-32 local, long-context, anchor, segmental, dynamic-score, hidden-128, cross-attention, transition-ensemble, and EXTRA-reweighted mapper candidates.",
+    "Fixed missing rendered-event identity for predicted EXTRAs and non-unit copy-pass reconstruction.",
+    "Audited the synthetic generator: one optional immediately inserted one/two-measure replay block, one or two extra copies, optional restart rest, then forward continuation.",
+    "Identified multi-event canonical spans that require exact span reconstruction after deletion/substitution."
+  ],
+  "current_oracle_metrics": {
+    "selection_rows": 64,
+    "fixed_mapper_f1": 0.7147551243936787,
+    "best_mapper_v1_f1": 0.784331227684702,
+    "best_start_accuracy": 0.7833012908541609,
+    "best_span_accuracy": 0.7701180994232354,
+    "best_type_accuracy": 0.8534743202416919,
+    "required_f1": 0.98,
+    "passed": false,
+    "full_358_mel_validation_opened": false
+  },
+  "train_fold_diagnostics": {
+    "hidden_128_epoch_30_heldout_loss": 1.1837675094604492,
+    "hidden_128_epoch_80_overfit_detected": true,
+    "canonical_extra_start_accuracy_prefix16": 0.19911504424778761,
+    "canonical_copy_start_accuracy_prefix16": 0.7487352445193929,
+    "canonical_match_start_accuracy_prefix16": 0.8872727272727273
+  },
+  "resumable_mapper_checkpoint": {
+    "path": "../mel-mapper-v1/sequence-stage-v8-cross-attention/last_checkpoint.pt",
+    "sha256": "cea5b8b680e24a51eca43638653ebc8a64cb766052b4713006dbbe589c2a0507",
+    "schema_version": "align-sequence-mapper-v1",
+    "cursor": {
+      "epoch": 31,
+      "position": 0
+    },
+    "optimizer_state_present": true,
+    "scheduler_policy": "constant_learning_rate",
+    "scheduler_state_present": false,
+    "rng_state_present": true
+  },
+  "frozen_frontend": {
+    "checkpoint": "../mel-transcriber-v1/full-training-all4544-v2/candidate-epoch-018.pt",
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "optimizer_state_present": true,
+    "scheduler_state_present": true,
+    "rng_state_present": true,
+    "cursor": {
+      "epoch": 19,
+      "position": 0,
+      "global_step": 6822,
+      "optimizer_boundary": true
+    },
+    "train_predictions": "../mel-mapper-v1/cache/train-mel-events.jsonl",
+    "train_predictions_sha256": "9a7d8a72982f5f0392feada2b164a7fefe2243fcda35a2c1c346fbe57eb83fd6"
+  },
+  "artifact_hashes": {
+    "best_oracle_report": "23adcfec01abc26c1df95d5802b68cbdf1d21f4ba5a6390c6a75651c3668aa5a",
+    "candidate_comparison": "d5a84a52c76e777213eaa68aa43539b04e3826790422c60c90c44726dc8005cc",
+    "frontend_freeze": "fe6b587e003e2ae130da21892ca7cac6562a44a41f211210ccde9faa61ba88f5",
+    "sequence_mapper_code": "056aa3d726582069b01068b43a565575438ef67e056438a792adc0393a3b338c",
+    "structural_mapper_code": "027a4d2753ff2a127ecef7ce07b9b0803eb7e1af75a127650dac68ce60601d4a"
+  },
+  "blockers": [
+    "Best oracle-note canonical F1 is 0.7843, below the fixed 0.98 sanity gate.",
+    "Local and cross-attention scores do not yet encode the actual immediate measure-replay generator grammar.",
+    "EXTRA identity, copy source/pass, and deletion-folded multi-event spans require joint grammar-level decoding."
+  ],
+  "last_completed_model_command": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_sequence_mapper_v1.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --output-dir runs\\joint-outputraw-full-v1\\mel-mapper-v1\\sequence-stage-v10-extra-reweighted --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 50 --batch-size 16 --learning-rate 0.0003 --oracle-val-rows 64 --hidden-dim 128 --device cuda --resume runs\\joint-outputraw-full-v1\\mel-mapper-v1\\sequence-stage-v8-cross-attention\\last_checkpoint.pt",
+  "mapper_v2_result": {
+    "full_358_mel_f1": 0.8262698756418982,
+    "full_358_mel_lower_95": 0.8146038518469886,
+    "full_358_oracle_note_f1": 0.8306275984953474,
+    "target_f1": 0.85,
+    "target_met": false,
+    "status_report": "MAPPER_V2_STATUS.json"
+  },
+  "active_command": null,
+  "authoritative_resume_status": "../mel-mapper-v3/RESUME_STATUS.json",
+  "exact_next_action": "Resume only from mel-mapper-v3/RESUME_STATUS.json.",
+  "restart_allowed": false,
+  "restart_condition": "A new broader mapper supervision design is specified; do not retrain the frozen Track B frontend or reopen full validation for rejected hybrids."
+}

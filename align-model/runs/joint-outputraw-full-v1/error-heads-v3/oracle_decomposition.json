@@ -1,0 +1,61 @@
+{
+  "interpretation": "Gold-type substitution isolates classification on existing ranges; gold-operation-core substitution preserves predicted type/count and isolates localization; score-index and clustering/padding stages rebuild audited labels independently as metric sanity checks.",
+  "schema_version": "align-error-heads-v3-oracle-decomposition-v1",
+  "score_index_audit": {
+    "exact": 1338,
+    "exact_ratio": 1.0,
+    "finding": "gold label pitch lists reconstruct exactly from the frozen clean-score indices; no score-index-space corruption found",
+    "total": 1338
+  },
+  "stages": {
+    "gold_clustering_padding_only": {
+      "correct": 1332.0,
+      "f1": 0.9977528089887641,
+      "precision": 0.9955156950672646,
+      "predicted": 1338,
+      "recall": 1.0,
+      "target": 1332
+    },
+    "gold_operation_core_only": {
+      "correct": 637.5,
+      "f1": 0.47239718414227494,
+      "precision": 0.4663496708119971,
+      "predicted": 1367,
+      "recall": 0.4786036036036036,
+      "target": 1332
+    },
+    "gold_score_index_only": {
+      "correct": 1332.0,
+      "f1": 0.9977528089887641,
+      "precision": 0.9955156950672646,
+      "predicted": 1338,
+      "recall": 1.0,
+      "target": 1332
+    },
+    "gold_type_only": {
+      "correct": 189.5,
+      "f1": 0.128561736770692,
+      "precision": 0.11726485148514851,
+      "predicted": 1616,
+      "recall": 0.14226726726726727,
+      "target": 1332
+    },
+    "metric_sanity_gold_documents": {
+      "correct": 1332.0,
+      "f1": 0.9977528089887641,
+      "precision": 0.9955156950672646,
+      "predicted": 1338,
+      "recall": 1.0,
+      "target": 1332
+    },
+    "v2_as_emitted": {
+      "correct": 136.0,
+      "f1": 0.09226594301221168,
+      "precision": 0.08415841584158416,
+      "predicted": 1616,
+      "recall": 0.1021021021021021,
+      "target": 1332
+    }
+  },
+  "validation_rows": 358
+}

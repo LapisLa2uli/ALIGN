@@ -1,0 +1,103 @@
+{
+  "schema_version": "align-outputraw-run-status-v1",
+  "updated_local": "2026-09-15T20:41:00+08:00",
+  "status": "completed_training_promotion_held",
+  "restart_requested": false,
+  "requires_note_wise_rescore": true,
+  "promotion_allowed": false,
+  "locked_test_touched": false,
+  "owned_processes": {
+    "stopped": [
+      29964,
+      32412,
+      5364,
+      30856,
+      36716,
+      29512
+    ],
+    "still_running": []
+  },
+  "checkpoint": {
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+    "sha256": "e1b2e4889a373eb1ac5f06b2d41703d11dadeac5f38d69af4e00e602b191939d",
+    "schema_version": "align-outputraw-full-joint-v1",
+    "phase": "path_epoch_complete",
+    "epoch": 1,
+    "examples": 1000,
+    "data_cursor_position": 1000,
+    "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "optimizer_state": true,
+    "scheduler_state": true,
+    "scaler_state_field": true,
+    "scaler_state": null,
+    "scaler_state_reason": "structured path math is FP32",
+    "rng_state": true,
+    "sampler_cursor": true,
+    "atomic_write_verified": true
+  },
+  "latest_valid_metrics": {
+    "validation": {
+      "status": "completed_timestamp_diagnostic_only",
+      "promotion_gate_passed": false,
+      "requires_note_wise_rescore": true
+    },
+    "structured_path": {
+      "examples": 1000,
+      "mean_nll": 0.9834575175791979,
+      "elapsed_seconds": 11177.843580900004,
+      "rows_per_second": 0.08946269401271074,
+      "eta_seconds": 0.0
+    },
+    "joint_local_epoch_3": {
+      "examples": 4544,
+      "edges": 9260174,
+      "mean_batch_loss": 2.3164688110351563,
+      "examples_per_second": 228.93368734218902,
+      "edges_per_second": 466541.7647997949
+    }
+  },
+  "exact_command": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_outputraw_full_pipeline.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --output-dir runs\\joint-outputraw-full-v1\\training-v1-optimized --hardware-profile runs\\joint-outputraw-full-v1\\profiles\\architecture-cuda-optimized.json --actual-training-profile runs\\joint-outputraw-full-v1\\profiles\\actual-training-cuda.json --initialize-checkpoint runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt --resume-checkpoint runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt --prepared-local-cache runs\\joint-outputraw-full-v1\\prepared-local-v1 --prepared-max-open-shards 64 --device cuda --path-device cpu --local-checkpoint-every 250 --path-checkpoint-every 25 --checkpoint-every 250 --gradient-accumulation 1 --acoustic-epochs 1 --structure-epochs 1 --errors-epochs 1 --joint-epochs 3 --path-epochs 1 --path-samples-per-epoch 1000 --bootstrap-replicates 1000",
+  "preserved": {
+    "logs": "C:\\Users\\Hank\\.cursor\\projects\\d-stuff-Audio-Evaluation-ALIGN\\terminals\\886693.txt",
+    "packed_cache": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-packed\\joint-outputraw-full-v1-shard64",
+    "prepared_local_cache": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\prepared-local-v1"
+  },
+  "pause_request": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\PAUSE_REQUESTED.json",
+  "resource_lease_cleared": true,
+  "active_schedule": {
+    "trainer_launcher_pid": null,
+    "trainer_pid": null,
+    "supervisor_launcher_pid": null,
+    "supervisor_pid": null,
+    "gpu_lease": null,
+    "cpu_affinity": "0xF0000",
+    "priority": "High",
+    "candidate_rescorer": "completed_timestamp_selection_held",
+    "measured_window": {
+      "cursor_start": 150,
+      "cursor_end": 1000,
+      "rows_per_second": 0.08946269401271074,
+      "benchmark_range_rows_per_second": [
+        0.08,
+        0.108
+      ],
+      "trainer_rss_mb": 3988.0,
+      "trainer_cpu_one_core_percent": 98.4375,
+      "ram_percent": 69.8,
+      "ram_available_mb": 9793.2,
+      "disk_read_mib_per_second": 0.0,
+      "disk_write_mib_per_second": 0.3125,
+      "gpu_vram_mb": 99,
+      "gpu_utilization_percent": 0.0,
+      "note": "GPU idle is expected during the selected FP32 CPU structured-DP phase."
+    }
+  },
+  "metric_hold": {
+    "official_metric": "note-wise canonical score-event scoring",
+    "timestamp_metrics": "diagnostic_only",
+    "requires_note_wise_rescore": true,
+    "required_rerun": "validation/bootstrap/promotion only",
+    "training_checkpoint_reusable": true,
+    "hold_marker": "runs/NOTE_WISE_PROMOTION_HOLD.json"
+  }
+}

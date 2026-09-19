@@ -1,0 +1,273 @@
+{
+  "balanced": {
+    "candidate_count": 5,
+    "false_budget_per_clip": 3.42,
+    "false_labels_per_clip": 2.2192307692307693,
+    "global_threshold_offset": 0.1,
+    "metric": {
+      "correct": 466.5,
+      "f1": 0.15965092402464065,
+      "precision": 0.18765084473049073,
+      "predicted": 2486,
+      "recall": 0.13892197736748063,
+      "target": 3358
+    }
+  },
+  "calibration_rows": 910,
+  "candidates": {
+    "direct_only": {
+      "direct_source": "deterministic",
+      "direct_weight": 1.0,
+      "metric": {
+        "correct": 877.0,
+        "f1": 0.18884582256675278,
+        "precision": 0.1478920741989882,
+        "predicted": 5930,
+        "recall": 0.2611673615247171,
+        "target": 3358
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.05,
+          "missed_note": 0.6,
+          "rhythm_error": 0.9,
+          "wrong_note": 0.05
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 1,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "hybrid_050": {
+      "direct_source": "selector",
+      "direct_weight": 0.5,
+      "metric": {
+        "correct": 896.0,
+        "f1": 0.19100405030910256,
+        "precision": 0.14873837981407703,
+        "predicted": 6024,
+        "recall": 0.2668254913639071,
+        "target": 3358
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.1,
+          "missed_note": 0.5,
+          "rhythm_error": 0.6,
+          "wrong_note": 0.2
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "hybrid_075": {
+      "direct_source": "selector",
+      "direct_weight": 0.75,
+      "metric": {
+        "correct": 943.0,
+        "f1": 0.19552145967240306,
+        "precision": 0.14996819338422393,
+        "predicted": 6288,
+        "recall": 0.2808219178082192,
+        "target": 3358
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.25,
+          "missed_note": 0.5,
+          "rhythm_error": 0.6,
+          "wrong_note": 0.15
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "hybrid_100": {
+      "direct_source": "selector",
+      "direct_weight": 1.0,
+      "metric": {
+        "correct": 899.0,
+        "f1": 0.20006676310225882,
+        "precision": 0.15970865162551076,
+        "predicted": 5629,
+        "recall": 0.2677188802858845,
+        "target": 3358
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.4,
+          "missed_note": 0.6,
+          "rhythm_error": 0.6,
+          "wrong_note": 0.15
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    },
+    "learned_only": {
+      "direct_source": "deterministic",
+      "direct_weight": 0.0,
+      "metric": {
+        "correct": 942.0,
+        "f1": 0.1791215059897319,
+        "precision": 0.13156424581005585,
+        "predicted": 7160,
+        "recall": 0.2805241215008934,
+        "target": 3358
+      },
+      "schema_config": {
+        "high_thresholds": {
+          "extra_note": 0.05,
+          "missed_note": 0.25,
+          "rhythm_error": 0.15,
+          "wrong_note": 0.3
+        },
+        "low_ratios": {
+          "extra_note": 1.0,
+          "missed_note": 1.0,
+          "rhythm_error": 1.0,
+          "wrong_note": 1.0
+        },
+        "max_row_gap": 2,
+        "merge_score_gap": {
+          "extra_note": 0,
+          "missed_note": 1,
+          "rhythm_error": 0,
+          "wrong_note": 0
+        },
+        "minimum_support": {
+          "extra_note": 1,
+          "missed_note": 1,
+          "rhythm_error": 2,
+          "wrong_note": 1
+        },
+        "nms_overlap": true,
+        "pad_notes": 1,
+        "require_extra_neighbors": true,
+        "require_missed_resynchronization": true,
+        "schema_version": "align-error-heads-v3-decode-config-v1",
+        "uncertainty_margins": {
+          "extra_note": -1.0,
+          "missed_note": -1.0,
+          "rhythm_error": -1.0,
+          "wrong_note": -1.0
+        }
+      }
+    }
+  },
+  "fit_rows": 3634,
+  "schema_version": "align-error-heads-v5-train-calibration-v1",
+  "selected_hybrid": "hybrid_100",
+  "validation_rows_opened": 0
+}

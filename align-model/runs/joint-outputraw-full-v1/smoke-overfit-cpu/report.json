@@ -1,0 +1,970 @@
+{
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\smoke-overfit-cpu\\last_checkpoint.pt",
+  "created_unix": 1789444117.1700563,
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "data_ready": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\DATA_READY.json",
+  "history": [
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10392.043255247161,
+      "epoch": 1,
+      "examples": 20,
+      "examples_per_second": 6.762351231655872,
+      "mean_batch_loss": 5.973337173461914,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.043493600000147126,
+        "checkpoint_io": 0.013409999999566935,
+        "data_and_collation": 2.785108800000671,
+        "forward": 0.09620759999961592,
+        "host_to_device": 1.570000131323468e-05,
+        "optimizer": 0.004858000000240281,
+        "scheduler": 2.7299998691887595e-05
+      },
+      "segment_edges_per_second": 10392.043255247161,
+      "segment_examples_per_second": 6.762351231655872,
+      "stage": "acoustic",
+      "train_wall_seconds": 2.957551199999216
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10496.661303526003,
+      "epoch": 1,
+      "examples": 20,
+      "examples_per_second": 6.830428699219785,
+      "mean_batch_loss": 5.818368434906006,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.04595840000001772,
+        "checkpoint_io": 0.009069199999430566,
+        "data_and_collation": 2.787277500001437,
+        "forward": 0.07739249999940512,
+        "host_to_device": 1.6299998605973087e-05,
+        "optimizer": 0.003766199999517994,
+        "scheduler": 2.7400001272326335e-05
+      },
+      "segment_edges_per_second": 10496.661303526003,
+      "segment_examples_per_second": 6.830428699219785,
+      "stage": "structure",
+      "train_wall_seconds": 2.928073900000527
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10602.038123253486,
+      "epoch": 1,
+      "examples": 20,
+      "examples_per_second": 6.8989999175230095,
+      "mean_batch_loss": 5.6559295654296875,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.019066900000325404,
+        "checkpoint_io": 0.008024999999179272,
+        "data_and_collation": 2.79369349999979,
+        "forward": 0.07079569999950763,
+        "host_to_device": 1.7300000763498247e-05,
+        "optimizer": 0.002134200000000419,
+        "scheduler": 1.5999999959603883e-05
+      },
+      "segment_edges_per_second": 10602.038123253486,
+      "segment_examples_per_second": 6.8989999175230095,
+      "stage": "errors",
+      "train_wall_seconds": 2.8989708999997674
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10384.932113931796,
+      "epoch": 1,
+      "examples": 20,
+      "examples_per_second": 6.757723841829703,
+      "mean_batch_loss": 5.576899528503418,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.08397059999879275,
+        "checkpoint_io": 0.014435299999604467,
+        "data_and_collation": 2.7663402000016504,
+        "forward": 0.08292980000078387,
+        "host_to_device": 1.2700000297627412e-05,
+        "optimizer": 0.006836799999291543,
+        "scheduler": 1.700000029813964e-05
+      },
+      "segment_edges_per_second": 10384.932113931796,
+      "segment_examples_per_second": 6.757723841829703,
+      "stage": "joint",
+      "train_wall_seconds": 2.9595764000005147
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10370.21726237256,
+      "epoch": 2,
+      "examples": 20,
+      "examples_per_second": 6.7481485357882285,
+      "mean_batch_loss": 5.4294915199279785,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.08436780000010913,
+        "checkpoint_io": 0.013703200000236393,
+        "data_and_collation": 2.7749351000002207,
+        "forward": 0.08063389999915671,
+        "host_to_device": 1.7600001228856854e-05,
+        "optimizer": 0.00572210000063933,
+        "scheduler": 1.2599999536178075e-05
+      },
+      "segment_edges_per_second": 10370.21726237256,
+      "segment_examples_per_second": 6.7481485357882285,
+      "stage": "joint",
+      "train_wall_seconds": 2.963775900001565
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10234.709340914762,
+      "epoch": 3,
+      "examples": 20,
+      "examples_per_second": 6.659970288540596,
+      "mean_batch_loss": 5.2588019371032715,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.09209689999988768,
+        "checkpoint_io": 0.012565800001539174,
+        "data_and_collation": 2.804394800001319,
+        "forward": 0.08370259999901464,
+        "host_to_device": 1.6599999071331695e-05,
+        "optimizer": 0.0054127000003063586,
+        "scheduler": 1.3699998817173764e-05
+      },
+      "segment_edges_per_second": 10234.709340914762,
+      "segment_examples_per_second": 6.659970288540596,
+      "stage": "joint",
+      "train_wall_seconds": 3.0030163999999786
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 9894.001714381702,
+      "epoch": 4,
+      "examples": 20,
+      "examples_per_second": 6.438263682695105,
+      "mean_batch_loss": 5.13287878036499,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.09119660000033036,
+        "checkpoint_io": 0.013511700000890414,
+        "data_and_collation": 2.9073447000009764,
+        "forward": 0.08471559999998135,
+        "host_to_device": 3.6299999919719994e-05,
+        "optimizer": 0.005307899999024812,
+        "scheduler": 2.1400001060101204e-05
+      },
+      "segment_edges_per_second": 9894.001714381702,
+      "segment_examples_per_second": 6.438263682695105,
+      "stage": "joint",
+      "train_wall_seconds": 3.1064275999997335
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10290.966316211794,
+      "epoch": 5,
+      "examples": 20,
+      "examples_per_second": 6.696578048616752,
+      "mean_batch_loss": 5.023694038391113,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.08818689999861817,
+        "checkpoint_io": 0.013078500000119675,
+        "data_and_collation": 2.7921913000009226,
+        "forward": 0.08320640000056301,
+        "host_to_device": 1.9099999917671084e-05,
+        "optimizer": 0.0053979000003892,
+        "scheduler": 1.2700000297627412e-05
+      },
+      "segment_edges_per_second": 10290.966316211794,
+      "segment_examples_per_second": 6.696578048616752,
+      "stage": "joint",
+      "train_wall_seconds": 2.9866000000001804
+    },
+    {
+      "batches": 1,
+      "cursor": {
+        "epoch": 0,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 20,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 30735,
+      "edges_per_second": 10264.64790471139,
+      "epoch": 6,
+      "examples": 20,
+      "examples_per_second": 6.679452028444047,
+      "mean_batch_loss": 4.888026237487793,
+      "optimizer_steps": 1,
+      "phase_seconds": {
+        "backward": 0.09091210000042338,
+        "checkpoint_io": 0.013908499999160995,
+        "data_and_collation": 2.7912950000009005,
+        "forward": 0.0878207999994629,
+        "host_to_device": 1.5199999324977398e-05,
+        "optimizer": 0.005522999999811873,
+        "scheduler": 1.3999999282532372e-05
+      },
+      "segment_edges_per_second": 10264.64790471139,
+      "segment_examples_per_second": 6.679452028444047,
+      "stage": "joint",
+      "train_wall_seconds": 2.9942575999994006
+    },
+    {
+      "epoch": 1,
+      "examples": 8,
+      "examples_per_second": 0.39728816659515437,
+      "mean_path_nll": 1.0572161078453064,
+      "phase_seconds": {
+        "checkpoint_io": 0.050295299999561394,
+        "data": 0.0261012999999366,
+        "optimizer": 0.03116750000117463,
+        "scheduler": 2.049999966402538e-05,
+        "structured_backward": 7.284664699996938,
+        "structured_forward": 12.736503099997208,
+        "target_reconstruction": 0.006434099999751197
+      },
+      "stage": "structured_path",
+      "train_wall_seconds": 20.136517200000526
+    }
+  ],
+  "initialization": {
+    "loaded_parameter_tensors": 6,
+    "missing_parameter_tensors": [
+      "acoustic_projection.0.weight",
+      "acoustic_projection.0.bias",
+      "acoustic_projection.2.weight",
+      "acoustic_projection.2.bias",
+      "score_projection.0.weight",
+      "score_projection.0.bias",
+      "score_projection.2.weight",
+      "score_projection.2.bias",
+      "structural_projection.0.weight",
+      "structural_projection.0.bias",
+      "structural_projection.2.weight",
+      "structural_projection.2.bias",
+      "emission_head.weight",
+      "emission_head.bias",
+      "option_head.weight",
+      "option_head.bias",
+      "transition_head.weight",
+      "transition_head.bias",
+      "path_head.0.weight",
+      "path_head.0.bias",
+      "path_head.3.weight",
+      "path_head.3.bias"
+    ],
+    "path": "runs\\joint-audit-v2\\path-1000-v4-interval\\joint_decoder.pt",
+    "sha256": "63ada0ff34a9eae5bbb747f42e1464e34119f0590a161e58ff513ac75108bf35",
+    "shape_mismatches": {},
+    "source_schema": "align-sparse-joint-v1",
+    "unexpected_parameter_tensors": []
+  },
+  "locked_test_touched": false,
+  "profile": {
+    "benchmarks": [
+      {
+        "amp_dtype": "float32",
+        "edges": 8192,
+        "edges_per_second": 70307.57849146948,
+        "fused_optimizer": false,
+        "iterations": 1,
+        "ok": true,
+        "peak_vram_mb": 0.0,
+        "seconds": 0.11651659999915864,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 8192,
+        "edges_per_second": 3474.338814279337,
+        "fused_optimizer": false,
+        "iterations": 1,
+        "ok": true,
+        "peak_vram_mb": 0.0,
+        "seconds": 2.3578587000010884,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 32768,
+        "edges_per_second": 87194.78300137572,
+        "fused_optimizer": false,
+        "iterations": 1,
+        "ok": true,
+        "peak_vram_mb": 0.0,
+        "seconds": 0.3758023000009416,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 32768,
+        "edges_per_second": 3404.2628876356043,
+        "fused_optimizer": false,
+        "iterations": 1,
+        "ok": true,
+        "peak_vram_mb": 0.0,
+        "seconds": 9.625578600000154,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 65536,
+        "edges_per_second": 71316.0363796878,
+        "fused_optimizer": false,
+        "iterations": 1,
+        "ok": true,
+        "peak_vram_mb": 0.0,
+        "seconds": 0.9189518000002863,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 65536,
+        "edges_per_second": 3930.7849799677597,
+        "fused_optimizer": false,
+        "iterations": 1,
+        "ok": true,
+        "peak_vram_mb": 0.0,
+        "seconds": 16.672496799999863,
+        "torch_compile": "disabled"
+      },
+      {
+        "error": "backend='inductor' raised:\nRuntimeError: Compiler: cl is not found.\n\nSet TORCH_LOGS=\"+dynamo\" and TORCHDYNAMO_VERBOSE=1 for more information\n\n\nYou can suppress this exception and fall back to eager by setting:\n    import torch._dynamo\n    torch._dynamo.config.suppress_errors = True\n",
+        "ok": false
+      }
+    ],
+    "created_unix": 1789443824.5034413,
+    "device_profiled": "cpu",
+    "hardware": {
+      "active_cuda_python_jobs": [
+        {
+          "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe scripts/train_candidate_rescorer.py --manifest data-audit/2026-09-14-v2/split.json --basic-cache-root runs/joint-audit-v2/basic-pitch-cache --example-cache-path runs/joint-audit-v2/components/candidate-rescorer-v1/examples-floor-050.sqlite --output-dir runs/joint-audit-v2/components/candidate-rescorer-v1 --epochs 3 --batch-candidates 16384 --learning-rate 0.0003 --hidden-dim 64 --dropout 0.05 --candidate-floor 0.50 --global-candidate-gate 0.65 --hard-negative-ratio 1.0 --short-weight-lt-80ms 4 --short-weight-lt-120ms 3 --short-weight-lt-180ms 2 --workers 1 --prefetch 1 --device cuda --seed 365",
+          "name": "python.exe",
+          "pid": 4432
+        },
+        {
+          "command": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe scripts/train_candidate_rescorer.py --manifest data-audit/2026-09-14-v2/split.json --basic-cache-root runs/joint-audit-v2/basic-pitch-cache --example-cache-path runs/joint-audit-v2/components/candidate-rescorer-v1/examples-floor-050.sqlite --output-dir runs/joint-audit-v2/components/candidate-rescorer-v1 --epochs 3 --batch-candidates 16384 --learning-rate 0.0003 --hidden-dim 64 --dropout 0.05 --candidate-floor 0.50 --global-candidate-gate 0.65 --hard-negative-ratio 1.0 --short-weight-lt-80ms 4 --short-weight-lt-120ms 3 --short-weight-lt-180ms 2 --workers 1 --prefetch 1 --device cuda --seed 365",
+          "name": "python.exe",
+          "pid": 29236
+        }
+      ],
+      "cuda_runtime": "12.4",
+      "logical_cpu_cores": 20,
+      "nvidia_smi": {
+        "available": true,
+        "devices": [
+          {
+            "gpu_utilization_percent": 0.0,
+            "memory_total_mb": 8188.0,
+            "memory_used_mb": 179.0,
+            "memory_utilization_percent": 0.0,
+            "name": "NVIDIA RTX 2000 Ada Generation Laptop GPU",
+            "power_limit_watts": null
+          }
+        ]
+      },
+      "physical_cpu_cores": 14,
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "profile_cpu_threads": 2,
+      "ram_available_bytes": 11827560448,
+      "ram_total_bytes": 34016272384,
+      "torch_version": "2.6.0+cu124"
+    },
+    "locked_test_touched": false,
+    "schema_version": "align-outputraw-hardware-profile-v1",
+    "selected": {
+      "amp_dtype": "float32",
+      "edges": 32768,
+      "edges_per_second": 87194.78300137572,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 0.3758023000009416,
+      "torch_compile": "disabled"
+    },
+    "storage": {
+      "bytes": 67108864,
+      "read_mib_per_second": 1257.928388537012,
+      "read_seconds": 0.05087729999831936,
+      "write_mib_per_second": 1182.148814078051,
+      "write_seconds": 0.0541386999993847
+    }
+  },
+  "promotion_gate": {
+    "bootstrap_lower_95": 0.35755835008238723,
+    "bootstrap_lower_threshold": 0.8,
+    "combined_f1": 0.45707915273132665,
+    "combined_f1_threshold": 0.83,
+    "full_validation_completed": false,
+    "passed": false
+  },
+  "schema_version": "align-outputraw-full-report-v1",
+  "validation": {
+    "combined": {
+      "bootstrap": {
+        "lower_95": 0.35755835008238723,
+        "median": 0.4569948609185088,
+        "replicates": 100,
+        "upper_95": 0.5628688188198631
+      },
+      "correct": 410,
+      "f1": 0.45707915273132665,
+      "precision": 0.42008196721311475,
+      "predicted": 976,
+      "recall": 0.5012224938875306,
+      "target": 818
+    },
+    "intonation_masked": true,
+    "layer2": {
+      "extra_note": {
+        "correct": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0,
+        "target": 105
+      },
+      "macro_f1": 0.06896551724137931,
+      "missed_note": {
+        "correct": 9,
+        "f1": 0.20689655172413793,
+        "precision": 0.12,
+        "predicted": 75,
+        "recall": 0.75,
+        "target": 12
+      },
+      "wrong_note": {
+        "correct": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0,
+        "target": 7
+      }
+    },
+    "layer3": {
+      "duration": {
+        "mae_seconds": 0.09968985185216342,
+        "median_relative_error": 0.3047253109503797,
+        "paired": 725,
+        "within_20_percent_accuracy": 0.4027586206896552
+      },
+      "rhythm": {
+        "correct": 0,
+        "f1": 0.0,
+        "precision": 0.0,
+        "predicted": 0,
+        "recall": 0.0,
+        "target": 27
+      }
+    },
+    "mapping": {
+      "aggregate": {
+        "current_metric_50ms": {
+          "copy_recall": 0.5693950177935944,
+          "exact_accuracy": 0.598014888337469,
+          "f1": 0.6461967899511513,
+          "n_assigned": 732,
+          "n_copy": 281,
+          "n_copy_correct": 160,
+          "n_correct": 463,
+          "n_positive": 701,
+          "n_transcription_matches": 725,
+          "precision": 0.6325136612021858,
+          "recall": 0.6604850213980028
+        },
+        "deletions": {
+          "counts": {
+            "correct": 9,
+            "predicted": 75,
+            "target": 12
+          },
+          "f1": 0.20689655172413793,
+          "precision": 0.12,
+          "recall": 0.75
+        },
+        "n_samples": 8,
+        "tolerances": {
+          "100ms": {
+            "conditional_mapping_accuracy": 0.7435508345978755,
+            "copy": {
+              "f1": 0.4623287671232877,
+              "precision": 0.44554455445544555,
+              "recall": 0.4804270462633452
+            },
+            "counts": {
+              "copy_correct": 135,
+              "copy_mapping_correct": 169,
+              "extra_correct": 20,
+              "joint_correct": 510,
+              "mapping_correct": 490,
+              "paired": 758,
+              "paired_linked": 659,
+              "predicted": 901,
+              "predicted_copy": 303,
+              "predicted_extra": 169,
+              "substitution_correct": 1,
+              "target": 806,
+              "target_copy": 281,
+              "target_extra": 105,
+              "target_substitution": 4
+            },
+            "current_mapping": {
+              "copy_recall": 0.6014234875444839,
+              "exact_accuracy": 0.6327543424317618,
+              "f1": 0.6838799720865316,
+              "n_assigned": 732,
+              "n_copy": 281,
+              "n_copy_correct": 169,
+              "n_correct": 490,
+              "n_positive": 701,
+              "n_transcription_matches": 758,
+              "precision": 0.6693989071038251,
+              "recall": 0.6990014265335235
+            },
+            "extras": {
+              "f1": 0.145985401459854,
+              "precision": 0.11834319526627218,
+              "recall": 0.19047619047619047
+            },
+            "joint": {
+              "f1": 0.5975395430579965,
+              "precision": 0.5660377358490566,
+              "recall": 0.6327543424317618
+            },
+            "note": {
+              "f1": 0.888107791446983,
+              "precision": 0.8412874583795783,
+              "recall": 0.9404466501240695
+            },
+            "substitution_mapping_accuracy": 0.25
+          },
+          "20ms": {
+            "conditional_mapping_accuracy": 0.7743362831858407,
+            "copy": {
+              "f1": 0.1232876712328767,
+              "precision": 0.1188118811881188,
+              "recall": 0.12811387900355872
+            },
+            "counts": {
+              "copy_correct": 36,
+              "copy_mapping_correct": 49,
+              "extra_correct": 5,
+              "joint_correct": 180,
+              "mapping_correct": 175,
+              "paired": 251,
+              "paired_linked": 226,
+              "predicted": 901,
+              "predicted_copy": 303,
+              "predicted_extra": 169,
+              "substitution_correct": 1,
+              "target": 806,
+              "target_copy": 281,
+              "target_extra": 105,
+              "target_substitution": 4
+            },
+            "current_mapping": {
+              "copy_recall": 0.17437722419928825,
+              "exact_accuracy": 0.22332506203473945,
+              "f1": 0.24424284717376132,
+              "n_assigned": 732,
+              "n_copy": 281,
+              "n_copy_correct": 49,
+              "n_correct": 175,
+              "n_positive": 701,
+              "n_transcription_matches": 251,
+              "precision": 0.2390710382513661,
+              "recall": 0.24964336661911554
+            },
+            "extras": {
+              "f1": 0.0364963503649635,
+              "precision": 0.029585798816568046,
+              "recall": 0.047619047619047616
+            },
+            "joint": {
+              "f1": 0.210896309314587,
+              "precision": 0.1997780244173141,
+              "recall": 0.22332506203473945
+            },
+            "note": {
+              "f1": 0.29408318687756296,
+              "precision": 0.2785793562708102,
+              "recall": 0.31141439205955335
+            },
+            "substitution_mapping_accuracy": 0.25
+          },
+          "50ms": {
+            "conditional_mapping_accuracy": 0.7360890302066773,
+            "copy": {
+              "f1": 0.43150684931506844,
+              "precision": 0.4158415841584158,
+              "recall": 0.4483985765124555
+            },
+            "counts": {
+              "copy_correct": 126,
+              "copy_mapping_correct": 160,
+              "extra_correct": 19,
+              "joint_correct": 482,
+              "mapping_correct": 463,
+              "paired": 725,
+              "paired_linked": 629,
+              "predicted": 901,
+              "predicted_copy": 303,
+              "predicted_extra": 169,
+              "substitution_correct": 1,
+              "target": 806,
+              "target_copy": 281,
+              "target_extra": 105,
+              "target_substitution": 4
+            },
+            "current_mapping": {
+              "copy_recall": 0.5693950177935944,
+              "exact_accuracy": 0.598014888337469,
+              "f1": 0.6461967899511513,
+              "n_assigned": 732,
+              "n_copy": 281,
+              "n_copy_correct": 160,
+              "n_correct": 463,
+              "n_positive": 701,
+              "n_transcription_matches": 725,
+              "precision": 0.6325136612021858,
+              "recall": 0.6604850213980028
+            },
+            "extras": {
+              "f1": 0.1386861313868613,
+              "precision": 0.11242603550295859,
+              "recall": 0.18095238095238095
+            },
+            "joint": {
+              "f1": 0.5647334504979497,
+              "precision": 0.5349611542730299,
+              "recall": 0.598014888337469
+            },
+            "note": {
+              "f1": 0.849443468072642,
+              "precision": 0.804661487236404,
+              "recall": 0.8995037220843672
+            },
+            "substitution_mapping_accuracy": 0.25
+          }
+        }
+      },
+      "per_source": {
+        "MozartClConcertoA": {
+          "current_metric_50ms": {
+            "copy_recall": 0.5693950177935944,
+            "exact_accuracy": 0.598014888337469,
+            "f1": 0.6461967899511513,
+            "n_assigned": 732,
+            "n_copy": 281,
+            "n_copy_correct": 160,
+            "n_correct": 463,
+            "n_positive": 701,
+            "n_transcription_matches": 725,
+            "precision": 0.6325136612021858,
+            "recall": 0.6604850213980028
+          },
+          "deletions": {
+            "counts": {
+              "correct": 9,
+              "predicted": 75,
+              "target": 12
+            },
+            "f1": 0.20689655172413793,
+            "precision": 0.12,
+            "recall": 0.75
+          },
+          "n_samples": 8,
+          "tolerances": {
+            "100ms": {
+              "conditional_mapping_accuracy": 0.7435508345978755,
+              "copy": {
+                "f1": 0.4623287671232877,
+                "precision": 0.44554455445544555,
+                "recall": 0.4804270462633452
+              },
+              "counts": {
+                "copy_correct": 135,
+                "copy_mapping_correct": 169,
+                "extra_correct": 20,
+                "joint_correct": 510,
+                "mapping_correct": 490,
+                "paired": 758,
+                "paired_linked": 659,
+                "predicted": 901,
+                "predicted_copy": 303,
+                "predicted_extra": 169,
+                "substitution_correct": 1,
+                "target": 806,
+                "target_copy": 281,
+                "target_extra": 105,
+                "target_substitution": 4
+              },
+              "current_mapping": {
+                "copy_recall": 0.6014234875444839,
+                "exact_accuracy": 0.6327543424317618,
+                "f1": 0.6838799720865316,
+                "n_assigned": 732,
+                "n_copy": 281,
+                "n_copy_correct": 169,
+                "n_correct": 490,
+                "n_positive": 701,
+                "n_transcription_matches": 758,
+                "precision": 0.6693989071038251,
+                "recall": 0.6990014265335235
+              },
+              "extras": {
+                "f1": 0.145985401459854,
+                "precision": 0.11834319526627218,
+                "recall": 0.19047619047619047
+              },
+              "joint": {
+                "f1": 0.5975395430579965,
+                "precision": 0.5660377358490566,
+                "recall": 0.6327543424317618
+              },
+              "note": {
+                "f1": 0.888107791446983,
+                "precision": 0.8412874583795783,
+                "recall": 0.9404466501240695
+              },
+              "substitution_mapping_accuracy": 0.25
+            },
+            "20ms": {
+              "conditional_mapping_accuracy": 0.7743362831858407,
+              "copy": {
+                "f1": 0.1232876712328767,
+                "precision": 0.1188118811881188,
+                "recall": 0.12811387900355872
+              },
+              "counts": {
+                "copy_correct": 36,
+                "copy_mapping_correct": 49,
+                "extra_correct": 5,
+                "joint_correct": 180,
+                "mapping_correct": 175,
+                "paired": 251,
+                "paired_linked": 226,
+                "predicted": 901,
+                "predicted_copy": 303,
+                "predicted_extra": 169,
+                "substitution_correct": 1,
+                "target": 806,
+                "target_copy": 281,
+                "target_extra": 105,
+                "target_substitution": 4
+              },
+              "current_mapping": {
+                "copy_recall": 0.17437722419928825,
+                "exact_accuracy": 0.22332506203473945,
+                "f1": 0.24424284717376132,
+                "n_assigned": 732,
+                "n_copy": 281,
+                "n_copy_correct": 49,
+                "n_correct": 175,
+                "n_positive": 701,
+                "n_transcription_matches": 251,
+                "precision": 0.2390710382513661,
+                "recall": 0.24964336661911554
+              },
+              "extras": {
+                "f1": 0.0364963503649635,
+                "precision": 0.029585798816568046,
+                "recall": 0.047619047619047616
+              },
+              "joint": {
+                "f1": 0.210896309314587,
+                "precision": 0.1997780244173141,
+                "recall": 0.22332506203473945
+              },
+              "note": {
+                "f1": 0.29408318687756296,
+                "precision": 0.2785793562708102,
+                "recall": 0.31141439205955335
+              },
+              "substitution_mapping_accuracy": 0.25
+            },
+            "50ms": {
+              "conditional_mapping_accuracy": 0.7360890302066773,
+              "copy": {
+                "f1": 0.43150684931506844,
+                "precision": 0.4158415841584158,
+                "recall": 0.4483985765124555
+              },
+              "counts": {
+                "copy_correct": 126,
+                "copy_mapping_correct": 160,
+                "extra_correct": 19,
+                "joint_correct": 482,
+                "mapping_correct": 463,
+                "paired": 725,
+                "paired_linked": 629,
+                "predicted": 901,
+                "predicted_copy": 303,
+                "predicted_extra": 169,
+                "substitution_correct": 1,
+                "target": 806,
+                "target_copy": 281,
+                "target_extra": 105,
+                "target_substitution": 4
+              },
+              "current_mapping": {
+                "copy_recall": 0.5693950177935944,
+                "exact_accuracy": 0.598014888337469,
+                "f1": 0.6461967899511513,
+                "n_assigned": 732,
+                "n_copy": 281,
+                "n_copy_correct": 160,
+                "n_correct": 463,
+                "n_positive": 701,
+                "n_transcription_matches": 725,
+                "precision": 0.6325136612021858,
+                "recall": 0.6604850213980028
+              },
+              "extras": {
+                "f1": 0.1386861313868613,
+                "precision": 0.11242603550295859,
+                "recall": 0.18095238095238095
+              },
+              "joint": {
+                "f1": 0.5647334504979497,
+                "precision": 0.5349611542730299,
+                "recall": 0.598014888337469
+              },
+              "note": {
+                "f1": 0.849443468072642,
+                "precision": 0.804661487236404,
+                "recall": 0.8995037220843672
+              },
+              "substitution_mapping_accuracy": 0.25
+            }
+          }
+        }
+      }
+    },
+    "phase_seconds": {
+      "data": 0.01632929999504995,
+      "decode": 7.5284193999996205,
+      "metric_aggregation": 0.43242579999969166,
+      "metric_projection": 0.0008171999998012325,
+      "target_reconstruction": 0.004525700001977384
+    },
+    "repeat": {
+      "correct": 126,
+      "f1": 0.43150684931506844,
+      "precision": 0.4158415841584158,
+      "predicted": 303,
+      "recall": 0.4483985765124555,
+      "resume_accuracy": 0.015384615384615385,
+      "resume_correct": 1,
+      "resume_target": 65,
+      "target": 281
+    },
+    "transcription": {
+      "correct": 725,
+      "count_ratio": 1.117866004962779,
+      "f1": 0.849443468072642,
+      "precision": 0.804661487236404,
+      "predicted": 901,
+      "recall": 0.8995037220843672,
+      "same_pitch_split_count": 139,
+      "same_pitch_split_rate": 0.15427302996670367,
+      "short_note_recall": {
+        "lt_120ms": {
+          "matched": 62,
+          "recall": 1.0,
+          "target": 62
+        },
+        "lt_180ms": {
+          "matched": 486,
+          "recall": 0.9067164179104478,
+          "target": 536
+        },
+        "lt_80ms": {
+          "matched": 0,
+          "recall": 0.0,
+          "target": 0
+        }
+      },
+      "target": 806
+    },
+    "validation_rows": 8,
+    "validation_wall_seconds": 7.982664299999669
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "schema_version": "align-mel-mapper-v3-resume-status-v1",
+  "updated_utc": "2026-09-17T13:35:00Z",
+  "status": "superseded_by_mel_mapper_v5_bounds_audit",
+  "active_owned_processes": [],
+  "resource_leases": {},
+  "gpu_jobs": [],
+  "heavy_cpu_jobs": [],
+  "locked_test_touched": false,
+  "production_mutated": false,
+  "current_full_validation": {
+    "candidate": "mel-mapper-v2 grammar-v1",
+    "rows": 358,
+    "precision": 0.8262800999826763,
+    "recall": 0.8262596515541477,
+    "f1": 0.8262698756418982,
+    "bootstrap_lower_95": 0.8146038518469886,
+    "bootstrap_upper_95": 0.8379052775287179,
+    "target_f1": 0.85,
+    "target_met": false
+  },
+  "completed_work": [
+    "Audited raw note_map, labels, validated-target DB, packed target, render repair, and generator provenance.",
+    "Verified packed targets match the repaired raw-MIDI-authoritative payload rather than stale raw rendered rows.",
+    "Built versioned train-only canonical structural supervision with rendered identity, score span/pitches, source indices, first-pass/replay state, copy pass/position, replay plans, omissions, and resume anchors.",
+    "Admitted all 4,544 train and 358 validation rows with zero exclusions; validation targets were audited but not materialized into the train artifact.",
+    "Quantified render repair totals and preserved Track B frozen caches.",
+    "Completed the in-flight rendered-identity operation core after 1,536 rows; no evaluation was launched after the pause request."
+  ],
+  "structural_supervision": {
+    "path": "structural-supervision-v2/train-structural-supervision.jsonl.gz",
+    "sha256": "c2726c172fe4575a76503961875e256138d40da3b7d32de21b3b069a0a84e8e2",
+    "build_report": "structural-supervision-v2/build_report.json",
+    "build_report_sha256": "5f851ea4341570774a4cc8de9362c6f2c182f1b5363813e52c2ed21d0bce748c",
+    "admitted_train": 4544,
+    "admitted_val_audit": 358,
+    "excluded": 0,
+    "test_targets_materialized": false
+  },
+  "repair_audit": {
+    "train": {
+      "old_rendered_events": 507189,
+      "raw_midi_events": 507104,
+      "recovered_performed_indices": 58692,
+      "transferred_performed_indices": 429044,
+      "unmapped_performed_notes": 16229,
+      "folded_tied_notes": 3139
+    },
+    "val": {
+      "old_rendered_events": 39458,
+      "raw_midi_events": 40408,
+      "recovered_performed_indices": 5044,
+      "transferred_performed_indices": 33239,
+      "unmapped_performed_notes": 1806,
+      "folded_tied_notes": 319
+    }
+  },
+  "completed_operation_core": {
+    "model": "operation-core-v3-rendered-identity/operation_core.joblib",
+    "model_sha256": "0706d28d8430499fdf0e4f97975a793de522532ae63b15053a68102beb6590f3",
+    "report": "operation-core-v3-rendered-identity/report.json",
+    "report_sha256": "fff5c0f76fc33558e824e9a1fc69e6c630c78459f7d06c99368e753a4992ddff",
+    "train_rows": 1229,
+    "heldout_train_rows": 307,
+    "heldout_weighted_f1": 0.8638354380416188,
+    "heldout_extra_f1": 0.43112211651244625,
+    "heldout_copy_f1": 0.8474116824064358,
+    "atomic_model_write": true,
+    "optimizer_scheduler_rng_cursor": "not applicable after completed sklearn fit"
+  },
+  "operation_core_train_calibration": {
+    "report": "operation-core-v3-train-calibration-th090.json",
+    "report_sha256": "b8111c21865a63af4f4b4601657cb025e69c0d924713a6c0328c87f5c1a34aa1",
+    "threshold": 0.9,
+    "baseline_f1": 0.8660421545667446,
+    "candidate_f1": 0.8659640905542545,
+    "delta": -0.0000780640124901,
+    "accepted": false,
+    "full_validation_opened": false
+  },
+  "hierarchical_replay_plan": {
+    "model": "plan-ranker-v2-1536/plan_ranker.joblib",
+    "model_sha256": "5cba162428a72bb80c51708cb79207d45600bf8286da617d8c5d7621390900d7",
+    "report": "plan-ranker-v2-1536/report.json",
+    "report_sha256": "d85abdff9865dc0155d3bf0d68b0d11ddfae995e526a47f1a05e55051af902ac",
+    "requested_rows": 1536,
+    "admitted_rows": 1534,
+    "heldout_rows": 307,
+    "plan_accuracy": 0.739413680781759,
+    "copy_count_accuracy": 0.9609120521172638,
+    "source_span_accuracy": 0.739413680781759,
+    "resume_accuracy": 0.8110749185667753,
+    "hard_plan_train_f1": 0.8613583138173301,
+    "soft_plan_train_f1": 0.8663544106167056,
+    "fixed_grammar_train_f1": 0.8660421545667446,
+    "best_delta": 0.000312256049961,
+    "full_validation_opened": false,
+    "accepted": false
+  },
+  "joint_plan_event_models": {
+    "plan_only": {
+      "report": "joint-plan-path-v2-256/report.json",
+      "report_sha256": "5ddb16c5f208137f3f25edc65d0ecdba15526aabdb5d68239ba7854dbf6b2b22",
+      "checkpoint": "joint-plan-path-v2-256/last_checkpoint.pt",
+      "checkpoint_sha256": "8c52ed9b9a18f76587fedcb8cbe789d3dc5e831bb86617a148d678ad3a488051",
+      "heldout_f1": 0.8785966214961947,
+      "heldout_fixed_baseline_f1": 0.8785966214961947,
+      "gain": 0.0
+    },
+    "multipath": {
+      "report": "joint-plan-path-v3-multipath128/report.json",
+      "report_sha256": "92b928169f67eef51c131f93becf82bfddcb1ae9b828c06b3525d22e2f8d9c2d",
+      "checkpoint": "joint-plan-path-v3-multipath128/last_checkpoint.pt",
+      "checkpoint_sha256": "e92a14619780bf20108c673c11d865a41b9a3a95a4f16a57181024b64793a98c",
+      "heldout_f1": 0.868256880733945,
+      "heldout_fixed_baseline_f1": 0.8697247706422018,
+      "heldout_candidate_oracle_f1": 0.8711926605504586,
+      "gain": -0.0014678899082567476,
+      "candidate_oracle_gain": 0.0014678899082567476
+    },
+    "checkpoint_contents": "model, optimizer, constant-scheduler marker, RNG, epoch/data cursor, normalization, data fingerprint"
+  },
+  "resumable_neural_checkpoint": {
+    "path": "../mel-mapper-v1/sequence-stage-v8-cross-attention/last_checkpoint.pt",
+    "sha256": "cea5b8b680e24a51eca43638653ebc8a64cb766052b4713006dbbe589c2a0507",
+    "optimizer_state_present": true,
+    "scheduler_policy": "constant learning rate",
+    "rng_state_present": true,
+    "cursor": {
+      "epoch": 31,
+      "position": 0
+    }
+  },
+  "frozen_track_b": {
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "train_predictions_sha256": "9a7d8a72982f5f0392feada2b164a7fefe2243fcda35a2c1c346fbe57eb83fd6"
+  },
+  "code_hashes": {
+    "grammar_mapper_v2": "4bff231ceb6ee2a89594560bc2f3d519ffdd3dfbaf876a2c7f9ae4478bbe56f3",
+    "structural_supervision_builder": "af24aec9dc7695bd42afec552a28d9a6b6245749e67fdfca9433ebabed182b66"
+  },
+  "outstanding_blockers": [
+    "Rendered-identity operation-core-v3 regressed comparable train calibration and is rejected.",
+    "Joint plan/event rankers cannot improve because the enumerated within-plan candidate paths have only +0.00147 held-out oracle headroom.",
+    "Full validation must not be reopened until a train/calibration candidate demonstrates a comparable gain."
+  ],
+  "last_command": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_grammar_operation_core_v2.py --ready-marker runs\\joint-outputraw-full-v1\\DATA_READY.json --predictions runs\\joint-outputraw-full-v1\\mel-mapper-v1\\cache\\train-mel-events.jsonl --output-dir runs\\joint-outputraw-full-v1\\mel-mapper-v3\\operation-core-v3-rendered-identity --rows 1536 --resource-status runs\\TRAINING_RESOURCE_STATUS.json",
+  "last_command_result": "completed successfully at an atomic artifact boundary",
+  "active_command": null,
+  "authoritative_next_status": "../mel-mapper-v5/STATUS.json",
+  "exact_next_action": "Do not train a single-cursor event-layer CRF. Renderer strand ownership is required for a sparse gold-preserving model; otherwise implement a factorial concurrent-strand CRF.",
+  "restart_allowed": true,
+  "restart_condition": "Continue with replay-plan architecture; keep Track B frozen."
+}

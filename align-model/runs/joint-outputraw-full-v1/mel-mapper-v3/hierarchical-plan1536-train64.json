@@ -1,0 +1,167 @@
+{
+  "schema_version": "align-grammar-mapper-v2-calibration-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "split": "train",
+  "selection": "deterministic hash-ordered group-disjoint train calibration",
+  "rows": 64,
+  "input": "frozen_mel",
+  "costs": {
+    "substitution": 1.5,
+    "extra": 1.0,
+    "deletion": 1.0,
+    "repeat": 0.75,
+    "no_restart_gap": 0.25,
+    "timing": 0.0,
+    "duration": 0.0
+  },
+  "operation_checkpoint": null,
+  "substitutes_as_extra": false,
+  "operation_core": null,
+  "operation_override_threshold": 0.5,
+  "operation_in_viterbi": false,
+  "operation_weight": 0.4,
+  "sequence_emission_checkpoint": null,
+  "location_weight": 0.2,
+  "emission_core": null,
+  "emission_weight": 0.2,
+  "operation_tagger": null,
+  "tagger_threshold": 0.9,
+  "plan_core": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v3\\plan-ranker-v2-1536\\plan_ranker.joblib",
+  "overall": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5517.0,
+    "predicted": 6403,
+    "gold": 6407,
+    "precision": 0.861627362173981,
+    "recall": 0.8610894334321836,
+    "f1": 0.8613583138173301
+  },
+  "bootstrap_95": {
+    "replicates": 500,
+    "lower": 0.839076685305044,
+    "median": 0.8608616114064378,
+    "upper": 0.87964994362516
+  },
+  "first_pass_only": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 3418.5,
+    "predicted": 3859,
+    "gold": 4070,
+    "precision": 0.8858512568022804,
+    "recall": 0.8399262899262899,
+    "f1": 0.8622777147181233
+  },
+  "by_copy_count": {
+    "2": {
+      "rows": 17,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 1938.0,
+        "predicted": 2283,
+        "gold": 2283,
+        "precision": 0.8488830486202366,
+        "recall": 0.8488830486202366,
+        "f1": 0.8488830486202366
+      }
+    },
+    "1": {
+      "rows": 32,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2802.5,
+        "predicted": 3257,
+        "gold": 3257,
+        "precision": 0.8604544058949954,
+        "recall": 0.8604544058949954,
+        "f1": 0.8604544058949954
+      }
+    },
+    "0": {
+      "rows": 15,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 776.5,
+        "predicted": 863,
+        "gold": 867,
+        "precision": 0.8997682502896871,
+        "recall": 0.8956170703575548,
+        "f1": 0.8976878612716763
+      }
+    }
+  },
+  "by_type": {
+    "match": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 3321.0,
+        "predicted": 3661,
+        "gold": 3512,
+        "precision": 0.9071291996722207,
+        "recall": 0.945615034168565,
+        "f1": 0.9259723964868255
+      }
+    },
+    "copy": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2081.0,
+        "predicted": 2544,
+        "gold": 2337,
+        "precision": 0.8180031446540881,
+        "recall": 0.8904578519469405,
+        "f1": 0.8526941200573654
+      }
+    },
+    "substitute": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 43.0,
+        "predicted": 76,
+        "gold": 58,
+        "precision": 0.5657894736842105,
+        "recall": 0.7413793103448276,
+        "f1": 0.6417910447761195
+      }
+    },
+    "extra": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 45.0,
+        "predicted": 122,
+        "gold": 500,
+        "precision": 0.36885245901639346,
+        "recall": 0.09,
+        "f1": 0.14469453376205788
+      }
+    }
+  },
+  "repeat_structure": {
+    "rows": 49,
+    "source_accuracy": 0.12244897959183673,
+    "resume_accuracy": 0.4897959183673469
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

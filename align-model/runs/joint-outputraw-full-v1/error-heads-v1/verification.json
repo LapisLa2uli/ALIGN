@@ -1,0 +1,46 @@
+{
+  "schema_version": "align-frozen-error-heads-verification-v1",
+  "compile": {
+    "status": "passed",
+    "files": [
+      "src/alignmodel/joint/error_heads.py",
+      "src/alignmodel/joint/__init__.py",
+      "scripts/train_error_heads.py",
+      "tests/test_error_heads.py"
+    ]
+  },
+  "focused_affected_tests": {
+    "status": "passed",
+    "passed": 39,
+    "failed": 0,
+    "suites": [
+      "tests/test_error_heads.py",
+      "tests/test_outputraw_full_pipeline.py",
+      "tests/test_joint_infer.py",
+      "tests/test_joint_lattice.py",
+      "tests/test_packed_joint_data.py"
+    ]
+  },
+  "full_align_model_tests": {
+    "status": "unrelated_existing_failure",
+    "passed": 193,
+    "failed": 1,
+    "failure": "tests/test_canonical_note_decoder.py::CanonicalNoteDecoderTests::test_basic_pitch_manifest_loads_and_uses_explicit_shift",
+    "reason": "The pre-existing canonical module does not export decode_frozen_basic_pitch; no error-head file participates in this failure."
+  },
+  "ide_lints": {
+    "status": "passed",
+    "errors": 0
+  },
+  "data_contract": {
+    "train_rows": 4544,
+    "validation_rows": 358,
+    "locked_test_metadata_rows": 4022,
+    "locked_test_touched": false,
+    "intonation_masked": true
+  },
+  "promotion": {
+    "performed": false,
+    "reason": "Layer 3 rhythm and schema-range quality did not pass promotion quality."
+  }
+}

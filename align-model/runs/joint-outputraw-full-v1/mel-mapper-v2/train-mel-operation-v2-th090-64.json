@@ -1,0 +1,160 @@
+{
+  "schema_version": "align-grammar-mapper-v2-calibration-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "split": "train",
+  "selection": "deterministic hash-ordered group-disjoint train calibration",
+  "rows": 64,
+  "input": "frozen_mel",
+  "costs": {
+    "substitution": 1.5,
+    "extra": 1.0,
+    "deletion": 1.0,
+    "repeat": 0.75,
+    "no_restart_gap": 0.25,
+    "timing": 0.0,
+    "duration": 0.0
+  },
+  "operation_checkpoint": null,
+  "substitutes_as_extra": false,
+  "operation_core": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v2\\operation-core-v2-1536\\operation_core.joblib",
+  "operation_override_threshold": 0.9,
+  "operation_in_viterbi": false,
+  "operation_weight": 0.4,
+  "overall": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5549.0,
+    "predicted": 6403,
+    "gold": 6407,
+    "precision": 0.866625019522099,
+    "recall": 0.8660839706570937,
+    "f1": 0.8663544106167056
+  },
+  "bootstrap_95": {
+    "replicates": 500,
+    "lower": 0.8444788188607864,
+    "median": 0.865488536506435,
+    "upper": 0.8847137299788786
+  },
+  "first_pass_only": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 3434.0,
+    "predicted": 3866,
+    "gold": 4070,
+    "precision": 0.8882565959648215,
+    "recall": 0.8437346437346437,
+    "f1": 0.8654233870967741
+  },
+  "by_copy_count": {
+    "2": {
+      "rows": 17,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 1954.5,
+        "predicted": 2283,
+        "gold": 2283,
+        "precision": 0.8561103810775296,
+        "recall": 0.8561103810775296,
+        "f1": 0.8561103810775296
+      }
+    },
+    "1": {
+      "rows": 32,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2817.0,
+        "predicted": 3257,
+        "gold": 3257,
+        "precision": 0.8649063555419098,
+        "recall": 0.8649063555419098,
+        "f1": 0.8649063555419098
+      }
+    },
+    "0": {
+      "rows": 15,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 777.5,
+        "predicted": 863,
+        "gold": 867,
+        "precision": 0.9009269988412515,
+        "recall": 0.8967704728950404,
+        "f1": 0.8988439306358382
+      }
+    }
+  },
+  "by_type": {
+    "match": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 3332.0,
+        "predicted": 3670,
+        "gold": 3512,
+        "precision": 0.9079019073569482,
+        "recall": 0.94874715261959,
+        "f1": 0.9278752436647174
+      }
+    },
+    "copy": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2097.0,
+        "predicted": 2537,
+        "gold": 2337,
+        "precision": 0.826566811194324,
+        "recall": 0.8973042362002568,
+        "f1": 0.8604842018875667
+      }
+    },
+    "substitute": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 43.0,
+        "predicted": 71,
+        "gold": 58,
+        "precision": 0.6056338028169014,
+        "recall": 0.7413793103448276,
+        "f1": 0.6666666666666667
+      }
+    },
+    "extra": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 51.0,
+        "predicted": 125,
+        "gold": 500,
+        "precision": 0.408,
+        "recall": 0.102,
+        "f1": 0.16319999999999998
+      }
+    }
+  },
+  "repeat_structure": {
+    "rows": 49,
+    "source_accuracy": 0.20408163265306123,
+    "resume_accuracy": 0.5510204081632653
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

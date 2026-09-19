@@ -1,0 +1,90 @@
+{
+  "artifacts": {
+    "comparison": {
+      "bytes": 1055,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v3-exact32-full358-note-wise\\comparison.json",
+      "sha256": "846cf7109f71de6c869642bcc2240470b5a7ab005c074123b257a04d70ef58f1"
+    },
+    "environment": {
+      "bytes": 7109,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v3-exact32-full358-note-wise\\environment.json",
+      "sha256": "ed4109eb00658a7d3e6d45f993aff09308da615d151994ef541956db0b5c9c7d"
+    },
+    "freeze_manifest": {
+      "bytes": 78626,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v3-exact32-full358-note-wise\\freeze_manifest.json",
+      "sha256": "5afdc5bf0107b29e19ec6d484b320d8a098da0ef52c28093ab1b9f9efc2ccce0"
+    },
+    "predictions": {
+      "bytes": 11505030,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v3-exact32-full358-note-wise\\predictions.jsonl",
+      "sha256": "9c61552bce410984514de4b5e6e01c8a435b17a10904d531748caeb940ac4227"
+    },
+    "report": {
+      "bytes": 45988,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\validation-v3-exact32-full358-note-wise\\report.json",
+      "sha256": "63bd4b0ae6a7fb8bdc56f384a877db193c4155f51959a055300c200b1e64f65f"
+    }
+  },
+  "checks": {
+    "deterministic_metrics_match": true,
+    "locked_test_rows_metadata_only": 4022,
+    "locked_test_touched": false,
+    "prediction_hash_verified_before_scoring": true,
+    "promotion_attempted": false,
+    "source_hashes_unchanged_after_scoring": true,
+    "validation_rows_exactly_358": true
+  },
+  "created_utc": "2026-09-15T13:48:35.211653+00:00",
+  "passed": true,
+  "schema_version": "align-outputraw-validation-integrity-v1",
+  "source_artifacts": {
+    "benchmark": {
+      "bytes": 20704,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\loader_benchmark.json",
+      "sha256": "0234b88490212eed9fb8daa7ea1ec928187f4b6becccce94c1bd70f63e2e58fd"
+    },
+    "candidate_rescorer": {
+      "bytes": 48176,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\components\\candidate-rescorer-v1\\candidate_rescorer.pt",
+      "sha256": "9ae46bd9514e2594a48dcd46d1276a361fc9760c8c8d91619a6ca3721b749bde",
+      "threshold": 0.6799999999999999
+    },
+    "checkpoint": {
+      "bytes": 1022270,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\last_checkpoint.pt",
+      "sha256": "c6a044a1ff85a6550093830eae4dd73b77084f0cbdd20e1383ef076b7fdbae4c"
+    },
+    "data_ready": {
+      "bytes": 3921,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\DATA_READY.json",
+      "sha256": "da32428972b762cb78e48486891a11b221ff04281f2814f93b1ded5387d22af2"
+    },
+    "manifest": {
+      "bytes": 17259694,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\split.json",
+      "sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d"
+    },
+    "original_report": {
+      "bytes": 53083,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\report.json",
+      "sha256": "a51b6215b558ada492354c5fbf014753d15e93d6b5758eef1ddffb2d37dcfc23"
+    },
+    "packed_index": {
+      "bytes": 115503104,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-packed\\joint-outputraw-full-v1-shard64\\index.sqlite",
+      "sha256": "9fc06f57dadd9a9eb8740595acc5106497c02e33b0dd7a73a763cc795eee60be"
+    },
+    "packed_metadata": {
+      "bytes": 52872,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-packed\\joint-outputraw-full-v1-shard64\\metadata.json",
+      "sha256": "ede67d0f31318163b8f1c34727d737c946a39e10caaafe9ea1fa585daf5cd226"
+    },
+    "training_config": {
+      "bytes": 26460,
+      "contract_sha256": "fee4673da1cc06ba7d8d3c3e829fee0b0f22dc2fca4ce13c1dd029a1c64d6713",
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v2-exact32-rescored\\config.json",
+      "sha256": "6a52fe0607a2acadecbb7f5bca2a54ab2299af82ff3d4b5afd29d2097d6a4d85"
+    }
+  }
+}

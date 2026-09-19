@@ -1,0 +1,93 @@
+{
+  "compile": {
+    "reason": "Small tabular heads; eager avoids graph startup and Windows compiler dependency.",
+    "selected": false
+  },
+  "device": "cpu",
+  "loader": {
+    "packed_extraction_workers": 4,
+    "prefetch": 0,
+    "source": "resumable SQLite extraction cache",
+    "workers": 0
+  },
+  "results": [
+    {
+      "amp_dtype": "float32",
+      "batch_size": 2048,
+      "error": null,
+      "iterations": 3,
+      "ok": true,
+      "rows_per_sec": 106101.16221107627,
+      "seconds": 0.057906999998522224,
+      "torch_compile": false,
+      "workers": 0
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_size": 2048,
+      "error": null,
+      "iterations": 3,
+      "ok": true,
+      "rows_per_sec": 19137.629270157184,
+      "seconds": 0.32104289999915636,
+      "torch_compile": false,
+      "workers": 0
+    },
+    {
+      "amp_dtype": "float32",
+      "batch_size": 8192,
+      "error": null,
+      "iterations": 3,
+      "ok": true,
+      "rows_per_sec": 455079.0870278955,
+      "seconds": 0.054003799999918556,
+      "torch_compile": false,
+      "workers": 0
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_size": 8192,
+      "error": null,
+      "iterations": 3,
+      "ok": true,
+      "rows_per_sec": 20067.291074943598,
+      "seconds": 1.2246794999991835,
+      "torch_compile": false,
+      "workers": 0
+    },
+    {
+      "amp_dtype": "float32",
+      "batch_size": 32768,
+      "error": null,
+      "iterations": 3,
+      "ok": true,
+      "rows_per_sec": 665517.1223082907,
+      "seconds": 0.14771070000278996,
+      "torch_compile": false,
+      "workers": 0
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_size": 32768,
+      "error": null,
+      "iterations": 3,
+      "ok": true,
+      "rows_per_sec": 19883.02099349742,
+      "seconds": 4.944117899998673,
+      "torch_compile": false,
+      "workers": 0
+    }
+  ],
+  "schema_version": "align-error-head-hardware-profile-v1",
+  "selected": {
+    "amp_dtype": "float32",
+    "batch_size": 32768,
+    "error": null,
+    "iterations": 3,
+    "ok": true,
+    "rows_per_sec": 665517.1223082907,
+    "seconds": 0.14771070000278996,
+    "torch_compile": false,
+    "workers": 0
+  }
+}

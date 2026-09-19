@@ -1,0 +1,1852 @@
+{
+  "history": [
+    {
+      "component_batch_means": {
+        "deviation": 0.329531691968441,
+        "layer2": 0.54017058421265,
+        "rhythm": 0.37843200157989154,
+        "rhythm_subtype": 0.9211435765028
+      },
+      "epoch": 1,
+      "mean_loss": 1.1839974416149401,
+      "rows": 696533,
+      "rows_per_sec": 146949.18617637316,
+      "selection_score": 0.24489464236206956,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 0.5,
+        "deviation_validation": {
+          "baseline_weight": 0.5,
+          "mae_seconds": 0.13337264955043793,
+          "model_weight": 0.5
+        },
+        "layer2": {
+          "extra_note": 0.21000000000000002,
+          "missed_note": 0.24000000000000002,
+          "wrong_note": 0.28
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.2,
+            "mapped_ordinary": 1.0,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.13
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.13178805039729574,
+          "validation_typed_f1": 0.21396243897223904,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.28,
+            "path_wrong_copy": 0.13,
+            "path_wrong_ordinary": 0.1
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2565,
+            "f1": 0.20042194092827004,
+            "precision": 0.12123647019898852,
+            "predicted": 21157,
+            "recall": 0.5778328452354133,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 23,
+            "f1": 0.08141592920353982,
+            "precision": 0.06990881458966565,
+            "predicted": 329,
+            "recall": 0.09745762711864407,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 44,
+            "f1": 0.08704253214638971,
+            "precision": 0.10891089108910891,
+            "predicted": 404,
+            "recall": 0.07248764415156507,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.65,
+        "rhythm_learned_weight": 0.5,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 146,
+          "f1": 0.12372881355932205,
+          "precision": 0.08405296488198043,
+          "predicted": 1737,
+          "recall": 0.23434991974317818,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.12372881355932205,
+              "typed_error_f1": 0.21396243897223904
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.1320754716981132,
+              "typed_error_f1": 0.19745222929936304
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.1095890410958904,
+              "typed_error_f1": 0.2279581220780931
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.12084592145015106,
+              "typed_error_f1": 0.17079889807162535
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.12419911286347955,
+              "typed_error_f1": 0.21570517573780215
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.12372881355932205,
+              "typed_error_f1": 0.21396243897223904
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.12372881355932205,
+              "typed_error_f1": 0.21396243897223904
+            }
+          }
+        },
+        "full_typed_error_f1": 0.21396243897223904,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.21396243897223904,
+            "precision": 0.13178805039729574,
+            "predicted": 22779,
+            "recall": 0.5683453237410072,
+            "target": 5282,
+            "typed_correct": 3002
+          },
+          "false_labels_per_clip": 54.19832402234637,
+          "macro_f1": 0.28278958455978553,
+          "micro_accuracy": 0.6013055070331893,
+          "per_class": {
+            "extra_note": {
+              "correct": 2929,
+              "f1": 0.2169147596830334,
+              "precision": 0.12979128816413346,
+              "predicted": 22567,
+              "recall": 0.6598332957873395,
+              "target": 4439
+            },
+            "match": {
+              "correct": 29700,
+              "f1": 0.7359774002899305,
+              "precision": 0.9396949946212745,
+              "predicted": 31606,
+              "recall": 0.6048510274321325,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 73,
+              "f1": 0.17826617826617827,
+              "precision": 0.3443396226415094,
+              "predicted": 212,
+              "recall": 0.12026359143327842,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.13337264955043793,
+          "per_subtype": {
+            "long": {
+              "correct": 49,
+              "f1": 0.07827476038338659,
+              "precision": 0.05568181818181818,
+              "predicted": 880,
+              "recall": 0.13172043010752688,
+              "target": 372
+            },
+            "short": {
+              "correct": 37,
+              "f1": 0.06678700361010831,
+              "precision": 0.043173862310385065,
+              "predicted": 857,
+              "recall": 0.14741035856573706,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 146,
+            "f1": 0.12372881355932205,
+            "precision": 0.08405296488198043,
+            "predicted": 1737,
+            "recall": 0.23434991974317818,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 146,
+            "f1": 0.12372881355932205,
+            "precision": 0.08405296488198043,
+            "predicted": 1737,
+            "recall": 0.23434991974317818,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 1125,
+            "f1": 0.08018245964149531,
+            "precision": 0.04938759383642829,
+            "predicted": 22779,
+            "recall": 0.21298750473305567,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.15191722119396384,
+        "layer2": 0.2770709883082997,
+        "rhythm": 0.358071197162975,
+        "rhythm_subtype": 0.24111431972547012
+      },
+      "epoch": 2,
+      "mean_loss": 0.6592272240399701,
+      "rows": 696533,
+      "rows_per_sec": 152769.5008705097,
+      "selection_score": 0.2831395443373316,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 0.9,
+        "deviation_validation": {
+          "baseline_weight": 0.09999999999999998,
+          "mae_seconds": 0.09550659358501434,
+          "model_weight": 0.9
+        },
+        "layer2": {
+          "extra_note": 0.33999999999999997,
+          "missed_note": 0.35,
+          "wrong_note": 0.25
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.33999999999999997,
+            "mapped_ordinary": 0.47,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.27
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.17525120658279927,
+          "validation_typed_f1": 0.24719602700742144,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.47,
+            "path_wrong_copy": 0.1,
+            "path_wrong_ordinary": 0.14
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 1575,
+            "f1": 0.22753539439468365,
+            "precision": 0.1674641148325359,
+            "predicted": 9405,
+            "recall": 0.35480964181121877,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 72,
+            "f1": 0.07704654895666131,
+            "precision": 0.04409063074096754,
+            "predicted": 1633,
+            "recall": 0.3050847457627119,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 238,
+            "f1": 0.11036401576628797,
+            "precision": 0.06422018348623854,
+            "predicted": 3706,
+            "recall": 0.39209225700164746,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.56,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 112,
+          "f1": 0.14377406931964057,
+          "precision": 0.11978609625668449,
+          "predicted": 935,
+          "recall": 0.1797752808988764,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.14377406931964057,
+              "typed_error_f1": 0.24719602700742144
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.14412635735439291,
+              "typed_error_f1": 0.22435660632926982
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.14311926605504588,
+              "typed_error_f1": 0.26612244897959186
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.1393034825870647,
+              "typed_error_f1": 0.09863945578231292
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.14443625644804717,
+              "typed_error_f1": 0.2522356199157676
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.14377406931964057,
+              "typed_error_f1": 0.24719602700742144
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.14377406931964057,
+              "typed_error_f1": 0.24719602700742144
+            }
+          }
+        },
+        "full_typed_error_f1": 0.24719602700742144,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.24719602700742144,
+            "precision": 0.17525120658279927,
+            "predicted": 12639,
+            "recall": 0.41934873154108293,
+            "target": 5282,
+            "typed_correct": 2215
+          },
+          "false_labels_per_clip": 28.441340782122904,
+          "macro_f1": 0.34340892870997336,
+          "micro_accuracy": 0.7563850326376759,
+          "per_class": {
+            "extra_note": {
+              "correct": 2071,
+              "f1": 0.24939788053949905,
+              "precision": 0.17018653956775412,
+              "predicted": 12169,
+              "recall": 0.4665465194863708,
+              "target": 4439
+            },
+            "match": {
+              "correct": 38921,
+              "f1": 0.8568283635483054,
+              "precision": 0.9323288458774494,
+              "predicted": 41746,
+              "recall": 0.7926399608985194,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 144,
+              "f1": 0.2674094707520892,
+              "precision": 0.30638297872340425,
+              "predicted": 470,
+              "recall": 0.2372322899505766,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.09550659358501434,
+          "per_subtype": {
+            "long": {
+              "correct": 31,
+              "f1": 0.07769423558897243,
+              "precision": 0.07276995305164319,
+              "predicted": 426,
+              "recall": 0.08333333333333333,
+              "target": 372
+            },
+            "short": {
+              "correct": 39,
+              "f1": 0.10263157894736842,
+              "precision": 0.07662082514734773,
+              "predicted": 509,
+              "recall": 0.1553784860557769,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 112,
+            "f1": 0.14377406931964057,
+            "precision": 0.11978609625668449,
+            "predicted": 935,
+            "recall": 0.1797752808988764,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 112,
+            "f1": 0.14377406931964057,
+            "precision": 0.11978609625668449,
+            "predicted": 935,
+            "recall": 0.1797752808988764,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 755,
+            "f1": 0.08425869092126555,
+            "precision": 0.05973573858691352,
+            "predicted": 12639,
+            "recall": 0.142938280954184,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.10624852979725058,
+        "layer2": 0.24189770831303162,
+        "rhythm": 0.35103164884177124,
+        "rhythm_subtype": 0.22729608687487515
+      },
+      "epoch": 3,
+      "mean_loss": 0.6007835663322714,
+      "rows": 696533,
+      "rows_per_sec": 151022.38175756144,
+      "selection_score": 0.3066518463877578,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 1.0,
+        "deviation_validation": {
+          "baseline_weight": 0.0,
+          "mae_seconds": 0.08334170281887054,
+          "model_weight": 1.0
+        },
+        "layer2": {
+          "extra_note": 0.35,
+          "missed_note": 0.39,
+          "wrong_note": 0.37
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.35,
+            "mapped_ordinary": 0.27,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.31
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.17764495655924578,
+          "validation_typed_f1": 0.2680489052112872,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.42000000000000004,
+            "path_wrong_copy": 0.18,
+            "path_wrong_ordinary": 0.26
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2097,
+            "f1": 0.2609831985065339,
+            "precision": 0.18029404178488523,
+            "predicted": 11631,
+            "recall": 0.4724036945257941,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 73,
+            "f1": 0.08129175946547884,
+            "precision": 0.046794871794871795,
+            "predicted": 1560,
+            "recall": 0.3093220338983051,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 92,
+            "f1": 0.19429778247096088,
+            "precision": 0.27058823529411763,
+            "predicted": 340,
+            "recall": 0.1515650741350906,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.54,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 189,
+          "f1": 0.15441176470588233,
+          "precision": 0.10356164383561643,
+          "predicted": 1825,
+          "recall": 0.30337078651685395,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.15441176470588233,
+              "typed_error_f1": 0.2680489052112872
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.16321243523316062,
+              "typed_error_f1": 0.22784560850728636
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.13938053097345132,
+              "typed_error_f1": 0.3040070453544694
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.1446808510638298,
+              "typed_error_f1": 0.18925056775170326
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.15544509715318575,
+              "typed_error_f1": 0.27320455671124316
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.15441176470588233,
+              "typed_error_f1": 0.2680489052112872
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.15441176470588233,
+              "typed_error_f1": 0.2680489052112872
+            }
+          }
+        },
+        "full_typed_error_f1": 0.2680489052112872,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.2680489052112872,
+            "precision": 0.17764495655924578,
+            "predicted": 16229,
+            "recall": 0.5458159787959106,
+            "target": 5282,
+            "typed_correct": 2883
+          },
+          "false_labels_per_clip": 36.56145251396648,
+          "macro_f1": 0.3417317846881005,
+          "micro_accuracy": 0.7152155925347062,
+          "per_class": {
+            "extra_note": {
+              "correct": 2739,
+              "f1": 0.27105393369619,
+              "precision": 0.17367319764124026,
+              "predicted": 15771,
+              "recall": 0.6170308628069385,
+              "target": 4439
+            },
+            "match": {
+              "correct": 36014,
+              "f1": 0.8254506698449443,
+              "precision": 0.9438620400461264,
+              "predicted": 38156,
+              "recall": 0.7334378754862229,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 144,
+              "f1": 0.2704225352112676,
+              "precision": 0.314410480349345,
+              "predicted": 458,
+              "recall": 0.2372322899505766,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.08334170281887054,
+          "per_subtype": {
+            "long": {
+              "correct": 41,
+              "f1": 0.0739404869251578,
+              "precision": 0.05563093622795115,
+              "predicted": 737,
+              "recall": 0.11021505376344086,
+              "target": 372
+            },
+            "short": {
+              "correct": 59,
+              "f1": 0.08812546676624348,
+              "precision": 0.05422794117647059,
+              "predicted": 1088,
+              "recall": 0.2350597609561753,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 189,
+            "f1": 0.15441176470588233,
+            "precision": 0.10356164383561643,
+            "predicted": 1825,
+            "recall": 0.30337078651685395,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 189,
+            "f1": 0.15441176470588233,
+            "precision": 0.10356164383561643,
+            "predicted": 1825,
+            "recall": 0.30337078651685395,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 762,
+            "f1": 0.07084747338570964,
+            "precision": 0.046952985396512416,
+            "predicted": 16229,
+            "recall": 0.1442635365391897,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.08543782715093005,
+        "layer2": 0.22806498069654813,
+        "rhythm": 0.350120945410295,
+        "rhythm_subtype": 0.22685354406183417
+      },
+      "epoch": 4,
+      "mean_loss": 0.5781588198113189,
+      "rows": 696533,
+      "rows_per_sec": 151445.4363487103,
+      "selection_score": 0.31492796784924526,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 1.0,
+        "deviation_validation": {
+          "baseline_weight": 0.0,
+          "mae_seconds": 0.07646971195936203,
+          "model_weight": 1.0
+        },
+        "layer2": {
+          "extra_note": 0.35,
+          "missed_note": 0.41000000000000003,
+          "wrong_note": 0.36
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.36,
+            "mapped_ordinary": 0.28,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.32
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.1890718666023565,
+          "validation_typed_f1": 0.2772417277090174,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.52,
+            "path_wrong_copy": 0.24000000000000002,
+            "path_wrong_ordinary": 0.28
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2228,
+            "f1": 0.2684984333574355,
+            "precision": 0.18326889857695156,
+            "predicted": 12157,
+            "recall": 0.5019148456859653,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 62,
+            "f1": 0.07964033397559409,
+            "precision": 0.046934140802422405,
+            "predicted": 1321,
+            "recall": 0.2627118644067797,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 128,
+            "f1": 0.22857142857142856,
+            "precision": 0.24951267056530213,
+            "predicted": 513,
+            "recall": 0.21087314662273476,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.55,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 172,
+          "f1": 0.1507449605609115,
+          "precision": 0.10367691380349608,
+          "predicted": 1659,
+          "recall": 0.27608346709470305,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.1507449605609115,
+              "typed_error_f1": 0.2772417277090174
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.15855354659248957,
+              "typed_error_f1": 0.23765725763822815
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.13744075829383887,
+              "typed_error_f1": 0.3134674922600619
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.14479638009049772,
+              "typed_error_f1": 0.19388516032811334
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.15138282387190685,
+              "typed_error_f1": 0.2832990137639536
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.1507449605609115,
+              "typed_error_f1": 0.2772417277090174
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.1507449605609115,
+              "typed_error_f1": 0.2772417277090174
+            }
+          }
+        },
+        "full_typed_error_f1": 0.2772417277090174,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.2772417277090174,
+            "precision": 0.1890718666023565,
+            "predicted": 14513,
+            "recall": 0.5195001893222264,
+            "target": 5282,
+            "typed_correct": 2744
+          },
+          "false_labels_per_clip": 32.29608938547486,
+          "macro_f1": 0.3490552904510858,
+          "micro_accuracy": 0.740737335662407,
+          "per_class": {
+            "extra_note": {
+              "correct": 2602,
+              "f1": 0.28111495246326706,
+              "precision": 0.18489305762808214,
+              "predicted": 14073,
+              "recall": 0.5861680558684388,
+              "target": 4439
+            },
+            "match": {
+              "correct": 37541,
+              "f1": 0.8438550154537792,
+              "precision": 0.9415379213483146,
+              "predicted": 39872,
+              "recall": 0.7645357717451072,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 142,
+              "f1": 0.27125119388729707,
+              "precision": 0.32272727272727275,
+              "predicted": 440,
+              "recall": 0.23393739703459637,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.07646971195936203,
+          "per_subtype": {
+            "long": {
+              "correct": 35,
+              "f1": 0.0662878787878788,
+              "precision": 0.05116959064327485,
+              "predicted": 684,
+              "recall": 0.09408602150537634,
+              "target": 372
+            },
+            "short": {
+              "correct": 58,
+              "f1": 0.09461663947797716,
+              "precision": 0.059487179487179485,
+              "predicted": 975,
+              "recall": 0.23107569721115537,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 172,
+            "f1": 0.1507449605609115,
+            "precision": 0.10367691380349608,
+            "predicted": 1659,
+            "recall": 0.27608346709470305,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 172,
+            "f1": 0.1507449605609115,
+            "precision": 0.10367691380349608,
+            "predicted": 1659,
+            "recall": 0.27608346709470305,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 718,
+            "f1": 0.07254357160899218,
+            "precision": 0.04947288637773031,
+            "predicted": 14513,
+            "recall": 0.13593335857629685,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.0749287676404823,
+        "layer2": 0.22206952558322388,
+        "rhythm": 0.34883375601335004,
+        "rhythm_subtype": 0.2261730981144038
+      },
+      "epoch": 5,
+      "mean_loss": 0.5669605862387271,
+      "rows": 696533,
+      "rows_per_sec": 151798.43970374693,
+      "selection_score": 0.32195707684913344,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 1.0,
+        "deviation_validation": {
+          "baseline_weight": 0.0,
+          "mae_seconds": 0.0729232057929039,
+          "model_weight": 1.0
+        },
+        "layer2": {
+          "extra_note": 0.35,
+          "missed_note": 0.42000000000000004,
+          "wrong_note": 0.36
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.36,
+            "mapped_ordinary": 0.28,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.32
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.19384572735463304,
+          "validation_typed_f1": 0.28380092334229623,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.45999999999999996,
+            "path_wrong_copy": 0.29000000000000004,
+            "path_wrong_ordinary": 0.35
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2225,
+            "f1": 0.27355996803344196,
+            "precision": 0.18811295231653702,
+            "predicted": 11828,
+            "recall": 0.5012390177968011,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 54,
+            "f1": 0.07912087912087912,
+            "precision": 0.047829937998228524,
+            "predicted": 1129,
+            "recall": 0.2288135593220339,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 146,
+            "f1": 0.2600178094390027,
+            "precision": 0.28294573643410853,
+            "predicted": 516,
+            "recall": 0.24052718286655683,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.55,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 173,
+          "f1": 0.15262461402734892,
+          "precision": 0.10523114355231143,
+          "predicted": 1644,
+          "recall": 0.27768860353130015,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.15262461402734892,
+              "typed_error_f1": 0.28380092334229623
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.16317991631799164,
+              "typed_error_f1": 0.24277701344057573
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.13445378151260504,
+              "typed_error_f1": 0.3215747417657377
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.1552511415525114,
+              "typed_error_f1": 0.19689119170984457
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.15234375,
+              "typed_error_f1": 0.2901960784313725
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.15262461402734892,
+              "typed_error_f1": 0.28380092334229623
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.15262461402734892,
+              "typed_error_f1": 0.28380092334229623
+            }
+          }
+        },
+        "full_typed_error_f1": 0.28380092334229623,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.28380092334229623,
+            "precision": 0.19384572735463304,
+            "predicted": 14429,
+            "recall": 0.5295342673229837,
+            "target": 5282,
+            "typed_correct": 2797
+          },
+          "false_labels_per_clip": 31.92737430167598,
+          "macro_f1": 0.35166162861744266,
+          "micro_accuracy": 0.7441390089179002,
+          "per_class": {
+            "extra_note": {
+              "correct": 2655,
+              "f1": 0.28807030868550965,
+              "precision": 0.18972416750035728,
+              "predicted": 13994,
+              "recall": 0.5981076819103401,
+              "target": 4439
+            },
+            "match": {
+              "correct": 37673,
+              "f1": 0.846023422674856,
+              "precision": 0.9428621483631995,
+              "predicted": 39956,
+              "recall": 0.7672239985336945,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 142,
+              "f1": 0.272552783109405,
+              "precision": 0.3264367816091954,
+              "predicted": 435,
+              "recall": 0.23393739703459637,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.0729232057929039,
+          "per_subtype": {
+            "long": {
+              "correct": 36,
+              "f1": 0.06716417910447761,
+              "precision": 0.05142857142857143,
+              "predicted": 700,
+              "recall": 0.0967741935483871,
+              "target": 372
+            },
+            "short": {
+              "correct": 56,
+              "f1": 0.09372384937238494,
+              "precision": 0.059322033898305086,
+              "predicted": 944,
+              "recall": 0.22310756972111553,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 173,
+            "f1": 0.15262461402734892,
+            "precision": 0.10523114355231143,
+            "predicted": 1644,
+            "recall": 0.27768860353130015,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 173,
+            "f1": 0.15262461402734892,
+            "precision": 0.10523114355231143,
+            "predicted": 1644,
+            "recall": 0.27768860353130015,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 710,
+            "f1": 0.07204099233930293,
+            "precision": 0.04920645921408275,
+            "predicted": 14429,
+            "recall": 0.1344187807648618,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.06920430436730385,
+        "layer2": 0.21828609298576007,
+        "rhythm": 0.34733708744699304,
+        "rhythm_subtype": 0.22552934085780924
+      },
+      "epoch": 6,
+      "mean_loss": 0.5600072831631743,
+      "rows": 696533,
+      "rows_per_sec": 154152.79348038335,
+      "selection_score": 0.3243126885264134,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 1.0,
+        "deviation_validation": {
+          "baseline_weight": 0.0,
+          "mae_seconds": 0.07121023535728455,
+          "model_weight": 1.0
+        },
+        "layer2": {
+          "extra_note": 0.35,
+          "missed_note": 0.41000000000000003,
+          "wrong_note": 0.36
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.36,
+            "mapped_ordinary": 0.28,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.32
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.1946896598918771,
+          "validation_typed_f1": 0.2860015079165619,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.36,
+            "path_wrong_copy": 0.31,
+            "path_wrong_ordinary": 0.4
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2254,
+            "f1": 0.27789421772900996,
+            "precision": 0.19129254010014426,
+            "predicted": 11783,
+            "recall": 0.5077720207253886,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 55,
+            "f1": 0.07840342124019958,
+            "precision": 0.04712939160239932,
+            "predicted": 1167,
+            "recall": 0.2330508474576271,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 152,
+            "f1": 0.266199649737303,
+            "precision": 0.2841121495327103,
+            "predicted": 535,
+            "recall": 0.2504118616144975,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.54,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 196,
+          "f1": 0.1532447224394058,
+          "precision": 0.10129198966408269,
+          "predicted": 1935,
+          "recall": 0.3146067415730337,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.1532447224394058,
+              "typed_error_f1": 0.2860015079165619
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.16438356164383564,
+              "typed_error_f1": 0.24550397323295695
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.13445378151260504,
+              "typed_error_f1": 0.3234924015100184
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.1471861471861472,
+              "typed_error_f1": 0.2030456852791878
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.15384615384615385,
+              "typed_error_f1": 0.2921797364441564
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.1532447224394058,
+              "typed_error_f1": 0.2860015079165619
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.1532447224394058,
+              "typed_error_f1": 0.2860015079165619
+            }
+          }
+        },
+        "full_typed_error_f1": 0.2860015079165619,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.2860015079165619,
+            "precision": 0.1946896598918771,
+            "predicted": 14613,
+            "recall": 0.5386217341915941,
+            "target": 5282,
+            "typed_correct": 2845
+          },
+          "false_labels_per_clip": 32.20670391061452,
+          "macro_f1": 0.3536488470521474,
+          "micro_accuracy": 0.7431828629217615,
+          "per_class": {
+            "extra_note": {
+              "correct": 2685,
+              "f1": 0.2900821089023336,
+              "precision": 0.19079087614581114,
+              "predicted": 14073,
+              "recall": 0.6048659608019824,
+              "target": 4439
+            },
+            "match": {
+              "correct": 37573,
+              "f1": 0.8455246132208157,
+              "precision": 0.9447098461229005,
+              "predicted": 39772,
+              "recall": 0.7651874630877951,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 160,
+              "f1": 0.27898866608544026,
+              "precision": 0.2962962962962963,
+              "predicted": 540,
+              "recall": 0.26359143327841844,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.07121023535728455,
+          "per_subtype": {
+            "long": {
+              "correct": 43,
+              "f1": 0.0721476510067114,
+              "precision": 0.0524390243902439,
+              "predicted": 820,
+              "recall": 0.11559139784946236,
+              "target": 372
+            },
+            "short": {
+              "correct": 61,
+              "f1": 0.08931185944363103,
+              "precision": 0.054708520179372194,
+              "predicted": 1115,
+              "recall": 0.24302788844621515,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 196,
+            "f1": 0.1532447224394058,
+            "precision": 0.10129198966408269,
+            "predicted": 1935,
+            "recall": 0.3146067415730337,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 196,
+            "f1": 0.1532447224394058,
+            "precision": 0.10129198966408269,
+            "predicted": 1935,
+            "recall": 0.3146067415730337,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 695,
+            "f1": 0.06986680070369439,
+            "precision": 0.04756039143228632,
+            "predicted": 14613,
+            "recall": 0.13157894736842105,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.06667827645486052,
+        "layer2": 0.21702177822589874,
+        "rhythm": 0.3468181517991153,
+        "rhythm_subtype": 0.2249391255053607
+      },
+      "epoch": 7,
+      "mean_loss": 0.5573172238426178,
+      "rows": 696533,
+      "rows_per_sec": 144963.9968324981,
+      "selection_score": 0.3268067777942117,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 1.0,
+        "deviation_validation": {
+          "baseline_weight": 0.0,
+          "mae_seconds": 0.07050962746143341,
+          "model_weight": 1.0
+        },
+        "layer2": {
+          "extra_note": 0.35,
+          "missed_note": 0.42000000000000004,
+          "wrong_note": 0.33999999999999997
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.37,
+            "mapped_ordinary": 0.29000000000000004,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.32
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.20269334359368987,
+          "validation_typed_f1": 0.28823111013842534,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.41000000000000003,
+            "path_wrong_copy": 0.33999999999999997,
+            "path_wrong_ordinary": 0.38
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2324,
+            "f1": 0.2798651252408478,
+            "precision": 0.19097707289013066,
+            "predicted": 12169,
+            "recall": 0.5235413381392205,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 51,
+            "f1": 0.0795631825273011,
+            "precision": 0.04875717017208413,
+            "predicted": 1046,
+            "recall": 0.21610169491525424,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 172,
+            "f1": 0.27001569858712715,
+            "precision": 0.25787106446776614,
+            "predicted": 667,
+            "recall": 0.2833607907742998,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.54,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 208,
+          "f1": 0.1543026706231454,
+          "precision": 0.10033767486734202,
+          "predicted": 2073,
+          "recall": 0.33386837881219905,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.1543026706231454,
+              "typed_error_f1": 0.28823111013842534
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.16478956727919383,
+              "typed_error_f1": 0.25185016509165437
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.13676907829534193,
+              "typed_error_f1": 0.3218875078997262
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.1446808510638298,
+              "typed_error_f1": 0.20628525382755844
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.15522145469321413,
+              "typed_error_f1": 0.29420051655318147
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.1543026706231454,
+              "typed_error_f1": 0.28823111013842534
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.1543026706231454,
+              "typed_error_f1": 0.28823111013842534
+            }
+          }
+        },
+        "full_typed_error_f1": 0.28823111013842534,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.28823111013842534,
+            "precision": 0.20269334359368987,
+            "predicted": 12995,
+            "recall": 0.4986747444149943,
+            "target": 5282,
+            "typed_correct": 2634
+          },
+          "false_labels_per_clip": 28.391061452513966,
+          "macro_f1": 0.3575487973099426,
+          "micro_accuracy": 0.764420336489841,
+          "per_class": {
+            "extra_note": {
+              "correct": 2490,
+              "f1": 0.29294117647058826,
+              "precision": 0.19823262479101983,
+              "predicted": 12561,
+              "recall": 0.5609371480063077,
+              "target": 4439
+            },
+            "match": {
+              "correct": 38939,
+              "f1": 0.8605969522504502,
+              "precision": 0.9407827977772408,
+              "predicted": 41390,
+              "recall": 0.7930065372787813,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 144,
+              "f1": 0.27665706051873196,
+              "precision": 0.3317972350230415,
+              "predicted": 434,
+              "recall": 0.2372322899505766,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.07050962746143341,
+          "per_subtype": {
+            "long": {
+              "correct": 43,
+              "f1": 0.06918744971842317,
+              "precision": 0.04936854190585534,
+              "predicted": 871,
+              "recall": 0.11559139784946236,
+              "target": 372
+            },
+            "short": {
+              "correct": 63,
+              "f1": 0.0867171369580179,
+              "precision": 0.0524126455906822,
+              "predicted": 1202,
+              "recall": 0.250996015936255,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 208,
+            "f1": 0.1543026706231454,
+            "precision": 0.10033767486734202,
+            "predicted": 2073,
+            "recall": 0.33386837881219905,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 208,
+            "f1": 0.1543026706231454,
+            "precision": 0.10033767486734202,
+            "predicted": 2073,
+            "recall": 0.33386837881219905,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 714,
+            "f1": 0.07813098429720414,
+            "precision": 0.05494420931127357,
+            "predicted": 12995,
+            "recall": 0.13517606967057932,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    },
+    {
+      "component_batch_means": {
+        "deviation": 0.06553251499479468,
+        "layer2": 0.21628769690340216,
+        "rhythm": 0.3468426899476485,
+        "rhythm_subtype": 0.2254388616843657
+      },
+      "epoch": 8,
+      "mean_loss": 0.5561447219587442,
+      "rows": 696533,
+      "rows_per_sec": 154706.88787075656,
+      "selection_score": 0.3269649421312929,
+      "thresholds": {
+        "calibrated_on": "validation_only",
+        "deviation_model_weight": 1.0,
+        "deviation_validation": {
+          "baseline_weight": 0.0,
+          "mae_seconds": 0.0703192800283432,
+          "model_weight": 1.0
+        },
+        "layer2": {
+          "extra_note": 0.35,
+          "missed_note": 0.42000000000000004,
+          "wrong_note": 0.33999999999999997
+        },
+        "layer2_context": {
+          "extra_note": {
+            "mapped_copy": 0.37,
+            "mapped_ordinary": 0.29000000000000004,
+            "unmapped_copy": 1.0,
+            "unmapped_ordinary": 0.32
+          },
+          "missed_note": 1.0,
+          "validation_precision": 0.20293868759135317,
+          "validation_typed_f1": 0.2886056561457251,
+          "wrong_note": {
+            "not_path_wrong_copy": 1.0,
+            "not_path_wrong_ordinary": 0.41000000000000003,
+            "path_wrong_copy": 0.33999999999999997,
+            "path_wrong_ordinary": 0.38
+          }
+        },
+        "layer2_validation": {
+          "extra_note": {
+            "correct": 2325,
+            "f1": 0.28042455674828126,
+            "precision": 0.1914683356666392,
+            "predicted": 12143,
+            "recall": 0.5237666141022753,
+            "target": 4439
+          },
+          "missed_note": {
+            "correct": 51,
+            "f1": 0.0821917808219178,
+            "precision": 0.050746268656716415,
+            "predicted": 1005,
+            "recall": 0.21610169491525424,
+            "target": 236
+          },
+          "wrong_note": {
+            "correct": 173,
+            "f1": 0.270735524256651,
+            "precision": 0.2578241430700447,
+            "predicted": 671,
+            "recall": 0.28500823723228996,
+            "target": 607
+          }
+        },
+        "minimum_rhythm_precision": 0.7,
+        "operation_decoder": "thresholded_sequence_consistent_v2",
+        "rhythm": 0.54,
+        "rhythm_learned_weight": 0.75,
+        "rhythm_precision_floor_met": false,
+        "rhythm_validation": {
+          "correct": 202,
+          "f1": 0.15343714394227118,
+          "precision": 0.10049751243781095,
+          "predicted": 2010,
+          "recall": 0.32423756019261635,
+          "target": 623
+        }
+      },
+      "validation": {
+        "breakdown": {
+          "duration": {
+            "ge_10s": {
+              "clips": 358,
+              "rhythm_f1": 0.15343714394227118,
+              "typed_error_f1": 0.2886056561457251
+            }
+          },
+          "mapping_correct": {
+            "majority_correct": {
+              "clips": 213,
+              "rhythm_f1": 0.1646489104116223,
+              "typed_error_f1": 0.25233219567690557
+            },
+            "majority_incorrect": {
+              "clips": 145,
+              "rhythm_f1": 0.13455657492354742,
+              "typed_error_f1": 0.32219997892740493
+            }
+          },
+          "repeats": {
+            "ordinary": {
+              "clips": 47,
+              "rhythm_f1": 0.1446808510638298,
+              "typed_error_f1": 0.2078968573730862
+            },
+            "repeat": {
+              "clips": 311,
+              "rhythm_f1": 0.15429524603836534,
+              "typed_error_f1": 0.2944835680751174
+            }
+          },
+          "source": {
+            "MozartClConcertoA": {
+              "clips": 358,
+              "rhythm_f1": 0.15343714394227118,
+              "typed_error_f1": 0.2886056561457251
+            }
+          },
+          "timbre_render": {
+            "status": "not_available_in_verified_packed_release",
+            "unknown": {
+              "clips": 358,
+              "rhythm_f1": 0.15343714394227118,
+              "typed_error_f1": 0.2886056561457251
+            }
+          }
+        },
+        "full_typed_error_f1": 0.2886056561457251,
+        "intonation_masked": true,
+        "layer2": {
+          "error_only": {
+            "f1": 0.2886056561457251,
+            "precision": 0.20293868759135317,
+            "predicted": 12999,
+            "recall": 0.49943203332071184,
+            "target": 5282,
+            "typed_correct": 2638
+          },
+          "false_labels_per_clip": 28.391061452513966,
+          "macro_f1": 0.35747289236993374,
+          "micro_accuracy": 0.7644938861818517,
+          "per_class": {
+            "extra_note": {
+              "correct": 2494,
+              "f1": 0.2933945062055173,
+              "precision": 0.19853526508517752,
+              "predicted": 12562,
+              "recall": 0.5618382518585266,
+              "target": 4439
+            },
+            "match": {
+              "correct": 38939,
+              "f1": 0.8606349943087005,
+              "precision": 0.9408737254143913,
+              "predicted": 41386,
+              "recall": 0.7930065372787813,
+              "target": 49103
+            },
+            "missed_note": {
+              "correct": 0,
+              "f1": 0.0,
+              "precision": 0.0,
+              "predicted": 0,
+              "recall": 0.0,
+              "target": 236
+            },
+            "wrong_note": {
+              "correct": 144,
+              "f1": 0.27586206896551724,
+              "precision": 0.3295194508009153,
+              "predicted": 437,
+              "recall": 0.2372322899505766,
+              "target": 607
+            }
+          }
+        },
+        "layer3": {
+          "deviation_mae_seconds": 0.0703192800283432,
+          "per_subtype": {
+            "long": {
+              "correct": 42,
+              "f1": 0.06840390879478828,
+              "precision": 0.04906542056074766,
+              "predicted": 856,
+              "recall": 0.11290322580645161,
+              "target": 372
+            },
+            "short": {
+              "correct": 62,
+              "f1": 0.08825622775800712,
+              "precision": 0.053726169844020795,
+              "predicted": 1154,
+              "recall": 0.24701195219123506,
+              "target": 251
+            }
+          },
+          "rhythm": {
+            "correct": 202,
+            "f1": 0.15343714394227118,
+            "precision": 0.10049751243781095,
+            "predicted": 2010,
+            "recall": 0.32423756019261635,
+            "target": 623
+          }
+        },
+        "schema_1_2_score_ranges": {
+          "range_policy": "core score spans from the frozen joint path, padded two notes in emitted schema 1.2 documents",
+          "rhythm": {
+            "correct": 202,
+            "f1": 0.15343714394227118,
+            "precision": 0.10049751243781095,
+            "predicted": 2010,
+            "recall": 0.32423756019261635,
+            "target": 623
+          },
+          "typed_error": {
+            "correct_type_and_range": 710,
+            "f1": 0.0776762759148843,
+            "precision": 0.054619586122009386,
+            "predicted": 12999,
+            "recall": 0.1344187807648618,
+            "target": 5282
+          }
+        },
+        "validation_rows": 358
+      }
+    }
+  ]
+}

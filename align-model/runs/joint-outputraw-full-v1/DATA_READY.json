@@ -1,0 +1,87 @@
+{
+  "counts": {
+    "audit_ineligible": 264,
+    "audited": 10000,
+    "historical_lockbox_groups": 102,
+    "historical_lockbox_rows": 812,
+    "locked_test_metadata_only": 4022,
+    "packed": 4902,
+    "train": 4544,
+    "val": 358
+  },
+  "created_utc": "2026-09-15T03:39:09.105507+00:00",
+  "hashes": {
+    "benchmark_sha256": "0234b88490212eed9fb8daa7ea1ec928187f4b6becccce94c1bd70f63e2e58fd",
+    "lockbox_protocol_sha256": "8dd3bf310e798aaad208694a6a2faf2b509021bef569009823d1291e2534b7fe",
+    "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+    "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "packed_index_sha256": "9fc06f57dadd9a9eb8740595acc5106497c02e33b0dd7a73a763cc795eee60be",
+    "packed_metadata_sha256": "ede67d0f31318163b8f1c34727d737c946a39e10caaafe9ea1fa585daf5cd226"
+  },
+  "loader": {
+    "deterministic_seed": 20260915,
+    "max_open_shards": 4,
+    "pin_memory": false,
+    "pin_memory_reason": "The protected structured trainer is CPU-only; pinning consumes scarce locked RAM and provides no transfer benefit.",
+    "prefetch": 16,
+    "python": "alignmodel.joint.packed_data.PackedJointDataset",
+    "resume": "PackedCursor.to_dict()/from_dict()",
+    "root": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-packed\\joint-outputraw-full-v1-shard64",
+    "shard_rows": 64,
+    "shuffle": "deterministic_order(split, epoch, seed)",
+    "verify_records": true,
+    "workers": 4
+  },
+  "paths": {
+    "audit_report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\audit_report.json",
+    "benchmark": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\loader_benchmark.json",
+    "historical_exclusions": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\historical_lockbox_exclusions.json",
+    "lockbox_protocol": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\LOCKBOX_SEALED.json",
+    "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-audit\\joint-outputraw-full-v1\\split.json",
+    "packed_index": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-packed\\joint-outputraw-full-v1-shard64\\index.sqlite",
+    "packed_root": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\data-packed\\joint-outputraw-full-v1-shard64"
+  },
+  "release": "joint-outputraw-full-v1",
+  "schema_version": "align-joint-data-ready-v1",
+  "status": "ready",
+  "success_target": {
+    "combined_f1": ">0.80",
+    "status": "training_goal_not_a_data-result"
+  },
+  "verification": {
+    "deep": true,
+    "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "packed_vs_original_exact_samples": [
+      "synth_MozartClConcertoA_8128",
+      "synth_MozartClConcertoA_5448",
+      "synth_MozartClConcertoA_6864",
+      "synth_MozartClConcertoA_8791",
+      "synth_MozartClConcertoA_2023",
+      "synth_MozartClConcertoA_5985",
+      "synth_MozartClConcertoA_9611",
+      "synth_MozartClConcertoA_9571",
+      "synth_MozartClConcertoA_8197",
+      "synth_MozartClConcertoA_1959",
+      "synth_MozartClConcertoA_3834",
+      "synth_MozartClConcertoA_4565",
+      "synth_MozartClConcertoA_4222",
+      "synth_MozartClConcertoA_1121",
+      "synth_MozartClConcertoA_6770",
+      "synth_MozartClConcertoA_7764",
+      "synth_MozartClConcertoA_1720",
+      "synth_MozartClConcertoA_7375",
+      "synth_MozartClConcertoA_4609",
+      "synth_MozartClConcertoA_5901"
+    ],
+    "record_checks": 4902,
+    "records": 4902,
+    "split_counts": {
+      "train": 4544,
+      "val": 358
+    },
+    "split_leakage": "none across all recorded fingerprints",
+    "status": "ok",
+    "test_features_materialized": false,
+    "test_targets_materialized": false
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "schema_version": "align-grammar-mapper-v2-calibration-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "split": "train",
+  "selection": "deterministic hash-ordered group-disjoint train calibration",
+  "rows": 64,
+  "input": "frozen_mel",
+  "costs": {
+    "substitution": 1.5,
+    "extra": 1.0,
+    "deletion": 1.0,
+    "repeat": 0.75,
+    "no_restart_gap": 0.25,
+    "timing": 0.0,
+    "duration": 0.0
+  },
+  "operation_checkpoint": null,
+  "substitutes_as_extra": false,
+  "operation_core": null,
+  "operation_override_threshold": 0.5,
+  "operation_in_viterbi": false,
+  "operation_weight": 0.4,
+  "sequence_emission_checkpoint": null,
+  "location_weight": 0.2,
+  "emission_core": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v2\\emission-crf-v1-1536\\emission_core.joblib",
+  "emission_weight": 0.2,
+  "overall": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5546.0,
+    "predicted": 6403,
+    "gold": 6407,
+    "precision": 0.866156489145713,
+    "recall": 0.8656157327922585,
+    "f1": 0.8658860265417643
+  },
+  "bootstrap_95": {
+    "replicates": 500,
+    "lower": 0.8438897275276992,
+    "median": 0.864973806082378,
+    "upper": 0.884742108005701
+  },
+  "first_pass_only": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 3431.5,
+    "predicted": 3868,
+    "gold": 4070,
+    "precision": 0.8871509824198552,
+    "recall": 0.8431203931203931,
+    "f1": 0.8645754598135551
+  },
+  "by_copy_count": {
+    "2": {
+      "rows": 17,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 1952.0,
+        "predicted": 2283,
+        "gold": 2283,
+        "precision": 0.8550153307052124,
+        "recall": 0.8550153307052124,
+        "f1": 0.8550153307052124
+      }
+    },
+    "1": {
+      "rows": 32,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2815.5,
+        "predicted": 3257,
+        "gold": 3257,
+        "precision": 0.8644458090267118,
+        "recall": 0.8644458090267118,
+        "f1": 0.8644458090267118
+      }
+    },
+    "0": {
+      "rows": 15,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 778.5,
+        "predicted": 863,
+        "gold": 867,
+        "precision": 0.9020857473928158,
+        "recall": 0.8979238754325259,
+        "f1": 0.8999999999999999
+      }
+    }
+  },
+  "by_type": {
+    "match": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 3331.0,
+        "predicted": 3673,
+        "gold": 3512,
+        "precision": 0.906888102368636,
+        "recall": 0.9484624145785877,
+        "f1": 0.9272094641614474
+      }
+    },
+    "copy": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2096.0,
+        "predicted": 2535,
+        "gold": 2337,
+        "precision": 0.8268244575936884,
+        "recall": 0.8968763371844245,
+        "f1": 0.8604269293924466
+      }
+    },
+    "substitute": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 45.0,
+        "predicted": 70,
+        "gold": 58,
+        "precision": 0.6428571428571429,
+        "recall": 0.7758620689655172,
+        "f1": 0.703125
+      }
+    },
+    "extra": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 49.0,
+        "predicted": 125,
+        "gold": 500,
+        "precision": 0.392,
+        "recall": 0.098,
+        "f1": 0.15680000000000002
+      }
+    }
+  },
+  "repeat_structure": {
+    "rows": 49,
+    "source_accuracy": 0.20408163265306123,
+    "resume_accuracy": 0.5510204081632653
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

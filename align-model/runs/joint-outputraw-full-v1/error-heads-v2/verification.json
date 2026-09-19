@@ -1,0 +1,54 @@
+{
+  "schema_version": "align-frozen-error-heads-verification-v2",
+  "verified_utc": "2026-09-15T06:38:00Z",
+  "data_contract": {
+    "train_rows": 4544,
+    "validation_rows": 358,
+    "locked_test_metadata_rows": 4022,
+    "locked_test_touched": false,
+    "intonation_masked": true,
+    "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd"
+  },
+  "compile": {
+    "status": "passed",
+    "files": [
+      "src/alignmodel/joint/error_heads.py",
+      "src/alignmodel/joint/__init__.py",
+      "scripts/train_error_heads.py",
+      "scripts/train_error_heads_v2.py",
+      "tests/test_error_heads.py",
+      "tests/test_canonical_note_decoder.py"
+    ]
+  },
+  "tests": {
+    "focused": {
+      "status": "passed",
+      "passed": 60
+    },
+    "full_align_model": {
+      "status": "passed",
+      "passed": 198
+    },
+    "canonical_decoder": {
+      "status": "passed",
+      "finding": "The prior failure was a stale mock target for decode_frozen_basic_pitch. Canonical inference now calls decode_basic_pitch_features and sanitize_basic_pitch_notes; the test was updated to exercise that existing path."
+    }
+  },
+  "lints": {
+    "status": "passed",
+    "errors": 0
+  },
+  "checkpoint": {
+    "schema_thresholds_embedded": true,
+    "predicted_best": "predicted/best.pt",
+    "oracle_best": "oracle/best.pt",
+    "atomic_mid_epoch_resume": true,
+    "signal_safe_checkpoint_before_exit": true
+  },
+  "promotion": {
+    "metric_gates_passed": true,
+    "integration_tests_passed": true,
+    "production_weights_modified": false,
+    "staged_unfreezing_required": false
+  }
+}

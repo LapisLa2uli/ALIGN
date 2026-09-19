@@ -1,0 +1,521 @@
+{
+  "created_unix": 1789444820.0743306,
+  "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "protected_test_accessed": false,
+  "results": [
+    {
+      "amp_dtype": "float32",
+      "batch_edge_limit": 32768,
+      "edges": 28186,
+      "edges_per_sec": 151069.85931412244,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8241450190544128,
+        "confidence": 0.6710953116416931,
+        "copy_count": 1.2019151449203491,
+        "duration": 0.22684341669082642,
+        "emission": 2.2651615142822266,
+        "layer2": 1.3505613803863525,
+        "layer3": 0.9467772245407104,
+        "path": 2.633514881134033,
+        "split": 0.9501307606697083,
+        "structure": 1.3780773878097534
+      },
+      "first_loss_relative_error_vs_fp32": 0.0,
+      "fused_optimizer": false,
+      "gradient_l2": 1.9999997098138205,
+      "iterations": 3,
+      "losses": [
+        7.690590858459473,
+        7.568102836608887,
+        7.426506042480469
+      ],
+      "ok": true,
+      "peak_vram_mb": 433.28125,
+      "phase_seconds": {
+        "backward": 0.11919380000108504,
+        "forward": 0.372385699998631,
+        "host_to_device": 0.004200300001684809,
+        "optimizer": 0.06197050000082527
+      },
+      "rows": 14,
+      "rows_per_sec": 75.03647308584809,
+      "seconds": 0.5597277999986545
+    },
+    {
+      "amp_dtype": "float32",
+      "batch_edge_limit": 32768,
+      "edges": 28186,
+      "edges_per_sec": 824204.2624550064,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8241448998451233,
+        "confidence": 0.6710953116416931,
+        "copy_count": 1.2019147872924805,
+        "duration": 0.22684341669082642,
+        "emission": 2.2651612758636475,
+        "layer2": 1.3505613803863525,
+        "layer3": 0.9467772841453552,
+        "path": 2.633514881134033,
+        "split": 0.9501307606697083,
+        "structure": 1.3780773878097534
+      },
+      "first_loss_relative_error_vs_fp32": 0.0,
+      "fused_optimizer": true,
+      "gradient_l2": 1.9999997971906027,
+      "iterations": 3,
+      "losses": [
+        7.690590858459473,
+        7.568102836608887,
+        7.426504611968994
+      ],
+      "ok": true,
+      "peak_vram_mb": 433.318359375,
+      "phase_seconds": {
+        "backward": 0.04327720000219415,
+        "forward": 0.042690700000093784,
+        "host_to_device": 0.0028667000005953014,
+        "optimizer": 0.012052499998389976
+      },
+      "rows": 14,
+      "rows_per_sec": 409.38266069573865,
+      "seconds": 0.1025934999997844
+    },
+    {
+      "amp_dtype": "float16",
+      "batch_edge_limit": 32768,
+      "edges": 28186,
+      "edges_per_sec": 309891.66362076695,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8240819573402405,
+        "confidence": 0.6710888147354126,
+        "copy_count": 1.2024707794189453,
+        "duration": 0.22685286402702332,
+        "emission": 2.265174150466919,
+        "layer2": 1.3505927324295044,
+        "layer3": 0.9468077421188354,
+        "path": 2.6335268020629883,
+        "split": 0.9501926302909851,
+        "structure": 1.3780345916748047
+      },
+      "first_loss_relative_error_vs_fp32": 7.812336274202586e-06,
+      "fused_optimizer": false,
+      "gradient_l2": 1.9999997855621885,
+      "iterations": 3,
+      "losses": [
+        7.690650939941406,
+        7.568077564239502,
+        7.426726818084717
+      ],
+      "ok": true,
+      "peak_vram_mb": 323.4013671875,
+      "phase_seconds": {
+        "backward": 0.05319910000071104,
+        "forward": 0.18036380000012286,
+        "host_to_device": 0.0029198000011092518,
+        "optimizer": 0.03416700000161654
+      },
+      "rows": 14,
+      "rows_per_sec": 153.9233410448711,
+      "seconds": 0.2728631000009045
+    },
+    {
+      "amp_dtype": "float16",
+      "batch_edge_limit": 32768,
+      "edges": 28186,
+      "edges_per_sec": 817737.6678828229,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8240777850151062,
+        "confidence": 0.6710878014564514,
+        "copy_count": 1.2020270824432373,
+        "duration": 0.22684608399868011,
+        "emission": 2.2651710510253906,
+        "layer2": 1.3506006002426147,
+        "layer3": 0.946800947189331,
+        "path": 2.6335272789001465,
+        "split": 0.9501939415931702,
+        "structure": 1.3780364990234375
+      },
+      "first_loss_relative_error_vs_fp32": 1.9840854029720854e-05,
+      "fused_optimizer": true,
+      "gradient_l2": 1.9999995669165376,
+      "iterations": 3,
+      "losses": [
+        7.690743446350098,
+        7.568215847015381,
+        7.426570415496826
+      ],
+      "ok": true,
+      "peak_vram_mb": 323.4384765625,
+      "phase_seconds": {
+        "backward": 0.03193939999982831,
+        "forward": 0.03889740000158781,
+        "host_to_device": 0.0027774999998655403,
+        "optimizer": 0.028081400001610746
+      },
+      "rows": 14,
+      "rows_per_sec": 406.17070000565957,
+      "seconds": 0.10340480000013486
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_edge_limit": 32768,
+      "edges": 28186,
+      "edges_per_sec": 344489.7247489889,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8237032890319824,
+        "confidence": 0.6713342070579529,
+        "copy_count": 1.2035298347473145,
+        "duration": 0.22680342197418213,
+        "emission": 2.265453815460205,
+        "layer2": 1.3505032062530518,
+        "layer3": 0.9464182257652283,
+        "path": 2.6335229873657227,
+        "split": 0.9498858451843262,
+        "structure": 1.3783178329467773
+      },
+      "first_loss_relative_error_vs_fp32": 0.0003802623680133688,
+      "fused_optimizer": false,
+      "gradient_l2": 1.999999756566942,
+      "iterations": 3,
+      "losses": [
+        7.693515300750732,
+        7.566701889038086,
+        7.426888465881348
+      ],
+      "ok": true,
+      "peak_vram_mb": 323.39990234375,
+      "phase_seconds": {
+        "backward": 0.05026730000099633,
+        "forward": 0.16133280000030936,
+        "host_to_device": 0.002815300000293064,
+        "optimizer": 0.02944460000071558
+      },
+      "rows": 14,
+      "rows_per_sec": 171.1082149466347,
+      "seconds": 0.24545869999928982
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_edge_limit": 32768,
+      "edges": 28186,
+      "edges_per_sec": 953396.7818770709,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8237398862838745,
+        "confidence": 0.6713306903839111,
+        "copy_count": 1.2016481161117554,
+        "duration": 0.22681327164173126,
+        "emission": 2.265421152114868,
+        "layer2": 1.3504962921142578,
+        "layer3": 0.9464088678359985,
+        "path": 2.6335244178771973,
+        "split": 0.9498906135559082,
+        "structure": 1.3783421516418457
+      },
+      "first_loss_relative_error_vs_fp32": 0.00019617644421886495,
+      "fused_optimizer": true,
+      "gradient_l2": 1.9999998887986168,
+      "iterations": 3,
+      "losses": [
+        7.692099571228027,
+        7.566867351531982,
+        7.426242351531982
+      ],
+      "ok": true,
+      "peak_vram_mb": 323.43701171875,
+      "phase_seconds": {
+        "backward": 0.035661600000821636,
+        "forward": 0.04196330000013404,
+        "host_to_device": 0.0026281999998900574,
+        "optimizer": 0.006890399998155772
+      },
+      "rows": 14,
+      "rows_per_sec": 473.55264834595164,
+      "seconds": 0.088691299999482
+    },
+    {
+      "amp_dtype": "float32",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 947963.1071350976,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8206296563148499,
+        "confidence": 0.6753215789794922,
+        "copy_count": 1.2570726871490479,
+        "duration": 0.23508486151695251,
+        "emission": 2.2637932300567627,
+        "layer2": 1.346264362335205,
+        "layer3": 1.062381386756897,
+        "path": 2.628244400024414,
+        "split": 0.9273273348808289,
+        "structure": 1.3901848793029785
+      },
+      "first_loss_relative_error_vs_fp32": 0.0,
+      "fused_optimizer": false,
+      "gradient_l2": 1.999999744122544,
+      "iterations": 3,
+      "losses": [
+        7.726010799407959,
+        7.594039440155029,
+        7.498941898345947
+      ],
+      "ok": true,
+      "peak_vram_mb": 953.75,
+      "phase_seconds": {
+        "backward": 0.08313380000254256,
+        "forward": 0.081326599998647,
+        "host_to_device": 0.007598100000905106,
+        "optimizer": 0.027320099999997183
+      },
+      "rows": 25,
+      "rows_per_sec": 373.349050496675,
+      "seconds": 0.20088440000108676
+    },
+    {
+      "amp_dtype": "float32",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 1130070.4695473164,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8206295967102051,
+        "confidence": 0.6753215789794922,
+        "copy_count": 1.2570725679397583,
+        "duration": 0.2350848913192749,
+        "emission": 2.2637932300567627,
+        "layer2": 1.346264362335205,
+        "layer3": 1.062381386756897,
+        "path": 2.628244400024414,
+        "split": 0.9273273348808289,
+        "structure": 1.3901848793029785
+      },
+      "first_loss_relative_error_vs_fp32": 6.17184172509395e-08,
+      "fused_optimizer": true,
+      "gradient_l2": 1.999999797595857,
+      "iterations": 3,
+      "losses": [
+        7.726011276245117,
+        7.5940399169921875,
+        7.498941421508789
+      ],
+      "ok": true,
+      "peak_vram_mb": 953.787109375,
+      "phase_seconds": {
+        "backward": 0.08412719999978435,
+        "forward": 0.06962840000232973,
+        "host_to_device": 0.006737200001225574,
+        "optimizer": 0.006466999999247491
+      },
+      "rows": 25,
+      "rows_per_sec": 445.07084044115055,
+      "seconds": 0.1685125000003609
+    },
+    {
+      "amp_dtype": "float16",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 1133036.316711881,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.820578932762146,
+        "confidence": 0.6753079891204834,
+        "copy_count": 1.2570909261703491,
+        "duration": 0.2350897341966629,
+        "emission": 2.2638840675354004,
+        "layer2": 1.346320390701294,
+        "layer3": 1.062342643737793,
+        "path": 2.6282570362091064,
+        "split": 0.927392303943634,
+        "structure": 1.39019775390625
+      },
+      "first_loss_relative_error_vs_fp32": 7.529646904614618e-06,
+      "fused_optimizer": false,
+      "gradient_l2": 1.9999997135362455,
+      "iterations": 3,
+      "losses": [
+        7.725952625274658,
+        7.594002723693848,
+        7.499028205871582
+      ],
+      "ok": true,
+      "peak_vram_mb": 703.6611328125,
+      "phase_seconds": {
+        "backward": 0.06503700000030221,
+        "forward": 0.06824950000009267,
+        "host_to_device": 0.00496960000054969,
+        "optimizer": 0.028065399999832152
+      },
+      "rows": 25,
+      "rows_per_sec": 446.2389198890468,
+      "seconds": 0.1680713999994623
+    },
+    {
+      "amp_dtype": "float16",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 1365771.3379547384,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8205809593200684,
+        "confidence": 0.6753072142601013,
+        "copy_count": 1.2572048902511597,
+        "duration": 0.2350912243127823,
+        "emission": 2.2638890743255615,
+        "layer2": 1.3463220596313477,
+        "layer3": 1.0623477697372437,
+        "path": 2.6282575130462646,
+        "split": 0.9273935556411743,
+        "structure": 1.3902013301849365
+      },
+      "first_loss_relative_error_vs_fp32": 8.887452084135288e-06,
+      "fused_optimizer": true,
+      "gradient_l2": 1.999999784666676,
+      "iterations": 3,
+      "losses": [
+        7.725942134857178,
+        7.593942165374756,
+        7.499078273773193
+      ],
+      "ok": true,
+      "peak_vram_mb": 703.6982421875,
+      "phase_seconds": {
+        "backward": 0.0625149000024976,
+        "forward": 0.062372999998842715,
+        "host_to_device": 0.0038432999990618555,
+        "optimizer": 0.009085600000616978
+      },
+      "rows": 25,
+      "rows_per_sec": 537.9000811139226,
+      "seconds": 0.1394311000003654
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 1153890.2007356253,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8201414942741394,
+        "confidence": 0.675492525100708,
+        "copy_count": 1.2596638202667236,
+        "duration": 0.2351122796535492,
+        "emission": 2.2645366191864014,
+        "layer2": 1.346656084060669,
+        "layer3": 1.0621477365493774,
+        "path": 2.628281354904175,
+        "split": 0.9271175265312195,
+        "structure": 1.3896132707595825
+      },
+      "first_loss_relative_error_vs_fp32": 0.00016842956067781388,
+      "fused_optimizer": false,
+      "gradient_l2": 1.9999998930412266,
+      "iterations": 3,
+      "losses": [
+        7.727312088012695,
+        7.594346523284912,
+        7.499695777893066
+      ],
+      "ok": true,
+      "peak_vram_mb": 703.65966796875,
+      "phase_seconds": {
+        "backward": 0.06194069999764906,
+        "forward": 0.06703120000020135,
+        "host_to_device": 0.003872600003887783,
+        "optimizer": 0.03057260000059614
+      },
+      "rows": 25,
+      "rows_per_sec": 454.45208529688915,
+      "seconds": 0.16503390000070794
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "batch_edge_limit": 65536,
+      "edges": 63477,
+      "edges_per_sec": 1388779.699107484,
+      "finite_gradients": true,
+      "first_components": {
+        "boundary": 0.8201450705528259,
+        "confidence": 0.6754913330078125,
+        "copy_count": 1.2561382055282593,
+        "duration": 0.2350717931985855,
+        "emission": 2.26448917388916,
+        "layer2": 1.3467093706130981,
+        "layer3": 1.0621230602264404,
+        "path": 2.628281354904175,
+        "split": 0.9271119236946106,
+        "structure": 1.3895519971847534
+      },
+      "first_loss_relative_error_vs_fp32": 0.00019188255923317088,
+      "fused_optimizer": true,
+      "gradient_l2": 1.999999636188677,
+      "iterations": 3,
+      "losses": [
+        7.7274932861328125,
+        7.594213962554932,
+        7.498409271240234
+      ],
+      "ok": true,
+      "peak_vram_mb": 703.69677734375,
+      "phase_seconds": {
+        "backward": 0.06020190000162984,
+        "forward": 0.0639368000011018,
+        "host_to_device": 0.003933699999834062,
+        "optimizer": 0.007503499997255858
+      },
+      "rows": 25,
+      "rows_per_sec": 546.9617732042644,
+      "seconds": 0.13712110000051325
+    }
+  ],
+  "schema_version": "align-outputraw-actual-training-profile-v1",
+  "selected": {
+    "amp_dtype": "bfloat16",
+    "batch_edge_limit": 65536,
+    "edges": 63477,
+    "edges_per_sec": 1388779.699107484,
+    "finite_gradients": true,
+    "first_components": {
+      "boundary": 0.8201450705528259,
+      "confidence": 0.6754913330078125,
+      "copy_count": 1.2561382055282593,
+      "duration": 0.2350717931985855,
+      "emission": 2.26448917388916,
+      "layer2": 1.3467093706130981,
+      "layer3": 1.0621230602264404,
+      "path": 2.628281354904175,
+      "split": 0.9271119236946106,
+      "structure": 1.3895519971847534
+    },
+    "first_loss_relative_error_vs_fp32": 0.00019188255923317088,
+    "fused_optimizer": true,
+    "gradient_l2": 1.999999636188677,
+    "iterations": 3,
+    "losses": [
+      7.7274932861328125,
+      7.594213962554932,
+      7.498409271240234
+    ],
+    "ok": true,
+    "peak_vram_mb": 703.69677734375,
+    "phase_seconds": {
+      "backward": 0.06020190000162984,
+      "forward": 0.0639368000011018,
+      "host_to_device": 0.003933699999834062,
+      "optimizer": 0.007503499997255858
+    },
+    "rows": 25,
+    "rows_per_sec": 546.9617732042644,
+    "seconds": 0.13712110000051325
+  },
+  "selection": {
+    "channels_last": "not_applicable_to_2d_edge_mlp",
+    "fp32_path_reduction": true,
+    "maximum_first_loss_relative_error": 0.01,
+    "metric": "actual full-loss edges/sec"
+  }
+}

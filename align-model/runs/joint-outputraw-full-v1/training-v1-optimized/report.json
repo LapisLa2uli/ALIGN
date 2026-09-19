@@ -1,0 +1,1172 @@
+{
+  "metric_status": "legacy_timestamp_diagnostics_only",
+  "requires_note_wise_rescore": true,
+  "promotion_allowed": false,
+  "official_metric": "note-wise canonical score-event scoring",
+  "required_rerun": "validation/bootstrap/promotion from the preserved final checkpoint",
+  "hold_marker": "runs/NOTE_WISE_PROMOTION_HOLD.json",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+  "created_unix": 1789458685.7844815,
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "data_ready": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\DATA_READY.json",
+  "history": [
+    {
+      "batches": 145,
+      "cursor": {
+        "epoch": 1,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 4544,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 9260174,
+      "edges_per_second": 608531.5186099556,
+      "epoch": 1,
+      "examples": 4544,
+      "examples_per_second": 298.60855968404456,
+      "mean_batch_loss": 4.324218100514905,
+      "optimizer_steps": 145,
+      "phase_seconds": {
+        "backward": 2.334187300009944,
+        "checkpoint_io": 3.0414059000067937,
+        "data_and_collation": 3.027657899991027,
+        "forward": 5.373981000013373,
+        "host_to_device": 0.31747689999428985,
+        "optimizer": 0.25537260000965034,
+        "scheduler": 2.519999907235615e-05
+      },
+      "segment_edges_per_second": 608531.5186099556,
+      "segment_examples_per_second": 298.60855968404456,
+      "stage": "acoustic",
+      "train_wall_seconds": 15.217246299998806
+    },
+    {
+      "batches": 145,
+      "cursor": {
+        "epoch": 10001,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 4544,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 9260174,
+      "edges_per_second": 582905.4383180013,
+      "epoch": 1,
+      "examples": 4544,
+      "examples_per_second": 286.0337518190261,
+      "mean_batch_loss": 3.1368453650638974,
+      "optimizer_steps": 145,
+      "phase_seconds": {
+        "backward": 2.4713368999928207,
+        "checkpoint_io": 3.595642299991596,
+        "data_and_collation": 2.8276735999934317,
+        "forward": 5.454270700010966,
+        "host_to_device": 0.357821600011448,
+        "optimizer": 0.25752999999167514,
+        "scheduler": 3.0500001230393536e-05
+      },
+      "segment_edges_per_second": 582905.4383180013,
+      "segment_examples_per_second": 286.0337518190261,
+      "stage": "structure",
+      "train_wall_seconds": 15.886237100001381
+    },
+    {
+      "batches": 145,
+      "cursor": {
+        "epoch": 20001,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 4544,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 9260174,
+      "edges_per_second": 679701.9452873395,
+      "epoch": 1,
+      "examples": 4544,
+      "examples_per_second": 333.5321387466014,
+      "mean_batch_loss": 2.8356677943262563,
+      "optimizer_steps": 145,
+      "phase_seconds": {
+        "backward": 1.4181165999871155,
+        "checkpoint_io": 2.688350199992783,
+        "data_and_collation": 2.5422772000038094,
+        "forward": 5.496965300000738,
+        "host_to_device": 0.3368012000046292,
+        "optimizer": 0.22374770001079014,
+        "scheduler": 2.330000097572338e-05
+      },
+      "segment_edges_per_second": 679701.9452873395,
+      "segment_examples_per_second": 333.5321387466014,
+      "stage": "errors",
+      "train_wall_seconds": 13.623874499999147
+    },
+    {
+      "batches": 145,
+      "cursor": {
+        "epoch": 30001,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 4544,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 9260174,
+      "edges_per_second": 468806.99872156285,
+      "epoch": 1,
+      "examples": 4544,
+      "examples_per_second": 230.04524560670043,
+      "mean_batch_loss": 2.6410115455758985,
+      "optimizer_steps": 145,
+      "phase_seconds": {
+        "backward": 4.214419199990516,
+        "checkpoint_io": 5.947790899999745,
+        "data_and_collation": 2.9338371000012557,
+        "forward": 5.0300722000029054,
+        "host_to_device": 0.2515645000112272,
+        "optimizer": 0.39655549999406503,
+        "scheduler": 2.700000004551839e-05
+      },
+      "segment_edges_per_second": 468806.99872156285,
+      "segment_examples_per_second": 230.04524560670043,
+      "stage": "joint",
+      "train_wall_seconds": 19.752636000001075
+    },
+    {
+      "batches": 145,
+      "cursor": {
+        "epoch": 30002,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 4544,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 9260174,
+      "edges_per_second": 477895.8609654364,
+      "epoch": 2,
+      "examples": 4544,
+      "examples_per_second": 234.50518232453763,
+      "mean_batch_loss": 2.458987231090151,
+      "optimizer_steps": 145,
+      "phase_seconds": {
+        "backward": 4.109988900005192,
+        "checkpoint_io": 5.832800199990743,
+        "data_and_collation": 2.8979357999978674,
+        "forward": 4.938788100002057,
+        "host_to_device": 0.24156270001913072,
+        "optimizer": 0.38234640000155196,
+        "scheduler": 1.6099998902063817e-05
+      },
+      "segment_edges_per_second": 477895.8609654364,
+      "segment_examples_per_second": 234.50518232453763,
+      "stage": "joint",
+      "train_wall_seconds": 19.376970500001335
+    },
+    {
+      "batches": 145,
+      "cursor": {
+        "epoch": 30003,
+        "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "position": 4544,
+        "schema_version": "align-packed-cursor-v1",
+        "seed": 20260915,
+        "split": "train"
+      },
+      "edges": 9260174,
+      "edges_per_second": 466541.7647997949,
+      "epoch": 3,
+      "examples": 4544,
+      "examples_per_second": 228.93368734218902,
+      "mean_batch_loss": 2.3164688110351563,
+      "optimizer_steps": 145,
+      "phase_seconds": {
+        "backward": 4.173536899983446,
+        "checkpoint_io": 5.985489500008043,
+        "data_and_collation": 3.0015984999899956,
+        "forward": 5.039021899990985,
+        "host_to_device": 0.24230099999476806,
+        "optimizer": 0.3929662000045937,
+        "scheduler": 2.119999953720253e-05
+      },
+      "segment_edges_per_second": 466541.7647997949,
+      "segment_examples_per_second": 228.93368734218902,
+      "stage": "joint",
+      "train_wall_seconds": 19.84854240000095
+    },
+    {
+      "epoch": 1,
+      "examples": 1000,
+      "examples_per_second": 0.08946269401271074,
+      "mean_path_nll": 0.9834575175791979,
+      "phase_seconds": {
+        "checkpoint_io": 1.49476390000018,
+        "data": 6.9593115000297985,
+        "optimizer": 19.90500780001821,
+        "scheduler": 3.4199998481199145e-05,
+        "structured_backward": 5033.145381299975,
+        "structured_forward": 6114.756603599961,
+        "target_reconstruction": 1.0285324000033143
+      },
+      "stage": "structured_path",
+      "train_wall_seconds": 11177.843580900004
+    }
+  ],
+  "initialization": {
+    "loaded_parameter_tensors": 10,
+    "missing_parameter_tensors": [
+      "acoustic_projection.0.weight",
+      "acoustic_projection.0.bias",
+      "acoustic_projection.2.weight",
+      "acoustic_projection.2.bias",
+      "score_projection.0.weight",
+      "score_projection.0.bias",
+      "score_projection.2.weight",
+      "score_projection.2.bias",
+      "structural_projection.0.weight",
+      "structural_projection.0.bias",
+      "structural_projection.2.weight",
+      "structural_projection.2.bias",
+      "emission_head.weight",
+      "option_head.weight",
+      "transition_head.weight",
+      "path_head.0.weight",
+      "path_head.0.bias",
+      "path_head.3.weight"
+    ],
+    "path": "runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+    "sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+    "shape_mismatches": {
+      "acoustic_projection.0.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "acoustic_projection.0.weight": {
+        "expected": [
+          64,
+          16
+        ],
+        "found": [
+          32,
+          16
+        ]
+      },
+      "acoustic_projection.2.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "acoustic_projection.2.weight": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "emission_head.weight": {
+        "expected": [
+          1,
+          64
+        ],
+        "found": [
+          1,
+          32
+        ]
+      },
+      "option_head.weight": {
+        "expected": [
+          1,
+          128
+        ],
+        "found": [
+          1,
+          64
+        ]
+      },
+      "path_head.0.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "path_head.0.weight": {
+        "expected": [
+          64,
+          192
+        ],
+        "found": [
+          32,
+          96
+        ]
+      },
+      "path_head.3.weight": {
+        "expected": [
+          1,
+          64
+        ],
+        "found": [
+          1,
+          32
+        ]
+      },
+      "score_projection.0.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "score_projection.0.weight": {
+        "expected": [
+          64,
+          15
+        ],
+        "found": [
+          32,
+          15
+        ]
+      },
+      "score_projection.2.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "score_projection.2.weight": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "structural_projection.0.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "structural_projection.0.weight": {
+        "expected": [
+          64,
+          12
+        ],
+        "found": [
+          32,
+          12
+        ]
+      },
+      "structural_projection.2.bias": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "structural_projection.2.weight": {
+        "expected": [
+          64
+        ],
+        "found": [
+          32
+        ]
+      },
+      "transition_head.weight": {
+        "expected": [
+          1,
+          64
+        ],
+        "found": [
+          1,
+          32
+        ]
+      }
+    },
+    "source_schema": "align-end-to-end-joint-v2",
+    "unexpected_parameter_tensors": []
+  },
+  "locked_test_touched": false,
+  "profile": {
+    "benchmarks": [
+      {
+        "amp_dtype": "float32",
+        "edges": 8192,
+        "edges_per_second": 898971.7571868806,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 136.84326171875,
+        "seconds": 0.02733789999911096,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 8192,
+        "edges_per_second": 934882.3408787581,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 136.87451171875,
+        "seconds": 0.02628779999940889,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float16",
+        "edges": 8192,
+        "edges_per_second": 628522.9097827459,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 106.84814453125,
+        "seconds": 0.03910120000000461,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float16",
+        "edges": 8192,
+        "edges_per_second": 633080.6266005868,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 106.87939453125,
+        "seconds": 0.038819699999294244,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 8192,
+        "edges_per_second": 635743.4986084729,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 106.84814453125,
+        "seconds": 0.038657099999909406,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 8192,
+        "edges_per_second": 663869.9273102768,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 106.87939453125,
+        "seconds": 0.037019299999883515,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 32768,
+        "edges_per_second": 1668273.212313674,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 497.18701171875,
+        "seconds": 0.05892560000029334,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 32768,
+        "edges_per_second": 1719963.537558181,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 497.21826171875,
+        "seconds": 0.05715469999995548,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float16",
+        "edges": 32768,
+        "edges_per_second": 2079834.4663126469,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 368.73876953125,
+        "seconds": 0.04726529999970808,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float16",
+        "edges": 32768,
+        "edges_per_second": 2161335.0042067477,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 368.77001953125,
+        "seconds": 0.04548300000169547,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 32768,
+        "edges_per_second": 2212335.009977165,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 368.73876953125,
+        "seconds": 0.04443449999962468,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 32768,
+        "edges_per_second": 2126370.0252658427,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 368.77001953125,
+        "seconds": 0.04623089999950025,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 65536,
+        "edges_per_second": 1773390.48361787,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 974.81201171875,
+        "seconds": 0.11086559999966994,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float32",
+        "edges": 65536,
+        "edges_per_second": 1724773.797126139,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 974.84326171875,
+        "seconds": 0.11399060000076133,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float16",
+        "edges": 65536,
+        "edges_per_second": 2132322.2386947786,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 717.61376953125,
+        "seconds": 0.09220370000002731,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "float16",
+        "edges": 65536,
+        "edges_per_second": 2100732.7690268145,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 717.64501953125,
+        "seconds": 0.09359020000010787,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 65536,
+        "edges_per_second": 2094883.938993173,
+        "fused_optimizer": false,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 717.61376953125,
+        "seconds": 0.09385149999980058,
+        "torch_compile": "disabled"
+      },
+      {
+        "amp_dtype": "bfloat16",
+        "edges": 65536,
+        "edges_per_second": 2087603.579573977,
+        "fused_optimizer": true,
+        "iterations": 3,
+        "ok": true,
+        "peak_vram_mb": 717.64501953125,
+        "seconds": 0.09417880000000878,
+        "torch_compile": "disabled"
+      },
+      {
+        "error": "backend='inductor' raised:\nRuntimeError: Cannot find a working triton installation. Either the package is not installed or it is too old. More information on installing Triton can be found at https://github.com/openai/triton\n\nSet TORCH_LOGS=\"+dynamo\" and TORCHDYNAMO_VERBOSE=1 for more information\n\n\nYou can suppress this exception and fall back to eager by setting:\n    import torch._dynamo\n    torch._dynamo.config.suppress_errors = True\n",
+        "ok": false
+      }
+    ],
+    "created_unix": 1789444606.6686037,
+    "device_profiled": "cuda",
+    "hardware": {
+      "cuda_job_snapshot_at_profile_time": [
+        {
+          "command": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe scripts/train_candidate_rescorer.py --manifest data-audit/2026-09-14-v2/split.json --basic-cache-root runs/joint-audit-v2/basic-pitch-cache --example-cache-path runs/joint-audit-v2/components/candidate-rescorer-v1/examples-floor-050.sqlite --output-dir runs/joint-audit-v2/components/candidate-rescorer-v1 --epochs 3 --batch-candidates 16384 --learning-rate 0.0003 --hidden-dim 64 --dropout 0.05 --candidate-floor 0.50 --global-candidate-gate 0.65 --hard-negative-ratio 1.0 --short-weight-lt-80ms 4 --short-weight-lt-120ms 3 --short-weight-lt-180ms 2 --workers 1 --prefetch 1 --device cuda --seed 365",
+          "name": "python.exe",
+          "pid": 4432
+        },
+        {
+          "command": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe scripts/train_candidate_rescorer.py --manifest data-audit/2026-09-14-v2/split.json --basic-cache-root runs/joint-audit-v2/basic-pitch-cache --example-cache-path runs/joint-audit-v2/components/candidate-rescorer-v1/examples-floor-050.sqlite --output-dir runs/joint-audit-v2/components/candidate-rescorer-v1 --epochs 3 --batch-candidates 16384 --learning-rate 0.0003 --hidden-dim 64 --dropout 0.05 --candidate-floor 0.50 --global-candidate-gate 0.65 --hard-negative-ratio 1.0 --short-weight-lt-80ms 4 --short-weight-lt-120ms 3 --short-weight-lt-180ms 2 --workers 1 --prefetch 1 --device cuda --seed 365",
+          "name": "python.exe",
+          "pid": 29236
+        }
+      ],
+      "cuda_runtime": "12.4",
+      "logical_cpu_cores": 20,
+      "nvidia_smi": {
+        "available": true,
+        "devices": [
+          {
+            "gpu_utilization_percent": 0.0,
+            "memory_total_mb": 8188.0,
+            "memory_used_mb": 179.0,
+            "memory_utilization_percent": 1.0,
+            "name": "NVIDIA RTX 2000 Ada Generation Laptop GPU",
+            "power_limit_watts": null
+          }
+        ]
+      },
+      "physical_cpu_cores": 14,
+      "platform": "Windows-10-10.0.26200-SP0",
+      "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+      "profile_cpu_threads": 2,
+      "ram_available_bytes": 13009866752,
+      "ram_total_bytes": 34016272384,
+      "torch_version": "2.6.0+cu124"
+    },
+    "locked_test_touched": false,
+    "schema_version": "align-outputraw-hardware-profile-v1",
+    "selected": {
+      "amp_dtype": "bfloat16",
+      "edges": 32768,
+      "edges_per_second": 2212335.009977165,
+      "fused_optimizer": false,
+      "iterations": 3,
+      "ok": true,
+      "peak_vram_mb": 368.73876953125,
+      "seconds": 0.04443449999962468,
+      "torch_compile": "disabled"
+    },
+    "storage": {
+      "bytes": 16777216,
+      "read_mib_per_second": 917.1577282422833,
+      "read_seconds": 0.017445199999201577,
+      "write_mib_per_second": 1175.3298270300713,
+      "write_seconds": 0.013613199998872005
+    }
+  },
+  "promotion_gate": {
+    "bootstrap_lower_95": 0.36402551010969864,
+    "bootstrap_lower_threshold": 0.8,
+    "combined_f1": 0.38069464181225443,
+    "combined_f1_threshold": 0.83,
+    "full_validation_completed": true,
+    "passed": false
+  },
+  "schema_version": "align-outputraw-full-report-v1",
+  "validation": {
+    "combined": {
+      "bootstrap": {
+        "lower_95": 0.36402551010969864,
+        "median": 0.3806446765721464,
+        "replicates": 1000,
+        "upper_95": 0.3964367387843155
+      },
+      "correct": 18217,
+      "f1": 0.38069464181225443,
+      "precision": 0.3312663660168752,
+      "predicted": 54992,
+      "recall": 0.44746020829239536,
+      "target": 40712
+    },
+    "intonation_masked": true,
+    "layer2": {
+      "extra_note": {
+        "correct": 592,
+        "f1": 0.09375247446353632,
+        "precision": 0.07445604326499812,
+        "predicted": 7951,
+        "recall": 0.12654980761008977,
+        "target": 4678
+      },
+      "macro_f1": 0.10392369516450696,
+      "missed_note": {
+        "correct": 253,
+        "f1": 0.06370389021780183,
+        "precision": 0.03311951826155256,
+        "predicted": 7639,
+        "recall": 0.8322368421052632,
+        "target": 304
+      },
+      "wrong_note": {
+        "correct": 76,
+        "f1": 0.15431472081218275,
+        "precision": 0.2331288343558282,
+        "predicted": 326,
+        "recall": 0.11532625189681335,
+        "target": 659
+      }
+    },
+    "layer3": {
+      "duration": {
+        "mae_seconds": 0.10433385231335852,
+        "median_relative_error": 0.28247524756358594,
+        "paired": 35345,
+        "within_20_percent_accuracy": 0.3682840571509407
+      },
+      "rhythm": {
+        "correct": 18,
+        "f1": 0.014319809069212411,
+        "precision": 0.05042016806722689,
+        "predicted": 357,
+        "recall": 0.008344923504867872,
+        "target": 2157
+      }
+    },
+    "mapping": {
+      "aggregate": {
+        "current_metric_50ms": {
+          "copy_recall": 0.5651130911583276,
+          "exact_accuracy": 0.5624133834884182,
+          "f1": 0.5892108450572999,
+          "n_assigned": 39401,
+          "n_copy": 14590,
+          "n_copy_correct": 8245,
+          "n_correct": 22134,
+          "n_positive": 35730,
+          "n_transcription_matches": 35345,
+          "precision": 0.5617623918174666,
+          "recall": 0.6194794290512174
+        },
+        "deletions": {
+          "counts": {
+            "correct": 253,
+            "predicted": 7639,
+            "target": 304
+          },
+          "f1": 0.06370389021780183,
+          "precision": 0.03311951826155256,
+          "recall": 0.8322368421052632
+        },
+        "n_samples": 358,
+        "tolerances": {
+          "100ms": {
+            "conditional_mapping_accuracy": 0.7048458149779736,
+            "copy": {
+              "f1": 0.4508559864354865,
+              "precision": 0.3750910083727703,
+              "recall": 0.5649760109664154
+            },
+            "counts": {
+              "copy_correct": 8243,
+              "copy_mapping_correct": 8915,
+              "extra_correct": 620,
+              "joint_correct": 24300,
+              "mapping_correct": 23680,
+              "paired": 37940,
+              "paired_linked": 33596,
+              "predicted": 47353,
+              "predicted_copy": 21976,
+              "predicted_extra": 7952,
+              "substitution_correct": 57,
+              "target": 40408,
+              "target_copy": 14590,
+              "target_extra": 4678,
+              "target_substitution": 307
+            },
+            "current_mapping": {
+              "copy_recall": 0.6110349554489376,
+              "exact_accuracy": 0.6013660661255197,
+              "f1": 0.6303656280363632,
+              "n_assigned": 39401,
+              "n_copy": 14590,
+              "n_copy_correct": 8915,
+              "n_correct": 23680,
+              "n_positive": 35730,
+              "n_transcription_matches": 37940,
+              "precision": 0.6009999746199335,
+              "recall": 0.6627483907080884
+            },
+            "extras": {
+              "f1": 0.09817893903404591,
+              "precision": 0.07796780684104627,
+              "recall": 0.13253527148353997
+            },
+            "joint": {
+              "f1": 0.5537767345403996,
+              "precision": 0.5131670643887399,
+              "recall": 0.6013660661255197
+            },
+            "note": {
+              "f1": 0.8646209591959982,
+              "precision": 0.801216396004477,
+              "recall": 0.9389229855474164
+            },
+            "substitution_mapping_accuracy": 0.18566775244299674
+          },
+          "20ms": {
+            "conditional_mapping_accuracy": 0.6926805224677565,
+            "copy": {
+              "f1": 0.14209921785264998,
+              "precision": 0.11821987622861303,
+              "recall": 0.17806716929403701
+            },
+            "counts": {
+              "copy_correct": 2598,
+              "copy_mapping_correct": 2833,
+              "extra_correct": 184,
+              "joint_correct": 8616,
+              "mapping_correct": 8432,
+              "paired": 13361,
+              "paired_linked": 12173,
+              "predicted": 47353,
+              "predicted_copy": 21976,
+              "predicted_extra": 7952,
+              "substitution_correct": 23,
+              "target": 40408,
+              "target_copy": 14590,
+              "target_extra": 4678,
+              "target_substitution": 307
+            },
+            "current_mapping": {
+              "copy_recall": 0.19417409184372858,
+              "exact_accuracy": 0.2132251039398139,
+              "f1": 0.22446127430754284,
+              "n_assigned": 39401,
+              "n_copy": 14590,
+              "n_copy_correct": 2833,
+              "n_correct": 8432,
+              "n_positive": 35730,
+              "n_transcription_matches": 13361,
+              "precision": 0.21400472069236823,
+              "recall": 0.23599216344808285
+            },
+            "extras": {
+              "f1": 0.02913697545526524,
+              "precision": 0.023138832997987926,
+              "recall": 0.03933304831124412
+            },
+            "joint": {
+              "f1": 0.19635145451852187,
+              "precision": 0.18195256900301987,
+              "recall": 0.2132251039398139
+            },
+            "note": {
+              "f1": 0.30448604733309786,
+              "precision": 0.2821574134690516,
+              "recall": 0.33065234607008515
+            },
+            "substitution_mapping_accuracy": 0.0749185667752443
+          },
+          "50ms": {
+            "conditional_mapping_accuracy": 0.7062765244583427,
+            "copy": {
+              "f1": 0.41699939834819233,
+              "precision": 0.346923917000364,
+              "recall": 0.5225496915695682
+            },
+            "counts": {
+              "copy_correct": 7624,
+              "copy_mapping_correct": 8245,
+              "extra_correct": 592,
+              "joint_correct": 22726,
+              "mapping_correct": 22134,
+              "paired": 35345,
+              "paired_linked": 31339,
+              "predicted": 47353,
+              "predicted_copy": 21976,
+              "predicted_extra": 7952,
+              "substitution_correct": 54,
+              "target": 40408,
+              "target_copy": 14590,
+              "target_extra": 4678,
+              "target_substitution": 307
+            },
+            "current_mapping": {
+              "copy_recall": 0.5651130911583276,
+              "exact_accuracy": 0.5624133834884182,
+              "f1": 0.5892108450572999,
+              "n_assigned": 39401,
+              "n_copy": 14590,
+              "n_copy_correct": 8245,
+              "n_correct": 22134,
+              "n_positive": 35730,
+              "n_transcription_matches": 35345,
+              "precision": 0.5617623918174666,
+              "recall": 0.6194794290512174
+            },
+            "extras": {
+              "f1": 0.09374505146476644,
+              "precision": 0.0744466800804829,
+              "recall": 0.12654980761008977
+            },
+            "joint": {
+              "f1": 0.5179065872084412,
+              "precision": 0.4799273541275104,
+              "recall": 0.5624133834884182
+            },
+            "note": {
+              "f1": 0.8054830733469308,
+              "precision": 0.7464152218444449,
+              "recall": 0.8747030291031479
+            },
+            "substitution_mapping_accuracy": 0.1758957654723127
+          }
+        }
+      },
+      "per_source": {
+        "MozartClConcertoA": {
+          "current_metric_50ms": {
+            "copy_recall": 0.5651130911583276,
+            "exact_accuracy": 0.5624133834884182,
+            "f1": 0.5892108450572999,
+            "n_assigned": 39401,
+            "n_copy": 14590,
+            "n_copy_correct": 8245,
+            "n_correct": 22134,
+            "n_positive": 35730,
+            "n_transcription_matches": 35345,
+            "precision": 0.5617623918174666,
+            "recall": 0.6194794290512174
+          },
+          "deletions": {
+            "counts": {
+              "correct": 253,
+              "predicted": 7639,
+              "target": 304
+            },
+            "f1": 0.06370389021780183,
+            "precision": 0.03311951826155256,
+            "recall": 0.8322368421052632
+          },
+          "n_samples": 358,
+          "tolerances": {
+            "100ms": {
+              "conditional_mapping_accuracy": 0.7048458149779736,
+              "copy": {
+                "f1": 0.4508559864354865,
+                "precision": 0.3750910083727703,
+                "recall": 0.5649760109664154
+              },
+              "counts": {
+                "copy_correct": 8243,
+                "copy_mapping_correct": 8915,
+                "extra_correct": 620,
+                "joint_correct": 24300,
+                "mapping_correct": 23680,
+                "paired": 37940,
+                "paired_linked": 33596,
+                "predicted": 47353,
+                "predicted_copy": 21976,
+                "predicted_extra": 7952,
+                "substitution_correct": 57,
+                "target": 40408,
+                "target_copy": 14590,
+                "target_extra": 4678,
+                "target_substitution": 307
+              },
+              "current_mapping": {
+                "copy_recall": 0.6110349554489376,
+                "exact_accuracy": 0.6013660661255197,
+                "f1": 0.6303656280363632,
+                "n_assigned": 39401,
+                "n_copy": 14590,
+                "n_copy_correct": 8915,
+                "n_correct": 23680,
+                "n_positive": 35730,
+                "n_transcription_matches": 37940,
+                "precision": 0.6009999746199335,
+                "recall": 0.6627483907080884
+              },
+              "extras": {
+                "f1": 0.09817893903404591,
+                "precision": 0.07796780684104627,
+                "recall": 0.13253527148353997
+              },
+              "joint": {
+                "f1": 0.5537767345403996,
+                "precision": 0.5131670643887399,
+                "recall": 0.6013660661255197
+              },
+              "note": {
+                "f1": 0.8646209591959982,
+                "precision": 0.801216396004477,
+                "recall": 0.9389229855474164
+              },
+              "substitution_mapping_accuracy": 0.18566775244299674
+            },
+            "20ms": {
+              "conditional_mapping_accuracy": 0.6926805224677565,
+              "copy": {
+                "f1": 0.14209921785264998,
+                "precision": 0.11821987622861303,
+                "recall": 0.17806716929403701
+              },
+              "counts": {
+                "copy_correct": 2598,
+                "copy_mapping_correct": 2833,
+                "extra_correct": 184,
+                "joint_correct": 8616,
+                "mapping_correct": 8432,
+                "paired": 13361,
+                "paired_linked": 12173,
+                "predicted": 47353,
+                "predicted_copy": 21976,
+                "predicted_extra": 7952,
+                "substitution_correct": 23,
+                "target": 40408,
+                "target_copy": 14590,
+                "target_extra": 4678,
+                "target_substitution": 307
+              },
+              "current_mapping": {
+                "copy_recall": 0.19417409184372858,
+                "exact_accuracy": 0.2132251039398139,
+                "f1": 0.22446127430754284,
+                "n_assigned": 39401,
+                "n_copy": 14590,
+                "n_copy_correct": 2833,
+                "n_correct": 8432,
+                "n_positive": 35730,
+                "n_transcription_matches": 13361,
+                "precision": 0.21400472069236823,
+                "recall": 0.23599216344808285
+              },
+              "extras": {
+                "f1": 0.02913697545526524,
+                "precision": 0.023138832997987926,
+                "recall": 0.03933304831124412
+              },
+              "joint": {
+                "f1": 0.19635145451852187,
+                "precision": 0.18195256900301987,
+                "recall": 0.2132251039398139
+              },
+              "note": {
+                "f1": 0.30448604733309786,
+                "precision": 0.2821574134690516,
+                "recall": 0.33065234607008515
+              },
+              "substitution_mapping_accuracy": 0.0749185667752443
+            },
+            "50ms": {
+              "conditional_mapping_accuracy": 0.7062765244583427,
+              "copy": {
+                "f1": 0.41699939834819233,
+                "precision": 0.346923917000364,
+                "recall": 0.5225496915695682
+              },
+              "counts": {
+                "copy_correct": 7624,
+                "copy_mapping_correct": 8245,
+                "extra_correct": 592,
+                "joint_correct": 22726,
+                "mapping_correct": 22134,
+                "paired": 35345,
+                "paired_linked": 31339,
+                "predicted": 47353,
+                "predicted_copy": 21976,
+                "predicted_extra": 7952,
+                "substitution_correct": 54,
+                "target": 40408,
+                "target_copy": 14590,
+                "target_extra": 4678,
+                "target_substitution": 307
+              },
+              "current_mapping": {
+                "copy_recall": 0.5651130911583276,
+                "exact_accuracy": 0.5624133834884182,
+                "f1": 0.5892108450572999,
+                "n_assigned": 39401,
+                "n_copy": 14590,
+                "n_copy_correct": 8245,
+                "n_correct": 22134,
+                "n_positive": 35730,
+                "n_transcription_matches": 35345,
+                "precision": 0.5617623918174666,
+                "recall": 0.6194794290512174
+              },
+              "extras": {
+                "f1": 0.09374505146476644,
+                "precision": 0.0744466800804829,
+                "recall": 0.12654980761008977
+              },
+              "joint": {
+                "f1": 0.5179065872084412,
+                "precision": 0.4799273541275104,
+                "recall": 0.5624133834884182
+              },
+              "note": {
+                "f1": 0.8054830733469308,
+                "precision": 0.7464152218444449,
+                "recall": 0.8747030291031479
+              },
+              "substitution_mapping_accuracy": 0.1758957654723127
+            }
+          }
+        }
+      }
+    },
+    "phase_seconds": {
+      "data": 1.9779389000141236,
+      "decode": 1421.450421699963,
+      "metric_aggregation": 39.27967489999719,
+      "metric_projection": 0.059438899992528604,
+      "target_reconstruction": 0.3367703999792866
+    },
+    "repeat": {
+      "correct": 7624,
+      "f1": 0.41699939834819233,
+      "precision": 0.346923917000364,
+      "predicted": 21976,
+      "recall": 0.5225496915695682,
+      "resume_accuracy": 0.0162900683131897,
+      "resume_correct": 62,
+      "resume_target": 3806,
+      "target": 14590
+    },
+    "transcription": {
+      "correct": 35345,
+      "count_ratio": 1.1718719065531578,
+      "f1": 0.8054830733469308,
+      "precision": 0.7464152218444449,
+      "predicted": 47353,
+      "recall": 0.8747030291031479,
+      "same_pitch_split_count": 8595,
+      "same_pitch_split_rate": 0.1815090912930543,
+      "short_note_recall": {
+        "lt_120ms": {
+          "matched": 2028,
+          "recall": 0.8442964196502915,
+          "target": 2402
+        },
+        "lt_180ms": {
+          "matched": 21381,
+          "recall": 0.8856716788865415,
+          "target": 24141
+        },
+        "lt_80ms": {
+          "matched": 32,
+          "recall": 0.6530612244897959,
+          "target": 49
+        }
+      },
+      "target": 40408
+    },
+    "validation_rows": 358,
+    "validation_wall_seconds": 1463.2830039999972
+  }
+}

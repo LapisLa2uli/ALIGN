@@ -1,0 +1,109 @@
+{
+  "schema_version": "align-outputraw-note-wise-migration-status-v1",
+  "updated_utc": "2026-09-16T23:29:00Z",
+  "state": "mapper_v2_paused_by_user",
+  "active_owned_processes": [],
+  "lockbox_touched": false,
+  "production_mutated": false,
+  "selection_policy": {
+    "official_unit": "canonical_score_event_identity",
+    "matching": "exclusive_one_to_one",
+    "credit": {
+      "correct_location_correct_type": 1.0,
+      "correct_location_wrong_type": 0.5,
+      "wrong_location": 0.0
+    },
+    "timestamp_metrics": "legacy_diagnostic_only",
+    "timestamp_metrics_for_selection": false,
+    "timestamp_metrics_for_promotion": false,
+    "schema_1_1_without_score_projection": "unevaluable"
+  },
+  "resume_checkpoint": {
+    "path": "training-v2-exact32-rescored/last_checkpoint.pt",
+    "sha256": "c6a044a1ff85a6550093830eae4dd73b77084f0cbdd20e1383ef076b7fdbae4c",
+    "schema_version": "align-outputraw-full-joint-v1",
+    "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+    "phase": "epoch_complete",
+    "stage": "joint",
+    "epoch": 10,
+    "sampler_position": 4544,
+    "optimizer_state_present": true,
+    "scheduler_state_present": true,
+    "scaler_state_present": false,
+    "rng_state_present": true,
+    "exact_32d_transfer_preserved": true,
+    "resume_semantics_fix_preserved": true
+  },
+  "legacy_timestamp_artifacts": [
+    {
+      "path": "training-v1-optimized/report.json",
+      "status": "legacy_timestamp_diagnostics_only"
+    },
+    {
+      "path": "training-v2-exact32-rescored/report.json",
+      "status": "legacy_timestamp_diagnostics_only"
+    },
+    {
+      "path": "diagnostics-v2/regression-diagnosis.json",
+      "status": "legacy_timestamp_diagnostics_only"
+    },
+    {
+      "path": "diagnostics-v2/corrected-candidate-comparison.json",
+      "status": "legacy_timestamp_diagnostics_only"
+    },
+    {
+      "path": "diagnostics-v3/structural-oracles-full358.json",
+      "status": "legacy_timestamp_diagnostics_only",
+      "completed_before_metric_migration_pause": true
+    }
+  ],
+  "unselected_experimental_work": {
+    "structure_logits_connected_to_path_score": true,
+    "repeat_margin_loss_added": true,
+    "official_note_wise_validation_completed": true,
+    "eligible_for_selection": false
+  },
+  "canonical_rescorer_pause": {
+    "final_model": "candidate-rescorer-note-wise-v2/candidate_rescorer.pt",
+    "final_model_sha256": "50880dadaf8f2a6166e149b85b11ab10193a04f09afec80dd1633fc4ee790bf7",
+    "pause_checkpoint": "candidate-rescorer-note-wise-v2/pause_checkpoint.pt",
+    "pause_checkpoint_sha256": "c46a6a95b13e9f912d8fab3b884ebf92941dea70f458130809b124e9136f4971",
+    "cursor": {
+      "epoch": 6,
+      "position": 4000,
+      "ordinal": 3223
+    },
+    "optimizer_state_present": true,
+    "scheduler_policy": "constant_learning_rate_no_scheduler",
+    "scheduler_state_key_present": true,
+    "scheduler_state_present": false,
+    "scaler_state_key_present": true,
+    "scaler_state_present": false,
+    "rng_state_present": true,
+    "best_train_only_canonical_holdout_f1": 0.9365145008218015,
+    "full_358_validation_started": false
+  },
+  "official_baseline": {
+    "validation_rows": 358,
+    "transcription_f1": 0.6433616388796073,
+    "alignment_f1": 0.6322524276139706,
+    "combined_f1": 0.6104315512397973,
+    "combined_lower_95": 0.5937391114294557,
+    "combined_upper_95": 0.6271841365187758
+  },
+  "mel_mapper_track": {
+    "frontend_checkpoint": "mel-transcriber-v1/full-training-all4544-v2/candidate-epoch-018.pt",
+    "frontend_checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "train_prediction_cache": "mel-mapper-v1/cache/train-mel-events.jsonl",
+    "train_prediction_cache_sha256": "9a7d8a72982f5f0392feada2b164a7fefe2243fcda35a2c1c346fbe57eb83fd6",
+    "train_rows": 4544,
+    "best_oracle_note_mapper_f1_64": 0.784331227684702,
+    "required_oracle_note_mapper_f1": 0.98,
+    "full_358_validation_run": false,
+    "comparison": "mel-mapper-v1/CANDIDATE_COMPARISON.json"
+  },
+  "blocked_until": [
+    "mapper passes the predeclared oracle-note sanity gate"
+  ],
+  "next_action": "Resume from mel-mapper-v2/RESUME_STATUS.json only after explicit user authorization."
+}

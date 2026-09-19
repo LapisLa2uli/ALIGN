@@ -1,0 +1,71 @@
+{
+  "arrays": {
+    "classes": {
+      "dtype": "int16",
+      "width": 7
+    },
+    "edges": {
+      "dtype": "float32",
+      "width": 26
+    },
+    "groups": {
+      "dtype": "int32",
+      "width": 3
+    },
+    "regression": {
+      "dtype": "float32",
+      "width": 3
+    }
+  },
+  "cache_fingerprint": "99f683eb5a8e018e445e4d5b90ab3f52c87ff82064f5e6f5e97096b668e5c6e8",
+  "feature_dim": 26,
+  "files": [
+    {
+      "name": "shard-00000.classes.int16.bin",
+      "sha256": "fe4b42da5b70682b5788a2736776d6b4a445020f7caddc112b5d5c6ebaed2a6e",
+      "size": 187684
+    },
+    {
+      "name": "shard-00000.edges.float32.bin",
+      "sha256": "48a904315074333aa03ca15d7b06e992344726ab482b0b7c73e15475ac671cc8",
+      "size": 20923656
+    },
+    {
+      "name": "shard-00000.groups.int32.bin",
+      "sha256": "440b35ff971fbd67a46b545cc99238764799d10f0c85458cb04ac15eb32adfc9",
+      "size": 160872
+    },
+    {
+      "name": "shard-00000.regression.float32.bin",
+      "sha256": "05655adbc18d0f8df2af9b7cb7f0cc4378039f892f09f3154b6b7a89d1aafd69",
+      "size": 160872
+    }
+  ],
+  "index": {
+    "name": "index.sqlite",
+    "sha256": "4c0a1f6347a0004715c004cf998dddb5104759223c3b0456bf9ba425f6c9f376",
+    "size": 36864
+  },
+  "lattice": {
+    "continuation_candidate_skips": 1,
+    "continuation_feature_enabled": true,
+    "continuation_hard_negative_copies": 1,
+    "continuation_lookahead_notes": 3,
+    "continuation_pitch_tolerance": 0,
+    "continuation_score_skips": 1,
+    "continuation_score_weight": 0.35,
+    "max_delete_events": 24,
+    "max_options_per_candidate": 12,
+    "max_span_events": 4,
+    "max_states": 48,
+    "noise_inference_bias": -6.0,
+    "repeat_fragment_penalty": 0.25,
+    "timing_scale_ceiling_sec_per_ql": 2.5,
+    "timing_scale_floor_sec_per_ql": 0.08
+  },
+  "metadata_sha256": "779a87ebdc5c07d7494593eb7bffbcdb9f41c214506ab27a0d9ca4c9695c3220",
+  "pack_id": "f4030afbf9a7ddf5707e8886780fb561b63567d887e75179f3da3c0404d3bb92",
+  "record_count": 100,
+  "schema_version": "align-prepared-local-v1",
+  "shard_rows": 128
+}

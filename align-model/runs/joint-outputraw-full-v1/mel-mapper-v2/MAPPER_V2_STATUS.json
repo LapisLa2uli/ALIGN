@@ -1,0 +1,83 @@
+{
+  "schema_version": "align-mel-mapper-v2-status-v1",
+  "status": "target_not_met",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "matching_policy": "exclusive one-to-one; exact canonical score-event or rendered EXTRA identity; exact type 1.0, wrong type at correct location 0.5, wrong location 0",
+  "timestamp_metrics_used_for_selection": false,
+  "locked_test_touched": false,
+  "production_mutated": false,
+  "frozen_frontend": {
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "train_predictions_sha256": "9a7d8a72982f5f0392feada2b164a7fefe2243fcda35a2c1c346fbe57eb83fd6"
+  },
+  "full_358_combined": {
+    "precision": 0.8262800999826763,
+    "recall": 0.8262596515541477,
+    "f1": 0.8262698756418982,
+    "bootstrap_95": {
+      "lower": 0.8146038518469886,
+      "median": 0.8261496328650741,
+      "upper": 0.8379052775287179,
+      "replicates": 1000
+    },
+    "report": "full358-mel-grammar-v1.json",
+    "report_sha256": "b18885c1941493031a2d25fca152f0f97a6d606d052f7b130e0a50e1e18f64dd"
+  },
+  "full_358_oracle_notes": {
+    "f1": 0.8306275984953474,
+    "bootstrap_lower_95": 0.819141160568785,
+    "report": "full358-oracle-grammar-v1.json",
+    "report_sha256": "4529872fef29aeeafe89941a05ec7ab990330019cea07d37b9d85c0196c0cd4d"
+  },
+  "per_type_f1": {
+    "match": 0.889341756674139,
+    "copy": 0.8503044710019865,
+    "substitute": 0.6720430107526881,
+    "extra": 0.11309867282169647
+  },
+  "train_calibration": {
+    "rows": 256,
+    "f1": 0.8722543743865705,
+    "bootstrap_lower_95": 0.8617212128296675,
+    "report": "train-mel-baseline-256.json",
+    "report_sha256": "9f0847f01f31aa246689c1922935f06172c97d365103bbf1df2062ee16089413"
+  },
+  "rejected_train_safe_ablations": [
+    "timeline and duration emissions",
+    "low EXTRA/DELETE costs",
+    "substitution-to-EXTRA relabeling",
+    "512-row balanced operation core",
+    "1536-row balanced operation core",
+    "conservative operation overrides",
+    "operation probabilities inside Viterbi",
+    "cross-attention location emissions inside grammar Viterbi"
+  ],
+  "technical_blocker": {
+    "definitive_for_current_candidate": true,
+    "definitive_for_implemented_broader_architecture": true,
+    "reason": "The same mapper scores only 0.83063 with exact oracle notes on all 358 rows. Full-fold trainable CRF emissions (9.77M edges), an oracle-paired CRF, a sequence operation tagger, and grammar/neural hybrids improved comparable train F1 by at most 0.00031. Frozen mel contributes only a 0.00436 absolute loss, so frontend training cannot close the gap.",
+    "dominant_error": "EXTRA F1 0.11310 with 4,435 gold events; validation first-pass F1 0.80761.",
+    "next_required_architecture": "Train a sequence-level grammar CRF with latent EXTRA/DELETE alignment and explicit rendered-event identity, using full train folds rather than fixed edit costs."
+  },
+  "artifact_hashes": {
+    "grammar_mapper_code": "0d28edec1ee6ea481fd8b9024973f6b1273057dec5bf521a7799d790b09305b7",
+    "operation_core_v2": "02214c0d1ce664781f1cc315c1c8caa0bb9ea6ed3b8ecff810cb5e0a1ebf53de",
+    "full_train_mel_emission_crf": "31c701dc1d3c84b2b2860a4626e0738f1dbd7e30a67c5063753e5de61614cc72",
+    "full_train_oracle_emission_crf": "12367047a36284c8049cc2c3f539ec1b0bb7c07cfb11e628cdaf2f471a2d5878",
+    "sequence_operation_tagger": "66d92d3695567b9b4175a0e0dc51061ffa4d16fb79641b5036e313e612b1826e"
+  },
+  "structured_crf_result": {
+    "mel_train_edges": 9765209,
+    "mel_heldout_roc_auc": 0.9597478935109275,
+    "mel_heldout_average_precision": 0.6874079216996376,
+    "oracle_heldout_roc_auc": 0.9617156920110176,
+    "oracle_heldout_average_precision": 0.6984642570218343,
+    "best_comparable_train_f1": 0.8692055564226627,
+    "fixed_grammar_comparable_train_f1": 0.8688933978461059,
+    "absolute_gain": 0.0003121585765568,
+    "full_validation_opened": false,
+    "reason": "Gain was too small to justify another full validation opening."
+  },
+  "promotion_eligible": false,
+  "locked_test_allowed": false
+}

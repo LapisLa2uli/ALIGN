@@ -1,0 +1,20 @@
+{
+  "schema_version": "align-mel-mapper-v6-validation-candidate-v1",
+  "frozen": true,
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "matching_policy": "exclusive one-to-one; exact canonical location/type 1.0; wrong type at exact location 0.5; wrong location 0",
+  "frontend_predictions": "../mel-transcriber-v1/validation-all4544-epoch018-conf080/predictions.jsonl",
+  "frontend_predictions_sha256": "32ae4b7b1d7d03bf1a56d7571caa2881b1847cc311365fc93efb747e181ec6c0",
+  "target_repair_policy": "global monotonic raw-MIDI to generator performed-note sequence; exact pitch; zero-cost one-to-one required",
+  "mapper": "generator grammar Viterbi",
+  "grammar_mapper_sha256": "4fcdd698d7a77e76aedbccea6da7352857d3e71ce93e3acde775c199f48bcd9c",
+  "repair_builder_sha256": "6353ebb836cc7f611aa5f9d9c1283bff7ed07b2238da49442200e7f48b72dd13",
+  "train_calibration_rows": 64,
+  "train_calibration_f1": 0.971272443403591,
+  "train_calibration_report_sha256": "9a3487e13b3408a1b4e4ef2c92f5947aee1d3a8e4061b64a67f1e561958a87d4",
+  "supervision_build_report_sha256": "8ba4150ceb74ceb6c632cd78aa116c2cf9317cf34055146d133e725d0ed9c466",
+  "validation_rows": 358,
+  "bootstrap_replicates": 1000,
+  "timestamp_metrics_for_selection": false,
+  "locked_test_touched": false
+}

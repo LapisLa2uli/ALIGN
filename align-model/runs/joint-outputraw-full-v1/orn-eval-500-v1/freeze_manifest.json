@@ -1,0 +1,68 @@
+{
+  "cache_hits": 0,
+  "cache_key_fields": [
+    "performance audio SHA-256",
+    "checkpoint SHA-256",
+    "frontend config",
+    "decode config",
+    "window/overlap frames"
+  ],
+  "cache_misses": 500,
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-transcriber-v1\\full-training-all4544-v2\\candidate-epoch-018.pt",
+  "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+  "command": [
+    "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+    "scripts\\eval_ornament_corpus_v1.py",
+    "infer",
+    "--output-dir",
+    "runs\\joint-outputraw-full-v1\\orn-eval-500-v1",
+    "--resource-status",
+    "runs\\TRAINING_RESOURCE_STATUS.json",
+    "--device",
+    "cuda",
+    "--batch-size",
+    "4",
+    "--window-frames",
+    "2048",
+    "--overlap-frames",
+    "512"
+  ],
+  "created_utc": "2026-09-17T13:33:36.988125+00:00",
+  "decode_config": {
+    "alternatives": 3,
+    "boundary_threshold": 0.46,
+    "merge_gap_sec": 0.045,
+    "min_confidence": 0.8,
+    "min_note_sec": 0.04,
+    "onset_threshold": 0.48,
+    "pitch_change_frames": 4,
+    "strong_rearticulation": 0.64,
+    "voice_off": 0.35,
+    "voice_on": 0.52
+  },
+  "frontend_config": {
+    "fmax": 8000.0,
+    "fmin": 45.0,
+    "hop_length": 256,
+    "n_fft": 2048,
+    "n_mels": 128,
+    "normalization": "clip-q05-q50-q95-v1",
+    "power_floor": 1e-10,
+    "sample_rate": 22050,
+    "win_length": 2048
+  },
+  "inference_inputs": [
+    "performance_audio.wav"
+  ],
+  "locked_test_accessed": false,
+  "manifest": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\manifest.json",
+  "manifest_sha256": "78cbbe88aed16cc4659f237903aa247e1692a28d0baffeb5a0f40a18fefa94e1",
+  "pitch_output_space": "written",
+  "predictions": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\predictions.jsonl",
+  "predictions_sha256": "5636ddf975ae7a2395db508004fde3854ed1b2f3a443cdb64db0ff34b99ed604",
+  "production_weights_mutated": false,
+  "rows": 500,
+  "schema_version": "align-orn-external-eval-v1-prediction-freeze",
+  "score_input": false,
+  "target_or_label_content_read": false
+}

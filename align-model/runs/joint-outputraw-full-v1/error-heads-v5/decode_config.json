@@ -1,0 +1,220 @@
+{
+  "created_utc": "2026-09-15T12:30:00.748674+00:00",
+  "direct_only": {
+    "direct_source": "deterministic",
+    "direct_weight": 1.0,
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.05,
+        "missed_note": 0.6,
+        "rhythm_error": 0.9,
+        "wrong_note": 0.05
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 1,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "hybrid_balanced": {
+    "constraint": {
+      "candidate_count": 5,
+      "false_budget_per_clip": 3.42,
+      "false_labels_per_clip": 2.2192307692307693,
+      "global_threshold_offset": 0.1,
+      "metric": {
+        "correct": 466.5,
+        "f1": 0.15965092402464065,
+        "precision": 0.18765084473049073,
+        "predicted": 2486,
+        "recall": 0.13892197736748063,
+        "target": 3358
+      }
+    },
+    "direct_source": "selector",
+    "direct_weight": 1.0,
+    "name": "hybrid_100",
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.5,
+        "missed_note": 0.7,
+        "rhythm_error": 0.7,
+        "wrong_note": 0.25
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "hybrid_max_f1": {
+    "direct_source": "selector",
+    "direct_weight": 1.0,
+    "name": "hybrid_100",
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 0.6,
+        "rhythm_error": 0.6,
+        "wrong_note": 0.15
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "learned_only": {
+    "direct_source": "deterministic",
+    "direct_weight": 0.0,
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.05,
+        "missed_note": 0.25,
+        "rhythm_error": 0.15,
+        "wrong_note": 0.3
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "multiplicity": {
+    "candidate_count": 5,
+    "validation_selection_performed": false
+  },
+  "predeclared_candidates": [
+    {
+      "direct_source": "deterministic",
+      "direct_weight": 0.0,
+      "name": "learned_only"
+    },
+    {
+      "direct_source": "deterministic",
+      "direct_weight": 1.0,
+      "name": "direct_only"
+    },
+    {
+      "direct_source": "selector",
+      "direct_weight": 0.5,
+      "name": "hybrid_050"
+    },
+    {
+      "direct_source": "selector",
+      "direct_weight": 0.75,
+      "name": "hybrid_075"
+    },
+    {
+      "direct_source": "selector",
+      "direct_weight": 1.0,
+      "name": "hybrid_100"
+    }
+  ],
+  "schema_version": "align-error-heads-v5-decode-config-v1",
+  "selection_data": "train_calibration_partition_only"
+}

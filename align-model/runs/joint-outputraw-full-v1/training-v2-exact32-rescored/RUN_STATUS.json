@@ -1,0 +1,41 @@
+{
+  "schema_version": "align-outputraw-run-status-v2",
+  "updated_utc": "2026-09-15T13:07:00Z",
+  "status": "queued_note_wise_full_validation",
+  "execution_hold_cleared": true,
+  "heavy_restart_allowed": true,
+  "requires_note_wise_rescore": true,
+  "owned_processes_stopped": true,
+  "lockbox_touched": false,
+  "checkpoint": {
+    "path": "last_checkpoint.pt",
+    "sha256": "c6a044a1ff85a6550093830eae4dd73b77084f0cbdd20e1383ef076b7fdbae4c",
+    "phase": "epoch_complete",
+    "stage": "joint",
+    "epoch": 10,
+    "cursor_position": 4544,
+    "examples": 4544,
+    "edges": 9260174,
+    "optimizer_steps": 145,
+    "optimizer_state_present": true,
+    "scheduler_state_present": true,
+    "scaler_state_present": false,
+    "rng_state_present": true
+  },
+  "metric_policy": {
+    "official": "align-note-wise-score-event-metric-v1",
+    "existing_report": "legacy timestamp diagnostics only",
+    "selection_suspended": true,
+    "promotion_suspended": true,
+    "ordinary_validation_promotion_gate_active": true
+  },
+  "resume_condition": "satisfied: shared canonical note-wise matcher integrated and 333 tests passed",
+  "next_validation": {
+    "queue_position": 1,
+    "track": "exact32-full358-note-wise-validation",
+    "rows": 358,
+    "output_dir": "../validation-v2-exact32-full358-note-wise",
+    "promotion_attempted": false,
+    "lockbox_touched": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "align-structural-supervision-v2-build-report",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "manifest_sha256": "40f4900c142862fd06a69b1adcb2049701655db5ccb0266b925ff8cdc04bce6d",
+  "admitted": {
+    "train": 4544,
+    "val": 358
+  },
+  "excluded": [],
+  "repair_totals": {
+    "train": {
+      "folded_tied_notes": 3139,
+      "old_rendered_events": 507189,
+      "raw_midi_events": 507104,
+      "recovered_performed_indices": 58692,
+      "transferred_performed_indices": 429044,
+      "unmapped_performed_notes": 16229,
+      "written_shift": 9088
+    },
+    "val": {
+      "folded_tied_notes": 319,
+      "old_rendered_events": 39458,
+      "raw_midi_events": 40408,
+      "recovered_performed_indices": 5044,
+      "transferred_performed_indices": 33239,
+      "unmapped_performed_notes": 1806,
+      "written_shift": 716
+    }
+  },
+  "train_supervision": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v3\\structural-supervision-v2\\train-structural-supervision.jsonl.gz",
+  "train_supervision_sha256": "c2726c172fe4575a76503961875e256138d40da3b7d32de21b3b069a0a84e8e2",
+  "validation_targets_materialized": false,
+  "test_targets_materialized": false,
+  "locked_test_touched": false
+}

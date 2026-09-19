@@ -1,0 +1,84 @@
+{
+  "schema_version": "align-outputraw-regression-diagnosis-v1",
+  "metric_status": "legacy_timestamp_diagnostics_only",
+  "authoritative_failed_report": "../training-v1-optimized/report.json",
+  "checkpoint_ablation": "checkpoint-ablation-balanced64.json",
+  "locked_test_touched": false,
+  "checkpoint_integrity": {
+    "initialization_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+    "final_after_path_sha256": "e1b2e4889a373eb1ac5f06b2d41703d11dadeac5f38d69af4e00e602b191939d",
+    "hashes_stable_during_read": true,
+    "half_written_checkpoints_read": false
+  },
+  "architecture_transfer": {
+    "failed_run_tensor_coverage": {
+      "loaded": 10,
+      "source": 28
+    },
+    "failed_run_parameter_coverage": 0.5335541883577851,
+    "exact_component_32": {
+      "tensor_coverage": 1.0,
+      "parameter_coverage": 1.0,
+      "source_parameters": 10565
+    },
+    "inflated_component_64": {
+      "tensor_coverage": 1.0,
+      "parameter_coverage": 1.0,
+      "inflated_tensors": 18,
+      "source_score_max_absolute_error": 0.0
+    },
+    "minimum_required_parameter_coverage": 0.95
+  },
+  "balanced_diagnostic_subset": {
+    "rows": 64,
+    "seed": 20260915,
+    "repeat_positive_rows": 32,
+    "repeat_negative_rows": 32,
+    "full_validation_rows": 358,
+    "initial_exact": {
+      "note_f1_50ms": 0.811109429393068,
+      "mapping_f1_50ms": 0.6268525052928723,
+      "strict_joint_f1_50ms": 0.5492659300741637,
+      "repeat_f1_50ms": 0.35647464303298865,
+      "resume_accuracy": 0.012048192771084338,
+      "combined_f1": 0.0049016175337861494
+    },
+    "final_after_path": {
+      "note_f1_50ms": 0.8113550340651021,
+      "mapping_f1_50ms": 0.59989438479141,
+      "strict_joint_f1_50ms": 0.5288417865253595,
+      "repeat_f1_50ms": 0.3380414312617702,
+      "resume_accuracy": 0.014705882352941176,
+      "combined_f1": 0.38241788573005797
+    },
+    "final_minus_initial": {
+      "note_f1_50ms": 0.0002456046720340499,
+      "mapping_f1_50ms": -0.02695812050146229,
+      "strict_joint_f1_50ms": -0.020424143548804164,
+      "repeat_f1_50ms": -0.01843321177021846,
+      "resume_accuracy": 0.002657689581859838,
+      "combined_f1": 0.3775162681962718
+    },
+    "phase_attribution_limit": "The original run atomically overwrote one last_checkpoint.pt. Local-only and final-before-path states are not recoverable, so their individual deltas cannot be claimed."
+  },
+  "resume_target_audit_full_validation": {
+    "rows": 358,
+    "legacy_packed_resume_events": 3588,
+    "legacy_positional_matches_to_gold_lattice": 655,
+    "legacy_definition_mismatch_rows": 308,
+    "root_cause": "Packed resume labels include copy-lineage groups only, while the decoder enters replay for every backward gold score transition, including transitions labeled match.",
+    "correction": "Reconstruct validation resume targets from the gold lattice transitions; retain copy-lineage labels for repeat/copy metrics and copy-count supervision."
+  },
+  "oracles_balanced_subset": {
+    "repeat_f1": 1.0,
+    "repeat_events": 1549,
+    "resume_accuracy": 1.0,
+    "gold_lattice_resume_events": 659,
+    "legacy_packed_resume_events": 398,
+    "definition_mismatch_rows": 52
+  },
+  "promotion": {
+    "eligible": false,
+    "reason": "Validation gate not met"
+  }
+}

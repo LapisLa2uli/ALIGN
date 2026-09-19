@@ -1,0 +1,35 @@
+{
+  "schema_version": "align-replay-plan-ranker-v3",
+  "model": "plan_ranker.joblib",
+  "model_sha256": "5cba162428a72bb80c51708cb79207d45600bf8286da617d8c5d7621390900d7",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "supervision_sha256": "c2726c172fe4575a76503961875e256138d40da3b7d32de21b3b069a0a84e8e2",
+  "predictions_sha256": "9a7d8a72982f5f0392feada2b164a7fefe2243fcda35a2c1c346fbe57eb83fd6",
+  "requested_rows": 1536,
+  "admitted_rows": 1534,
+  "missing_exact_hypothesis": [
+    {
+      "sample": "synth_MozartClConcertoA_4867",
+      "copies": 2,
+      "source_span": [
+        73,
+        91
+      ]
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0226",
+      "copies": 2,
+      "source_span": [
+        26,
+        54
+      ]
+    }
+  ],
+  "heldout_rows": 307,
+  "plan_accuracy": 0.739413680781759,
+  "copy_count_accuracy": 0.9609120521172638,
+  "source_span_accuracy": 0.739413680781759,
+  "resume_accuracy": 0.8110749185667753,
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

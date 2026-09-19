@@ -1,0 +1,146 @@
+{
+  "schema_version": "align-grammar-mapper-v2-calibration-v1",
+  "metric_schema": "align-note-wise-score-event-metric-v1",
+  "split": "train",
+  "selection": "deterministic hash-ordered group-disjoint train calibration",
+  "rows": 64,
+  "costs": {
+    "substitution": 1.5,
+    "extra": 1.0,
+    "deletion": 1.0,
+    "repeat": 0.75,
+    "no_restart_gap": 0.25,
+    "timing": 0.15
+  },
+  "overall": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 5499.0,
+    "predicted": 6407,
+    "gold": 6407,
+    "precision": 0.8582800062431716,
+    "recall": 0.8582800062431716,
+    "f1": 0.8582800062431716
+  },
+  "first_pass_only": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 3433.5,
+    "predicted": 3903,
+    "gold": 4070,
+    "precision": 0.8797079169869332,
+    "recall": 0.8436117936117936,
+    "f1": 0.8612818261633012
+  },
+  "by_copy_count": {
+    "2": {
+      "rows": 17,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 1915.5,
+        "predicted": 2283,
+        "gold": 2283,
+        "precision": 0.8390275952693824,
+        "recall": 0.8390275952693824,
+        "f1": 0.8390275952693824
+      }
+    },
+    "1": {
+      "rows": 32,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2795.0,
+        "predicted": 3257,
+        "gold": 3257,
+        "precision": 0.8581516733190052,
+        "recall": 0.8581516733190052,
+        "f1": 0.8581516733190052
+      }
+    },
+    "0": {
+      "rows": 15,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 788.5,
+        "predicted": 867,
+        "gold": 867,
+        "precision": 0.9094579008073818,
+        "recall": 0.9094579008073818,
+        "f1": 0.9094579008073818
+      }
+    }
+  },
+  "by_type": {
+    "match": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 3332.0,
+        "predicted": 3674,
+        "gold": 3512,
+        "precision": 0.9069134458356015,
+        "recall": 0.94874715261959,
+        "f1": 0.9273587531310883
+      }
+    },
+    "copy": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 2046.0,
+        "predicted": 2504,
+        "gold": 2337,
+        "precision": 0.8170926517571885,
+        "recall": 0.8754813863928113,
+        "f1": 0.8452799008469325
+      }
+    },
+    "substitute": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 43.0,
+        "predicted": 70,
+        "gold": 58,
+        "precision": 0.6142857142857143,
+        "recall": 0.7413793103448276,
+        "f1": 0.671875
+      }
+    },
+    "extra": {
+      "support_rows": 64,
+      "metric": {
+        "schema_version": "align-note-wise-score-event-metric-v1",
+        "status": "available",
+        "type_mismatch_credit": 0.5,
+        "credit": 53.0,
+        "predicted": 159,
+        "gold": 500,
+        "precision": 0.3333333333333333,
+        "recall": 0.106,
+        "f1": 0.16084977238239756
+      }
+    }
+  },
+  "repeat_structure": {
+    "rows": 49,
+    "source_accuracy": 0.12244897959183673,
+    "resume_accuracy": 0.5102040816326531
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

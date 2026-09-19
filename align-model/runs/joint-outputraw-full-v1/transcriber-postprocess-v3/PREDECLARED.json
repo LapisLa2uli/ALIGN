@@ -1,0 +1,64 @@
+{
+  "schema_version": "align-transcriber-track-a-predeclaration-v1",
+  "created_utc": "2026-09-16T14:55:00Z",
+  "data_release": "joint-outputraw-full-v1",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "train_rows": 4544,
+  "validation_rows": 358,
+  "lockbox_rows_metadata_only": 4022,
+  "official_metric": "align-note-wise-score-event-metric-v1",
+  "fixed_aligner": "alignmodel.joint.baseline.current_note_aligner_baseline",
+  "selection_policy": "train-fold exact candidate identity only; validation is confirmation-only",
+  "candidates": [
+    {
+      "name": "baseline",
+      "definition": "authoritative frozen canonical full-pipeline validation",
+      "preprocessing": false,
+      "postprocessing": false,
+      "rescorer": false
+    },
+    {
+      "name": "preprocessing-only",
+      "definition": "gentle pre-emphasis plus RMS normalization view, canonical decode",
+      "preprocessing": true,
+      "postprocessing": false,
+      "rescorer": false
+    },
+    {
+      "name": "postprocessing-only",
+      "definition": "v2 activation union with continuity merge and short-note rescue, fixed 0.65 gate",
+      "preprocessing": false,
+      "postprocessing": true,
+      "rescorer": false
+    },
+    {
+      "name": "combined",
+      "definition": "deduplicated original and normalized-view candidates with v2 postprocessing, fixed 0.65 gate",
+      "preprocessing": true,
+      "postprocessing": true,
+      "rescorer": false
+    },
+    {
+      "name": "combined+rescorer",
+      "definition": "combined candidates gated by train-fold compact candidate rescorer",
+      "preprocessing": true,
+      "postprocessing": true,
+      "rescorer": true
+    }
+  ],
+  "preprocessing_config": {
+    "version": "align-track-a-preprocess-v1",
+    "pre_emphasis": 0.85,
+    "target_rms_dbfs": -22.0,
+    "peak_limit": 0.97,
+    "source_wav_mutation": false,
+    "cache_requires_source_sha256_and_config_sha256": true
+  },
+  "promotion_gate": {
+    "canonical_note_wise_f1_must_materially_improve": true,
+    "count_ratio_must_not_regress": true,
+    "same_pitch_split_rate_must_not_regress": true,
+    "production_default_changes_allowed": false
+  },
+  "locked_test_touched": false
+}

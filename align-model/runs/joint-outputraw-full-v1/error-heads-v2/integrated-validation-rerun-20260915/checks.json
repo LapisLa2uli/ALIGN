@@ -1,0 +1,39 @@
+{
+  "schema_version": "align-error-heads-integrated-checks-v1",
+  "status": "passed",
+  "validation_rows": 358,
+  "checks": {
+    "focused_pytest": {
+      "passed": 15,
+      "failed": 0,
+      "targets": [
+        "tests/test_error_heads.py",
+        "tests/test_integrated_error_validation.py"
+      ]
+    },
+    "full_pytest": {
+      "passed": 204,
+      "failed": 0,
+      "duration_seconds": 87.19
+    },
+    "py_compile": {
+      "passed": true
+    },
+    "lints": {
+      "errors": 0
+    },
+    "integrated_artifact_verification": {
+      "passed": true,
+      "verification": "verification.json"
+    }
+  },
+  "regression_fixed": {
+    "issue": "fresh target attachment could rhythm-supervise a predicted replay row paired to an ordinary target",
+    "resolution": "require both target and predicted row to be non-copy before rhythm supervision",
+    "frozen_process_a_rerun_required": false,
+    "process_b_rescored": true
+  },
+  "lockbox_touched": false,
+  "production_mutated": false,
+  "promotion_performed": false
+}

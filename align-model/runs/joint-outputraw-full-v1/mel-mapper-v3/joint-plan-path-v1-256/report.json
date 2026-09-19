@@ -1,0 +1,81 @@
+{
+  "schema_version": "align-joint-plan-path-ranker-report-v3",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\mel-mapper-v3\\joint-plan-path-v1-256\\last_checkpoint.pt",
+  "checkpoint_sha256": "d0c4dc8832ef443d8ea923c49de3ecf59435ba4353ebc2c19a24a0cb618a615e",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "train_rows": 205,
+  "heldout_rows": 51,
+  "max_candidates": 12,
+  "candidate_selection": "top sequence-similarity legal plans plus no-repeat",
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.0101767767129877
+    },
+    {
+      "epoch": 20,
+      "loss": 0.5981182530115359
+    },
+    {
+      "epoch": 40,
+      "loss": 0.46214862766958176
+    },
+    {
+      "epoch": 60,
+      "loss": 0.35205547367689927
+    },
+    {
+      "epoch": 80,
+      "loss": 0.2798855779448156
+    },
+    {
+      "epoch": 100,
+      "loss": 0.21511088622481592
+    },
+    {
+      "epoch": 120,
+      "loss": 0.16593162560540584
+    },
+    {
+      "epoch": 140,
+      "loss": 0.1446636611739169
+    },
+    {
+      "epoch": 160,
+      "loss": 0.11911707432809972
+    },
+    {
+      "epoch": 180,
+      "loss": 0.1034383356025009
+    },
+    {
+      "epoch": 200,
+      "loss": 0.08629870861114025
+    }
+  ],
+  "heldout_candidate_accuracy": 0.8627450980392157,
+  "heldout_canonical": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 4733.0,
+    "predicted": 5386,
+    "gold": 5388,
+    "precision": 0.8787597474935017,
+    "recall": 0.8784335560504826,
+    "f1": 0.8785966214961947
+  },
+  "heldout_candidate_oracle": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "status": "available",
+    "type_mismatch_credit": 0.5,
+    "credit": 4737.0,
+    "predicted": 5386,
+    "gold": 5388,
+    "precision": 0.8795024136650575,
+    "recall": 0.8791759465478842,
+    "f1": 0.8793391498050863
+  },
+  "timestamp_metrics_used": false,
+  "locked_test_touched": false
+}

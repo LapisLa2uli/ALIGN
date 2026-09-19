@@ -1,0 +1,111 @@
+{
+  "balanced_policy": {
+    "false_label_budget_v2": 1480.0,
+    "false_labels": 1439.5,
+    "high_thresholds": {
+      "extra_note": 0.25,
+      "missed_note": 0.4,
+      "rhythm_error": 0.5,
+      "wrong_note": 0.4
+    },
+    "low_ratios": {
+      "extra_note": 1.0,
+      "missed_note": 1.0,
+      "rhythm_error": 1.0,
+      "wrong_note": 1.0
+    },
+    "max_row_gap": 2,
+    "merge_score_gap": {
+      "extra_note": 0,
+      "missed_note": 1,
+      "rhythm_error": 0,
+      "wrong_note": 0
+    },
+    "minimum_support": {
+      "extra_note": 1,
+      "missed_note": 1,
+      "rhythm_error": 2,
+      "wrong_note": 1
+    },
+    "missed_note_metric": {
+      "correct": 35.0,
+      "f1": 0.0717948717948718,
+      "precision": 0.05216095380029806,
+      "predicted": 671,
+      "recall": 0.11513157894736842,
+      "target": 304
+    },
+    "nms_overlap": true,
+    "objective": "maximize official four-type F1 subject to no more unmatched schema labels than v2 and nonzero missed-note emission",
+    "pad_notes": 1,
+    "require_extra_neighbors": true,
+    "require_missed_resynchronization": true,
+    "schema_version": "align-error-heads-v3-decode-config-v1",
+    "uncertainty_margins": {
+      "extra_note": -1.0,
+      "missed_note": -1.0,
+      "rhythm_error": -1.0,
+      "wrong_note": -1.0
+    },
+    "validation_metric": {
+      "correct": 214.5,
+      "f1": 0.1436704621567314,
+      "precision": 0.1296856106408706,
+      "predicted": 1654,
+      "recall": 0.16103603603603603,
+      "target": 1332
+    }
+  },
+  "calibrated_on": "all_358_validation_rows",
+  "created_utc": "2026-09-15T11:10:24.513969+00:00",
+  "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "high_thresholds": {
+    "extra_note": 0.1,
+    "missed_note": 0.25,
+    "rhythm_error": 0.3,
+    "wrong_note": 0.3
+  },
+  "joint_refined": true,
+  "joint_refinement_metric": {
+    "correct": 435.5,
+    "f1": 0.1929125138427464,
+    "precision": 0.1368206094879045,
+    "predicted": 3183,
+    "recall": 0.3269519519519519,
+    "target": 1332
+  },
+  "joint_refinement_objective": "combined official exclusive schema 1.2 F1; precision and lower prediction count are tie-breakers",
+  "low_ratios": {
+    "extra_note": 1.0,
+    "missed_note": 1.0,
+    "rhythm_error": 1.0,
+    "wrong_note": 1.0
+  },
+  "max_row_gap": 2,
+  "merge_score_gap": {
+    "extra_note": 0,
+    "missed_note": 1,
+    "rhythm_error": 0,
+    "wrong_note": 0
+  },
+  "minimum_support": {
+    "extra_note": 1,
+    "missed_note": 1,
+    "rhythm_error": 2,
+    "wrong_note": 1
+  },
+  "nms_overlap": true,
+  "objective": "official exclusive schema 1.2 F1 with precision tie-break",
+  "pad_notes": 1,
+  "reason_no_training": "localization/cluster decoding is evaluated before changing learned heads",
+  "require_extra_neighbors": true,
+  "require_missed_resynchronization": true,
+  "schema_version": "align-error-heads-v3-decode-config-v1",
+  "training_performed": false,
+  "uncertainty_margins": {
+    "extra_note": -1.0,
+    "missed_note": -1.0,
+    "rhythm_error": -1.0,
+    "wrong_note": -1.0
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "benchmarks": [
+    {
+      "amp_dtype": "float32",
+      "edges": 8192,
+      "edges_per_second": 70216.34038762093,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 0.11666799999511568,
+      "torch_compile": "disabled"
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "edges": 8192,
+      "edges_per_second": 3195.5610411624934,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 2.5635561000017333,
+      "torch_compile": "disabled"
+    },
+    {
+      "amp_dtype": "float32",
+      "edges": 32768,
+      "edges_per_second": 87221.68276463094,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 0.3756864000024507,
+      "torch_compile": "disabled"
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "edges": 32768,
+      "edges_per_second": 3276.2583362111222,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 10.00165329999436,
+      "torch_compile": "disabled"
+    },
+    {
+      "amp_dtype": "float32",
+      "edges": 65536,
+      "edges_per_second": 73657.47296973836,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 0.8897399999987101,
+      "torch_compile": "disabled"
+    },
+    {
+      "amp_dtype": "bfloat16",
+      "edges": 65536,
+      "edges_per_second": 3169.2223325328832,
+      "fused_optimizer": false,
+      "iterations": 1,
+      "ok": true,
+      "peak_vram_mb": 0.0,
+      "seconds": 20.678890000002866,
+      "torch_compile": "disabled"
+    },
+    {
+      "error": "backend='inductor' raised:\nRuntimeError: Compiler: cl is not found.\n\nSet TORCH_LOGS=\"+dynamo\" and TORCHDYNAMO_VERBOSE=1 for more information\n\n\nYou can suppress this exception and fall back to eager by setting:\n    import torch._dynamo\n    torch._dynamo.config.suppress_errors = True\n",
+      "ok": false
+    }
+  ],
+  "created_unix": 1789404558.2369506,
+  "device_profiled": "cpu",
+  "hardware": {
+    "active_cuda_python_jobs": [],
+    "pre_crash_process_snapshot_rejected": true,
+    "cuda_runtime": "12.4",
+    "logical_cpu_cores": 20,
+    "nvidia_smi": {
+      "available": true,
+      "devices": [
+        {
+          "gpu_utilization_percent": 12.0,
+          "memory_total_mb": 8188.0,
+          "memory_used_mb": 813.0,
+          "memory_utilization_percent": 5.0,
+          "name": "NVIDIA RTX 2000 Ada Generation Laptop GPU",
+          "power_limit_watts": null
+        }
+      ]
+    },
+    "physical_cpu_cores": 14,
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "profile_cpu_threads": 2,
+    "ram_available_bytes": 13457727488,
+    "ram_total_bytes": 34016272384,
+    "torch_version": "2.6.0+cu124"
+  },
+  "locked_test_touched": false,
+  "schema_version": "align-outputraw-hardware-profile-v1",
+  "selected": {
+    "amp_dtype": "float32",
+    "edges": 32768,
+    "edges_per_second": 87221.68276463094,
+    "fused_optimizer": false,
+    "iterations": 1,
+    "ok": true,
+    "peak_vram_mb": 0.0,
+    "seconds": 0.3756864000024507,
+    "torch_compile": "disabled"
+  },
+  "storage": {
+    "bytes": 33554432,
+    "read_mib_per_second": 989.0218574669528,
+    "read_seconds": 0.03235519999725511,
+    "write_mib_per_second": 952.111754058846,
+    "write_seconds": 0.03360950000205776
+  }
+}

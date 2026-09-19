@@ -1,0 +1,89 @@
+{
+  "baseline": {
+    "100": {
+      "phase_seconds": {
+        "candidate_construction": 37.43927990001066,
+        "musicxml_score_index": 4.392762200004654,
+        "npz_metadata_validation_decompression": 4.9712464999975055,
+        "target_pairing_reconstruction": 2.0482837999970798,
+        "target_sqlite_zlib_json": 0.2665712000034546
+      },
+      "process_cpu_one_core_percent": 88.81549712323222,
+      "process_cpu_seconds": 43.625,
+      "process_read_bytes": 533108568,
+      "process_read_mib_per_sec": 10.350684242483418,
+      "rows": 100,
+      "rows_per_sec": 2.035885320876383,
+      "rss_end_mb": 792.26953125,
+      "rss_start_mb": 555.56640625,
+      "seconds": 49.11868019999929
+    },
+    "1000": {
+      "phase_seconds": {
+        "candidate_construction": 315.16591859998334,
+        "musicxml_score_index": 35.231727800015506,
+        "npz_metadata_validation_decompression": 54.52801510001882,
+        "target_pairing_reconstruction": 18.93704240002262,
+        "target_sqlite_zlib_json": 3.238397700011774
+      },
+      "process_cpu_one_core_percent": 88.21721773664129,
+      "process_cpu_seconds": 376.78125,
+      "process_read_bytes": 4735570200,
+      "process_read_mib_per_sec": 10.573930209691778,
+      "rows": 1000,
+      "rows_per_sec": 2.3413377851642374,
+      "rss_end_mb": 791.59765625,
+      "rss_start_mb": 555.56640625,
+      "seconds": 427.1062493999998
+    }
+  },
+  "counts": [
+    100,
+    1000
+  ],
+  "created_unix": 1789444239.874495,
+  "manifest_seconds": 0.09731430000101682,
+  "optimized": {
+    "100": {
+      "edges": 201189,
+      "phase_seconds": {
+        "collation": 0.009546799999952782,
+        "packed_sqlite_zlib_json_candidates": 0.19519839999338728,
+        "packed_target_reconstruction": 0.059280500003296765,
+        "prepared_mmap_tensor_load": 0.03709649999655085
+      },
+      "prepared_rows_per_sec": 2143.9306397166574,
+      "process_cpu_one_core_percent": 103.73116864426571,
+      "process_cpu_seconds": 0.3125,
+      "process_read_bytes": 2990115,
+      "process_read_mib_per_sec": 9.465579935630753,
+      "rows": 100,
+      "rows_per_sec": 331.93973966165026,
+      "rss_end_mb": 839.2578125,
+      "rss_start_mb": 786.05859375,
+      "seconds": 0.3012594999981957
+    },
+    "1000": {
+      "edges": 1997127,
+      "phase_seconds": {
+        "collation": 0.09137430000009772,
+        "packed_sqlite_zlib_json_candidates": 2.0544371999858413,
+        "packed_target_reconstruction": 0.5583521000226028,
+        "prepared_mmap_tensor_load": 0.38163979999626463
+      },
+      "prepared_rows_per_sec": 2114.1018840827164,
+      "process_cpu_one_core_percent": 99.70744923363084,
+      "process_cpu_seconds": 3.078125,
+      "process_read_bytes": 27787448,
+      "process_read_mib_per_sec": 8.584007800082775,
+      "rows": 1000,
+      "rows_per_sec": 323.9226777133185,
+      "rss_end_mb": 1330.60546875,
+      "rss_start_mb": 821.359375,
+      "seconds": 3.0871564999997645
+    }
+  },
+  "pack_id": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+  "protected_test_accessed": false,
+  "schema_version": "align-outputraw-data-phase-profile-v1"
+}

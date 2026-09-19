@@ -1,0 +1,87 @@
+{
+  "artifacts": {
+    "freeze_manifest": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\freeze_manifest.json",
+      "sha256": "9f54e1ab434e62d4bbefa162967a1b3112111c312d96b0d157a39438c9374e02"
+    },
+    "integrity": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\integrity.json",
+      "sha256": "88c3739f469cddfffd5eeb936a48fc44a8e1c25bfac7e1f5449eea55c527d329"
+    },
+    "manifest": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\manifest.json",
+      "sha256": "78cbbe88aed16cc4659f237903aa247e1692a28d0baffeb5a0f40a18fefa94e1"
+    },
+    "predictions": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\predictions.jsonl",
+      "sha256": "5636ddf975ae7a2395db508004fde3854ed1b2f3a443cdb64db0ff34b99ed604"
+    },
+    "report": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-eval-500-v1\\report.json",
+      "sha256": "e3cb883ce69a99a340e6b96ce728a350bc6f0e3299b03a53255df565eacc6505"
+    }
+  },
+  "commands": {
+    "audit": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\eval_ornament_corpus_v1.py",
+      "refreeze",
+      "--source-root",
+      "E:\\outputRaw_orn_10k",
+      "--output-dir",
+      "runs\\joint-outputraw-full-v1\\orn-eval-500-v1",
+      "--resource-status",
+      "runs\\TRAINING_RESOURCE_STATUS.json",
+      "--limit",
+      "500",
+      "--seed",
+      "20260917"
+    ],
+    "evaluate": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\eval_ornament_corpus_v1.py",
+      "evaluate",
+      "--output-dir",
+      "runs\\joint-outputraw-full-v1\\orn-eval-500-v1",
+      "--resource-status",
+      "runs\\TRAINING_RESOURCE_STATUS.json",
+      "--bootstrap-replicates",
+      "1000"
+    ],
+    "infer": [
+      "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+      "scripts\\eval_ornament_corpus_v1.py",
+      "infer",
+      "--output-dir",
+      "runs\\joint-outputraw-full-v1\\orn-eval-500-v1",
+      "--resource-status",
+      "runs\\TRAINING_RESOURCE_STATUS.json",
+      "--device",
+      "cuda",
+      "--batch-size",
+      "4",
+      "--window-frames",
+      "2048",
+      "--overlap-frames",
+      "512"
+    ]
+  },
+  "completed_utc": "2026-09-17T20:29:24.428842+00:00",
+  "locked_test_accessed": false,
+  "no_tuning": true,
+  "production_weights_mutated": false,
+  "provenance": {
+    "random_generated": 250,
+    "raw_score": 250
+  },
+  "rows": 500,
+  "schema_version": "align-orn-external-eval-v1-status",
+  "scores": {
+    "combined_canonical_f1": 0.4453426898366563,
+    "oracle_mapper_canonical_f1": 0.8009592326139089,
+    "score_agnostic_sequence_f1_diagnostic": 0.717953580996183,
+    "transcriber_canonical_f1": 0.6197102961048814
+  },
+  "source_songs": 253,
+  "status": "complete"
+}

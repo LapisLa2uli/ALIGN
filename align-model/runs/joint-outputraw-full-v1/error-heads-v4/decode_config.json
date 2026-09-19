@@ -1,0 +1,374 @@
+{
+  "calibrated_on": "all_358_validation_rows",
+  "created_utc": "2026-09-15T11:58:30.918697+00:00",
+  "direct_only": {
+    "direct_source": "deterministic",
+    "direct_weight": 1.0,
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.05,
+        "missed_note": 0.6,
+        "rhythm_error": 0.2,
+        "wrong_note": 0.05
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "hybrid_balanced": {
+    "constraint": {
+      "false_budget": 1439.5,
+      "false_labels": 1225.0,
+      "metric": {
+        "correct": 326.0,
+        "f1": 0.2261533125216788,
+        "precision": 0.21018697614442294,
+        "predicted": 1551,
+        "recall": 0.24474474474474475,
+        "target": 1332
+      },
+      "minimum_f1": 0.1636704621567314,
+      "searched": 256
+    },
+    "direct_source": "selector",
+    "direct_weight": 0.75,
+    "name": "selector_hybrid_075",
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.5,
+        "missed_note": 0.6,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.3
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "hybrid_max_f1": {
+    "direct_source": "selector",
+    "direct_weight": 0.75,
+    "name": "selector_hybrid_075",
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.5,
+        "missed_note": 0.6,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.3
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "learned_only": {
+    "direct_weight": 0.0,
+    "schema_config": {
+      "high_thresholds": {
+        "extra_note": 0.1,
+        "missed_note": 0.25,
+        "rhythm_error": 0.3,
+        "wrong_note": 0.3
+      },
+      "low_ratios": {
+        "extra_note": 1.0,
+        "missed_note": 1.0,
+        "rhythm_error": 1.0,
+        "wrong_note": 1.0
+      },
+      "max_row_gap": 2,
+      "merge_score_gap": {
+        "extra_note": 0,
+        "missed_note": 1,
+        "rhythm_error": 0,
+        "wrong_note": 0
+      },
+      "minimum_support": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "rhythm_error": 2,
+        "wrong_note": 1
+      },
+      "nms_overlap": true,
+      "pad_notes": 1,
+      "require_extra_neighbors": true,
+      "require_missed_resynchronization": true,
+      "schema_version": "align-error-heads-v3-decode-config-v1",
+      "uncertainty_margins": {
+        "extra_note": -1.0,
+        "missed_note": -1.0,
+        "rhythm_error": -1.0,
+        "wrong_note": -1.0
+      }
+    }
+  },
+  "objective": "official exclusive schema 1.2 four-type F1",
+  "operation_selector": {
+    "classes": {
+      "extra_note": {
+        "candidate_rows": 4920,
+        "coefficient": [
+          0.06873877157343326,
+          -0.2583742810007414,
+          0.09749101415615422,
+          0.09036187715806226,
+          0.00886119558763922,
+          0.07018610196364848,
+          0.04135910828886024,
+          0.24584536172580598,
+          0.15786064959146703,
+          0.0,
+          -0.21073133126110385,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "intercept": -0.22322452416149824,
+        "mean": [
+          0.22435101866722107,
+          0.2768426835536957,
+          0.31786924600601196,
+          0.3526679575443268,
+          0.0013393444241955876,
+          0.16500981152057648,
+          0.7455819845199585,
+          0.6788293123245239,
+          0.7300338745117188,
+          -1.0,
+          0.5044715404510498,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "negative_rows": 4577,
+        "positive_rows": 343,
+        "scale": [
+          0.19067656993865967,
+          0.07124098390340805,
+          1.633989691734314,
+          0.27267584204673767,
+          0.0010519693605601788,
+          0.3007539212703705,
+          0.14566732943058014,
+          0.15138886868953705,
+          0.12796373665332794,
+          1.0,
+          0.49998998641967773,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "missed_note": {
+        "candidate_rows": 7020,
+        "coefficient": [
+          0.5019275448807926,
+          0.04195001542284365,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          -0.0844778353980905,
+          -0.07209751513994218,
+          -0.03669054820983228,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "intercept": -0.22716309648432517,
+        "mean": [
+          0.29633647203445435,
+          0.3727318346500397,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.7309974431991577,
+          0.744926393032074,
+          0.5072146654129028,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "negative_rows": 6791,
+        "positive_rows": 229,
+        "scale": [
+          0.19458971917629242,
+          0.04597918689250946,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          0.1144096702337265,
+          0.130700021982193,
+          0.25171560049057007,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "wrong_note": {
+        "candidate_rows": 300,
+        "coefficient": [
+          -0.008296024286711017,
+          0.3912611665204226,
+          0.04558939987222192,
+          -0.048164741484358654,
+          -0.010819242079580748,
+          -0.05410548263188008,
+          0.5403384458777774,
+          0.28673740376186974,
+          0.4716702447058519,
+          -0.04278363197122027,
+          -0.1422287937356807,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "intercept": -0.3409232158954545,
+        "mean": [
+          0.1315208524465561,
+          0.4836510121822357,
+          0.32572588324546814,
+          0.18460184335708618,
+          0.0006651822477579117,
+          0.23068232834339142,
+          0.6564903855323792,
+          0.6944983601570129,
+          0.6956365704536438,
+          0.4747217297554016,
+          0.009999999776482582,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "negative_rows": 210,
+        "positive_rows": 90,
+        "scale": [
+          0.06527039408683777,
+          0.17725102603435516,
+          0.6054926514625549,
+          0.10103137791156769,
+          0.0003726174181792885,
+          0.2305358648300171,
+          0.177602618932724,
+          0.16336964070796967,
+          0.15213744342327118,
+          0.28481525182724,
+          0.0994986891746521,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "features": [
+      "direct_reliability",
+      "learned_probability",
+      "upstream_path_margin",
+      "upstream_extra_probability",
+      "upstream_noise_probability",
+      "upstream_delete_probability",
+      "candidate_confidence",
+      "previous_confidence",
+      "next_confidence",
+      "normalized_score_position",
+      "is_replay_state",
+      "path_operation_wrong",
+      "path_operation_extra",
+      "path_operation_missed"
+    ],
+    "schema_version": "align-error-heads-v4-operation-selector-v1"
+  },
+  "schema_version": "align-error-heads-v4-decode-config-v1",
+  "training_decision": "small validation-only linear operation-core selector fitted after the first deterministic hybrid reached only 0.205918 F1",
+  "training_performed": true
+}
