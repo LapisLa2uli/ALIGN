@@ -104,6 +104,19 @@ def _build_row(
     return lattice, index, Path(release_row["sample_dir"]) / "verified_score.musicxml"
 
 
+def _ordered_events(events: Sequence[Any]) -> tuple[Any, ...]:
+    return tuple(
+        sorted(
+            events,
+            key=lambda event: (
+                float(event.start),
+                int(event.rendered_index),
+                int(event.pitch),
+            ),
+        )
+    )
+
+
 def _predict_row(
     model: DropEmitScorer,
     crf: OrnamentIdentityCRF,
@@ -119,7 +132,7 @@ def _predict_row(
         predicted = emits_to_joint_events_from_targets(emits)
         deletions = index.deleted_event_indices
         diagnostics = {"mode": mode, "emitted": len(emits)}
-        return predicted, deletions, diagnostics
+        return _ordered_events(predicted), deletions, diagnostics
     if mode == "teacher_through_crf":
         emits = teacher_decode(lattice)
         candidates = emits_to_identity_candidates(emits)
@@ -133,10 +146,17 @@ def _predict_row(
             crf, identity_lattice
         )
         diagnostics = {**diagnostics, "mode": mode, "emitted": len(emits)}
-        return predicted, deletions, diagnostics
+        return _ordered_events(predicted), deletions, diagnostics
 
-    expected = len(lattice.targets) if mode.endswith("+oracle_count") else None
-    base_mode = mode.replace("+oracle_count", "")
+    expected = None
+    if mode.endswith("+oracle_count"):
+        expected = len(lattice.targets)
+    elif mode.endswith("+score_count"):
+        # Honest inference prior: verified score event count only.
+        expected = len(index.events)
+    base_mode = (
+        mode.replace("+oracle_count", "").replace("+score_count", "")
+    )
     emits, decode_diagnostics = decode_drop_emit(
         model,
         lattice,
@@ -156,7 +176,7 @@ def _predict_row(
         max_inference_hypotheses=16,
     )
     predicted, deletions, diagnostics = fast_decode_identity_crf(crf, identity_lattice)
-    return predicted, deletions, {
+    return _ordered_events(predicted), deletions, {
         **diagnostics,
         **decode_diagnostics,
         "mode": mode,
@@ -186,6 +206,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--max-train-rows", type=int, default=0)
     parser.add_argument("--checkpoint-every-steps", type=int, default=64)
     parser.add_argument(
+        "--resume",
+        type=Path,
+        default=None,
+        help="Continue from a mid-epoch or epoch checkpoint without rereading held-out splits",
+    )
+    parser.add_argument(
         "--decode-mode",
         default="drop_emit_through_crf+oracle_count",
         choices=(
@@ -193,6 +219,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "teacher_through_crf",
             "drop_emit_through_crf",
             "drop_emit_through_crf+oracle_count",
+            "drop_emit_through_crf+score_count",
         ),
     )
     args = parser.parse_args(argv)
@@ -274,11 +301,29 @@ def main(argv: Sequence[str] | None = None) -> int:
         global_step = 0
         best_cal_f1 = -1.0
         best_path = args.output_dir / "best.pt"
+        if args.resume is not None:
+            payload = torch.load(
+                args.resume, map_location=device, weights_only=False
+            )
+            if int(payload["model_config"]["hidden"]) != args.hidden:
+                raise ValueError("Resume checkpoint hidden size differs")
+            model.load_state_dict(payload["model_state_dict"])
+            if payload.get("optimizer_state_dict"):
+                optimizer.load_state_dict(payload["optimizer_state_dict"])
+            global_step = int(payload["global_step"])
+            best_cal_f1 = float(payload.get("calibration_f1") or -1.0)
+        completed_epochs = global_step // max(len(train_rows), 1)
+        resume_skip = global_step % max(len(train_rows), 1)
 
         for epoch in range(1, args.epochs + 1):
-            model.train()
             order = list(range(len(train_rows)))
             random.shuffle(order)
+            if epoch <= completed_epochs:
+                continue
+            if resume_skip:
+                order = order[resume_skip:]
+                resume_skip = 0
+            model.train()
             losses = []
             epoch_started = time.time()
             for local_index, row_index in enumerate(order, 1):
@@ -290,7 +335,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                     supervision[sample],
                     targets[sample],
                 )
-                loss, _parts = drop_emit_nll(model, lattice, normalize=True)
+                loss, parts = drop_emit_nll(
+                    model, lattice, normalize=False, length_weight=25.0
+                )
                 if not torch.isfinite(loss):
                     raise RuntimeError(f"Non-finite loss on {sample}")
                 optimizer.zero_grad(set_to_none=True)
@@ -306,7 +353,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 ):
                     print(
                         f"epoch={epoch} step={local_index}/{len(order)} "
-                        f"loss={np.mean(losses[-32:]):.4f}",
+                        f"loss={np.mean(losses[-32:]):.4f} "
+                        f"path={float(parts['path_nll']):.1f} "
+                        f"len={float(parts['length_nll']):.1f}",
                         flush=True,
                     )
                 if global_step % args.checkpoint_every_steps == 0:
@@ -320,6 +369,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                         "release_manifest_sha256": release_sha,
                     }
                     _atomic_torch(args.output_dir / "mid_epoch_checkpoint.pt", mid)
+                    _atomic_torch(
+                        args.output_dir / f"step-{global_step:05d}.pt", mid
+                    )
                     _atomic_json(
                         status_path,
                         {
@@ -333,6 +385,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                             "lockbox_targets_read": False,
                         },
                     )
+
+            pre_calibration = {
+                "schema_version": SCHEMA_VERSION,
+                "model_state_dict": model.state_dict(),
+                "model_config": {"hidden": args.hidden},
+                "optimizer_state_dict": optimizer.state_dict(),
+                "epoch": epoch,
+                "global_step": global_step,
+                "release_manifest_sha256": release_sha,
+                "calibration_pending": True,
+            }
+            _atomic_torch(
+                args.output_dir / "epoch-weights-before-calibration.pt",
+                pre_calibration,
+            )
 
             # Calibration after each epoch.
             model.eval()

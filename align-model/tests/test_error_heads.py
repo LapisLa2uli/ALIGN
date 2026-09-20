@@ -559,6 +559,240 @@ class ErrorHeadTrainingTests(unittest.TestCase):
         )["labels"]
         self.assertEqual([label["type"] for label in labels], ["wrong_note"])
 
+    def test_v3_pad_notes_2_emits_annotator_padded_identity(self) -> None:
+        score = tuple(
+            ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)
+            for i in range(8)
+        )
+        row = HeadRow(
+            np.zeros(FEATURE_DIM, np.float32), "event", 0, (3, 4), 3.0, 3.5, False
+        )
+        prediction = HeadPrediction(
+            ("wrong_note",),
+            (False,),
+            (0.0,),
+            ("none",),
+            ((0.1, 0.8, 0.05, 0.05),),
+            (0.0,),
+        )
+        config = SchemaDecodeConfig(
+            high_thresholds={"wrong_note": 0.5},
+            low_ratios={"wrong_note": 1.0},
+            minimum_support={"wrong_note": 1},
+            uncertainty_margins={"wrong_note": 0.0},
+            merge_score_gap={"wrong_note": 0},
+            pad_notes=2,
+        )
+        labels = schema12_document_v3(
+            "fixture", (row,), prediction, score, config, include_repetition=False
+        )["labels"]
+        self.assertEqual(len(labels), 1)
+        part = labels[0]["score_part"]
+        self.assertEqual(part["start_note_index"], 1)
+        self.assertEqual(part["end_note_index"], 5)
+        self.assertEqual(part["pad_notes"], 2)
+        self.assertEqual(part["core_start_note_index"], 3)
+        self.assertEqual(part["core_end_note_index"], 3)
+        self.assertEqual(labels[0]["pitches"], [61, 62, 63, 64, 65])
+
+    def test_v3_core_identity_emits_unpadded_span(self) -> None:
+        score = tuple(
+            ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)
+            for i in range(8)
+        )
+        row = HeadRow(
+            np.zeros(FEATURE_DIM, np.float32), "event", 0, (3, 4), 3.0, 3.5, False
+        )
+        prediction = HeadPrediction(
+            ("wrong_note",),
+            (False,),
+            (0.0,),
+            ("none",),
+            ((0.1, 0.8, 0.05, 0.05),),
+            (0.0,),
+        )
+        config = SchemaDecodeConfig(
+            high_thresholds={"wrong_note": 0.5},
+            low_ratios={"wrong_note": 1.0},
+            minimum_support={"wrong_note": 1},
+            uncertainty_margins={"wrong_note": 0.0},
+            merge_score_gap={"wrong_note": 0},
+            pad_notes=2,
+            identity_span="core",
+        )
+        labels = schema12_document_v3(
+            "fixture", (row,), prediction, score, config, include_repetition=False
+        )["labels"]
+        part = labels[0]["score_part"]
+        self.assertEqual(part["start_note_index"], 3)
+        self.assertEqual(part["end_note_index"], 3)
+        self.assertEqual(part["pad_notes"], 0)
+        self.assertEqual(labels[0]["pitches"], [63])
+
+    def test_v3_operation_gate_skips_wrong_on_match_rows(self) -> None:
+        features = np.zeros(FEATURE_DIM, np.float32)
+        features[FEATURE_NAMES.index("path_operation_match")] = 1.0
+        row = HeadRow(features, "event", 0, (1, 2), 0.0, 0.5, False)
+        prediction = HeadPrediction(
+            ("wrong_note",),
+            (False,),
+            (0.0,),
+            ("none",),
+            ((0.1, 0.8, 0.05, 0.05),),
+            (0.0,),
+        )
+        config = SchemaDecodeConfig(
+            high_thresholds={"wrong_note": 0.5},
+            low_ratios={"wrong_note": 1.0},
+            minimum_support={"wrong_note": 1},
+            uncertainty_margins={"wrong_note": 0.0},
+            merge_score_gap={"wrong_note": 0},
+            require_path_operation_gate=True,
+        )
+        labels = schema12_document_v3(
+            "fixture", (row,), prediction, _score(), config, include_repetition=False
+        )["labels"]
+        self.assertEqual(labels, [])
+
+    def test_v3_operation_gate_keeps_substitute_wrong(self) -> None:
+        features = np.zeros(FEATURE_DIM, np.float32)
+        features[FEATURE_NAMES.index("path_operation_wrong")] = 1.0
+        row = HeadRow(features, "event", 0, (1, 2), 0.0, 0.5, False)
+        prediction = HeadPrediction(
+            ("wrong_note",),
+            (False,),
+            (0.0,),
+            ("none",),
+            ((0.1, 0.8, 0.05, 0.05),),
+            (0.0,),
+        )
+        config = SchemaDecodeConfig(
+            high_thresholds={"wrong_note": 0.5},
+            low_ratios={"wrong_note": 1.0},
+            minimum_support={"wrong_note": 1},
+            uncertainty_margins={"wrong_note": 0.0},
+            merge_score_gap={"wrong_note": 0},
+            require_path_operation_gate=True,
+        )
+        labels = schema12_document_v3(
+            "fixture", (row,), prediction, _score(), config, include_repetition=False
+        )["labels"]
+        self.assertEqual([label["type"] for label in labels], ["wrong_note"])
+        self.assertEqual(labels[0]["score_part"]["pad_notes"], 1)
+
+    def test_v3_operation_gate_skips_extra_without_extra_flag(self) -> None:
+        score = tuple(
+            ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)
+            for i in range(4)
+        )
+        extra_features = np.zeros(FEATURE_DIM, np.float32)
+        extra_features[FEATURE_NAMES.index("path_operation_match")] = 1.0
+        rows = (
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 0, (1, 2), 0.0, 0.4, False),
+            HeadRow(extra_features, "event", 1, None, 0.4, 0.6, False),
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 2, (2, 3), 0.6, 1.0, False),
+        )
+        prediction = HeadPrediction(
+            ("match", "extra_note", "match"),
+            (False, False, False),
+            (0.0, 0.0, 0.0),
+            ("none", "none", "none"),
+            (
+                (0.9, 0.03, 0.04, 0.03),
+                (0.05, 0.05, 0.85, 0.05),
+                (0.9, 0.03, 0.04, 0.03),
+            ),
+            (0.0, 0.0, 0.0),
+        )
+        config = SchemaDecodeConfig(
+            high_thresholds={"extra_note": 0.5},
+            low_ratios={"extra_note": 1.0},
+            minimum_support={"extra_note": 1},
+            uncertainty_margins={"extra_note": 0.0},
+            merge_score_gap={"extra_note": 0},
+            require_path_operation_gate=True,
+        )
+        gated = schema12_document_v3(
+            "fixture", rows, prediction, score, config, include_repetition=False
+        )["labels"]
+        self.assertEqual(gated, [])
+        ungated = schema12_document_v3(
+            "fixture",
+            rows,
+            prediction,
+            score,
+            SchemaDecodeConfig(
+                high_thresholds={"extra_note": 0.5},
+                low_ratios={"extra_note": 1.0},
+                minimum_support={"extra_note": 1},
+                uncertainty_margins={"extra_note": 0.0},
+                merge_score_gap={"extra_note": 0},
+            ),
+            include_repetition=False,
+        )["labels"]
+        self.assertEqual([label["type"] for label in ungated], ["extra_note"])
+
+    def test_v3_operation_gate_keeps_delete_miss_and_skips_match_gap(self) -> None:
+        score = tuple(
+            ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)
+            for i in range(3)
+        )
+        event = np.zeros(FEATURE_DIM, np.float32)
+        missed = np.zeros(FEATURE_DIM, np.float32)
+        missed[FEATURE_NAMES.index("path_operation_missed")] = 1.0
+        match_gap = np.zeros(FEATURE_DIM, np.float32)
+        match_gap[FEATURE_NAMES.index("path_operation_match")] = 1.0
+        rows = (
+            HeadRow(event, "event", 0, (0, 1), 0.0, 0.5, False),
+            HeadRow(event, "event", 1, (2, 3), 1.0, 1.5, False),
+            HeadRow(missed, "gap", None, (1, 2), 0.5, 1.0, False),
+        )
+        prediction = HeadPrediction(
+            ("match", "match", "missed_note"),
+            (False, False, False),
+            (0.0, 0.0, 0.0),
+            ("none", "none", "none"),
+            (
+                (0.9, 0.03, 0.03, 0.04),
+                (0.9, 0.03, 0.03, 0.04),
+                (0.1, 0.05, 0.05, 0.8),
+            ),
+            (0.0, 0.0, 0.0),
+        )
+        config = SchemaDecodeConfig(
+            high_thresholds={"missed_note": 0.5},
+            low_ratios={"missed_note": 1.0},
+            minimum_support={"missed_note": 1},
+            uncertainty_margins={"missed_note": 0.0},
+            merge_score_gap={"missed_note": 0},
+            require_path_operation_gate=True,
+        )
+        labels = schema12_document_v3(
+            "fixture", rows, prediction, score, config, include_repetition=False
+        )["labels"]
+        self.assertEqual([label["type"] for label in labels], ["missed_note"])
+        blocked_rows = rows[:2] + (
+            HeadRow(match_gap, "gap", None, (1, 2), 0.5, 1.0, False),
+        )
+        blocked = schema12_document_v3(
+            "fixture", blocked_rows, prediction, score, config, include_repetition=False
+        )["labels"]
+        self.assertEqual(blocked, [])
+
+    def test_v3_from_mapping_defaults_preserve_frozen_v3(self) -> None:
+        config = SchemaDecodeConfig.from_mapping(
+            {
+                "high_thresholds": {"wrong_note": 0.3},
+                "low_ratios": {"wrong_note": 1.0},
+                "minimum_support": {"wrong_note": 1},
+                "uncertainty_margins": {"wrong_note": 0.0},
+                "merge_score_gap": {"wrong_note": 0},
+            }
+        )
+        self.assertEqual(config.pad_notes, 1)
+        self.assertEqual(config.identity_span, "padded")
+        self.assertFalse(config.require_path_operation_gate)
+
     def test_direct_high_confidence_wrong_and_extra(self) -> None:
         score = tuple(
             ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)

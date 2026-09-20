@@ -26,6 +26,7 @@ from alignmodel.melody_train import (
     step_ema_update,
 )
 from datacreate.melody import WeakMelody, match_melodies_detail
+from alignmodel.melody import official_label_metrics
 
 FORBIDDEN = {
     "melody-random12k-set",
@@ -71,6 +72,9 @@ def evaluate_variant(mod, model, loader, device, cfg: MelodyTrainConfig) -> dict
     n_pred_sum = 0
     n_gold_sum = 0
     n_set = 0
+    note_credit = 0.0
+    note_predicted = 0
+    note_gold = 0
     match_i = class_index("match")
     for batch in loader:
         batch_dev = {k: v.to(device) if torch.is_tensor(v) else v for k, v in batch.items()}
@@ -115,17 +119,41 @@ def evaluate_variant(mod, model, loader, device, cfg: MelodyTrainConfig) -> dict
             n_pred_sum += len(pred_mels)
             n_gold_sum += len(gold_mels)
             n_set += 1
+            gold_labels = batch.get("gold_labels")[b] if batch.get("gold_labels") else []
+            official = official_label_metrics(
+                gold_labels,
+                pred_labs,
+                score_event_count=int(batch["n_notes"][b]) or None,
+            )
+            if official["status"] == "available":
+                note_credit += official["credit"]
+                note_predicted += official["predicted"]
+                note_gold += official["gold"]
     n = max(len(loader), 1)
     n_set = max(n_set, 1)
+    if not note_predicted and not note_gold:
+        note_precision = note_recall = note_f1 = 1.0 if n_set else 0.0
+    else:
+        note_precision = note_credit / note_predicted if note_predicted else 0.0
+        note_recall = note_credit / note_gold if note_gold else 0.0
+        note_f1 = (
+            2.0 * note_precision * note_recall / (note_precision + note_recall)
+            if note_precision + note_recall
+            else 0.0
+        )
     return {
         "loss": totals["loss"] / n,
         "note_acc": n_correct / max(n_notes, 1),
         "error_acc": n_err_correct / max(n_err, 1),
         "pred_err_frac": n_pred_err / max(n_notes, 1),
         "copies_acc": copies_correct / max(n_clip, 1),
+        "note_wise_f1": note_f1,
+        "note_wise_precision": note_precision,
+        "note_wise_recall": note_recall,
         "set_f1": f1_sum / n_set,
         "set_precision": prec_sum / n_set,
         "set_recall": rec_sum / n_set,
+        "legacy_pitch_similarity_f1": f1_sum / n_set,
         "mean_n_pred": n_pred_sum / n_set,
         "mean_n_gold": n_gold_sum / n_set,
         "n_notes": n_notes,
@@ -252,7 +280,8 @@ def train_variant(mod, cfg: MelodyTrainConfig) -> tuple[Path, dict]:
         print(
             f"epoch {epoch} train_loss={row['train_loss']:.4f} "
             f"val_loss={val_metrics['loss']:.4f} "
-            f"set_f1={val_metrics['set_f1']:.3f} "
+            f"note_wise_f1={val_metrics['note_wise_f1']:.3f} "
+            f"legacy_set_f1={val_metrics['set_f1']:.3f} "
             f"set_p={val_metrics['set_precision']:.3f} "
             f"set_r={val_metrics['set_recall']:.3f} "
             f"n_pred={val_metrics['mean_n_pred']:.2f} "
@@ -272,11 +301,11 @@ def train_variant(mod, cfg: MelodyTrainConfig) -> tuple[Path, dict]:
             "metrics": val_metrics,
         }
         torch.save(ckpt, last_path)
-        if val_metrics["set_f1"] >= best_f1:
-            best_f1 = val_metrics["set_f1"]
+        if val_metrics["note_wise_f1"] >= best_f1:
+            best_f1 = val_metrics["note_wise_f1"]
             torch.save(ckpt, best_path)
-        if val_metrics["set_f1"] >= patience_best + cfg.es_f1_delta:
-            patience_best = val_metrics["set_f1"]
+        if val_metrics["note_wise_f1"] >= patience_best + cfg.es_f1_delta:
+            patience_best = val_metrics["note_wise_f1"]
             stale_epochs = 0
         else:
             stale_epochs += 1
@@ -314,6 +343,7 @@ def train_variant(mod, cfg: MelodyTrainConfig) -> tuple[Path, dict]:
         "stopped_reason": stopped_reason,
         "epoch": last_epoch,
         "step": global_step,
+        "best_val_note_wise_f1": best_f1,
         "best_val_set_f1": best_f1,
         "history": history,
     }
@@ -404,7 +434,9 @@ def run_one(
     metrics = {
         "id": run_id,
         "variant": variant,
+        "note_wise_f1": holdout["note_wise_f1"],
         "set_f1": holdout["set_f1"],
+        "legacy_pitch_similarity_f1": holdout.get("legacy_pitch_similarity_f1"),
         "P": holdout["precision"],
         "R": holdout["recall"],
         "mean_n_pred": holdout["mean_n_pred"],
@@ -422,7 +454,7 @@ def run_one(
     }
     (bakeoff_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     print(
-        f"=== DONE {run_id} holdout f1={metrics['set_f1']:.3f} "
+        f"=== DONE {run_id} holdout f1={metrics['note_wise_f1']:.3f} "
         f"p={metrics['P']:.3f} r={metrics['R']:.3f} n_pred={metrics['mean_n_pred']:.2f} "
         f"stop={metrics['stopped_reason']} ===",
         flush=True,

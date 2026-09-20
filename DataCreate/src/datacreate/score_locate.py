@@ -288,6 +288,110 @@ def locate_from_transcription_file(
     return locate_score_span(transcribed, written, score_path=full_score)
 
 
+def _location_rank(located: LocatedScoreSpan, n_transcribed: int) -> tuple[float, float, int, float]:
+    """Prefer covering the take, then duration fit, confidence, and mapped count."""
+
+    coverage = float(located.mapped_notes) / float(max(n_transcribed, 1))
+    duration_fit = -abs(np.log(max(float(located.duration_ratio) or 1.0, 1e-3)))
+    return (
+        coverage,
+        duration_fit,
+        float(located.confidence),
+        int(located.mapped_notes),
+    )
+
+
+def locate_best_among_scores(
+    transcribed: Sequence[TranscribedNote],
+    score_paths: Sequence[Path],
+    *,
+    min_score_measures: int = 16,
+) -> tuple[LocatedScoreSpan, Path] | None:
+    """Pick the best RawData/full-score match for a transcription."""
+
+    best: tuple[tuple[float, float, float, int], LocatedScoreSpan, Path] | None = None
+    n_obs = len(transcribed)
+    for path in score_paths:
+        if path is None or not Path(path).is_file():
+            continue
+        score_path = Path(path)
+        try:
+            written = parse_sounding_notes(score_path)
+            total_measures = (
+                max(int(note.measure or 1) for note in written) if written else 0
+            )
+        except Exception:  # noqa: BLE001
+            continue
+        if not written:
+            continue
+        # Skip short excerpt files (e.g. RawData/001.musicxml) unless nothing else exists.
+        if total_measures < min_score_measures and len(list(score_paths)) > 1:
+            continue
+        located = locate_score_span(transcribed, written, score_path=score_path)
+        if located is None:
+            continue
+        coverage = float(located.mapped_notes) / float(max(n_obs, 1))
+        if coverage < 0.35 and n_obs >= 12:
+            continue
+        if located.duration_ratio <= 0:
+            continue
+        if not (0.25 <= float(located.duration_ratio) <= 4.0):
+            continue
+        rank = _location_rank(located, n_obs)
+        if best is None or rank > best[0]:
+            best = (rank, located, score_path)
+    if best is None:
+        # Fallback: allow short scores if every full piece failed.
+        for path in score_paths:
+            if path is None or not Path(path).is_file():
+                continue
+            score_path = Path(path)
+            try:
+                written = parse_sounding_notes(score_path)
+            except Exception:  # noqa: BLE001
+                continue
+            if not written:
+                continue
+            located = locate_score_span(transcribed, written, score_path=score_path)
+            if located is None:
+                continue
+            rank = _location_rank(located, n_obs)
+            if best is None or rank > best[0]:
+                best = (rank, located, score_path)
+    if best is None:
+        return None
+    return best[1], best[2]
+
+def list_score_candidates(
+    *,
+    raw_score_root: Path | None,
+    sample_full_score: Path | None = None,
+) -> list[Path]:
+    """RawData scores plus the sample's current full score (deduped by path)."""
+
+    paths: list[Path] = []
+    seen: set[Path] = set()
+
+    def _add(path: Path | None) -> None:
+        if path is None or not path.is_file():
+            return
+        resolved = path.resolve()
+        if resolved in seen:
+            return
+        seen.add(resolved)
+        paths.append(path)
+
+    if raw_score_root is not None and raw_score_root.is_dir():
+        for path in sorted(raw_score_root.glob("*.musicxml")) + sorted(
+            raw_score_root.glob("*.mxl")
+        ):
+            _add(path)
+    elif raw_score_root is not None and raw_score_root.is_file():
+        _add(raw_score_root)
+    _add(sample_full_score)
+    return paths
+
+
 def locate_payload(located: LocatedScoreSpan | None) -> dict[str, Any]:
     if located is None:
         return {"found": False}

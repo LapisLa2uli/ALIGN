@@ -6,7 +6,7 @@ Clarinet performance-analysis workspace containing three cooperating Python proj
 |---|---|---|
 | [`DataCreate/`](DataCreate/) | Ingest scores and recordings, run automatic alignment, review candidates, and build training bundles | [`DataCreate/README.md`](DataCreate/README.md) |
 | [`synth-pipeline/`](synth-pipeline/) | Generate reproducible synthetic clarinet performances with exact error labels and note lineage | [`synth-pipeline/README.md`](synth-pipeline/README.md) |
-| [`align-model/`](align-model/) | Transcribe notes, detect repetitions, align notes to the score, and classify note/rhythm errors | [`align-model/README.md`](align-model/README.md) |
+| [`align-model/`](align-model/) | Transcribe notes, detect repetitions, align notes to the score, and classify note/rhythm errors | [`align-model/README.md`](align-model/README.md), [`align-model/TRAINING.md`](align-model/TRAINING.md), [`align-model/HYPERPARAMETERS.md`](align-model/HYPERPARAMETERS.md) |
 
 The shared data and evaluation rules are specified in [`methodology.md`](methodology.md). That document is normative for label schema and metrics; component READMEs describe implementation, datasets, model versions, and run-specific hyperparameters.
 
@@ -77,6 +77,10 @@ datacreate serve
 # Run the current note-first detector
 align-model run --sample path/to/bundle `
   --weights align-model/runs/contextual-aligner-outputRaw_sf-1k/weights
+
+# Train (see align-model/TRAINING.md for every flag)
+align-model train-stages --help
+python align-model/scripts/train_note_repetition.py --help
 ```
 
 ## Reproducibility

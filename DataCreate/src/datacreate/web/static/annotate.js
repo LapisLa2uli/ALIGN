@@ -4,7 +4,17 @@ let osmdInstance = null;
 let taxonomy = [];
 let currentSample = null;
 let sampleData = null;
+const LABEL_SOURCES = {
+  human: { title: "Your labels", save: "Save your labels", countKey: "label_count", tag: "yours" },
+  agent: { title: "Agent labels", save: "Save agent labels", countKey: "agent_label_count", tag: "agent" },
+  polytune: { title: "polytune labels", save: "Save polytune labels", countKey: "polytune_label_count", tag: "polytune" },
+  laddersym: { title: "laddersym labels", save: "Save laddersym labels", countKey: "laddersym_label_count", tag: "laddersym" },
+};
 let labelSource = "human";
+
+function normalizeLabelSource(value) {
+  return LABEL_SOURCES[value] ? value : "human";
+}
 let selectedRegions = [];
 /** Sole selection when exactly one region is selected; null when empty or multi. */
 let selectedRegion = null;
@@ -2093,14 +2103,14 @@ function updateMelodyPanel(region = selectedRegion) {
   if (clearBtn) clearBtn.disabled = !editable || !(region.data?.core_note_ids?.length);
   if (!editable) {
     info.textContent =
-      "Drag on the reference-score staff under the waveform to mark the erred notes/rests. That creates a label; two notes of padding are added automatically on each side.";
+      "Drag on the reference-score staff to mark erred notes/rests. The label time snaps to aligned transcription notes; two score notes of padding are added on each side.";
     return;
   }
   const events = getScoreEvents();
   const core = melodyCoreRange(events, region.data?.core_note_ids || []);
   if (!core) {
     info.textContent =
-      "Drag on the reference score to mark the erred notes/rests. Padding (2 notes each side) is added automatically.";
+      "Drag on the reference score to mark erred notes/rests. Time snaps to aligned transcription notes; score padding (2 notes each side) is automatic.";
     return;
   }
   const pad = expandMelodyPad(events, core.lo, core.hi);
@@ -2245,9 +2255,22 @@ function melodyIndexFromClientX(clientX) {
 
 function timesFromEventRange(events, lo, hi) {
   const slice = events.slice(lo, hi + 1);
+  const transcribed = getTranscribedNotes();
+  const timingEvents = slice.map((ev) => {
+    const scoreIndex = ev.sounding_index ?? ev.score_index;
+    if (scoreIndex == null) return ev;
+    const candidates = transcribed.filter((note) => note.score_index === scoreIndex);
+    if (!candidates.length) return ev;
+    const anchor = eventPerfStart(ev);
+    return candidates.reduce((best, note) => (
+      Math.abs(eventPerfStart(note) - anchor) < Math.abs(eventPerfStart(best) - anchor)
+        ? note
+        : best
+    ));
+  });
   let start = Infinity;
   let end = -Infinity;
-  slice.forEach((ev) => {
+  timingEvents.forEach((ev) => {
     const t0 = eventPerfStart(ev);
     const t1 = eventPerfEnd(ev);
     start = Math.min(start, t0);
@@ -2835,7 +2858,7 @@ async function init() {
     wavesurfer.setPlaybackRate(parseFloat(e.target.value));
   };
   document.getElementById("labelSourceSelect").onchange = async (event) => {
-    labelSource = event.target.value === "agent" ? "agent" : "human";
+    labelSource = normalizeLabelSource(event.target.value);
     if (currentSample) await loadSample(currentSample);
   };
   document.getElementById("saveBtn").onclick = saveLabels;
@@ -3150,8 +3173,10 @@ async function loadSampleList() {
   sel.innerHTML = samples
     .map((s) => {
       const tags = [];
-      if (s.label_count) tags.push(`${s.label_count} yours`);
-      if (s.agent_label_count) tags.push(`${s.agent_label_count} agent`);
+      Object.entries(LABEL_SOURCES).forEach(([source, meta]) => {
+        const count = s[meta.countKey];
+        if (count) tags.push(`${count} ${meta.tag}`);
+      });
       const suffix = tags.length ? ` (${tags.join(", ")})` : "";
       return `<option value="${s.id}">${s.id}${suffix}</option>`;
     })
@@ -3186,12 +3211,11 @@ async function loadSample(sampleId) {
   const data = await res.json();
   if (loadId !== scoreLoadId) return;
   sampleData = data;
-  labelSource = data.label_source === "agent" ? "agent" : "human";
+  labelSource = normalizeLabelSource(data.label_source);
   document.getElementById("labelSourceSelect").value = labelSource;
-  document.getElementById("labelTrack").textContent =
-    labelSource === "agent" ? "Agent labels" : "Your labels";
-  document.getElementById("saveBtn").textContent =
-    labelSource === "agent" ? "Save agent labels" : "Save your labels";
+  const sourceMeta = LABEL_SOURCES[labelSource];
+  document.getElementById("labelTrack").textContent = sourceMeta.title;
+  document.getElementById("saveBtn").textContent = sourceMeta.save;
   taxonomy = data.taxonomy;
   populateTypeSelect();
   document.getElementById("annotatorId").value = data.annotator_id || "";
@@ -3537,7 +3561,7 @@ async function saveLabels() {
     alert(await res.text());
     return;
   }
-  alert(labelSource === "agent" ? "Agent labels saved." : "Your labels saved.");
+  alert(`${LABEL_SOURCES[labelSource].title} saved.`);
 }
 
 async function viewScoreSegment(startMeasure, endMeasure, startBeat, endBeat, loadId = null) {

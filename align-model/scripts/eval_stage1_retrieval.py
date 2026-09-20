@@ -10,9 +10,10 @@ from pathlib import Path
 from alignmodel.eval_melodies import summarize_eval_rows
 from alignmodel.melody import (
     gold_melodies_from_labels,
+    labels_with_canonical_locations,
     load_bundle_notes,
     match_melodies_detail,
-    pred_melodies_from_labels,
+    official_label_metrics,
 )
 from alignmodel.pipeline import load_bundle_audio
 from alignmodel.stages.repetition import find_past_repetitions, silence_intervals
@@ -75,36 +76,60 @@ def main() -> None:
     for threshold in thresholds:
         rows = []
         for sample, notes, gold, candidates in clips:
-            labels = [
-                {
-                    "type": "repetition",
-                    "start_time": item.start_time,
-                    "end_time": item.end_time,
-                    "repeats_label_range": {
-                        "start_time": item.source_start,
-                        "end_time": item.source_end,
-                    },
-                    "extra_copies": item.extra_copies,
-                }
-                for item in candidates
-                if item.confidence >= threshold
+            labels = labels_with_canonical_locations(
+                [
+                    {
+                        "type": "repetition",
+                        "start_time": item.start_time,
+                        "end_time": item.end_time,
+                        "repeats_label_range": {
+                            "start_time": item.source_start,
+                            "end_time": item.source_end,
+                        },
+                        "extra_copies": item.extra_copies,
+                    }
+                    for item in candidates
+                    if item.confidence >= threshold
+                ],
+                notes,
+            )
+            gold_labels = [
+                label
+                for label in (
+                    json.loads((sample / "labels.json").read_text(encoding="utf-8")).get(
+                        "labels"
+                    )
+                    or []
+                )
+                if label.get("type") == "repetition"
             ]
-            pred = pred_melodies_from_labels(labels, notes)
-            detail = match_melodies_detail(gold, pred, soft=False)
+            official = official_label_metrics(
+                gold_labels, labels, score_event_count=len(notes) or None
+            )
+            legacy = match_melodies_detail(
+                gold,
+                [
+                    item
+                    for item in gold_melodies_from_labels(labels)
+                ],
+                soft=False,
+            )
             rows.append(
                 {
                     "sample": sample.name,
-                    "n_gold": len(gold),
-                    "n_pred": len(pred),
-                    "n_matched": float(detail["n_matched"]),
-                    "melody_f1": float(detail["f1"]),
-                    "melody_precision": float(detail["precision"]),
-                    "melody_recall": float(detail["recall"]),
+                    "n_gold": official["n_gold"],
+                    "n_pred": official["n_pred"],
+                    "n_matched": official["credit"],
+                    "melody_f1": official["f1"],
+                    "melody_precision": official["precision"],
+                    "melody_recall": official["recall"],
+                    "official_note_wise": official["official_note_wise"],
+                    "legacy_pitch_similarity_f1": float(legacy["f1"]),
                     "per_type": {
                         "repetition": {
-                            "n_gold": len(gold),
-                            "n_pred": len(pred),
-                            "n_matched": float(detail["n_matched"]),
+                            "n_gold": official["n_gold"],
+                            "n_pred": official["n_pred"],
+                            "n_matched": official["credit"],
                         }
                     },
                 }

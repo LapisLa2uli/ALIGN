@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MusicEval · Your Labels vs Agent</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/regions.min.js"></script>
+</head>
+<body class="label-compare-page">
+  <header>
+    <h1>Your Labels vs Agent</h1>
+    <div class="controls">
+      <label>Sample
+        <select id="sampleSelect"></select>
+      </label>
+      <span id="sampleStats" class="hint"></span>
+      <a class="header-link" href="/">Annotator</a>
+      <a class="header-link" href="/compare">Gold vs Model A</a>
+    </div>
+  </header>
+
+  <section class="batch-panel label-compare-summary">
+    <strong>Parallel label review</strong>
+    <span class="hint">Both rows use the same performance audio, time scale, playhead, zoom, and horizontal scroll.</span>
+  </section>
+
+  <main class="label-compare-main">
+    <div class="transport">
+      <button id="playBtn" type="button">Play/Pause</button>
+      <label>Speed
+        <select id="speedSelect">
+          <option value="0.5">0.5x</option>
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1x</option>
+        </select>
+      </label>
+      <span id="timeDisplay">00:00.000</span>
+      <label class="zoom-control">Zoom
+        <input id="zoomSlider" type="range" min="0" max="100" value="0" />
+      </label>
+      <button id="zoomFitBtn" type="button">Fit</button>
+      <span id="selectionInfo" class="hint">Click a label to seek to it.</span>
+    </div>
+
+    <div id="dualWaveformScroll" class="dual-waveform-scroll">
+      <div id="dualWaveformContent" class="dual-waveform-content">
+        <section class="parallel-wave-track human-track">
+          <div class="parallel-track-head">
+            <strong>Your labels</strong>
+            <span id="humanCount" class="hint"></span>
+          </div>
+          <div id="humanWaveform" class="parallel-waveform"></div>
+        </section>
+        <section class="parallel-wave-track agent-track">
+          <div class="parallel-track-head">
+            <strong>Agent labels</strong>
+            <span id="agentCount" class="hint"></span>
+          </div>
+          <div id="agentWaveform" class="parallel-waveform"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="parallel-label-lists">
+      <section>
+        <h2>Your labels</h2>
+        <div id="humanList" class="label-list"></div>
+      </section>
+      <section>
+        <h2>Agent labels</h2>
+        <div id="agentList" class="label-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/static/label_compare.js"></script>
+</body>
+</html>

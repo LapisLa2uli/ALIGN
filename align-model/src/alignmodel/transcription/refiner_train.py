@@ -357,6 +357,7 @@ def train_note_refiner(config: RefinerTrainConfig) -> Path:
             },
         }
         save_note_refiner(last_path, model, extra=extra)
+        # Component diagnostic only: acoustic onset F1 cannot promote a model.
         if metrics["f1"] > best_f1 or not best_path.exists():
             best_f1 = float(metrics["f1"])
             save_note_refiner(best_path, model, extra=extra)

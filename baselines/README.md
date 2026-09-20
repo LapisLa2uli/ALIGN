@@ -4,6 +4,8 @@ This integration uses the authors' implementations to train, run inference, and 
 
 **Start with the [GPU server runbook](docs/GPU_RUNBOOK.md)** for code and data transfer, installation, smoke tests, full training, checkpoint resumption, evaluation, GPU memory issues, and troubleshooting.
 
+ALIGN comparison F1 is official note-wise score-event identity (`official_note_wise` in `note_metrics.json`), produced by mapping Extra/Missing/Correct notes onto canonical score locations. The authors' mir_eval onset 50 ms / 50 cents protocol remains available as `legacy_mir_eval_onset_50ms` and is not the ALIGN headline.
+
 For the corrected 40-clip real recording test set, see the [real-data F1 calculation and workflow](docs/REAL_DATA_EVALUATION.md): error-event conversion, typed time matching, micro-F1, current retrained results, rescoring commands, and interval-merging analysis.
 
 The [reproduction audit](docs/REPRODUCTION_AUDIT.md) documents the fixes, test evidence, differences from the authors' experiments, and remaining validation gaps. This work integrates the baselines with ALIGN data. Passing smoke tests or retraining on ALIGN does not establish reproduction of the papers' reported scores.

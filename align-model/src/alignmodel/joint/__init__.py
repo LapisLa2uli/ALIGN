@@ -28,6 +28,10 @@ from .metrics import (
     evaluate_joint_events,
     pair_exact_pitch_onset,
 )
+from .score_location_adapter import (
+    adapt_class_notes,
+    evaluate_class_notes_note_wise,
+)
 from .oracle import OracleHarnessConfig, run_oracle_harness
 
 __all__ = [
@@ -46,6 +50,8 @@ __all__ = [
     "ScoreEvent",
     "ScoreEventIndex",
     "SparseJointLattice",
+    "adapt_class_notes",
+    "evaluate_class_notes_note_wise",
     "evaluate_joint_dataset",
     "evaluate_joint_events",
     "filter_prediction_for_schema",

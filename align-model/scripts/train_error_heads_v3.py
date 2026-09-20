@@ -75,34 +75,7 @@ def _config_json(config: SchemaDecodeConfig) -> dict[str, Any]:
 def _config_from_json(value: Mapping[str, Any]) -> SchemaDecodeConfig:
     if value.get("schema_version") != "align-error-heads-v3-decode-config-v1":
         raise ValueError("Unsupported v3 decode config")
-    return SchemaDecodeConfig(
-        high_thresholds={
-            str(key): float(item)
-            for key, item in value["high_thresholds"].items()
-        },
-        low_ratios={
-            str(key): float(item) for key, item in value["low_ratios"].items()
-        },
-        minimum_support={
-            str(key): int(item)
-            for key, item in value["minimum_support"].items()
-        },
-        uncertainty_margins={
-            str(key): float(item)
-            for key, item in value["uncertainty_margins"].items()
-        },
-        merge_score_gap={
-            str(key): int(item)
-            for key, item in value["merge_score_gap"].items()
-        },
-        max_row_gap=int(value.get("max_row_gap", 2)),
-        pad_notes=int(value.get("pad_notes", 1)),
-        require_extra_neighbors=bool(value.get("require_extra_neighbors", True)),
-        require_missed_resynchronization=bool(
-            value.get("require_missed_resynchronization", True)
-        ),
-        nms_overlap=bool(value.get("nms_overlap", True)),
-    )
+    return SchemaDecodeConfig.from_mapping(value)
 
 
 def _load_calibration_clips(args: argparse.Namespace) -> list[dict[str, Any]]:
@@ -357,6 +330,11 @@ def _pair_labels(
     *,
     require_type: bool,
 ) -> list[tuple[int, int]]:
+    """Oracle pairing helper, not official headline F1.
+
+    ``require_type`` uses 0.0 type-mismatch credit; the ignore-type path uses
+    1.0. Official scoring remains type_mismatch_credit=0.5.
+    """
     if not predicted or not gold:
         return []
     detail = match_note_wise_labels_detail(

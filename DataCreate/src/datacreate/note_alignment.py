@@ -1075,6 +1075,76 @@ def _attach_performance_times(
     return False
 
 
+def _attach_note_first_performance_times(
+    events: list[dict[str, Any]],
+    sample_dir: Path,
+    logger: logging.Logger,
+) -> bool:
+    """Prefer joint-decoder note times over the reference-audio DTW map.
+
+    The annotator displays reference-score events, but label regions belong on
+    the performance timeline.  ``note_alignment_v2.json`` is the authoritative
+    score-note to transcribed-note alignment, so its event times must win over
+    the older reference-audio warping path.
+    """
+
+    path = sample_dir / "note_alignment_v2.json"
+    if not path.exists():
+        return False
+    try:
+        payload = read_json(path)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not read note-first alignment times: %s", exc)
+        return False
+
+    by_note_id: dict[str, list[dict[str, Any]]] = {}
+    by_score_index: dict[int, list[dict[str, Any]]] = {}
+    for aligned in payload.get("events") or []:
+        note_id = aligned.get("note_id")
+        if note_id:
+            by_note_id.setdefault(str(note_id), []).append(aligned)
+        score_index = _optional_int(
+            aligned.get("score_index", aligned.get("sounding_index"))
+        )
+        if score_index is None:
+            continue
+        start = aligned.get("perf_start")
+        end = aligned.get("perf_end")
+        if start is None or end is None:
+            continue
+        by_score_index.setdefault(score_index, []).append(aligned)
+
+    attached = 0
+    for ev in events:
+        score_index = _optional_int(ev.get("sounding_index"))
+        if score_index is None:
+            continue
+        candidates = (
+            by_note_id.get(str(ev.get("note_id")))
+            or by_score_index.get(score_index)
+            or []
+        )
+        if not candidates:
+            continue
+        # A repeated performance can map more than once to one written note.
+        # Keep the canonical non-repetition event on the reference staff; the
+        # transcription row still shows every performed repetition separately.
+        aligned = min(
+            candidates,
+            key=lambda item: (
+                bool(item.get("is_repetition")),
+                float(item.get("perf_start") or 0.0),
+            ),
+        )
+        start = float(aligned["perf_start"])
+        end = max(start + 0.001, float(aligned["perf_end"]))
+        ev["perf_start"] = round(start, 4)
+        ev["perf_end"] = round(end, 4)
+        ev["performance_timing_source"] = "note_alignment_v2"
+        attached += 1
+    return attached > 0
+
+
 def build_score_events(
     sample_dir: Path, logger: logging.Logger | None = None
 ) -> dict[str, Any]:
@@ -1092,16 +1162,31 @@ def build_score_events(
         score_path = ensure_full_score(sample_dir)
 
     events = _annotate_sounding_indices(_extract_score_events(score_path))
-    aligned = _attach_performance_times(events, sample_dir, score_path, logger)
+    legacy_aligned = _attach_performance_times(events, sample_dir, score_path, logger)
+    note_first_aligned = _attach_note_first_performance_times(
+        events, sample_dir, logger
+    )
+    aligned = note_first_aligned or legacy_aligned
+    timing_source = (
+        "note_alignment_v2"
+        if note_first_aligned
+        else ("alignment.npz" if legacy_aligned else "duration_scale")
+    )
     logger.info(
-        "Built reference score events for %s: %d events (aligned=%s)",
+        "Built reference score events for %s: %d events (aligned=%s, source=%s)",
         sample_dir.name,
         len(events),
         aligned,
+        timing_source,
     )
     return {
         "events": events,
         "aligned": aligned,
         "layout": "reference",
-        "summary": {"event_count": len(events), "aligned": aligned},
+        "performance_timing_source": timing_source,
+        "summary": {
+            "event_count": len(events),
+            "aligned": aligned,
+            "performance_timing_source": timing_source,
+        },
     }

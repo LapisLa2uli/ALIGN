@@ -1,0 +1,2337 @@
+{
+  "created_utc": "2026-09-20T12:52:49.246027+00:00",
+  "excluded": [
+    "005",
+    "007",
+    "010",
+    "012",
+    "020",
+    "026",
+    "030",
+    "034",
+    "036"
+  ],
+  "kept": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "006",
+    "008",
+    "009",
+    "011",
+    "013",
+    "014",
+    "015",
+    "016",
+    "017",
+    "018",
+    "019",
+    "021",
+    "022",
+    "023",
+    "024",
+    "025",
+    "027",
+    "028",
+    "029",
+    "031",
+    "032",
+    "033",
+    "035",
+    "037",
+    "038",
+    "039",
+    "040"
+  ],
+  "overlay": {
+    "identity_span": "padded",
+    "pad_notes": 2,
+    "require_path_operation_gate": true
+  },
+  "rows": [
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 15.82517006802721,
+          "frames": 348945,
+          "sample_rate": 22050,
+          "sha256": "b3afa8725fd38cddd489e40e8088e1be573313558c122423c8013888b1152a76"
+        },
+        "candidate_count": 51,
+        "candidate_pitch_in_score_ratio": 0.9803921568627451,
+        "candidate_to_score_count_ratio": 1.0408163265306123,
+        "candidate_union_all_count": 69,
+        "canonical_to_score_count_ratio": 1.0816326530612246,
+        "canonical_transcription_count": 53,
+        "copy_event_count": 0,
+        "decoded_event_count": 51,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 47,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 47
+        },
+        "path_score": 31.64092254638672,
+        "retained_candidate_count": 51,
+        "score_event_count": 49,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\001.npz",
+        "frozen_copy_sha256": "ab914c90b61c3db8501c5e29c7d6fbfbc1ef7fcbf65ede9b2dbcd8a3bac06e12",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "b3afa8725fd38cddd489e40e8088e1be573313558c122423c8013888b1152a76"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\001\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "29004d01090e8aaef89cc26c57b2d98fd069cba9d63dc1b4f2f335ddac80662e",
+        "v2": "d6ab2448eda79dbda94c94d6525ade8d1ada1f7a210a9119071a292d71419f59",
+        "v3": "78f84f19d84da52d097e0e475b356e7c9ce09369b7420680107b5461bb889b94",
+        "v3_balanced": "84c47782b1a0e362720df2f1ad3c6d3c3c7140a4d557ac1314c2e1e8b0d9b807"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\001.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\001.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\001.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\001.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 13.495526599996083,
+        "decode_and_heads": 0.8980660999950487,
+        "features": 0.18554360000416636,
+        "total": 14.603161200000613
+      },
+      "sample": "001",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 67.66009070294784,
+          "frames": 1491905,
+          "sample_rate": 22050,
+          "sha256": "6db253f7d1137a7945740af53c414b7b882a91d29854328413a0466411ec68fc"
+        },
+        "candidate_count": 118,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.0085470085470085,
+        "candidate_union_all_count": 155,
+        "canonical_to_score_count_ratio": 1.0,
+        "canonical_transcription_count": 117,
+        "copy_event_count": 23,
+        "decoded_event_count": 118,
+        "deleted_score_event_count": 24,
+        "mapped_event_count": 112,
+        "mapped_score_coverage": 0.9743589743589743,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 112
+        },
+        "path_score": 73.83633422851562,
+        "retained_candidate_count": 118,
+        "score_event_count": 117,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\002.npz",
+        "frozen_copy_sha256": "646d70be269733e1944702ecd5b3e54eeb38ded431cd6812e0068410964d9e0d",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "6db253f7d1137a7945740af53c414b7b882a91d29854328413a0466411ec68fc"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\002\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "248822c3dd8f8da19145350f7fb7f60982cb601991e69670c0f82d62509c409f",
+        "v2": "4c0bf2737f665cdd13fd20b969dcd3b7e22a7d0ae48e16d28b91018e8560410e",
+        "v3": "be038f2629a878b7636ec2e2bbc9b66e7f1284e449b8e2db7463031ed486b1c1",
+        "v3_balanced": "25b6284778ad23c3be37211d1422b48d697ccc56b994435a1a1b43271fbb2a03"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\002.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\002.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\002.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\002.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.741345000002184,
+        "decode_and_heads": 1.998080299999856,
+        "features": 0.6702759999971022,
+        "total": 3.4315419999984442
+      },
+      "sample": "002",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 30.224807256235827,
+          "frames": 666457,
+          "sample_rate": 22050,
+          "sha256": "ca0153442e65f695fa7e78fee137ed87374a8fbe1ce5511308ffaa16c885c5df"
+        },
+        "candidate_count": 63,
+        "candidate_pitch_in_score_ratio": 0.9841269841269841,
+        "candidate_to_score_count_ratio": 0.8513513513513513,
+        "candidate_union_all_count": 106,
+        "canonical_to_score_count_ratio": 1.0135135135135136,
+        "canonical_transcription_count": 75,
+        "copy_event_count": 16,
+        "decoded_event_count": 63,
+        "deleted_score_event_count": 32,
+        "mapped_event_count": 58,
+        "mapped_score_coverage": 0.7702702702702703,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 58
+        },
+        "path_score": 18.729490280151367,
+        "retained_candidate_count": 63,
+        "score_event_count": 74,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\003.npz",
+        "frozen_copy_sha256": "02100714116e3813c93070a6db61587be13af0e5a5d56f16c4f37e40e20b720a",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "ca0153442e65f695fa7e78fee137ed87374a8fbe1ce5511308ffaa16c885c5df"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\003\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "c9bf83bd5cd4a56be0c7692c608508fdf8f499f7c4422dffeffed97582616497",
+        "v2": "18369b3a39af0bc34198bd39ae5ef97f8215a4dd7e57d850df2aaf848f362d14",
+        "v3": "6480a8482ee44c57cd1dd660ff20bf689bf326bd2c71aa4ac2a28c11ee664096",
+        "v3_balanced": "46005a278b934782c528a8dd0600067b9bd2eefd927f2b6c7b99e7cd9621bcce"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\003.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\003.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\003.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\003.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3120303000032436,
+        "decode_and_heads": 0.9390918000062811,
+        "features": 0.34129189999657683,
+        "total": 1.6135917999999947
+      },
+      "sample": "003",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 35.17736961451247,
+          "frames": 775661,
+          "sample_rate": 22050,
+          "sha256": "7bbfd3142a981baf243b4fe530e023c9dfd0ca3dfc05f488f753c603b0fb25f4"
+        },
+        "candidate_count": 117,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.0446428571428572,
+        "candidate_union_all_count": 146,
+        "canonical_to_score_count_ratio": 1.0267857142857142,
+        "canonical_transcription_count": 115,
+        "copy_event_count": 52,
+        "decoded_event_count": 117,
+        "deleted_score_event_count": 55,
+        "mapped_event_count": 109,
+        "mapped_score_coverage": 0.875,
+        "operations": {
+          "EXTRA": 8,
+          "MATCH": 109
+        },
+        "path_score": 85.5644760131836,
+        "retained_candidate_count": 117,
+        "score_event_count": 112,
+        "unmapped_event_count": 8
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\004.npz",
+        "frozen_copy_sha256": "f63a8ca33312400d87201449a9ac2249b096d877f22863be765ef22cbc728ee9",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "7bbfd3142a981baf243b4fe530e023c9dfd0ca3dfc05f488f753c603b0fb25f4"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\004\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "4f80eb5d25436061d3da0ab58a0465d331fb5d9d17bc589f2628661af81507cf",
+        "v2": "6c8a6660e51890eddcd56a91f9ca362e53b6189e69e4a0a3bb49d17dc118910b",
+        "v3": "6bb2f5e96c38a1f7847ca76e3242a5b42d43eb2bea6f8ff6fc316fc42b55a336",
+        "v3_balanced": "f305a9b27a9076913612f1c804e15eb9da341cfd5cd3093a684eb45644f0dd14"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\004.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\004.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\004.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\004.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.40729849999479484,
+        "decode_and_heads": 1.8226923999973224,
+        "features": 0.410471499999403,
+        "total": 2.6613691999955336
+      },
+      "sample": "004",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 31.777278911564625,
+          "frames": 700689,
+          "sample_rate": 22050,
+          "sha256": "28b0b74724be7a128eb76b7c6d558d0fa1b3f38d4fe329afa65b8f82b8f942e9"
+        },
+        "candidate_count": 112,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.7320261437908496,
+        "candidate_union_all_count": 177,
+        "canonical_to_score_count_ratio": 1.0196078431372548,
+        "canonical_transcription_count": 156,
+        "copy_event_count": 0,
+        "decoded_event_count": 112,
+        "deleted_score_event_count": 26,
+        "mapped_event_count": 107,
+        "mapped_score_coverage": 0.8300653594771242,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 107
+        },
+        "path_score": 63.121891021728516,
+        "retained_candidate_count": 112,
+        "score_event_count": 153,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\006.npz",
+        "frozen_copy_sha256": "5bbb27e8f7b37d544f8f22bacc4cafefcfc62afaeffafb4c76d6932477754bc3",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "28b0b74724be7a128eb76b7c6d558d0fa1b3f38d4fe329afa65b8f82b8f942e9"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\006\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "0142caecb69e6e502ecedbbb445924f8b386697a4c0c09681684ffc955d00e22",
+        "v2": "a9b10e7943b3a06127847c500cf2849bbdaecc4b33ebf7100fe37f58f57f7329",
+        "v3": "3a712ef5d04c1962beff8663818880a237d8273db73ddf365601f2f3cddc64c2",
+        "v3_balanced": "34c5d6b323866ad0056c3d9639589b6d883b5657c935d73bd2e9bdf6aa9f34ee"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\006.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\006.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\006.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\006.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.5027982000028715,
+        "decode_and_heads": 1.8953230000042822,
+        "features": 0.3393718000006629,
+        "total": 2.763156100001652
+      },
+      "sample": "006",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 45.46131519274376,
+          "frames": 1002422,
+          "sample_rate": 22050,
+          "sha256": "8d5151dc2d7cf75fd7b1e6c69c81865fe39691c0cf5956c855bf921c602f44bb"
+        },
+        "candidate_count": 75,
+        "candidate_pitch_in_score_ratio": 0.96,
+        "candidate_to_score_count_ratio": 1.271186440677966,
+        "candidate_union_all_count": 123,
+        "canonical_to_score_count_ratio": 1.0847457627118644,
+        "canonical_transcription_count": 64,
+        "copy_event_count": 26,
+        "decoded_event_count": 75,
+        "deleted_score_event_count": 24,
+        "mapped_event_count": 59,
+        "mapped_score_coverage": 0.8813559322033898,
+        "operations": {
+          "EXTRA": 16,
+          "MATCH": 59
+        },
+        "path_score": 1.3214824199676514,
+        "retained_candidate_count": 75,
+        "score_event_count": 59,
+        "unmapped_event_count": 16
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\008.npz",
+        "frozen_copy_sha256": "53f1883d68bd97fe93b03ad6eb4ebda8dece4dd531706252f490e71641ca2225",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8d5151dc2d7cf75fd7b1e6c69c81865fe39691c0cf5956c855bf921c602f44bb"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\008\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "8f81f722c69f313a3448d231da31fc2107ac96570fe3e710c53059682d62cb6d",
+        "v2": "0dd1a34390da36ffeb9b5fb0be0d12dcfeba97471edec99d67fdaecedde65f50",
+        "v3": "c5b1eb206dfb1408f6b64c7a9f3bee4f494334d614fb45317f7320b69d40dcbf",
+        "v3_balanced": "031284fbe62d5594a22e87774d977a40597b7735895463eef1f81bed9e47991e"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\008.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\008.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\008.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\008.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.45081280000158586,
+        "decode_and_heads": 1.0999299000031897,
+        "features": 0.4406941999986884,
+        "total": 2.013322500002687
+      },
+      "sample": "008",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 32.127256235827666,
+          "frames": 708406,
+          "sample_rate": 22050,
+          "sha256": "0c805e9231fbd985d5a32b408cb4cfbcd001071a0bf99b4ee138369c32169311"
+        },
+        "candidate_count": 55,
+        "candidate_pitch_in_score_ratio": 0.9818181818181818,
+        "candidate_to_score_count_ratio": 0.9821428571428571,
+        "candidate_union_all_count": 73,
+        "canonical_to_score_count_ratio": 0.9821428571428571,
+        "canonical_transcription_count": 55,
+        "copy_event_count": 21,
+        "decoded_event_count": 55,
+        "deleted_score_event_count": 23,
+        "mapped_event_count": 54,
+        "mapped_score_coverage": 0.8392857142857143,
+        "operations": {
+          "EXTRA": 1,
+          "MATCH": 53,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 24.58277702331543,
+        "retained_candidate_count": 55,
+        "score_event_count": 56,
+        "unmapped_event_count": 1
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\009.npz",
+        "frozen_copy_sha256": "5281893ee30790a4b0a8e20264996fc07488b372458000c8fd70751606b00fff",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "0c805e9231fbd985d5a32b408cb4cfbcd001071a0bf99b4ee138369c32169311"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\009\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "b14a41948cb45dbdd5b1eae42d92bd69256d9f81b788003db675aeea6e07345c",
+        "v2": "bd9134b79ee34995fcaf3d55052b0c166bcc0542e30aa53e33d456ce9360f8ba",
+        "v3": "c3e5ad875979f9f7b27ee591891b6303baca3ff2672ceb4dfdd132411de6fe7a",
+        "v3_balanced": "652fc57baf33110e3cc7c211eefade04856079c56c60fb54675daded3eecab83"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\009.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\009.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\009.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\009.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.266200400001253,
+        "decode_and_heads": 0.9285115000020596,
+        "features": 0.34045180000248365,
+        "total": 1.5584280000039143
+      },
+      "sample": "009",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 14.664172335600908,
+          "frames": 323345,
+          "sample_rate": 22050,
+          "sha256": "ed55e5b0ed4330bfeafdb4d95514c783cdb09dbec783d7112b3617d85234f6e9"
+        },
+        "candidate_count": 72,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8470588235294118,
+        "candidate_union_all_count": 95,
+        "canonical_to_score_count_ratio": 0.9764705882352941,
+        "canonical_transcription_count": 83,
+        "copy_event_count": 17,
+        "decoded_event_count": 72,
+        "deleted_score_event_count": 30,
+        "mapped_event_count": 66,
+        "mapped_score_coverage": 0.8117647058823529,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 66
+        },
+        "path_score": 30.293575286865234,
+        "retained_candidate_count": 72,
+        "score_event_count": 85,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\011.npz",
+        "frozen_copy_sha256": "4216ed664cbcbe4b561ab56a162ebd7f6c57e39d6b28ad5a619c972721c8663e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "ed55e5b0ed4330bfeafdb4d95514c783cdb09dbec783d7112b3617d85234f6e9"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\011\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "28bb1b518f8064cbaeea5a919e15821122ca7b1291785be4303da533ed3d340c",
+        "v2": "be3785ddfc50fe7700ffa38b876882dc665476d715495e2b9fad3186cb6da0df",
+        "v3": "5eb34d0ea416faf1f99cef67feccf842ceefd54172da899926fd27f8d642faad",
+        "v3_balanced": "1a09811acf52ea3be9683f31f1187b3550800fc37d5c1f898195ec7c075ab8a1"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\011.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\011.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\011.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\011.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.20933440000226256,
+        "decode_and_heads": 1.028836000004958,
+        "features": 0.21433260000048904,
+        "total": 1.4727549000017461
+      },
+      "sample": "011",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 41.46,
+          "frames": 914193,
+          "sample_rate": 22050,
+          "sha256": "977b82713c53283ce9e84510b1184c35d8d44b1c6d99dc7ebec3541c048cc333"
+        },
+        "candidate_count": 193,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.1028571428571428,
+        "candidate_union_all_count": 256,
+        "canonical_to_score_count_ratio": 1.262857142857143,
+        "canonical_transcription_count": 221,
+        "copy_event_count": 50,
+        "decoded_event_count": 193,
+        "deleted_score_event_count": 57,
+        "mapped_event_count": 180,
+        "mapped_score_coverage": 0.9028571428571428,
+        "operations": {
+          "EXTRA": 13,
+          "MATCH": 180
+        },
+        "path_score": 84.08036041259766,
+        "retained_candidate_count": 193,
+        "score_event_count": 175,
+        "unmapped_event_count": 13
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\013.npz",
+        "frozen_copy_sha256": "1c9d0a68f1e037342a901ff71c407a840bce6a2634b981467b6e7495134b8d32",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "977b82713c53283ce9e84510b1184c35d8d44b1c6d99dc7ebec3541c048cc333"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\013\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "1c208c6046fdefb4a1f5b8808172c586931e695350210db67b88692dbf4a7a2a",
+        "v2": "635ad45ee9b5870f1f08327890d3bcf092e10d6fa46eb6adee11974f0b02269b",
+        "v3": "9bbb0e7163c009ecf494f48ef0f3d7f9e43b3e5c06136e92a56919f19aefe0d0",
+        "v3_balanced": "5397ec810e9361a54d487dfacdc72b500b08db7701fb01eb271fbdd07dfe5d05"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\013.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\013.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\013.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\013.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.7484201000042958,
+        "decode_and_heads": 2.9392462999967393,
+        "features": 0.4780220000029658,
+        "total": 4.186841299997468
+      },
+      "sample": "013",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 24.7184126984127,
+          "frames": 545041,
+          "sample_rate": 22050,
+          "sha256": "4b0e29423d7be9c5017587adaa0d06ee1898dd6d3e7cb1a9c9be2653deb58d22"
+        },
+        "candidate_count": 75,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8333333333333334,
+        "candidate_union_all_count": 101,
+        "canonical_to_score_count_ratio": 0.9555555555555556,
+        "canonical_transcription_count": 86,
+        "copy_event_count": 20,
+        "decoded_event_count": 75,
+        "deleted_score_event_count": 28,
+        "mapped_event_count": 72,
+        "mapped_score_coverage": 0.8888888888888888,
+        "operations": {
+          "EXTRA": 3,
+          "MATCH": 72
+        },
+        "path_score": 19.875608444213867,
+        "retained_candidate_count": 75,
+        "score_event_count": 90,
+        "unmapped_event_count": 3
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\014.npz",
+        "frozen_copy_sha256": "68e2c09bea373d913d30c280ad8d4e63a23f22c9b72f1d59acfd9dd22a69fa17",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "4b0e29423d7be9c5017587adaa0d06ee1898dd6d3e7cb1a9c9be2653deb58d22"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\014\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "c89fb7d64d7dd863cd622016c9192cbc462cad1b00bd536319d6ce08f25f8e6f",
+        "v2": "50d66a2cc5234449cdf71a91ae33d2fdf53e60288acc56e96768db068b9760f1",
+        "v3": "a0fe39ed2c60f7d97e6f55698bacf4f775cc9307bcac0f49ee57a0985385a030",
+        "v3_balanced": "279fd6f7a6fe521b68ce0f0b15db5d5ae9749b323f11765380414a2787555144"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\014.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\014.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\014.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\014.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.32667660000151955,
+        "decode_and_heads": 1.1960323999956017,
+        "features": 0.31435120000242023,
+        "total": 2.043505699999514
+      },
+      "sample": "014",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 72.17587301587301,
+          "frames": 1591478,
+          "sample_rate": 22050,
+          "sha256": "1452c5d6d32e21aa47969c75ac4bce5e8a11dd055eab65ab6a5c9c9f32883d8d"
+        },
+        "candidate_count": 134,
+        "candidate_pitch_in_score_ratio": 0.9850746268656716,
+        "candidate_to_score_count_ratio": 1.1452991452991452,
+        "candidate_union_all_count": 177,
+        "canonical_to_score_count_ratio": 1.0427350427350428,
+        "canonical_transcription_count": 122,
+        "copy_event_count": 36,
+        "decoded_event_count": 134,
+        "deleted_score_event_count": 36,
+        "mapped_event_count": 117,
+        "mapped_score_coverage": 0.9316239316239316,
+        "operations": {
+          "EXTRA": 17,
+          "MATCH": 116,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 44.46757507324219,
+        "retained_candidate_count": 134,
+        "score_event_count": 117,
+        "unmapped_event_count": 17
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\015.npz",
+        "frozen_copy_sha256": "7aaaf8a70e85fd5f11dcf97187b547a64ce9cdfb4b9fe07fad24cdd79b9842d7",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "1452c5d6d32e21aa47969c75ac4bce5e8a11dd055eab65ab6a5c9c9f32883d8d"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\015\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "e30812b58e7b0e1680ea8e7af5adb8797fb4692b9179730f15aa281854cca782",
+        "v2": "79b54f42b4af185226a754e2a97f28a404092b027dd6000e7b86adf1d97e8e4c",
+        "v3": "c3d421b01e0016852d14eee4456bc7555a8c8aec1a89204350f92f3c6c81c16d",
+        "v3_balanced": "904c8066482ab52cd3fe489f7b16c1ff9834edc68e9fd5080f38072d62d1f334"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\015.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\015.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\015.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\015.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.7768027999991318,
+        "decode_and_heads": 2.2942039999979897,
+        "features": 0.7029509999993024,
+        "total": 3.800052799997502
+      },
+      "sample": "015",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 31.428979591836736,
+          "frames": 693009,
+          "sample_rate": 22050,
+          "sha256": "44dda32036ca97c50e8f6f4d8defd211c17e7fff637ccb703104282c04107aaf"
+        },
+        "candidate_count": 68,
+        "candidate_pitch_in_score_ratio": 0.9705882352941176,
+        "candidate_to_score_count_ratio": 0.918918918918919,
+        "candidate_union_all_count": 108,
+        "canonical_to_score_count_ratio": 1.0405405405405406,
+        "canonical_transcription_count": 77,
+        "copy_event_count": 20,
+        "decoded_event_count": 68,
+        "deleted_score_event_count": 29,
+        "mapped_event_count": 64,
+        "mapped_score_coverage": 0.8378378378378378,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 64
+        },
+        "path_score": 29.804439544677734,
+        "retained_candidate_count": 68,
+        "score_event_count": 74,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\016.npz",
+        "frozen_copy_sha256": "98bce24670baca6964e4019e311dd99d5580c53f35d22588af5e571113c58ecf",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "44dda32036ca97c50e8f6f4d8defd211c17e7fff637ccb703104282c04107aaf"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\016\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "4cdd895f58f4fa30f5e1fc9074081147a958432573c439e8365ca602fb60eab6",
+        "v2": "49924ccc918aee0018ea98b95cb173fcde4b7311413cd68001714024e8abfa03",
+        "v3": "4d0e4a450a443ad3e9a9ea34e9f1d76809671f6ea1adec496c3d210cd1ced1df",
+        "v3_balanced": "b8ee9ca7d68c679fcb3b6cd2945de143c54a24a76126be272eddd8265e617ab4"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\016.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\016.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\016.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\016.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3471696999986307,
+        "decode_and_heads": 1.0103944999937085,
+        "features": 0.3521225999938906,
+        "total": 1.7300462999992305
+      },
+      "sample": "016",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 27.342267573696144,
+          "frames": 602897,
+          "sample_rate": 22050,
+          "sha256": "8342d5133434f4ee5ebe411a6c7fd1cf69b6cd35ea3bbd9aa21b0725ac07112a"
+        },
+        "candidate_count": 121,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.0803571428571428,
+        "candidate_union_all_count": 144,
+        "canonical_to_score_count_ratio": 1.0089285714285714,
+        "canonical_transcription_count": 113,
+        "copy_event_count": 41,
+        "decoded_event_count": 121,
+        "deleted_score_event_count": 38,
+        "mapped_event_count": 110,
+        "mapped_score_coverage": 0.9464285714285714,
+        "operations": {
+          "EXTRA": 11,
+          "MATCH": 110
+        },
+        "path_score": 73.89851379394531,
+        "retained_candidate_count": 121,
+        "score_event_count": 112,
+        "unmapped_event_count": 11
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\017.npz",
+        "frozen_copy_sha256": "97b1af2c34ca1584b9c7e0a170504d7f2441bddc2152511fd7c86ef8fbb3645f",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8342d5133434f4ee5ebe411a6c7fd1cf69b6cd35ea3bbd9aa21b0725ac07112a"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\017\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "d9577316d471b7ade9d8ae2ad4951ceb4ad9dc0eb75261712053cce5775b6538",
+        "v2": "0d40396d1f189270f1ed2ee0128c9cbe7dc8cfd7e58ab16277ed8b1a94dc87b8",
+        "v3": "7242fe0dec23806559e0c61e3b42175b55e336eae0561e9a0fcc07b0a0bd50bf",
+        "v3_balanced": "60e1f55d0d60dc38e775e60e56bcdab2d02c3ea11a5da777ecfa05cba5bc5b72"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\017.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\017.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\017.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\017.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.36402329999691574,
+        "decode_and_heads": 1.7936702000006335,
+        "features": 0.28245520000200486,
+        "total": 2.45367239999905
+      },
+      "sample": "017",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 29.780362811791385,
+          "frames": 656657,
+          "sample_rate": 22050,
+          "sha256": "f39d8cb7d83965ee499b50893735f797aedaba5ab61713413584f5e756a8f19e"
+        },
+        "candidate_count": 128,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.735632183908046,
+        "candidate_union_all_count": 207,
+        "canonical_to_score_count_ratio": 1.0,
+        "canonical_transcription_count": 174,
+        "copy_event_count": 0,
+        "decoded_event_count": 128,
+        "deleted_score_event_count": 31,
+        "mapped_event_count": 124,
+        "mapped_score_coverage": 0.8218390804597702,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 124
+        },
+        "path_score": 74.05534362792969,
+        "retained_candidate_count": 128,
+        "score_event_count": 174,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\018.npz",
+        "frozen_copy_sha256": "111c0601dd9fe5f367cc5b69ca63e04df647a033a9cefa90b76084f2181784fe",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "f39d8cb7d83965ee499b50893735f797aedaba5ab61713413584f5e756a8f19e"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\018\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "af3854c14f3bffad5b757ea992ca159fa356477c1cbc3e40396d8cf697212175",
+        "v2": "98b205e03fddbaa876e116e90b4742baa8a737bdb1b7aac5610862b1d1b068d3",
+        "v3": "582d0c0d25cceb4348c0a36bb740a6eec91b36455bb7f8e737a9e4a61c12383e",
+        "v3_balanced": "5fcbf66621ec8b5ff580680a85f301bc0817932e15bcf5228eb8023eb340b7e7"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\018.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\018.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\018.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\018.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.4933161000008113,
+        "decode_and_heads": 1.9319768999994267,
+        "features": 0.3585510999982944,
+        "total": 2.798536000002059
+      },
+      "sample": "018",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 29.38562358276644,
+          "frames": 647953,
+          "sample_rate": 22050,
+          "sha256": "8c5f8896d560211831ca635e37554bd5914a8d49f27ea8e098daa5c0165edd19"
+        },
+        "candidate_count": 123,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.803921568627451,
+        "candidate_union_all_count": 175,
+        "canonical_to_score_count_ratio": 0.9869281045751634,
+        "canonical_transcription_count": 151,
+        "copy_event_count": 0,
+        "decoded_event_count": 123,
+        "deleted_score_event_count": 13,
+        "mapped_event_count": 118,
+        "mapped_score_coverage": 0.9150326797385621,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 118
+        },
+        "path_score": 81.46253967285156,
+        "retained_candidate_count": 123,
+        "score_event_count": 153,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\019.npz",
+        "frozen_copy_sha256": "d6b815d73f7d36ceb47b8d9e9e89a4c96ab002eef81d1f4e8f1baa361a2d25fe",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8c5f8896d560211831ca635e37554bd5914a8d49f27ea8e098daa5c0165edd19"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\019\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "98e11a57cac42e324a17a3c424b876b56618351f6ccad2648093695c672238f0",
+        "v2": "918ebb72aaa74d1a231efc2b20cc1f6b888269ce5d7f2dc4fda8caacf78eee72",
+        "v3": "7ea8efa07f0334a760c9690b49a82527617be3d8e090119c47221ae235d89389",
+        "v3_balanced": "0c7b2a96cee7e4851afb0c15fd486ae90530eca761ccc94a17683f6f5b696ba2"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\019.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\019.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\019.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\019.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.467432600002212,
+        "decode_and_heads": 1.7144392999980482,
+        "features": 0.3100246000030893,
+        "total": 2.5120633999977144
+      },
+      "sample": "019",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 43.518367346938774,
+          "frames": 959580,
+          "sample_rate": 22050,
+          "sha256": "6ce386507ef8f0f576011353b1434fa173009abd429884ab690025f877deb483"
+        },
+        "candidate_count": 75,
+        "candidate_pitch_in_score_ratio": 0.96,
+        "candidate_to_score_count_ratio": 1.25,
+        "candidate_union_all_count": 105,
+        "canonical_to_score_count_ratio": 1.0666666666666667,
+        "canonical_transcription_count": 64,
+        "copy_event_count": 9,
+        "decoded_event_count": 75,
+        "deleted_score_event_count": 12,
+        "mapped_event_count": 59,
+        "mapped_score_coverage": 0.9666666666666667,
+        "operations": {
+          "EXTRA": 16,
+          "MATCH": 59
+        },
+        "path_score": -2.5908713340759277,
+        "retained_candidate_count": 75,
+        "score_event_count": 60,
+        "unmapped_event_count": 16
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\021.npz",
+        "frozen_copy_sha256": "edea49dd5491b48cd5de568c113a25da11e701f7afe8e92fde280278e552c6d7",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "6ce386507ef8f0f576011353b1434fa173009abd429884ab690025f877deb483"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\021\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "83542508b1f11f080157e65dfb81a58b560dfa398f960187b000c59fb8030151",
+        "v2": "616af8b467daaff8df8fe6f81a1c1b2f0bca6bbd634c145ae3dce1e725a7217b",
+        "v3": "77d62ef9b4056c3f9c58c67fc5589be8b8fc1fbfb34bcd6d86257bc9786b1097",
+        "v3_balanced": "f1dc8e7a6d580f03bf569a125942c2c706a05a12aa53109b4f1be88f98746543"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\021.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\021.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\021.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\021.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.40302130000054603,
+        "decode_and_heads": 1.116425000000163,
+        "features": 0.48176889999740524,
+        "total": 2.029171599999245
+      },
+      "sample": "021",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 29.809886621315194,
+          "frames": 657308,
+          "sample_rate": 22050,
+          "sha256": "946215110a98fe6be8f6920a6d7888222b78087e94695017100fd8085e063304"
+        },
+        "candidate_count": 54,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.08,
+        "candidate_union_all_count": 72,
+        "canonical_to_score_count_ratio": 1.12,
+        "canonical_transcription_count": 56,
+        "copy_event_count": 17,
+        "decoded_event_count": 54,
+        "deleted_score_event_count": 20,
+        "mapped_event_count": 51,
+        "mapped_score_coverage": 0.74,
+        "operations": {
+          "EXTRA": 3,
+          "MATCH": 51
+        },
+        "path_score": 18.024187088012695,
+        "retained_candidate_count": 54,
+        "score_event_count": 50,
+        "unmapped_event_count": 3
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\022.npz",
+        "frozen_copy_sha256": "c0943ee5d012085ea87306b1a9f88a674c9f8371716876d40e7aec5b6507fab3",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "946215110a98fe6be8f6920a6d7888222b78087e94695017100fd8085e063304"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\022\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "a5617eafe2c0e6fb2f73fc7192c9a93e3316b7819f4841cd9d9fb197324e9bb6",
+        "v2": "f521aea5deb938ac15aae1162c3c0ee117d6a249309cee78ee85d0955dbc8913",
+        "v3": "33ad4b3f8b26f4a01a13dc6e8b6c452da724eebf0fcc9026475511481515fa5f",
+        "v3_balanced": "9646be099515602d1b54a0c8c61aff5ee3b1685f2ba5fe90962dfb4dc01a3180"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\022.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\022.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\022.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\022.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.2736464000045089,
+        "decode_and_heads": 0.9398084999993443,
+        "features": 0.327667500001553,
+        "total": 1.5586830000029295
+      },
+      "sample": "022",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 28.108526077097505,
+          "frames": 619793,
+          "sample_rate": 22050,
+          "sha256": "b86609350de2b808a5f283a49bafb43b8378c91aa92dcccd36f0e98cd405e178"
+        },
+        "candidate_count": 101,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.5906432748538012,
+        "candidate_union_all_count": 215,
+        "canonical_to_score_count_ratio": 0.9707602339181286,
+        "canonical_transcription_count": 166,
+        "copy_event_count": 0,
+        "decoded_event_count": 101,
+        "deleted_score_event_count": 65,
+        "mapped_event_count": 97,
+        "mapped_score_coverage": 0.6198830409356725,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 97
+        },
+        "path_score": 38.68315887451172,
+        "retained_candidate_count": 101,
+        "score_event_count": 171,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\023.npz",
+        "frozen_copy_sha256": "ea87be6a4230c271c66d550d7b16ac8b72e1bbe96644c3f11ca1e2973ec66823",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "b86609350de2b808a5f283a49bafb43b8378c91aa92dcccd36f0e98cd405e178"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\023\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "fff48de2866d7d55bdf34212b9cc6a7e89ca74970bea39fbc6ef25d3e5ab1a7f",
+        "v2": "fe35162fb82547425e4232f6dd1af630b8b59296ff36d5164af2c0fb7182c991",
+        "v3": "f43ed8922a113e719bab25ed73740a22dfad16bb48dc49e8351607cea9ffeefc",
+        "v3_balanced": "b824c1131d1e2434ced434712be3ae2c39fccea3a89edcad20e4cb948e57e52a"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\023.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\023.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\023.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\023.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.5783336000022246,
+        "decode_and_heads": 1.6314452000005986,
+        "features": 0.3425282999960473,
+        "total": 2.5802523999955156
+      },
+      "sample": "023",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 14.315873015873017,
+          "frames": 315665,
+          "sample_rate": 22050,
+          "sha256": "e72daf218e8840c4111ab91a3e4b7a947c00215f8dba4903ccfb513dbfdbd1bc"
+        },
+        "candidate_count": 70,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8235294117647058,
+        "candidate_union_all_count": 105,
+        "canonical_to_score_count_ratio": 0.9647058823529412,
+        "canonical_transcription_count": 82,
+        "copy_event_count": 22,
+        "decoded_event_count": 70,
+        "deleted_score_event_count": 34,
+        "mapped_event_count": 60,
+        "mapped_score_coverage": 0.8352941176470589,
+        "operations": {
+          "EXTRA": 10,
+          "MATCH": 60
+        },
+        "path_score": 18.200420379638672,
+        "retained_candidate_count": 70,
+        "score_event_count": 85,
+        "unmapped_event_count": 10
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\024.npz",
+        "frozen_copy_sha256": "c7d32161a8cf82cf6a8468385a35c015ee3a1633a1e0af7f5670c71ff5062342",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "e72daf218e8840c4111ab91a3e4b7a947c00215f8dba4903ccfb513dbfdbd1bc"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\024\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "1c2ff78c4abf89c8627b8343e6e2553c9200bac90efeff70aad468773a7e6e2a",
+        "v2": "88e71719f3f05a940ebc334dcadfee0153e5dc1d112fa3196b5adc19f3a4c0e8",
+        "v3": "1593e387245cb27146031d5fb7ac754bf56a1ae302c4698fb923698f0e6d14a7",
+        "v3_balanced": "b39f236842b07cf63517cde0fb87636b05551fc3600401a340a7650b9670d1f0"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\024.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\024.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\024.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\024.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.20525400000042282,
+        "decode_and_heads": 1.0936438999997335,
+        "features": 0.17378170000301907,
+        "total": 1.498210999998264
+      },
+      "sample": "024",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 17.218367346938777,
+          "frames": 379665,
+          "sample_rate": 22050,
+          "sha256": "c4ff0214a49280c5744f45bb27815f378a76fa519a0796dd9d61940b949f69b5"
+        },
+        "candidate_count": 90,
+        "candidate_pitch_in_score_ratio": 0.9888888888888889,
+        "candidate_to_score_count_ratio": 0.9183673469387755,
+        "candidate_union_all_count": 116,
+        "canonical_to_score_count_ratio": 0.9693877551020408,
+        "canonical_transcription_count": 95,
+        "copy_event_count": 31,
+        "decoded_event_count": 90,
+        "deleted_score_event_count": 39,
+        "mapped_event_count": 84,
+        "mapped_score_coverage": 0.8877551020408163,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 83,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 48.89305114746094,
+        "retained_candidate_count": 90,
+        "score_event_count": 98,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\025.npz",
+        "frozen_copy_sha256": "412cc9ea4c045ef37018893bba326e63bb2ad727c463793f56799e636aa5db42",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "c4ff0214a49280c5744f45bb27815f378a76fa519a0796dd9d61940b949f69b5"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\025\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "7dfcb9885c00f0ffe8842262aeb98050d6ffb792fa8f3598a87d5da0beb1b6cc",
+        "v2": "e243544f00adcffdea59697d7d1865097a5fc01c9843bc8529bcacfc06638248",
+        "v3": "2de27a66b2b2c8c24175e8bd3204ed99a5290cd79a393028ca3c4317e5e20568",
+        "v3_balanced": "435c3ead457fdc478c031e3c7ad99ebd6a7d88e506c5716f43138442ec59956d"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\025.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\025.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\025.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\025.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.22930609999457374,
+        "decode_and_heads": 1.3273670999988099,
+        "features": 0.22326259999681497,
+        "total": 1.7960706000012578
+      },
+      "sample": "025",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 65.98027210884354,
+          "frames": 1454865,
+          "sample_rate": 22050,
+          "sha256": "7e3ba2fef0e5afd09f12f10af4dbad526df08968b079705321839a7f32a372df"
+        },
+        "candidate_count": 136,
+        "candidate_pitch_in_score_ratio": 0.9926470588235294,
+        "candidate_to_score_count_ratio": 1.1623931623931625,
+        "candidate_union_all_count": 195,
+        "canonical_to_score_count_ratio": 1.0769230769230769,
+        "canonical_transcription_count": 126,
+        "copy_event_count": 10,
+        "decoded_event_count": 136,
+        "deleted_score_event_count": 10,
+        "mapped_event_count": 116,
+        "mapped_score_coverage": 0.9145299145299145,
+        "operations": {
+          "EXTRA": 20,
+          "MATCH": 116
+        },
+        "path_score": 53.464820861816406,
+        "retained_candidate_count": 136,
+        "score_event_count": 117,
+        "unmapped_event_count": 20
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\027.npz",
+        "frozen_copy_sha256": "1b2b2b11e103dfa10690abec31ea0cfaf20e225fd626726478282ed2be7565b8",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "7e3ba2fef0e5afd09f12f10af4dbad526df08968b079705321839a7f32a372df"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\027\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "beaa6ee49057a4db85098e865316217d38fbb2dd15293b846dc7d21c7baa7942",
+        "v2": "6abc4b9d0e1cb5e36d981db8cb0a7e92fc31e9e3a11f5ac73c93ebdccd7cc0ca",
+        "v3": "ddcded76eb8ce47af20bd0906bb57ed09cc4d023cd77b0dd91f7cf665906d347",
+        "v3_balanced": "fff9b1b277388d72d9ea7f33e5065c078e540f684674a04c79ca098430deae9e"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\027.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\027.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\027.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\027.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.7836755000025732,
+        "decode_and_heads": 2.1662880000003497,
+        "features": 0.6104885000022477,
+        "total": 3.5806052000043564
+      },
+      "sample": "027",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 27.31904761904762,
+          "frames": 602385,
+          "sample_rate": 22050,
+          "sha256": "8bec1e10e841e120225ac4c559f439e8662aa14050d93960d9ba3dc487f00b27"
+        },
+        "candidate_count": 72,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.9863013698630136,
+        "candidate_union_all_count": 94,
+        "canonical_to_score_count_ratio": 1.0,
+        "canonical_transcription_count": 73,
+        "copy_event_count": 38,
+        "decoded_event_count": 72,
+        "deleted_score_event_count": 41,
+        "mapped_event_count": 70,
+        "mapped_score_coverage": 0.9178082191780822,
+        "operations": {
+          "EXTRA": 2,
+          "MATCH": 70
+        },
+        "path_score": 45.655914306640625,
+        "retained_candidate_count": 72,
+        "score_event_count": 73,
+        "unmapped_event_count": 2
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\028.npz",
+        "frozen_copy_sha256": "cb953a5919abb0a610a547c0a6e2e9b79471444d629e85cafad3e631f6d5048b",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8bec1e10e841e120225ac4c559f439e8662aa14050d93960d9ba3dc487f00b27"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\028\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "9f654662f03204a7b947456e8df578ef23074c1e09e08f3c14e60565d0a2438e",
+        "v2": "c0f7720c0a3db455b742f2d9bb13038250a0af92dc75b5fa6246cd6d023beb52",
+        "v3": "bd0d706a07234e208714ea0a2160cc0226f007b95d9e8e78b074099d97f2a184",
+        "v3_balanced": "2fa0078132d42abb8a3a96481e49810f73945862b25762492f70868bb1b2b81a"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\028.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\028.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\028.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\028.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.2954974999956903,
+        "decode_and_heads": 1.2007732999991276,
+        "features": 0.31903719999536406,
+        "total": 1.839133599998604
+      },
+      "sample": "028",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 26.993968253968255,
+          "frames": 595217,
+          "sample_rate": 22050,
+          "sha256": "75c7ad3ca2a121a399639313a45314c632c2cd1fc2683b0e357eeb47e1d71475"
+        },
+        "candidate_count": 119,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.0625,
+        "candidate_union_all_count": 140,
+        "canonical_to_score_count_ratio": 0.9821428571428571,
+        "canonical_transcription_count": 110,
+        "copy_event_count": 65,
+        "decoded_event_count": 119,
+        "deleted_score_event_count": 64,
+        "mapped_event_count": 113,
+        "mapped_score_coverage": 0.8839285714285714,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 113
+        },
+        "path_score": 80.04167175292969,
+        "retained_candidate_count": 119,
+        "score_event_count": 112,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\029.npz",
+        "frozen_copy_sha256": "e50288fd2f6108f209ddd59a685328e5d39db711a59a00dfad405786b0604a32",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "75c7ad3ca2a121a399639313a45314c632c2cd1fc2683b0e357eeb47e1d71475"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\029\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "09d3dca1520cfae3c1a80e02bd86fbdc8e1b6fd8f5412924e5fc58a76894166d",
+        "v2": "f85ea4c4f0fb910da23ed67f96f4140fedb61da96e3119cc1459b8b5397df249",
+        "v3": "64b3e79dcf9e68b55920aff237cb9bb23de345249dadee6ed4aeb2b64dd01364",
+        "v3_balanced": "3ae1e63e588894316b76ec2231674237e00bdf297cb995d38c42d73940313c3e"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\029.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\029.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\029.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\029.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.37288429999898653,
+        "decode_and_heads": 1.7051094999987981,
+        "features": 0.33554600000206847,
+        "total": 2.4320806999967317
+      },
+      "sample": "029",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 31.98625850340136,
+          "frames": 705297,
+          "sample_rate": 22050,
+          "sha256": "893dbc456f8d3c307f854b3b1c86696aa60bdb12fd94ac6a840ac0d1df4b437a"
+        },
+        "candidate_count": 144,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8275862068965517,
+        "candidate_union_all_count": 227,
+        "canonical_to_score_count_ratio": 1.0747126436781609,
+        "canonical_transcription_count": 187,
+        "copy_event_count": 10,
+        "decoded_event_count": 144,
+        "deleted_score_event_count": 34,
+        "mapped_event_count": 141,
+        "mapped_score_coverage": 0.8160919540229885,
+        "operations": {
+          "EXTRA": 3,
+          "MATCH": 141
+        },
+        "path_score": 104.67967224121094,
+        "retained_candidate_count": 144,
+        "score_event_count": 174,
+        "unmapped_event_count": 3
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\031.npz",
+        "frozen_copy_sha256": "41b88d389b9e05cfd8e3e79854dad9ce9a351e4c3c693a8252db2034fc84ac4e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "893dbc456f8d3c307f854b3b1c86696aa60bdb12fd94ac6a840ac0d1df4b437a"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\031\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "67bd3540afd5d58b31cceeac0f63200579ce050818d824d1935e795bc9d826c7",
+        "v2": "67390a18a1aebeddc4ebf9bd348ac143975ebaa3baf10c3fb66a20238d3cc8f9",
+        "v3": "1a88fb054504cd643f7b43c493e3f465f56a4159e9cae395f39954b889cd3b22",
+        "v3_balanced": "04361d830b29f4765f35327f84780ded8722852b9d71fcf81820f1c0c836505f"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\031.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\031.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\031.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\031.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.6482499999983702,
+        "decode_and_heads": 1.9565494999988005,
+        "features": 0.3655072999972617,
+        "total": 2.9955598000015016
+      },
+      "sample": "031",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 32.31133786848073,
+          "frames": 712465,
+          "sample_rate": 22050,
+          "sha256": "fbe391490f3915a4b97942ee073d6fcfcaf17970a72e3d701448f76d181b7d48"
+        },
+        "candidate_count": 129,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8431372549019608,
+        "candidate_union_all_count": 183,
+        "canonical_to_score_count_ratio": 1.065359477124183,
+        "canonical_transcription_count": 163,
+        "copy_event_count": 0,
+        "decoded_event_count": 129,
+        "deleted_score_event_count": 14,
+        "mapped_event_count": 125,
+        "mapped_score_coverage": 0.9084967320261438,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 125
+        },
+        "path_score": 102.463623046875,
+        "retained_candidate_count": 129,
+        "score_event_count": 153,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\032.npz",
+        "frozen_copy_sha256": "1096134af25a09df33108a0ebd2da7007980af6d4cdc3a13850022ffb87f9517",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "fbe391490f3915a4b97942ee073d6fcfcaf17970a72e3d701448f76d181b7d48"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\032\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "2c2f61c814fd6f0a5e545f53c478c26ee2e59aa95c0ab5755ebf18da3184f6a3",
+        "v2": "c64fb0a9df8fb13eba61edc781a9b83a2e4157ce71e32a3466098fe34a3f825b",
+        "v3": "d1ed3f0a9861f0d86aeccb02fee4225667b7bfa5968bc7757999ced8cc427aff",
+        "v3_balanced": "879971084acb8867a30e0ef61113244b59c70af4ca4258f3f3b4d0bbc07b7856"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\032.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\032.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\032.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\032.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.5073061000002781,
+        "decode_and_heads": 1.8598779999956605,
+        "features": 0.3318054000046686,
+        "total": 2.7139188000001013
+      },
+      "sample": "032",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 29.6178231292517,
+          "frames": 653073,
+          "sample_rate": 22050,
+          "sha256": "c07f0b75f3174b53346a525ce33720da104c912ed46bc322bae490ef9345a77e"
+        },
+        "candidate_count": 118,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.7712418300653595,
+        "candidate_union_all_count": 168,
+        "canonical_to_score_count_ratio": 0.9869281045751634,
+        "canonical_transcription_count": 151,
+        "copy_event_count": 0,
+        "decoded_event_count": 118,
+        "deleted_score_event_count": 21,
+        "mapped_event_count": 117,
+        "mapped_score_coverage": 0.8627450980392157,
+        "operations": {
+          "EXTRA": 1,
+          "MATCH": 117
+        },
+        "path_score": 89.14907836914062,
+        "retained_candidate_count": 118,
+        "score_event_count": 153,
+        "unmapped_event_count": 1
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\033.npz",
+        "frozen_copy_sha256": "7843812c05e49bc9faaba2412cd882308b2deca72291d2e4e647262b829f8b06",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "c07f0b75f3174b53346a525ce33720da104c912ed46bc322bae490ef9345a77e"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\033\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "5f3dabad3d8c65d2eb74e3f6668feec7743fcaaeb1f426420750afdf289c0082",
+        "v2": "1cf8220757e1a47756182bc680267b09ecb79a4142269ae357eb7d4160a648e3",
+        "v3": "701c411fcdda2b44d237dd2d2288000d791f99ae0e9ee7d6b867b9fc46f5871a",
+        "v3_balanced": "3d17bc48ea5dc365d1b94bb8f903377ffb7b7055a1de43443896291e49c9c7de"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\033.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\033.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\033.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\033.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.517829399999755,
+        "decode_and_heads": 1.6054122999994433,
+        "features": 0.32175529999949504,
+        "total": 2.4599047000010614
+      },
+      "sample": "033",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 38.51106575963719,
+          "frames": 849169,
+          "sample_rate": 22050,
+          "sha256": "8d0fdca1b5ba287cbb5b70e6796f675e5e50f011bdfdd3c046ed2fb58e17b873"
+        },
+        "candidate_count": 158,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.6638655462184874,
+        "candidate_union_all_count": 305,
+        "canonical_to_score_count_ratio": 1.084033613445378,
+        "canonical_transcription_count": 258,
+        "copy_event_count": 48,
+        "decoded_event_count": 158,
+        "deleted_score_event_count": 120,
+        "mapped_event_count": 153,
+        "mapped_score_coverage": 0.6428571428571429,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 153
+        },
+        "path_score": 60.60202407836914,
+        "retained_candidate_count": 158,
+        "score_event_count": 238,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\035.npz",
+        "frozen_copy_sha256": "652d10277e8db59acdcb0b9d184fcf17bd9380a07fa1ed40d94525312e3c235c",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8d0fdca1b5ba287cbb5b70e6796f675e5e50f011bdfdd3c046ed2fb58e17b873"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\035\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "8e684393717f9681a2a0b84e7f531fce9141efe4fe6cb6e9971d7a36402b8b49",
+        "v2": "784eb8dee5aac77c1a518eeebf7c5c0836e85ecade324c7cc42876b02755129d",
+        "v3": "bffc3824a8d86e7d627325713ef84e0349c787947f998e2063eb0bcdb7ffb16c",
+        "v3_balanced": "1ad661fb6fe27bbb9a7eee41b628241ae9d64d4b9af02bedf1d11681f4147d63"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\035.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\035.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\035.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\035.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.9222455000053742,
+        "decode_and_heads": 2.0247184000036214,
+        "features": 0.46151000000099884,
+        "total": 3.4300135000012233
+      },
+      "sample": "035",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 67.79142857142857,
+          "frames": 1494801,
+          "sample_rate": 22050,
+          "sha256": "faf2d1dcc8d827e02d5684bb516e71c3f1edb2e2eded32725ede4cd352920f15"
+        },
+        "candidate_count": 129,
+        "candidate_pitch_in_score_ratio": 0.9922480620155039,
+        "candidate_to_score_count_ratio": 1.1944444444444444,
+        "candidate_union_all_count": 198,
+        "canonical_to_score_count_ratio": 1.1296296296296295,
+        "canonical_transcription_count": 122,
+        "copy_event_count": 58,
+        "decoded_event_count": 129,
+        "deleted_score_event_count": 49,
+        "mapped_event_count": 117,
+        "mapped_score_coverage": 0.9629629629629629,
+        "operations": {
+          "EXTRA": 12,
+          "MATCH": 117
+        },
+        "path_score": 62.488037109375,
+        "retained_candidate_count": 129,
+        "score_event_count": 108,
+        "unmapped_event_count": 12
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\037.npz",
+        "frozen_copy_sha256": "d0a7c1d280f8b6f4a5b6daace543e5cb41399c10be09bbcbcd7bb6c9cbf33a51",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "faf2d1dcc8d827e02d5684bb516e71c3f1edb2e2eded32725ede4cd352920f15"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\037\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "734a6e0eb44c654fb1feefaf2912ccf9f680ed1f3012d07cb7fe11adf1fca380",
+        "v2": "c6fa1cc9a96ee8638a2aa8daaa1d7b60dfbcc5f7fc88d94cb68989490b2b9079",
+        "v3": "cfe269aad03a4f359d7fbcd71d05c21a8c3e7f29063bab4e8efc189d010d971f",
+        "v3_balanced": "5beaca2eaeb06b934b32e16df2632ee296b5a13e26871de8048a84920d325335"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\037.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\037.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\037.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\037.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 1.1088414000041666,
+        "decode_and_heads": 1.9510006999989855,
+        "features": 0.6701901999986148,
+        "total": 3.7491055999998935
+      },
+      "sample": "037",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 27.551247165532878,
+          "frames": 607505,
+          "sample_rate": 22050,
+          "sha256": "33b54a3cdb75ef2f4bd08667c8f4e1016982edab13e6d08957469bab07a81b54"
+        },
+        "candidate_count": 103,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.6242424242424243,
+        "candidate_union_all_count": 215,
+        "canonical_to_score_count_ratio": 1.0363636363636364,
+        "canonical_transcription_count": 171,
+        "copy_event_count": 17,
+        "decoded_event_count": 103,
+        "deleted_score_event_count": 75,
+        "mapped_event_count": 102,
+        "mapped_score_coverage": 0.6424242424242425,
+        "operations": {
+          "EXTRA": 1,
+          "MATCH": 102
+        },
+        "path_score": 55.84091567993164,
+        "retained_candidate_count": 103,
+        "score_event_count": 165,
+        "unmapped_event_count": 1
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\038.npz",
+        "frozen_copy_sha256": "99a02f2df4fd2cbcf3b7eb0033140ebda00a7ff6e40d0981622cf6705b1e3e4e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "33b54a3cdb75ef2f4bd08667c8f4e1016982edab13e6d08957469bab07a81b54"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\038\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "f65e7873198bbd09936fc66e53fd2970df36e7b135536d5a37f22cf4d2906ac0",
+        "v2": "9ade1dd9e5a5d336bf1d3201e97e8ba4790abac66deb703e320636588a1d273e",
+        "v3": "8257297af758c8c9f2e295840485cf893478b7482e66e7bb7230e1a378cfa370",
+        "v3_balanced": "3bb83bb424277e236d85065708213a75a0adb69455153f28f7a3f3714376b358"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\038.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\038.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\038.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\038.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.6328446999978041,
+        "decode_and_heads": 1.4480819000018528,
+        "features": 0.30502790000173263,
+        "total": 2.408235800001421
+      },
+      "sample": "038",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 31.22,
+          "frames": 688401,
+          "sample_rate": 22050,
+          "sha256": "8bb88bc8744de4e8f40594ab3bab4bae946639ee6a418086bec5e3e22eb20089"
+        },
+        "candidate_count": 123,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.6949152542372882,
+        "candidate_union_all_count": 229,
+        "canonical_to_score_count_ratio": 1.0564971751412429,
+        "canonical_transcription_count": 187,
+        "copy_event_count": 28,
+        "decoded_event_count": 123,
+        "deleted_score_event_count": 84,
+        "mapped_event_count": 122,
+        "mapped_score_coverage": 0.6384180790960452,
+        "operations": {
+          "EXTRA": 1,
+          "MATCH": 122
+        },
+        "path_score": 69.6429672241211,
+        "retained_candidate_count": 123,
+        "score_event_count": 177,
+        "unmapped_event_count": 1
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\039.npz",
+        "frozen_copy_sha256": "9e19a9ee29f2d1486bb5532ed160b430347ebc2f8397ea49a391c82a7ba03976",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8bb88bc8744de4e8f40594ab3bab4bae946639ee6a418086bec5e3e22eb20089"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\039\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "c9f870a86b05de3a643c6ff9c17fb06ba1bd5c85341667b34fcbcb326fbfa515",
+        "v2": "9b28607d68651e5d8e0fdddc0918dbfb4425d373eb1e1461b11c3f06f104839b",
+        "v3": "8dee4b6faf8d7ae152824a5ad2418d66ff626797d07540b26c9fc34c8c1e8147",
+        "v3_balanced": "6ad0a6c5d632446007c203f17a00e6c04cc9862f4b37c026b172ac15352dc3e9"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\039.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\039.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\039.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\039.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.573552900001232,
+        "decode_and_heads": 1.9665238999950816,
+        "features": 0.3439673999964725,
+        "total": 2.9015499999950407
+      },
+      "sample": "039",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 13.642494331065759,
+          "frames": 300817,
+          "sample_rate": 22050,
+          "sha256": "f9fa7b26ababedd10e9b3d7fc34445a0e0aa7a13f9dde1296b0b446ade275262"
+        },
+        "candidate_count": 71,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8352941176470589,
+        "candidate_union_all_count": 110,
+        "canonical_to_score_count_ratio": 0.9647058823529412,
+        "canonical_transcription_count": 82,
+        "copy_event_count": 30,
+        "decoded_event_count": 71,
+        "deleted_score_event_count": 45,
+        "mapped_event_count": 65,
+        "mapped_score_coverage": 0.7529411764705882,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 65
+        },
+        "path_score": 30.002731323242188,
+        "retained_candidate_count": 71,
+        "score_event_count": 85,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\feature-cache\\040.npz",
+        "frozen_copy_sha256": "4af02f0436e5e4ebc56e05605d73ba1527bb30afcf55dfe8ccc2ab14656f1460",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "f9fa7b26ababedd10e9b3d7fc34445a0e0aa7a13f9dde1296b0b446ade275262"
+        },
+        "sample_feature_cache_opened": true,
+        "source_kind": "sample_hash_validated_cache",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\040\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "rules": "a908439d93b5e457828b6dd46df425784012d879834fd630cbf28a1dc27bd384",
+        "v2": "58cd0024a541176aee8102cb843fac3a67de802ec659a4d4ec1779191008b024",
+        "v3": "91f8250e6f68e2caa561379287c2d5ecce701fdbbde2d21e823de9d9a1015b91",
+        "v3_balanced": "a38f6bdf7a1883cad9d4887de3e96f2da5af1cecc8819012b96f31c44cd79a5b"
+      },
+      "paths": {
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\rules\\040.json",
+        "v2": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v2\\040.json",
+        "v3": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3\\040.json",
+        "v3_balanced": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-pad2-opgate-20260920\\predictions\\v3_balanced\\040.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.20119809999596328,
+        "decode_and_heads": 1.0298566999990726,
+        "features": 0.16142989999934798,
+        "total": 1.4160421000051429
+      },
+      "sample": "040",
+      "status": "succeeded"
+    }
+  ],
+  "schema_version": "align-datacreate-pad2-opgate-freeze-v1",
+  "training_resource_status": {
+    "active_gpu_training": [],
+    "gpu_lease": null,
+    "gpu_lease_active": false,
+    "gpu_training_active": false,
+    "leases": {
+      "gpu_training": {
+        "claimed_utc": "2026-09-19T05:10:41.659054+00:00",
+        "command": [
+          "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\train_drop_emit_lattice_v1.py"
+        ],
+        "heartbeat_utc": "2026-09-19T05:10:41.659054+00:00",
+        "lease_id": "28d53993-d782-45a8-86a2-9e3882b9171b",
+        "metadata": {
+          "device": "cuda",
+          "epochs": 2
+        },
+        "pid": 49244,
+        "track": "orn-v2-drop-emit-lattice-train"
+      }
+    },
+    "ownership": {
+      "gpu_physical_pids": [
+        1888,
+        2408,
+        2648,
+        3088,
+        5376,
+        5476,
+        6248,
+        11096,
+        12944,
+        14144,
+        14308,
+        14784,
+        14816,
+        14896,
+        14940,
+        16520,
+        16544,
+        16776,
+        17624,
+        18324,
+        18600,
+        20596,
+        21044,
+        21100,
+        21320,
+        22172,
+        24168,
+        24516,
+        32052,
+        33968,
+        38540
+      ],
+      "gpu_reserved": [],
+      "heavy_cpu_pids": [],
+      "paused_pids": [],
+      "waiting_or_stalled_pids": []
+    },
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+    "policy": {
+      "gpu_exclusive": true,
+      "max_heavy_cpu_jobs_during_gpu_training": 1,
+      "max_simultaneous_gpu_trainers": 1,
+      "physical_cpu_reserve_for_os": 2,
+      "recommended_loader_workers": 4,
+      "recommended_prefetch": 16,
+      "threads_per_loader_worker": 1
+    },
+    "recommended_concurrency": {
+      "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+      "current_heavy_jobs": 0,
+      "oversubscribed": false
+    },
+    "schema_version": "align-training-resource-status-v1",
+    "updated_utc": "2026-09-19T05:10:41.659054+00:00"
+  }
+}

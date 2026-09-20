@@ -108,6 +108,7 @@ def evaluate_note_lists(
     *,
     onset_tolerance_sec: float = 0.050,
 ) -> dict[str, float | int | None]:
+    """Acoustic onset/pitch diagnostic. Not official model F1."""
     pred = [_as_note(n) for n in predicted]
     gold = [_as_note(n) for n in target]
     pairs = match_notes(pred, gold, onset_tolerance_sec=onset_tolerance_sec)

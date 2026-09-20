@@ -12,11 +12,11 @@ from torch import Tensor, nn
 
 from alignmodel.config import MELODY_ALIGN_TYPES, MELODY_NOTE_CLASSES, ModelConfig
 from alignmodel.dataset import list_sample_dirs
-from alignmodel.melody import gold_melodies_from_labels, load_bundle_notes
+from alignmodel.melody import load_bundle_notes, official_label_metrics
 from alignmodel.melody_model import class_index
 from alignmodel.model import AudioEncoder, HierarchicalFusion, ScoreEncoder
 from alignmodel.types import schema12_document
-from datacreate.melody import ScoreSoundingNote, WeakMelody, match_melodies_detail, padded_melody
+from datacreate.melody import ScoreSoundingNote, padded_melody
 
 DECODE_PAD_NOTES = 2
 MATCH_I = class_index("match")
@@ -228,17 +228,20 @@ def val_like_dirs(root: Path, n: int = 100, seed: int = 365) -> list[Path]:
     return shuffled[:n_val][:n]
 
 
-def official_set_metrics(gold_labels: list[dict], pred_labels: list[dict]) -> dict[str, float]:
-    gold = gold_melodies_from_labels(gold_labels)
-    pred = [WeakMelody(pitches=[int(p) for p in (lab.get("pitches") or [])]) for lab in pred_labels]
-    pred = [m for m in pred if m.pitches]
-    detail = match_melodies_detail(gold, pred)
+def official_set_metrics(gold_labels: list[dict], pred_labels: list[dict], score_event_count: int | None = None) -> dict[str, float]:
+    metrics = official_label_metrics(
+        gold_labels, pred_labels, score_event_count=score_event_count
+    )
     return {
-        "set_f1": float(detail["f1"]),
-        "precision": float(detail["precision"]),
-        "recall": float(detail["recall"]),
-        "n_pred": float(len(pred)),
-        "n_gold": float(len(gold)),
+        "note_wise_f1": float(metrics["f1"]),
+        "set_f1": float(metrics["f1"]),
+        "precision": float(metrics["precision"]),
+        "recall": float(metrics["recall"]),
+        "credit": float(metrics["credit"]),
+        "n_pred": float(metrics["n_pred"]),
+        "n_gold": float(metrics["n_gold"]),
+        "legacy_pitch_similarity_f1": float(metrics["legacy_pitch_similarity_f1"]),
+        "status": metrics["status"],
     }
 
 
@@ -271,21 +274,40 @@ def infer_and_eval_holdout(
             pred_path,
         )
         gold = load_gold_labels(sample)
-        metrics = official_set_metrics(gold, result["labels"])
+        notes = load_bundle_notes(sample)
+        metrics = official_set_metrics(gold, result["labels"], score_event_count=len(notes) or None)
         rows.append({"sample": sample.name, **metrics})
         if i == 1 or i % 20 == 0:
             print(
-                f"  holdout {i}/{len(samples)} f1={metrics['set_f1']:.3f} "
+                f"  holdout {i}/{len(samples)} f1={metrics['note_wise_f1']:.3f} "
                 f"n_pred={metrics['n_pred']:.0f} n_gold={metrics['n_gold']:.0f}",
                 flush=True,
             )
     n = max(len(rows), 1)
+    available = [row for row in rows if row.get("status") == "available"]
+    credit = sum(float(row.get("credit") or 0.0) for row in available)
+    predicted = sum(float(row["n_pred"]) for row in available)
+    gold = sum(float(row["n_gold"]) for row in available)
+    if not predicted and not gold:
+        precision = recall = f1 = 1.0 if available else 0.0
+    else:
+        precision = credit / predicted if predicted else 0.0
+        recall = credit / gold if gold else 0.0
+        f1 = (
+            2.0 * precision * recall / (precision + recall)
+            if precision + recall
+            else 0.0
+        )
     return {
         "n_samples": len(rows),
-        "set_f1": round(sum(r["set_f1"] for r in rows) / n, 4),
-        "precision": round(sum(r["precision"] for r in rows) / n, 4),
-        "recall": round(sum(r["recall"] for r in rows) / n, 4),
+        "note_wise_f1": round(f1, 4),
+        "set_f1": round(f1, 4),
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
         "mean_n_pred": round(sum(r["n_pred"] for r in rows) / n, 3),
         "mean_n_gold": round(sum(r["n_gold"] for r in rows) / n, 3),
+        "legacy_pitch_similarity_f1": round(
+            sum(r["legacy_pitch_similarity_f1"] for r in rows) / n, 4
+        ),
         "samples": rows,
     }

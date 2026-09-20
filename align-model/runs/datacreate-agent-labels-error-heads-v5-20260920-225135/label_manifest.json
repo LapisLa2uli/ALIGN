@@ -1,0 +1,2148 @@
+{
+  "annotator_id": "cursor_agent_error_heads_v5",
+  "archived_previous_agent_labels": 94,
+  "created_utc": "2026-09-20T14:56:44.207842+00:00",
+  "failed": 0,
+  "failures": [],
+  "human_labels_modified": false,
+  "kept_labels_by_type": {
+    "extra_note": 289,
+    "missed_note": 639,
+    "repetition": 79,
+    "rhythm_error": 6,
+    "wrong_note": 35
+  },
+  "metadata": {
+    "decode_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v5\\decode_config.json",
+    "decode_config_sha256": "773d92c768b458d1f1144ca29c2c56b3876ac1a1148af33bb13ba9e9e7608ccc",
+    "direct_source": "selector",
+    "direct_weight": 1.0,
+    "error_heads_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+    "error_heads_checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+    "joint_checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+    "joint_checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+    "selector": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v5\\selector.json",
+    "selector_sha256": "861dc72768b6c8774751c906ccf63923eb9705c8d0906a2187d0a4149fbdf83d"
+  },
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "output_filename": "labels_agent.json",
+  "paper_updated": false,
+  "policy": "hybrid_max_f1",
+  "sample_count": 94,
+  "samples": [
+    {
+      "agent_labels_sha256": "f19fdb8930ebcdd15c8b358efff85e47938fea3a7ab06bb89d490c227ad4ea4f",
+      "counts_by_type": {
+        "extra_note": 3
+      },
+      "label_count": 3,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\001.json",
+      "prediction_sha256": "292dc737436d5b177ca2a6ef3e62b9cafe0eaab184a9d3ee143a93eca1633745",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\001.json",
+        "label_count": 3,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "001"
+      },
+      "runtime_seconds": 14.43412260000332,
+      "sample": "001",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "e384b5fe821be2517a714dc11b1f9b29298273c1a45a4a68185a1e18df34f614",
+      "counts_by_type": {
+        "extra_note": 4,
+        "repetition": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\002.json",
+      "prediction_sha256": "a7ef6dfab21bb3de789f29261dd94e58175c9a6c0899497b5cb20fcf3b48e1f4",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\002.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "002"
+      },
+      "runtime_seconds": 4.374824999998964,
+      "sample": "002",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "5dac60464ae44ffed7767587bda36e89a73434e7d4eda0ab53dbc98548461c3d",
+      "counts_by_type": {
+        "extra_note": 3,
+        "missed_note": 7,
+        "repetition": 1
+      },
+      "label_count": 11,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\003.json",
+      "prediction_sha256": "7a50a0fed38772d4a1d4c3208a8c05a172f116aa1ffe7c3ca97573c9d8a071ee",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\003.json",
+        "label_count": 11,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "003"
+      },
+      "runtime_seconds": 1.9733181000046898,
+      "sample": "003",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "4206708c5e5a8f716a1519cf65d933a1c3ba402230d3a6a431cbcdf966907560",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "label_count": 6,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\004.json",
+      "prediction_sha256": "8755ebe76e2c6da7d40acddf849c1677f3c9be59906fa57e334bba37c01642a4",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\004.json",
+        "label_count": 6,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "004"
+      },
+      "runtime_seconds": 2.914754899997206,
+      "sample": "004",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "1110dc62bcd093a825c9d48602ac9acde4c24297fedc81b6841446ffe07d1705",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 15,
+        "repetition": 1
+      },
+      "label_count": 20,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\005.json",
+      "prediction_sha256": "c436bea82fbacf8bba191f5a4b044ccafe20ea1fbfd12b990db4b2edffc1895c",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\005.json",
+        "label_count": 20,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "005"
+      },
+      "runtime_seconds": 3.7947724999976344,
+      "sample": "005",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "f849a9dfa826953dd6359417ff354cb351b8326226a1fcf636fc7d0777b65937",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 13
+      },
+      "label_count": 17,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\006.json",
+      "prediction_sha256": "caf4f1c936c92d67ee217ae45feef313f2eae652bac57330b03b29aa876bcdf7",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\006.json",
+        "label_count": 17,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "006"
+      },
+      "runtime_seconds": 2.912833700000192,
+      "sample": "006",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "ee7d17c98688bb1294da8dacbd5bb386c751d44bfb3081de28fd98315e8aa91b",
+      "counts_by_type": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\007.json",
+      "prediction_sha256": "3c61beb868f1c143a721de043523d20508ef26452a5eb1033b80da09090ba8a0",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\007.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "007"
+      },
+      "runtime_seconds": 3.1315598000001046,
+      "sample": "007",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "995e21fd508cf8f25c72bc1a3cc49f73607e76d7b4a2eae740dbb1b88d479964",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 1,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 7,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\008.json",
+      "prediction_sha256": "e8641f9584435d7955db272c32f900a90bb08d03084b0b9ec9d27767d1a301a5",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\008.json",
+        "label_count": 7,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "008"
+      },
+      "runtime_seconds": 2.2612929999959306,
+      "sample": "008",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "a09eba22cfa0b49047ab51b5a463c48450cf995e68e6c9d29d421c60e3d75174",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 2,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\009.json",
+      "prediction_sha256": "17586d5cfeb345f699acc25899ad6436d4a0df2e2d83570979bff08b36d92f37",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\009.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "009"
+      },
+      "runtime_seconds": 1.6561178999982076,
+      "sample": "009",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "183d78eb82c5563ca3a015d4f32db31062754b6c3e0a9a4ff7a161dfa0d77b2a",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 22,
+        "repetition": 1
+      },
+      "label_count": 25,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\010.json",
+      "prediction_sha256": "a48678cc3716da68b014d9375e23db33f9f9e08f0c6f3e5cd29f92ce80e50cc5",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\010.json",
+        "label_count": 25,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "010"
+      },
+      "runtime_seconds": 2.9287435000005644,
+      "sample": "010",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "a94c73cc3a1c20e971250fed78ff36b117309bd5aafdf0d69229a94e8f9859a8",
+      "counts_by_type": {
+        "extra_note": 3,
+        "missed_note": 5,
+        "repetition": 1
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\011.json",
+      "prediction_sha256": "a51f19d2f77b5b9c4c9e664c3bc0077be14f4bc7f571e48a14842eb4ace3e52d",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\011.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "011"
+      },
+      "runtime_seconds": 1.9421240000010584,
+      "sample": "011",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "c97ad9cbdda638163ee892c6f505308f8765d0673462af67d6db8576817d3585",
+      "counts_by_type": {
+        "extra_note": 6,
+        "missed_note": 6,
+        "repetition": 1
+      },
+      "label_count": 13,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\012.json",
+      "prediction_sha256": "aa3719e9679c8a8029632dd3290c9181a75e99d1ede66ffd017016ea2e4a0515",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\012.json",
+        "label_count": 13,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "012"
+      },
+      "runtime_seconds": 2.1043838999976288,
+      "sample": "012",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "43b10be76d21b88cb47ee9a02010e8673b5295d549e2f5c3956af3de131cc81d",
+      "counts_by_type": {
+        "extra_note": 5,
+        "missed_note": 11,
+        "repetition": 1
+      },
+      "label_count": 17,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\013.json",
+      "prediction_sha256": "48dd96dec72a8c262eb177cf7dcd06ffcf6c265cf0773a96f597621529eb3553",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\013.json",
+        "label_count": 17,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "013"
+      },
+      "runtime_seconds": 4.98671359999571,
+      "sample": "013",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "bd0b13ce5d4a128f8138b0f5db8b9511ff8c4657e6bcb6b159057a370c98c930",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\014.json",
+      "prediction_sha256": "435f0b665e9180e82a14dfc1e7fffc34dfc8c26a6a33c65263ef50b1fd7a333b",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\014.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "014"
+      },
+      "runtime_seconds": 2.2055627000008826,
+      "sample": "014",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "bd1b2589849438d954931553e96787823e6775426be00ef5ba96400eaf2cf7c8",
+      "counts_by_type": {
+        "extra_note": 7,
+        "missed_note": 3,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 12,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\015.json",
+      "prediction_sha256": "3472ca80c56b28a857ee924fdb8f2c9230bc072778950eeb6ee69165f2044bf9",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\015.json",
+        "label_count": 12,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "015"
+      },
+      "runtime_seconds": 4.097306800002116,
+      "sample": "015",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "8dd6d9c6e55350c8718dd27f752e77635a2da7689f2a8bc0cf5bb693f91c1f0a",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 5,
+        "repetition": 1
+      },
+      "label_count": 7,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\016.json",
+      "prediction_sha256": "90a87118af5c2f784c04ce12662052b9d248927bb01b0cd625cf7aa35e6a25d4",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\016.json",
+        "label_count": 7,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "016"
+      },
+      "runtime_seconds": 1.9227097000039066,
+      "sample": "016",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "90e8d6ac34bfa612fe9df615a2cfc227d98fd029a71cd3a03e33dad6beab1b04",
+      "counts_by_type": {
+        "extra_note": 6,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 8,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\017.json",
+      "prediction_sha256": "8f6b2b540261401a2845669bb4e332ebb12f4a5de1d3377c8316cefaa8340475",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\017.json",
+        "label_count": 8,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "017"
+      },
+      "runtime_seconds": 2.7723236000019824,
+      "sample": "017",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "5d9191097b8106f5d3ea5b8d88830733897747d44145e01f6106d095f05c5c5a",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 14
+      },
+      "label_count": 16,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\018.json",
+      "prediction_sha256": "7290ae51a7a117b2dfbd08c45038c73bc8f89f6c5439e50d8865020929a92369",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\018.json",
+        "label_count": 16,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "018"
+      },
+      "runtime_seconds": 3.0672287000052165,
+      "sample": "018",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "7410f83d875ec19e525d66ea77b2ca0e62bc0451d21edd18a007b48879926ec7",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 10
+      },
+      "label_count": 14,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\019.json",
+      "prediction_sha256": "493b8d963d82c74431f37f7553bdeb31b8f3236a9a864605aa0c5528fe9d4101",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\019.json",
+        "label_count": 14,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "019"
+      },
+      "runtime_seconds": 2.7354860000050394,
+      "sample": "019",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "8b74a5fa20ac6e88a2265e54ace9cc49265d9fb0c92e881c8a061948f59c7304",
+      "counts_by_type": {
+        "missed_note": 22,
+        "repetition": 1
+      },
+      "label_count": 23,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\020.json",
+      "prediction_sha256": "a5cea6833bc2d2dc0f330042ef266264318795a5eed6db7a0366af2e2dc9c5b2",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\020.json",
+        "label_count": 23,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "020"
+      },
+      "runtime_seconds": 3.83764340000198,
+      "sample": "020",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "3e515b74eb5559d69a4b113e58d88f0a23f1a6f1f8d03b10c408e1b3d7b6801b",
+      "counts_by_type": {
+        "extra_note": 8,
+        "repetition": 1
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\021.json",
+      "prediction_sha256": "85094ac829b92d4465b9d4cf6349e59b406971dfceacd946aacd84da956cd507",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\021.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "021"
+      },
+      "runtime_seconds": 2.441777699998056,
+      "sample": "021",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "11885cc049e335589d4eca0badc24217acfe9578cc0691c902ee6c14d46549df",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 5,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\022.json",
+      "prediction_sha256": "d5e57d235c46ae4385612bd326222e9ad9c4af6c7edd0aa255e5758d2c88ba7a",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\022.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "022"
+      },
+      "runtime_seconds": 2.11858139999822,
+      "sample": "022",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "6ec30c61d0f32a224bf6d3b554ced64c07a1fc433d4deadae74bdce2ee6ea2aa",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 23
+      },
+      "label_count": 24,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\023.json",
+      "prediction_sha256": "55ba07b189af84eebea2b918f33aafe48b24043551335fc2da51092d707f5717",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\023.json",
+        "label_count": 24,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "023"
+      },
+      "runtime_seconds": 3.079346300000907,
+      "sample": "023",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "24bf72fe2d499a98982a501ff50afb881f1ab2c9e284a591c8e346b10751d484",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 6,
+        "repetition": 1
+      },
+      "label_count": 11,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\024.json",
+      "prediction_sha256": "501b42a1eb6b69c7431c0ed75c38a408a1673b181a6e9eb96d8d29f1bde00a48",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\024.json",
+        "label_count": 11,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "024"
+      },
+      "runtime_seconds": 1.8697048999965773,
+      "sample": "024",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "835a278f383fa524cdb9891c2290740c89246e3fb0538317fed8248426bd9c95",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "label_count": 6,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\025.json",
+      "prediction_sha256": "079f4c83b4ab5dfb9de73ba040783d1382f7cc2c3fd4d67eed77bec36340b9a8",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\025.json",
+        "label_count": 6,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "025"
+      },
+      "runtime_seconds": 2.1767255000013392,
+      "sample": "025",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "648fc2786e2ec63629e076f704c87ad8c43e88010fd47c3eecc07a0391259392",
+      "counts_by_type": {
+        "extra_note": 6,
+        "missed_note": 21,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 29,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\026.json",
+      "prediction_sha256": "f81e7fc09ed8af44cc71fbd1d341db11c3b1eff66eacbccdf0529f0e6661808e",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\026.json",
+        "label_count": 29,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "026"
+      },
+      "runtime_seconds": 6.324710000000778,
+      "sample": "026",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "61ea8778ee0aa16601229814bff6ef55a1d16a2fafbea8e3d1fbb04b01b318d6",
+      "counts_by_type": {
+        "extra_note": 15,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 17,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\027.json",
+      "prediction_sha256": "d101f3fc3ea868e286fb3cdc618bfa885fe0d68739803666d5e4ddc4e2878c42",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\027.json",
+        "label_count": 17,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "027"
+      },
+      "runtime_seconds": 4.501076600005035,
+      "sample": "027",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "a5d484c66250a0a371c893ef5f5a0e57747454079ada74ec25c7d8b5e98513b7",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\028.json",
+      "prediction_sha256": "3816a0cdf40d99f1cc1a635c502ca8c78a2e82ba439a9d2b761f0d1e7ff5e4f2",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\028.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "028"
+      },
+      "runtime_seconds": 2.111996799998451,
+      "sample": "028",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "d23d6edb2e366937e8fb94ab345ba1a1f5ffb2d7b0118e5d959cebe5677b3900",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 4,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\029.json",
+      "prediction_sha256": "a8999b46b317165b289377b75c9cece5eef080eec2f71709724c33619f930db0",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\029.json",
+        "label_count": 4,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "029"
+      },
+      "runtime_seconds": 3.0810278999997536,
+      "sample": "029",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "6331c0f9b0f597842e8ce68eb1bf504a2c7c7118c64cb334464a0ed1c8419caa",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 22
+      },
+      "label_count": 24,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\030.json",
+      "prediction_sha256": "3617a2dcb640702fd588d6ab2c173edf4e1ca7c9a1133061818b497061a90ee0",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\030.json",
+        "label_count": 24,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "030"
+      },
+      "runtime_seconds": 3.477706700003182,
+      "sample": "030",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "ad61542d70b670eb8f2706130af57e7f2a173e0d8a14588b379245c99de2f2f4",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 15,
+        "repetition": 1
+      },
+      "label_count": 18,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\031.json",
+      "prediction_sha256": "04eaebab1e13374bafc83ff99e25023aad66d0a1c6f76eaefdf993f8e70833f0",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\031.json",
+        "label_count": 18,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "031"
+      },
+      "runtime_seconds": 4.222365200002969,
+      "sample": "031",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "af0eef0467447047539c9a19e4a86e83d3dba98623c8a25dcf9d8061b749ac90",
+      "counts_by_type": {
+        "extra_note": 3,
+        "missed_note": 7
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\032.json",
+      "prediction_sha256": "ea006ab23da1809f72359a2367e524d9ea206da1b00531e62d3fb21b040a84d8",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\032.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "032"
+      },
+      "runtime_seconds": 3.4762553999971715,
+      "sample": "032",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "c9a25b8de6050f05d8bb6ce3127d802478a965bb737432b608049516b7ad4843",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 11
+      },
+      "label_count": 12,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\033.json",
+      "prediction_sha256": "ea2b50885db7c1c91e257bf2a05cc8cf041739ee60580b15ec634fae9835d2ac",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\033.json",
+        "label_count": 12,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "033"
+      },
+      "runtime_seconds": 2.811829000005673,
+      "sample": "033",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "db699b7a32479a207599eea458481774b5b4d91acc3cee588c0f92db1eddb308",
+      "counts_by_type": {
+        "missed_note": 28
+      },
+      "label_count": 28,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\034.json",
+      "prediction_sha256": "99be6813fee04384d15b730af8ae49616a47c9d2127ac768c29be92cd0eccd99",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\034.json",
+        "label_count": 28,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "034"
+      },
+      "runtime_seconds": 3.057052299998759,
+      "sample": "034",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "2224c9e4ea66659b304a3d9d0ba6ade0dce68b7581d05787d48032b6decfcdd3",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 19,
+        "repetition": 1
+      },
+      "label_count": 21,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\035.json",
+      "prediction_sha256": "2feef8cc525af05d2c6046710ce1c76a0ebb893fbf9a28602b743d9343842573",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\035.json",
+        "label_count": 21,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "035"
+      },
+      "runtime_seconds": 4.358649999994668,
+      "sample": "035",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "583d76670c0c6d60f8504a121c3f71993c9a9f15597af863bb0f84fe1ae06c30",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 25,
+        "repetition": 1
+      },
+      "label_count": 27,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\036.json",
+      "prediction_sha256": "3dccc784cd4f1cd3c4af7e120d990f3f8a4b1d589c024d920f339c3e5812d1ea",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\036.json",
+        "label_count": 27,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "036"
+      },
+      "runtime_seconds": 3.931670400001167,
+      "sample": "036",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "8c980cc0ce48219af94a21476805f21b4bc999ce8d7fdf548daa8f9ca041ec7b",
+      "counts_by_type": {
+        "extra_note": 7,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\037.json",
+      "prediction_sha256": "86cf2f60e45ba38a7465b8973917d67020ed9a14dbace3f51d51bbac29bcaddd",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\037.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "037"
+      },
+      "runtime_seconds": 4.408377499996277,
+      "sample": "037",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "614da0f4df91a65622b2427942b50ad56135134fde617b8afa47e3bdb641018e",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 14,
+        "repetition": 1
+      },
+      "label_count": 16,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\038.json",
+      "prediction_sha256": "670b38a16ac28890e87d816dd17192c6606b5bab08aa814aa26eb8a71291aa89",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\038.json",
+        "label_count": 16,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "038"
+      },
+      "runtime_seconds": 2.6293017999996664,
+      "sample": "038",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "24fc30969d622dcf038a156b94f7198967ffeb71a2d73c3390c208e94a57f827",
+      "counts_by_type": {
+        "missed_note": 18,
+        "repetition": 1
+      },
+      "label_count": 19,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\039.json",
+      "prediction_sha256": "ef1900ee119c5339117c3085b76e6de2568f2645ffc704aa915d6543923b295f",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\039.json",
+        "label_count": 19,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "039"
+      },
+      "runtime_seconds": 3.17674370000168,
+      "sample": "039",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "1d80c546c80a5d2f5a927e84a001b28e658f0eacb03a9bf0e33bcb8c50014316",
+      "counts_by_type": {
+        "extra_note": 3,
+        "missed_note": 6,
+        "repetition": 1
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\040.json",
+      "prediction_sha256": "b5bed19064b05734190b9f02b88633d43c7a3e5e1a983c5d1d61299c10accb37",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\040.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "040"
+      },
+      "runtime_seconds": 2.060958699999901,
+      "sample": "040",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "05520ad20909a56a1a48fda603c0b39673674977ed226ac36395c057883913eb",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 4,
+        "repetition": 1
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\041.json",
+      "prediction_sha256": "323c5e4100384add750773a4bfff0020ad60e61edbe7fa6f284d6beb5a90e5da",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\041.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "041"
+      },
+      "runtime_seconds": 2.3805400999990525,
+      "sample": "041",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "e9eaf61864d5db21b8c934f18e403c97691dacd97894a622c1d4db26e12b7900",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 11,
+        "repetition": 1
+      },
+      "label_count": 16,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\042.json",
+      "prediction_sha256": "5b575ec09620d6956879a7338cc556684b6e5959257f723bc80123aeb0c11512",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\042.json",
+        "label_count": 16,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "042"
+      },
+      "runtime_seconds": 4.061563499999465,
+      "sample": "042",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "28c3ec491982b1501f908628ea57a46a86ea8f294aac891a1c76a3c7e0d45837",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 6,
+        "repetition": 1
+      },
+      "label_count": 11,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\043.json",
+      "prediction_sha256": "2b21d09e849ff4a8e46902bbb7125488f21a4a69cbac52bf84253487f8365913",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\043.json",
+        "label_count": 11,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "043"
+      },
+      "runtime_seconds": 4.392568199997186,
+      "sample": "043",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "2518b4f4db07821c2b5c7860adf2b427a947402f6cb11e4317170d72e10b347c",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 5,
+        "repetition": 1
+      },
+      "label_count": 8,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\044.json",
+      "prediction_sha256": "e30487cdce399f39829c3a8a1bcdfea10238da46ad872cf54f92715d33d31b3a",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\044.json",
+        "label_count": 8,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "044"
+      },
+      "runtime_seconds": 2.3144236000007368,
+      "sample": "044",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "fe403ba6bb182796bde8a408e099a914f73a8a1a89803b713655ff73140a18c2",
+      "counts_by_type": {
+        "missed_note": 2
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\045.json",
+      "prediction_sha256": "dff7b8242eeb26cad37739e1899c1d24965813d712e239264d89ad06980f25d1",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\045.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "045"
+      },
+      "runtime_seconds": 1.306464399996912,
+      "sample": "045",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "33d0dd7085b8593dcc7059f07e529fb6ad9764cfb86fca100fd513f88beb8c88",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 8
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\046.json",
+      "prediction_sha256": "1da8645cabf3001a35722e8d49408f3aec898ba13426df1ef2048477d8be06ec",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\046.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "046"
+      },
+      "runtime_seconds": 2.479008000002068,
+      "sample": "046",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "2f4c761cbe1ba78500333aeffd12230fca7ef53ea9a29b622a4421793efee43d",
+      "counts_by_type": {
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\047.json",
+      "prediction_sha256": "0e7407a10c4da2d16027be3c32c9119eb91207f9b4219be9fcd0de7bb56b3221",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\047.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "047"
+      },
+      "runtime_seconds": 2.6859465000015916,
+      "sample": "047",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "4906855a66798cfe3f17e12b11ff386a7b5341435911d63b595e8d716de621e2",
+      "counts_by_type": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\048.json",
+      "prediction_sha256": "12d0f13b7c4c33ee83600ef7d2920adb4a79dcbd7be345bdcd0c528ef6a5683d",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\048.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "048"
+      },
+      "runtime_seconds": 1.7575662000017473,
+      "sample": "048",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "d689ed6ba3aee3a2dce5ef03aac3419709bdcd31d847891022b383523e05e433",
+      "counts_by_type": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\049.json",
+      "prediction_sha256": "7eda9fe83cb33b6d37e2f6ef2b9bcd85178cc2a6f9914dc4f29e6de4fa0c4517",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\049.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "049"
+      },
+      "runtime_seconds": 1.247742699997616,
+      "sample": "049",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "33effb3566d816d95ed9b978b2b6361261ba984e1f438ec1638540ea442c6b80",
+      "counts_by_type": {
+        "extra_note": 4,
+        "repetition": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\050.json",
+      "prediction_sha256": "40607724e958726ac1847cf6faca6ab61e00a08c3c853981d6098630babb124e",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\050.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "050"
+      },
+      "runtime_seconds": 2.4535612000036053,
+      "sample": "050",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "28dccdd6b757e721f5915cf112b050d7510d69d1abac6442febc69927442af1b",
+      "counts_by_type": {
+        "missed_note": 3,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\051.json",
+      "prediction_sha256": "d5e81dff5f6e942544c3931620431c52f0c66139082a6bf468f250ce778cba2f",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\051.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "051"
+      },
+      "runtime_seconds": 1.1165706999963732,
+      "sample": "051",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "78cff3ef1498423d7b98d4473cd57ac900d73229135c387ee8b72bffbcc7612a",
+      "counts_by_type": {
+        "repetition": 1
+      },
+      "label_count": 1,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\052.json",
+      "prediction_sha256": "8e60d4b122530b6c5b7f373975a149202e87466526923097f3544647d6872693",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\052.json",
+        "label_count": 1,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "052"
+      },
+      "runtime_seconds": 0.8977700999967055,
+      "sample": "052",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "f8eebc0c0ddf1e4e5da07bca0d0151c7e472b7c8e2c97b1cb6fc898688e8bd82",
+      "counts_by_type": {
+        "repetition": 1,
+        "wrong_note": 4
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\053.json",
+      "prediction_sha256": "09d0609d412efe616cc3c6d6222c8d5c98c897aa17c5530c3053994579e07a3b",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\053.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "053"
+      },
+      "runtime_seconds": 0.9679099999993923,
+      "sample": "053",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "53646ed5b6ef35134c56dce75da0c119da5774d70242630e276bb8db6ae3e16d",
+      "counts_by_type": {
+        "repetition": 1
+      },
+      "label_count": 1,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\054.json",
+      "prediction_sha256": "d9342a3d216b2221e1e855089e7f6073bf5dc878e9a259c0c7f55f544b4a3278",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\054.json",
+        "label_count": 1,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "054"
+      },
+      "runtime_seconds": 0.9216321999992942,
+      "sample": "054",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "48444119be61319aa56f5112d8ce9afb22539b8805d729a266fe080a5fefd59b",
+      "counts_by_type": {
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\055.json",
+      "prediction_sha256": "432449f43369d2beb2f8a7b405ccb72497cc185ea5c3e1fba7097d07d64932a6",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\055.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "055"
+      },
+      "runtime_seconds": 1.511950899999647,
+      "sample": "055",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "f6f734542f31662359e64434c66c8f1dbba90b9374a70b8c919d4bb075b23520",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 3,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\056.json",
+      "prediction_sha256": "e1931c9df370b7880b412e18927994457c8b53e1852d193977fc43867699709c",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\056.json",
+        "label_count": 3,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "056"
+      },
+      "runtime_seconds": 1.1043478999999934,
+      "sample": "056",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "df7ed64b83a889c93e95fdd4f95f6083d21c820626783912972ef8b0efaad2cf",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 2,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\057.json",
+      "prediction_sha256": "ac3e288966a37668b2346eea2aa09966d465080b734f8b038863b56fa74d8709",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\057.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "057"
+      },
+      "runtime_seconds": 1.2123681000011857,
+      "sample": "057",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "075a71a41a027d2664c2712cdb74ce66d0da2ff09608e7648aae6e307cfe68de",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 4,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\058.json",
+      "prediction_sha256": "f9165cca3f1576212a7a66370545469f04362f4eb734ee092975883488d45ecb",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\058.json",
+        "label_count": 4,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "058"
+      },
+      "runtime_seconds": 2.5837614000047324,
+      "sample": "058",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "d546742a927dc765ae473893b56743ba1cb2c620bd246d767ecbdaf97e8327b2",
+      "counts_by_type": {
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "label_count": 4,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\059.json",
+      "prediction_sha256": "58389640a01987ddd679bb78a8263cd906efba45d7d6514999ff6a425b3d35ca",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\059.json",
+        "label_count": 4,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "059"
+      },
+      "runtime_seconds": 2.0523847000004025,
+      "sample": "059",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "3a99164ded74aa12e774fa7b660923e33114f8369ac1fd65789178d6a92618fa",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 2,
+        "repetition": 1,
+        "wrong_note": 2
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\060.json",
+      "prediction_sha256": "a7fe4ee5b77ba4b22143a973a2ca14b582ca3bb9ce252ba6ec166b6938a85f93",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\060.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "060"
+      },
+      "runtime_seconds": 5.256260200003453,
+      "sample": "060",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "1630fde012281d8e577e661206de2ae0d19624e1885e57c0f19b20c795edde48",
+      "counts_by_type": {
+        "extra_note": 3,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "label_count": 6,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\061.json",
+      "prediction_sha256": "679b4e3c40d083413855a81693f3b35bedc9f4b49b461ebdb6604bb1618e16dc",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\061.json",
+        "label_count": 6,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "061"
+      },
+      "runtime_seconds": 6.326951000002737,
+      "sample": "061",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "23009f15b89d75854517681a38034e62a82c9ebe9f532acc9d5a37d998cabc4d",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 3,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\062.json",
+      "prediction_sha256": "96f551bcf9566c49640f84fd4d69d3c05b8d0cf10251c73d447261668597b4f0",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\062.json",
+        "label_count": 3,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "062"
+      },
+      "runtime_seconds": 1.207972600001085,
+      "sample": "062",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "918dcc757e3b3d688686662d12bb488abfd8266ce080cffd8805024f57c36e1f",
+      "counts_by_type": {
+        "repetition": 1,
+        "wrong_note": 6
+      },
+      "label_count": 7,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\063.json",
+      "prediction_sha256": "1880cf82f9b241e8027f85130ee41b60c77c09fa5e286f5a1ca6ba2a6a8b566b",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\063.json",
+        "label_count": 7,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "063"
+      },
+      "runtime_seconds": 1.8912853000001633,
+      "sample": "063",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "cf84d710085592d299f379dbbc89d5b10472a1869a7d43e6139d0deb250ce2f7",
+      "counts_by_type": {
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\064.json",
+      "prediction_sha256": "0ae722c91f5dede6ff124cba4757ddcacddacecc62cae22d5ff5df1aa018552f",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\064.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "064"
+      },
+      "runtime_seconds": 1.462122000004456,
+      "sample": "064",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "6fe6c795443f1906ba8b39ba612e5d059d1598bf41ada472afd383d1b44ba299",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "label_count": 5,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\065.json",
+      "prediction_sha256": "3d4c9f8fa3d687487d2ca0201d5385cd62fd58223249a7b8fe72441a3056ee90",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\065.json",
+        "label_count": 5,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "065"
+      },
+      "runtime_seconds": 3.8328951000003144,
+      "sample": "065",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "3dcdaeebf27dc8c88ca30790132d5878099f8255a4224fac467c9848eab508f7",
+      "counts_by_type": {
+        "extra_note": 1,
+        "missed_note": 5,
+        "repetition": 1,
+        "wrong_note": 2
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\066.json",
+      "prediction_sha256": "9662f8384c108e8baee3cadd349f50dd11fe569840734512170dcf0d399e5027",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\066.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "066"
+      },
+      "runtime_seconds": 4.89366809999774,
+      "sample": "066",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "11340120b4eb3ce73ce9f5e611ca522bc140a7d9a062fc4385435b937e2e66d7",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 1,
+        "repetition": 1,
+        "wrong_note": 5
+      },
+      "label_count": 11,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\067.json",
+      "prediction_sha256": "717309c108942675fa5ea794253c60ee00b07d25e3c4669dafbefd494f484013",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\067.json",
+        "label_count": 11,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "067"
+      },
+      "runtime_seconds": 2.4849840000024415,
+      "sample": "067",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "9300c616aec5e0fc337c449ce07ac0e085407b02af3b14dce7b44807ad9ee721",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 8,
+        "repetition": 1
+      },
+      "label_count": 13,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\068.json",
+      "prediction_sha256": "09fea8754f9c9769b4f7c5366e182b6434b5e74c8370f2a446e8a9b8574a6ba2",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\068.json",
+        "label_count": 13,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "068"
+      },
+      "runtime_seconds": 3.278291000002355,
+      "sample": "068",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "6fc23b6c4669bca71db6e3e478e4f7b5bdb7574b62ffb3eb9797990ec3b5b51e",
+      "counts_by_type": {
+        "extra_note": 3,
+        "missed_note": 12
+      },
+      "label_count": 15,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\069.json",
+      "prediction_sha256": "366d9afc8c93825b6a79133aa589b9a08a34a72330085a3cf1218ca44e20ec60",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\069.json",
+        "label_count": 15,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "069"
+      },
+      "runtime_seconds": 2.513509199998225,
+      "sample": "069",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "8548359141d7597d25ff9dbbf79e4968922cfaa72da3c71318bb9332563940ff",
+      "counts_by_type": {
+        "extra_note": 7,
+        "missed_note": 8,
+        "repetition": 1
+      },
+      "label_count": 16,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\070.json",
+      "prediction_sha256": "8903e1ccab21cc4a953e0c26c953e259c654c36713e61a971f5e421076722671",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\070.json",
+        "label_count": 16,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "070"
+      },
+      "runtime_seconds": 2.6707289000041783,
+      "sample": "070",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "d6325341cba7caea752bc004d6fc152ca23c05da242feab1b993f571debb6518",
+      "counts_by_type": {
+        "extra_note": 5,
+        "missed_note": 2,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 9,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\071.json",
+      "prediction_sha256": "e31a91431814e95638b292334eb981c2d19d6ae7ed8f8dde3596d79f3178bc43",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\071.json",
+        "label_count": 9,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "071"
+      },
+      "runtime_seconds": 3.657467999997607,
+      "sample": "071",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "488009bb7acf7982d26e5552ae4ef4a6b6d064f0f9fa3f0da9e43aa5b358df1e",
+      "counts_by_type": {
+        "extra_note": 6,
+        "missed_note": 10,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 18,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\072.json",
+      "prediction_sha256": "1d7ac1fb80173e52657cdc62a6e96a732acf79e25b074a9e4ef9147bbc7cab45",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\072.json",
+        "label_count": 18,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "072"
+      },
+      "runtime_seconds": 5.5424640999990515,
+      "sample": "072",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "9382f3d619bc18ebe773a4bb72c3bea21a558ca0d81e0abca68ea73ba1dcb005",
+      "counts_by_type": {
+        "extra_note": 8,
+        "missed_note": 16,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 26,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\073.json",
+      "prediction_sha256": "44ef9a420d7f3dbb962b7d1c97ecd5f212eb12193a5fef33d23913ddcddaad11",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\073.json",
+        "label_count": 26,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "073"
+      },
+      "runtime_seconds": 5.181649999998626,
+      "sample": "073",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "966d4b82446d616a8748d3906cca404f3fb5f0077d29a6e8bed2e99e6598d90c",
+      "counts_by_type": {
+        "extra_note": 9,
+        "missed_note": 12,
+        "repetition": 1,
+        "wrong_note": 3
+      },
+      "label_count": 25,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\074.json",
+      "prediction_sha256": "b7952689daad1c1fcb2c2fb34ff90c42ac582a695b4e887e95c3513e5813edb8",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\074.json",
+        "label_count": 25,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "074"
+      },
+      "runtime_seconds": 5.522212799995032,
+      "sample": "074",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "e6389790d2c5ea326cdb3a2e624aae00dd97c4716e809a24f1703a1db11b3de5",
+      "counts_by_type": {
+        "extra_note": 18,
+        "missed_note": 30,
+        "repetition": 1
+      },
+      "label_count": 49,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\075.json",
+      "prediction_sha256": "7178db1e27c9a62bb32601749f142176312b566142e968119430de294c0684ea",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\075.json",
+        "label_count": 49,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "075"
+      },
+      "runtime_seconds": 9.755531200004043,
+      "sample": "075",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "8ea17b04d44525efe8c707bc86d8a08c0982db9e6d05fb9a0e423ae5138bcf87",
+      "counts_by_type": {
+        "extra_note": 5,
+        "missed_note": 12,
+        "repetition": 1,
+        "wrong_note": 2
+      },
+      "label_count": 20,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\076.json",
+      "prediction_sha256": "3660bf20125102accaa2f4f7b70efc6f5f7cd0892200d9b1ce8b5d62a6b3ffe9",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\076.json",
+        "label_count": 20,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "076"
+      },
+      "runtime_seconds": 5.1118724000043585,
+      "sample": "076",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "83a2e86eb33f39c87ccd7e1939bce66598ccce100d74cb08f52c6df052cab43d",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 17,
+        "repetition": 1
+      },
+      "label_count": 22,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\077.json",
+      "prediction_sha256": "9bfec9ec09185541e904a99b673795277dfea95b8722bdd07f905ee329a2dea6",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\077.json",
+        "label_count": 22,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "077"
+      },
+      "runtime_seconds": 6.108723400000599,
+      "sample": "077",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "6af9dbfccfa812025b7342207031be29926c78e4bbe924213b24b1b49a6aaef4",
+      "counts_by_type": {
+        "extra_note": 6,
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\078.json",
+      "prediction_sha256": "15f26c64315013eafb793e64153dcc65b217582bfd771278ae0162778adc66a1",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\078.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "078"
+      },
+      "runtime_seconds": 2.698644800002512,
+      "sample": "078",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "65eab36a511c1f34bb16c614cc629f21d10d74eba5f1bee18e51d734702a57e6",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "label_count": 8,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\079.json",
+      "prediction_sha256": "84ad6264a157e8552331e79ac03a3b5c162c46d953673d59558d8431e68873fe",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\079.json",
+        "label_count": 8,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "079"
+      },
+      "runtime_seconds": 2.1124420999985887,
+      "sample": "079",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "66a63a3578bb01eef15d312267130c72cc7ff76c1c82079cef59a0c0bc2f57cd",
+      "counts_by_type": {
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "label_count": 3,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\080.json",
+      "prediction_sha256": "cf16734765a045cc98dd04bf95911d7affbf9a443ff3e5236b569afbd33000a7",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\080.json",
+        "label_count": 3,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "080"
+      },
+      "runtime_seconds": 1.443018600002688,
+      "sample": "080",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "89b24b98ae531fb20483a82c7521d51a9c3126a69afd7b093fd82c6c0996b143",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 4,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\081.json",
+      "prediction_sha256": "f954d9be91b91444ffd03338def24d644487a811ac7a7504e9487a7358a178a1",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\081.json",
+        "label_count": 4,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "081"
+      },
+      "runtime_seconds": 3.0631237999987206,
+      "sample": "081",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "014c678e56ac529a177ba545200e8d034890cce858307a216146bf3373fedbac",
+      "counts_by_type": {
+        "extra_note": 5,
+        "missed_note": 13,
+        "repetition": 1
+      },
+      "label_count": 19,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\082.json",
+      "prediction_sha256": "8fed2363dc87126dcf4263edc5abfa7435e6a52361992ccb65e0fb38162e2ae5",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\082.json",
+        "label_count": 19,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "082"
+      },
+      "runtime_seconds": 5.240364000004774,
+      "sample": "082",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "f4a04134c6247a748bddc6916f6f32c46237967aaaed372e51de91deacc7bc2b",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 6,
+        "repetition": 1,
+        "rhythm_error": 1
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\083.json",
+      "prediction_sha256": "92e88e01fd0513422d1c56d8027d89d1baf161cf4820626346fc677b845f1a90",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\083.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "083"
+      },
+      "runtime_seconds": 3.9010272000014083,
+      "sample": "083",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "9ac8e3c4fb5a03d60ab978e31944b69e3667c638c429bae32c42255213d59dda",
+      "counts_by_type": {
+        "extra_note": 5,
+        "missed_note": 5,
+        "repetition": 1
+      },
+      "label_count": 11,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\084.json",
+      "prediction_sha256": "84abd6aac24526846b4f04942223f157c46c5cc69605f41f0dd6a132d9d448f3",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\084.json",
+        "label_count": 11,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "084"
+      },
+      "runtime_seconds": 4.45790549999947,
+      "sample": "084",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "73148578b759db9e6aafbc6efaf0bf304bdac8e1199ff18d4b99222f21aab5a2",
+      "counts_by_type": {
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 2,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\085.json",
+      "prediction_sha256": "ce49110f03b9f20c3aaa2e44f841d22818a9f6219336b6384ef627ab503afa82",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\085.json",
+        "label_count": 2,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "085"
+      },
+      "runtime_seconds": 1.4834139999948093,
+      "sample": "085",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "6a588de873c438309a37908f99ed99e91810c784247441c244716f64e279bbdd",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 2,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 6,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\086.json",
+      "prediction_sha256": "cedbe04af4fd28ce238dd15c9eba041c90c8070a21f0858a6cfa8bf6909ff68d",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\086.json",
+        "label_count": 6,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "086"
+      },
+      "runtime_seconds": 2.2516470000045956,
+      "sample": "086",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "b3b7cd32175aedfda5f5c3b6297660012ef5da8cf2116061878a0e43f029cc55",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 5,
+        "repetition": 1,
+        "wrong_note": 1
+      },
+      "label_count": 11,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\087.json",
+      "prediction_sha256": "4890d896ed3a7b7753c79d8752949eac9855b6ad7a9173743452654b5333b89a",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\087.json",
+        "label_count": 11,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "087"
+      },
+      "runtime_seconds": 2.678744099997857,
+      "sample": "087",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "5ebf8703a31dd8b43d36580079676af9bf21c680b1381fa1d1517397aaec1f3f",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 5,
+        "repetition": 1
+      },
+      "label_count": 10,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\088.json",
+      "prediction_sha256": "c0474d8466fc5f092d0eb9e9bd9dbae6f3aa023df5ba5f0fac96dc80a3492f5d",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\088.json",
+        "label_count": 10,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "088"
+      },
+      "runtime_seconds": 2.625563699999475,
+      "sample": "088",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "9c7ba4ed017eef4dd17beac363e3f8bcc0979dd35ff579b926e4e6f026e2006b",
+      "counts_by_type": {
+        "extra_note": 6,
+        "missed_note": 15,
+        "repetition": 1
+      },
+      "label_count": 22,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\089.json",
+      "prediction_sha256": "c4f23f5271d823fac4dea6997c732f87c025682875747f677ab363f73f1ff4f8",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\089.json",
+        "label_count": 22,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "089"
+      },
+      "runtime_seconds": 4.7772500999999465,
+      "sample": "089",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "0c9a3a9c454313447db8dfda1ef302593eefeee41b4e284fb621b811c182f619",
+      "counts_by_type": {
+        "extra_note": 1
+      },
+      "label_count": 1,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\090.json",
+      "prediction_sha256": "50bef83fc8ba1d297cc92af8db86d93a9bb3bdaf208ea1964f2abd1dae01c28b",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\090.json",
+        "label_count": 1,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "090"
+      },
+      "runtime_seconds": 0.8745117999933427,
+      "sample": "090",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "f194786bbe9d59dc3c696f3b9c6615d2988a15462727e7884934ec2a7fa33855",
+      "counts_by_type": {
+        "extra_note": 3
+      },
+      "label_count": 3,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\091.json",
+      "prediction_sha256": "1c260cc4b410527e27cdc75fa2b66797bb5439b73fa6a81176e4e05872012f3b",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\091.json",
+        "label_count": 3,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "091"
+      },
+      "runtime_seconds": 1.0701121999954921,
+      "sample": "091",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "0ef773bbe7bb3af438621895a4d3c3dac85f61c101b83e1dd33fdf9cd13d38bd",
+      "counts_by_type": {
+        "extra_note": 4,
+        "missed_note": 20,
+        "repetition": 1
+      },
+      "label_count": 25,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\092.json",
+      "prediction_sha256": "23a3e2412207b1cd1636ed05ad686e63a722db8d2c5029e1ade6bd5d1e19308e",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\092.json",
+        "label_count": 25,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "092"
+      },
+      "runtime_seconds": 4.941396100002748,
+      "sample": "092",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "998f3b8b0a8dab83c81c6543cc6bd7edff76a0f2cd35d8995d5fea17eec04af0",
+      "counts_by_type": {
+        "extra_note": 2,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "label_count": 4,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\093.json",
+      "prediction_sha256": "e6e4dacb1ce0f544c7aa19f395a654424ec6a9a86ab435894d60574a829e48af",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\093.json",
+        "label_count": 4,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "093"
+      },
+      "runtime_seconds": 0.8485820999994758,
+      "sample": "093",
+      "status": "succeeded"
+    },
+    {
+      "agent_labels_sha256": "48588361819b17ccea017cdf440f4ead487b28dcc522bc5eb30f105a8de6058e",
+      "counts_by_type": {
+        "extra_note": 3
+      },
+      "label_count": 3,
+      "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\predictions\\demo_001.json",
+      "prediction_sha256": "6b2aae974cbae8895de7ba7655f897ce64527606b6cee947017295669dcb7295",
+      "previous": {
+        "annotator_id": "cursor_agent_error_heads_v5",
+        "archived": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\datacreate-agent-labels-error-heads-v5-20260920-225135\\previous-agent-labels\\demo_001.json",
+        "label_count": 3,
+        "method": "align_error_heads_v5_hybrid_max_f1",
+        "sample": "demo_001"
+      },
+      "runtime_seconds": 1.0977753999977722,
+      "sample": "demo_001",
+      "status": "succeeded"
+    }
+  ],
+  "schema_version": "align-datacreate-agent-labels-v5-v1",
+  "succeeded": 94
+}

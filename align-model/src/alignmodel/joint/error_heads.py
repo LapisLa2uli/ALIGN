@@ -156,9 +156,24 @@ class HeadPrediction:
     rhythm_probabilities: tuple[float, ...]
 
 
+_IDENTITY_SPANS = ("padded", "core")
+_GATED_OPERATIONS = {
+    "wrong_note": "path_operation_wrong",
+    "extra_note": "path_operation_extra",
+    "missed_note": "path_operation_missed",
+}
+
+
 @dataclass(frozen=True)
 class SchemaDecodeConfig:
-    """Inference-only controls for sequence-consistent schema 1.2 decoding."""
+    """Inference-only controls for sequence-consistent schema 1.2 decoding.
+
+    Frozen production v3 keeps pad_notes=1 and require_path_operation_gate=False.
+    identity_span="padded" writes the padded start/end as the official score
+    identity, matching DataCreate gold (pad_notes=2). identity_span="core"
+    writes the unpadded core instead. The operation gate keeps extra/miss/wrong
+    off MATCH rows and requires EXTRA/DELETE/SUBSTITUTE path flags.
+    """
 
     high_thresholds: Mapping[str, float]
     low_ratios: Mapping[str, float]
@@ -170,6 +185,82 @@ class SchemaDecodeConfig:
     require_extra_neighbors: bool = True
     require_missed_resynchronization: bool = True
     nms_overlap: bool = True
+    identity_span: str = "padded"
+    require_path_operation_gate: bool = False
+
+    def __post_init__(self) -> None:
+        span = str(self.identity_span)
+        if span not in _IDENTITY_SPANS:
+            raise ValueError(f"Unsupported identity_span {span!r}")
+
+    @classmethod
+    def from_mapping(cls, value: Mapping[str, Any]) -> "SchemaDecodeConfig":
+        return cls(
+            high_thresholds={
+                str(key): float(item)
+                for key, item in value["high_thresholds"].items()
+            },
+            low_ratios={
+                str(key): float(item) for key, item in value["low_ratios"].items()
+            },
+            minimum_support={
+                str(key): int(item)
+                for key, item in value["minimum_support"].items()
+            },
+            uncertainty_margins={
+                str(key): float(item)
+                for key, item in value["uncertainty_margins"].items()
+            },
+            merge_score_gap={
+                str(key): int(item)
+                for key, item in value["merge_score_gap"].items()
+            },
+            max_row_gap=int(value.get("max_row_gap", 2)),
+            pad_notes=int(value.get("pad_notes", 1)),
+            require_extra_neighbors=bool(
+                value.get("require_extra_neighbors", True)
+            ),
+            require_missed_resynchronization=bool(
+                value.get("require_missed_resynchronization", True)
+            ),
+            nms_overlap=bool(value.get("nms_overlap", True)),
+            identity_span=str(value.get("identity_span", "padded")),
+            require_path_operation_gate=bool(
+                value.get("require_path_operation_gate", False)
+            ),
+        )
+
+
+def _path_operation_flag(row: HeadRow, name: str) -> bool:
+    return float(row.features[FEATURE_NAMES.index(name)]) > 0.5
+
+
+def _operation_gate_allows(
+    config: SchemaDecodeConfig, row: HeadRow, kind: str
+) -> bool:
+    if not config.require_path_operation_gate:
+        return True
+    required = _GATED_OPERATIONS.get(kind)
+    if required is None:
+        return True
+    return _path_operation_flag(row, required)
+
+
+def _emitted_score_span(
+    config: SchemaDecodeConfig,
+    core: tuple[int, int],
+    score: Sequence[ScoreEvent],
+) -> tuple[int, int, int, int, int]:
+    """Return start, end, core_start, core_end, pad_notes for schema 1.2."""
+
+    core_start = max(0, min(int(core[0]), len(score) - 1))
+    core_end = max(core_start, min(int(core[1]) - 1, len(score) - 1))
+    pad = max(0, min(int(config.pad_notes), 2))
+    if config.identity_span == "core":
+        return core_start, core_end, core_start, core_end, 0
+    padded_start = max(0, core_start - pad)
+    padded_end = min(len(score) - 1, core_end + pad)
+    return padded_start, padded_end, core_start, core_end, pad
 
 
 @dataclass(frozen=True)
@@ -2110,6 +2201,11 @@ def schema12_document_v3(
                 "upstream_frozen": True,
                 "intonation_masked": True,
                 "range_decoder": "sequence_cluster_v3",
+                "identity_span": str(config.identity_span),
+                "pad_notes": int(config.pad_notes),
+                "require_path_operation_gate": bool(
+                    config.require_path_operation_gate
+                ),
             },
         }
     if not (
@@ -2176,6 +2272,8 @@ def schema12_document_v3(
             if confidence - second < float(
                 config.uncertainty_margins.get(kind, 0.0)
             ):
+                continue
+            if not _operation_gate_allows(config, row, kind):
                 continue
             core: tuple[int, int] | None = None
             if kind == "wrong_note":
@@ -2362,14 +2460,9 @@ def schema12_document_v3(
             str(value["type"]),
         ),
     ):
-        core_start = max(0, min(int(cluster["core"][0]), len(score) - 1))
-        core_end = max(
-            core_start,
-            min(int(cluster["core"][1]) - 1, len(score) - 1),
+        start_i, end_i, core_start, core_end, pad = _emitted_score_span(
+            config, cluster["core"], score
         )
-        pad = max(0, min(int(config.pad_notes), 2))
-        padded_start = max(0, core_start - pad)
-        padded_end = min(len(score) - 1, core_end + pad)
         label: dict[str, Any] = {
             "id": f"error_head_v3_{len(labels):04d}",
             "source": "frozen_error_heads_v3",
@@ -2377,21 +2470,21 @@ def schema12_document_v3(
             "start_time": round(float(cluster["start_time"]), 4),
             "end_time": round(float(cluster["end_time"]), 4),
             "score_part": {
-                "start_note_index": padded_start,
-                "end_note_index": padded_end,
+                "start_note_index": start_i,
+                "end_note_index": end_i,
                 "pad_notes": pad,
                 "core_start_note_index": core_start,
                 "core_end_note_index": core_end,
-                "start_measure": score[padded_start].measure,
-                "end_measure": score[padded_end].measure,
+                "start_measure": score[start_i].measure,
+                "end_measure": score[end_i].measure,
             },
             "pitches": [
                 int(score[position].pitch)
-                for position in range(padded_start, padded_end + 1)
+                for position in range(start_i, end_i + 1)
             ],
             "note_ids": [
                 f"note_{position:04d}"
-                for position in range(padded_start, padded_end + 1)
+                for position in range(start_i, end_i + 1)
             ],
             "decoder": {
                 "support": int(cluster["support"]),
@@ -2414,6 +2507,9 @@ def schema12_document_v3(
             layer2_probabilities=prediction.layer2_probabilities,
             rhythm_probabilities=prediction.rhythm_probabilities,
         )
+        repetition_pad = (
+            0 if config.identity_span == "core" else config.pad_notes
+        )
         repetition = [
             dict(label)
             for label in schema12_document(
@@ -2421,7 +2517,7 @@ def schema12_document_v3(
                 rows,
                 neutral,
                 score,
-                pad_notes=config.pad_notes,
+                pad_notes=repetition_pad,
             )["labels"]
             if label.get("type") == "repetition"
         ]
@@ -2440,6 +2536,11 @@ def schema12_document_v3(
             "upstream_frozen": True,
             "intonation_masked": True,
             "range_decoder": "sequence_cluster_v3",
+            "identity_span": str(config.identity_span),
+            "pad_notes": int(config.pad_notes),
+            "require_path_operation_gate": bool(
+                config.require_path_operation_gate
+            ),
         },
     }
 

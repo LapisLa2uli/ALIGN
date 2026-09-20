@@ -20,11 +20,14 @@
         <select id="labelSourceSelect">
           <option value="human">Your labels</option>
           <option value="agent">Agent labels</option>
+          <option value="polytune">polytune</option>
+          <option value="laddersym">laddersym</option>
         </select>
       </label>
       <label>Annotator ID <input id="annotatorId" type="text" placeholder="annotator_01" /></label>
       <button id="saveBtn">Save labels</button>
       <span id="rendererStatus" class="hint renderer-status" title="SoundFont WAV renderer">Renderer: starting…</span>
+      <a class="header-link" href="/label-compare">Your labels vs agent</a>
       <a class="header-link" href="/compare">Gold vs Model A</a>
     </div>
   </header>
@@ -105,7 +108,7 @@
           <div id="scoreAlignOverlay" class="score-align-overlay" aria-hidden="true"></div>
           <div class="score-row-head">
             <strong>Reference</strong>
-            <span class="hint">written score — drag to mark erred notes</span>
+            <span class="hint">written score — drag to mark erred notes; label time snaps to aligned transcription</span>
           </div>
           <div id="melodyStrip" class="melody-strip" title="Drag on the reference score to mark erred notes/rests"></div>
         </div>
@@ -139,7 +142,7 @@
         <span class="swatch core"></span> erred notes/rests
         <span class="swatch pad"></span> auto pad (2 notes/side)
       </p>
-      <p id="melodyInfo" class="hint">Drag on the reference-score staff under the waveform to mark the erred notes/rests. That creates a label; two notes of padding are added automatically on each side.</p>
+      <p id="melodyInfo" class="hint">Drag on the reference-score staff to mark the erred notes/rests. The waveform range follows the corresponding aligned transcription notes; two score notes of padding are added on each side.</p>
       <div class="actions">
         <button id="clearMelodyBtn" type="button">Clear score highlight</button>
       </div>
@@ -165,7 +168,7 @@
       <li>Ctrl+A: select all visible labels</li>
       <li>Delete / Backspace: delete selected region(s)</li>
       <li>Drag scrubber to move playhead</li>
-      <li>Drag on the reference-score staff under the waveform to add a label</li>
+      <li>Drag on the reference-score staff to add a label; its time range snaps to aligned transcription notes</li>
       <li>Double-click a region to select it; only selected labels can be moved</li>
       <li>Click overlapping labels: choose which one to select</li>
       <li>Click empty waveform to deselect</li>

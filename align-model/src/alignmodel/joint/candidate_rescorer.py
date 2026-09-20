@@ -22,7 +22,7 @@ from .data import JointTrainingExample
 from .example_cache import CachedExampleSequence, JointExampleCache
 from .index import JointEvent, ScoreEvent
 from .lattice import JointCandidate
-from .metrics import pair_exact_pitch_onset
+from .metrics import evaluate_joint_events, pair_exact_pitch_onset
 
 
 FEATURE_DIM = 17
@@ -380,14 +380,68 @@ def _restore_rng_state(state: dict[str, Any] | None) -> None:
         torch.cuda.set_rng_state_all(cuda_state)
 
 
-def _prf(correct: int, predicted: int, target: int) -> dict[str, float]:
-    precision = correct / max(predicted, 1)
-    recall = correct / max(target, 1)
+def _prf(correct: int | float, predicted: int | float, target: int | float) -> dict[str, float]:
+    if predicted == 0 and target == 0:
+        return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
+    precision = correct / predicted if predicted else 0.0
+    recall = correct / target if target else 0.0
     return {
         "precision": precision,
         "recall": recall,
         "f1": 2.0 * precision * recall / max(precision + recall, 1e-12),
     }
+
+
+def _selected_joint_events(
+    example: JointTrainingExample,
+    selected_indices: set[int],
+) -> list[JointEvent]:
+    candidate_events = tuple(
+        JointEvent(
+            pitch=candidate.pitch,
+            start=candidate.start,
+            end=max(candidate.end, candidate.start + 0.001),
+            score_span=None,
+            relationship="extra",
+            confidence=candidate.confidence,
+        )
+        for candidate in example.candidates
+    )
+    pairs = pair_exact_pitch_onset(
+        candidate_events, example.target_events, tolerance_sec=0.050
+    )
+    cand_to_target = {int(left): int(right) for left, right in pairs}
+    events: list[JointEvent] = []
+    for index in sorted(selected_indices):
+        candidate = example.candidates[index]
+        target_index = cand_to_target.get(index)
+        if target_index is not None:
+            target = example.target_events[target_index]
+            events.append(
+                JointEvent(
+                    pitch=candidate.pitch,
+                    start=candidate.start,
+                    end=max(candidate.end, candidate.start + 0.001),
+                    score_span=target.score_span,
+                    relationship=target.relationship,
+                    copy_pass=target.copy_pass,
+                    rendered_index=target.rendered_index,
+                    confidence=candidate.confidence,
+                )
+            )
+            continue
+        events.append(
+            JointEvent(
+                pitch=candidate.pitch,
+                start=candidate.start,
+                end=max(candidate.end, candidate.start + 0.001),
+                score_span=None,
+                relationship="extra",
+                confidence=candidate.confidence,
+            )
+        )
+    events.sort(key=lambda event: (event.start, event.pitch, event.end))
+    return events
 
 
 @torch.no_grad()
@@ -417,6 +471,7 @@ def evaluate_candidate_rescorer(
     best_sample_counts = None
     for threshold in thresholds:
         total = [0, 0, 0]
+        official_total = [0.0, 0, 0]
         per_sample = []
         short = [0, 0]
         split_count = 0
@@ -462,8 +517,24 @@ def evaluate_candidate_rescorer(
                 len(selected_indices),
                 len(target_indices),
             )
-            per_sample.append(counts)
+            official = evaluate_joint_events(
+                _selected_joint_events(example, selected_indices),
+                example.target_events,
+                predicted_deletions=(),
+                target_deletions=example.target_deletions,
+                score_event_count=len(example.score),
+            )["official_note_wise"]
+            official_counts = (
+                float(official["credit"]),
+                int(official["predicted"]),
+                int(official["gold"]),
+            )
+            per_sample.append(official_counts)
             total = [left + right for left, right in zip(total, counts)]
+            official_total = [
+                left + right
+                for left, right in zip(official_total, official_counts)
+            ]
             matched_targets = {target for _candidate, target in pairs}
             short_targets = {
                 index
@@ -477,25 +548,35 @@ def evaluate_candidate_rescorer(
                 and current.start - previous.end <= 0.100
                 for previous, current in zip(selected, selected[1:])
             )
-        metrics = _prf(*total)
+        metrics = _prf(*official_total)
+        diagnostic_index = _prf(*total)
         if metrics["f1"] > best_f1:
             best_f1 = metrics["f1"]
             best_threshold = float(threshold)
-            best_counts = total
+            best_counts = official_total
             best_sample_counts = per_sample
             best_detail = {
                 **metrics,
-                "matched": total[0],
-                "predicted": total[1],
-                "target": total[2],
-                "count_ratio": total[1] / max(total[2], 1),
-                "metric": "official audited candidate-event identity F1",
+                "matched": official_total[0],
+                "predicted": official_total[1],
+                "target": official_total[2],
+                "count_ratio": official_total[1] / max(official_total[2], 1),
+                "metric": "official_note_wise",
+                "schema_version": "align-note-wise-score-event-metric-v1",
+                "type_mismatch_credit": 0.5,
+                "diagnostic_index_set_f1": diagnostic_index["f1"],
+                "diagnostic_index_set": {
+                    "matched": total[0],
+                    "predicted": total[1],
+                    "target": total[2],
+                    **diagnostic_index,
+                },
                 "diagnostic_timestamp_pairs_50ms": diagnostic_pairs,
                 "short_note_recall_lt_120ms": short[0] / max(short[1], 1),
                 "short_note_matched": short[0],
                 "short_note_target": short[1],
                 "same_pitch_split_count": split_count,
-                "same_pitch_split_rate": split_count / max(total[1], 1),
+                "same_pitch_split_rate": split_count / max(official_total[1], 1),
             }
     assert best_counts is not None and best_sample_counts is not None
     return best_threshold, {
@@ -814,6 +895,12 @@ def train_candidate_rescorer(config: CandidateRescorerConfig) -> Path:
                 key: value
                 for key, value in best["validation"].items()
                 if key != "sample_counts"
+            },
+            "bootstrap_note_wise_f1": {
+                "replicates": 2000,
+                "lower_95": float(np.quantile(bootstrap_values, 0.025)),
+                "median": float(np.quantile(bootstrap_values, 0.5)),
+                "upper_95": float(np.quantile(bootstrap_values, 0.975)),
             },
             "bootstrap_candidate_event_identity_f1": {
                 "replicates": 2000,

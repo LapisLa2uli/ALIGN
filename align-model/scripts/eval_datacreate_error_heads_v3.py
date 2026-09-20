@@ -69,34 +69,7 @@ HUMAN_PATTERN = re.compile(
 def _decode_config(value: Mapping[str, Any]) -> SchemaDecodeConfig:
     if value.get("schema_version") != "align-error-heads-v3-decode-config-v1":
         raise ValueError("Unsupported error-heads-v3 decode config")
-    return SchemaDecodeConfig(
-        high_thresholds={
-            str(key): float(item)
-            for key, item in value["high_thresholds"].items()
-        },
-        low_ratios={
-            str(key): float(item) for key, item in value["low_ratios"].items()
-        },
-        minimum_support={
-            str(key): int(item)
-            for key, item in value["minimum_support"].items()
-        },
-        uncertainty_margins={
-            str(key): float(item)
-            for key, item in value["uncertainty_margins"].items()
-        },
-        merge_score_gap={
-            str(key): int(item)
-            for key, item in value["merge_score_gap"].items()
-        },
-        max_row_gap=int(value.get("max_row_gap", 2)),
-        pad_notes=int(value.get("pad_notes", 1)),
-        require_extra_neighbors=bool(value.get("require_extra_neighbors", True)),
-        require_missed_resynchronization=bool(
-            value.get("require_missed_resynchronization", True)
-        ),
-        nms_overlap=bool(value.get("nms_overlap", True)),
-    )
+    return SchemaDecodeConfig.from_mapping(value)
 
 
 def _immutable_assets(args: argparse.Namespace) -> dict[str, Any]:

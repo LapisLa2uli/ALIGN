@@ -688,6 +688,94 @@ button:hover { background: #1f57c3; }
 body.compare-page {
   grid-template-rows: auto auto minmax(0, 280px) minmax(280px, 1fr);
 }
+body.label-compare-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-height: 100vh;
+  overflow: hidden;
+}
+.label-compare-summary {
+  grid-row: 2;
+}
+.label-compare-main {
+  grid-row: 3;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.dual-waveform-scroll {
+  width: 100%;
+  min-height: 390px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #181818;
+  flex: 0 0 auto;
+}
+.dual-waveform-content {
+  width: 100%;
+  min-width: 100%;
+}
+.parallel-wave-track {
+  min-width: 100%;
+  border-bottom: 1px solid #444;
+}
+.parallel-wave-track:last-child {
+  border-bottom: none;
+}
+.parallel-track-head {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  width: min(100vw, 460px);
+  min-width: 260px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 10px;
+  background: rgba(24, 24, 24, 0.94);
+  border-right: 1px solid #444;
+  font-size: 13px;
+}
+.parallel-waveform {
+  width: 100%;
+  min-height: 170px;
+  background: #222;
+}
+.parallel-waveform::part(scroll) {
+  overflow: hidden !important;
+}
+.parallel-waveform::part(region) {
+  overflow: visible !important;
+}
+.parallel-waveform::part(region-content) {
+  z-index: 12;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: visible;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+  font-size: 12px;
+  font-weight: 600;
+}
+.parallel-label-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.parallel-label-lists h2 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.parallel-label-lists .label-list {
+  max-height: 240px;
+}
 .compare-pills {
   display: flex;
   flex-wrap: wrap;
@@ -771,5 +859,11 @@ body.compare-page {
     border-left: none;
     border-top: 1px solid #333;
     max-height: 40vh;
+  }
+}
+
+@media (max-width: 760px) {
+  .parallel-label-lists {
+    grid-template-columns: 1fr;
   }
 }

@@ -199,7 +199,7 @@ runs/<model>/eval_<tag>/<tag>/<track_id>/mix.mid
 runs/<model>/eval_<tag>/<tag>/evaluated_ids.json
 ```
 
-**报告 `note_metrics.json` 的 extra/missing/correct micro-F1 和 per_piece_mean。** 协议为 onset tolerance 50 ms、pitch tolerance 50 cents，音符 pitch 转 Hz 后交给 mir_eval，按 MIDI track 名识别类别。没有某类音符时也保留正确分母。`all` 混合三类，衡量 class-agnostic transcription，不是 error-class F1。
+**报告 `note_metrics.json` 的 `official_note_wise` 作为 ALIGN 对比 F1。** 该指标把 Extra/Missing/Correct 映射到 canonical score-event identity，同类同位置 1.0、错类同位置 0.5、错位置 0。作者原始协议保留在 `legacy_mir_eval_onset_50ms`：onset tolerance 50 ms、pitch tolerance 50 cents，音符 pitch 转 Hz 后交给 mir_eval，按 MIDI track 名识别类别。没有某类音符时也保留正确分母。`all` 混合三类，衡量 class-agnostic transcription，不是 error-class F1，也不是 ALIGN 官方分数。
 
 作者 `evaluate_errors.py` 的 stdout 继续保留用于对照，但其按 track 位置配对的 per-class 指标会在某类别为空时错位，不能作为这里的类别最终结果。
 

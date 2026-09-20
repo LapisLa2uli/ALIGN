@@ -195,21 +195,26 @@ def fast_gold_path_log_prob(
     return score + score.new_tensor(float(bonus))
 
 
-def fast_drop_emit_log_partition(
+def fast_drop_emit_forward(
     model: DropEmitScorer,
     lattice: DropEmitLattice,
     *,
-    gold_only: bool = False,
     max_inserts_ahead: int = 6,
     frozen_crf_score: float | None = None,
-) -> Tensor:
-    if gold_only:
-        return fast_gold_path_log_prob(
-            model, lattice, frozen_crf_score=frozen_crf_score
-        )
+    emit_cap: int | None = None,
+) -> tuple[Tensor, Tensor]:
+    """Return ``(alpha[emitted, slot], log_partition)`` over all counts.
+
+    Training may pass ``emit_cap`` near the gold length. Using
+    ``n_groups + inserts`` materializes hundreds of count states and OOMs the
+    CUDA autograd graph on real activation lattices.
+    """
+
     n_groups = len(lattice.groups)
     n_targets = len(lattice.targets)
-    emit_cap = max(n_targets, 1)
+    if emit_cap is None:
+        emit_cap = max(n_targets + max_inserts_ahead, 1)
+    emit_cap = max(int(emit_cap), max(n_targets, 1))
     tables = score_tables(model, lattice, emit_cap=emit_cap)
     bank = _transition_bank(model)
     neg = model.initial.new_tensor(NEGATIVE_INFINITY)
@@ -221,7 +226,11 @@ def fast_drop_emit_log_partition(
             pieces = [alpha[:, INSERT_EXTRA]]
             for previous in range(4):
                 moved = alpha.new_full((emit_cap + 1,), NEGATIVE_INFINITY)
-                moved[1:] = alpha[:-1, previous] + insert_row + bank[previous, INSERT_EXTRA]
+                moved[1:] = (
+                    alpha[:-1, previous]
+                    + insert_row
+                    + bank[previous, INSERT_EXTRA]
+                )
                 pieces.append(moved)
             updated = alpha.clone()
             updated[:, INSERT_EXTRA] = torch.logsumexp(torch.stack(pieces), dim=0)
@@ -242,12 +251,53 @@ def fast_drop_emit_log_partition(
                 torch.stack([updated[:, EMIT], moved]), dim=0
             )
         alpha = updated
-    if n_targets >= alpha.shape[0]:
-        return neg
-    partition = torch.logsumexp(alpha[n_targets], dim=0)
+    if not bool(torch.isfinite(alpha).any()):
+        return alpha, neg
+    # All representable emission counts must compete. Conditioning this
+    # partition on n_targets makes the emission-count NLL identically zero and
+    # leaves honest decoding unable to learn when to stop.
+    partition = torch.logsumexp(alpha.reshape(-1), dim=0)
     bonus = frozen_crf_score or 0.0
-    return partition + partition.new_tensor(float(bonus))
+    return alpha, partition + partition.new_tensor(float(bonus))
 
+
+def fast_drop_emit_log_partition(
+    model: DropEmitScorer,
+    lattice: DropEmitLattice,
+    *,
+    gold_only: bool = False,
+    max_inserts_ahead: int = 6,
+    frozen_crf_score: float | None = None,
+) -> Tensor:
+    if gold_only:
+        return fast_gold_path_log_prob(
+            model, lattice, frozen_crf_score=frozen_crf_score
+        )
+    _alpha, partition = fast_drop_emit_forward(
+        model,
+        lattice,
+        max_inserts_ahead=max_inserts_ahead,
+        frozen_crf_score=frozen_crf_score,
+    )
+    return partition
+
+
+def fast_emission_count_nll(
+    model: DropEmitScorer,
+    lattice: DropEmitLattice,
+    *,
+    max_inserts_ahead: int = 6,
+) -> Tensor:
+    """Negative log-probability of the gold emission count under the forward DP."""
+
+    alpha, partition = fast_drop_emit_forward(
+        model, lattice, max_inserts_ahead=max_inserts_ahead
+    )
+    n_gold = len(lattice.targets)
+    if n_gold >= alpha.shape[0]:
+        return partition.new_tensor(0.0)
+    count_mass = torch.logsumexp(alpha[n_gold], dim=0)
+    return partition - count_mass
 
 def fast_decode_drop_emit(
     model: DropEmitScorer,
@@ -259,10 +309,13 @@ def fast_decode_drop_emit(
 ) -> tuple[tuple[DecodedEmit, ...], dict[str, Any]]:
     model.eval()
     n_groups = len(lattice.groups)
+    # Do not use the gold rendered length as the search cap. Acoustic group
+    # count plus the insert budget is available at inference; an explicit
+    # expected count is only for a declared prior such as oracle length.
     emit_cap = int(
         max_emissions
         if max_emissions is not None
-        else max(expected_emissions or 0, n_groups, len(lattice.targets))
+        else max(expected_emissions or 0, n_groups + max_inserts_ahead)
     )
     emit_cap = max(emit_cap, 1)
     with torch.no_grad():

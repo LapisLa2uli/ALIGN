@@ -416,6 +416,7 @@ def train_note_repetition_model(
             f"val_f1={metrics['f1']:.4f} threshold={best_threshold:.3f}",
             flush=True,
         )
+        # Component diagnostic only: candidate-row F1 cannot promote a model.
         if metrics["f1"] > best_f1:
             best_f1 = metrics["f1"]
             best_state = {

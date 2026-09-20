@@ -1,12 +1,34 @@
-"""Class-aware onset metrics against converted label MIDIs; no source paths needed."""
+"""Class-aware note metrics against converted label MIDIs; no source paths needed."""
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from eval_bridge import (Warner, read_pred_midi_tracks, class_from_name, note_prf,
                          prf, _micro_block, _mean_block)
 from prepare_dataset import output_paths
 from check_labels import load_notes
+
+
+def _official_note_wise(gold_by_class, pred_by_class, score_notes):
+    """ALIGN comparison metric; mir_eval remains the authors' legacy protocol."""
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for path in (root / "align-model" / "src", root / "DataCreate" / "src"):
+            text = str(path)
+            if text not in sys.path:
+                sys.path.insert(0, text)
+        from alignmodel.joint.score_location_adapter import (
+            evaluate_class_notes_note_wise,
+        )
+    except Exception as exc:
+        return {
+            "status": "unavailable",
+            "reason": f"official note-wise adapter unavailable: {exc}",
+        }
+    return evaluate_class_notes_note_wise(
+        gold_by_class, pred_by_class, score_notes
+    )
 
 
 def evaluate(root, pred_dir, allow_unclassified=False):
@@ -24,6 +46,7 @@ def evaluate(root, pred_dir, allow_unclassified=False):
     classes = ("extra", "missing", "correct")
     rows = {key: [] for key in (*classes, "all", "class_aware")}
     counts, pieces, unclassified_counts = {}, {}, {}
+    official_rows = []
     for tid in ids:
         tracks, _, _ = read_pred_midi_tracks(str(pred_dir / tid / "mix.mid"), Warner())
         pred, unclassified = {key: [] for key in classes}, []
@@ -59,16 +82,60 @@ def evaluate(root, pred_dir, allow_unclassified=False):
         score = dict(P=precision, R=recall, F1=f1, tp=tp, n_gt=ng, n_pred=npred)
         rows['class_aware'].append(score)
         pieces[tid]['class_aware'] = score
+        score_path = paths["score_mid"]
+        score_notes = load_notes(str(score_path)) if score_path.is_file() else None
+        official = _official_note_wise(gt, pred, score_notes)
+        pieces[tid]["official_note_wise"] = official
+        official_rows.append(official)
+    legacy = {
+        "protocol": "mir_eval onset-only, 50 ms, 50 cents, classes by MIDI track name",
+        "micro": {key: _micro_block(value) for key, value in rows.items()} if real == {False} else None,
+        "per_piece_mean": {key: _mean_block(value) for key, value in rows.items()} if real == {False} else None,
+    }
+    official_report = None
+    if official_rows and all(row.get("status") == "available" for row in official_rows):
+        credit = sum(float(row["credit"]) for row in official_rows)
+        predicted = sum(int(row["predicted"]) for row in official_rows)
+        gold = sum(int(row["gold"]) for row in official_rows)
+        precision = credit / predicted if predicted else 0.0
+        recall = credit / gold if gold else 0.0
+        if not predicted and not gold:
+            precision = recall = 1.0
+        f1 = (
+            2.0 * precision * recall / (precision + recall)
+            if precision + recall
+            else 0.0
+        )
+        official_report = {
+            "schema_version": "align-note-wise-score-event-metric-v1",
+            "status": "available",
+            "type_mismatch_credit": 0.5,
+            "credit": credit,
+            "predicted": predicted,
+            "gold": gold,
+            "precision": precision,
+            "recall": recall,
+            "f1": f1,
+        }
+    elif official_rows:
+        official_report = {
+            "status": "unavailable",
+            "reason": official_rows[0].get("reason") or "official note-wise unavailable",
+        }
     return {
         "n_pieces": len(ids), "real_test": real == {True},
-        "protocol": "mir_eval onset-only, 50 ms, 50 cents, classes by MIDI track name",
+        "protocol": "official_note_wise canonical score-event identity; "
+                    "legacy_mir_eval_onset_50ms is the authors' native protocol",
         "note": "Real label MIDIs are placeholders; note metrics are unavailable." if real == {True}
-                else "All is class-agnostic transcription; use per-class F1 for error detection.",
+                else "Headline F1 is official_note_wise. All is class-agnostic transcription "
+                     "under the legacy mir_eval protocol.",
         "unclassified_policy": "Unnamed notes receive no class-match credit and count as false positives in class_aware; included in class-agnostic all. Nonempty unknown track names still fail.",
         "unclassified_notes": sum(unclassified_counts.values()),
         "pieces_with_unclassified_notes": sum(n > 0 for n in unclassified_counts.values()),
-        "micro": {key: _micro_block(value) for key, value in rows.items()} if real == {False} else None,
-        "per_piece_mean": {key: _mean_block(value) for key, value in rows.items()} if real == {False} else None,
+        "official_note_wise": official_report if real == {False} else None,
+        "legacy_mir_eval_onset_50ms": legacy if real == {False} else None,
+        "micro": legacy["micro"],
+        "per_piece_mean": legacy["per_piece_mean"],
         "prediction_counts": counts, "per_piece": pieces,
     }
 

@@ -6,6 +6,8 @@ from datacreate.melody import ScoreSoundingNote
 from datacreate.score_locate import (
     LocatedScoreSpan,
     TranscribedNote,
+    list_score_candidates,
+    locate_best_among_scores,
     locate_score_span,
     should_apply_location,
 )
@@ -108,3 +110,62 @@ def test_locate_writes_musicxml_beats(tmp_path: Path):
     assert located.start_measure == 1
     assert located.start_beat >= 2
     assert located.end_measure == 2
+
+
+def test_locate_best_among_scores_prefers_matching_piece(tmp_path: Path):
+    matching = tmp_path / "match.musicxml"
+    other = tmp_path / "other.musicxml"
+    for path, pitches in (
+        (matching, [60, 62, 64, 65] * 8),
+        (other, [72, 71, 69, 67] * 8),
+    ):
+        part = stream.Part()
+        part.insert(0, tempo.MetronomeMark(number=60))
+        part.insert(0, meter.TimeSignature("4/4"))
+        for measure_number, chunk in enumerate(
+            [pitches[i : i + 4] for i in range(0, len(pitches), 4)], start=1
+        ):
+            measure = stream.Measure(number=measure_number)
+            for pitch in chunk:
+                measure.append(note.Note(pitch, quarterLength=1.0))
+            part.append(measure)
+        score = stream.Score()
+        score.insert(0, part)
+        score.write("musicxml", fp=str(path))
+    transcribed = [
+        TranscribedNote(pitch, index * 0.5, index * 0.5 + 0.4)
+        for index, pitch in enumerate([60, 62, 64, 65, 60, 62, 64, 65])
+    ]
+    best = locate_best_among_scores(transcribed, [other, matching])
+    assert best is not None
+    located, chosen = best
+    assert chosen == matching
+    assert located.start_measure == 1
+    candidates = list_score_candidates(
+        raw_score_root=tmp_path, sample_full_score=matching
+    )
+    assert matching in candidates
+    assert other in candidates
+
+
+def test_locate_best_skips_tiny_excerpt_when_full_piece_exists(tmp_path: Path):
+    full = tmp_path / "full.musicxml"
+    excerpt = tmp_path / "001.musicxml"
+    for path, n_measures, base in ((full, 24, 60), (excerpt, 2, 60)):
+        part = stream.Part()
+        part.insert(0, tempo.MetronomeMark(number=60))
+        part.insert(0, meter.TimeSignature("4/4"))
+        for measure_number in range(1, n_measures + 1):
+            measure = stream.Measure(number=measure_number)
+            for offset in range(4):
+                measure.append(note.Note(base + offset, quarterLength=1.0))
+            part.append(measure)
+        score = stream.Score()
+        score.insert(0, part)
+        score.write("musicxml", fp=str(path))
+    transcribed = [
+        TranscribedNote(60 + (i % 4), i * 0.45, i * 0.45 + 0.4) for i in range(20)
+    ]
+    best = locate_best_among_scores(transcribed, [excerpt, full])
+    assert best is not None
+    assert best[1] == full

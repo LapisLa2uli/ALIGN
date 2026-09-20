@@ -60,14 +60,15 @@ def main() -> None:
             state = run_pipeline(sample, device="cuda", weights_dir=OUT)
             write_prediction(state, pred_path)
             labels = [pipeline_label_to_dict(lab) for lab in state.labels]
-        row = eval_sample(sample, pred_labels=labels, soft=True)
+        row = eval_sample(sample, pred_labels=labels, soft=False)
         rows.append(row)
         if i == 1 or i % 20 == 0:
-            print(f"eval {i}/{len(holdout)} soft_f1={row['melody_f1']:.3f}", flush=True)
+            print(f"eval {i}/{len(holdout)} note_wise_f1={row['melody_f1']:.3f}", flush=True)
     n = max(len(rows), 1)
     summary = {
         "weights": str(OUT),
-        "metric": "soft_set_f1",
+        "metric": "official_note_wise",
+        "legacy_soft_set_f1": "diagnostic_only",
         "n_samples": len(rows),
         "mean_melody_f1": round(sum(r["melody_f1"] for r in rows) / n, 4),
         "mean_melody_precision": round(sum(r["melody_precision"] for r in rows) / n, 4),
@@ -80,7 +81,7 @@ def main() -> None:
     SUMMARY.parent.mkdir(parents=True, exist_ok=True)
     SUMMARY.write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(
-        f"DONE soft_f1={summary['mean_melody_f1']:.3f} "
+        f"DONE note_wise_f1={summary['mean_melody_f1']:.3f} "
         f"p={summary['mean_melody_precision']:.3f} "
         f"r={summary['mean_melody_recall']:.3f} "
         f"n_pred={summary['mean_n_pred']:.2f} "

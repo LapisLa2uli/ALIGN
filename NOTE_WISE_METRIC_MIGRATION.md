@@ -112,6 +112,17 @@ $env:PYTHONPATH='src'
 No lockbox targets, production weights, or production promotion state were
 read or modified by this migration.
 
+## Going forward
+
+New evaluation, checkpoint selection, early stopping, bootstrap, and promotion
+code must call `match_note_wise_labels_detail` or
+`evaluate_joint_dataset(...).official_note_wise`. Timestamped Extra / Missing /
+Correct predictions (including Polytune and LadderSym) go through
+`alignmodel.joint.score_location_adapter` first. Do not add new timestamp,
+IoU, or pitch-list headlines. Those remain `legacy_*` or `diagnostic_*` only.
+Acoustic-only trainers may keep onset F1 as a component diagnostic; they cannot
+promote a model without the note-wise gate.
+
 Verified results: DataCreate 72 passed; align-model 226 passed;
 synth-pipeline 35 passed. Focused migration suites also passed, Python
 compilation succeeded, IDE lint reported no errors, and `git diff --check`

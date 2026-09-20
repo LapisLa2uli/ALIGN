@@ -53,6 +53,8 @@ __all__ = [
     "is_contiguous_part",
     "is_repeated_pass",
     "label_already_converted",
+    "labels_with_canonical_locations",
+    "load_bundle_notes",
     "lcs_length",
     "match_melodies",
     "match_melodies_detail",
@@ -63,11 +65,13 @@ __all__ = [
     "melody_pair_score",
     "melody_similarity",
     "melody_span_from_label",
+    "micro_note_wise",
     "midi_from_comment",
     "note_set_iou",
     "notes_for_measure_pitch",
     "notes_in_measures",
     "notes_overlapping_time",
+    "official_label_metrics",
     "padded_melody",
     "parse_sounding_notes",
     "pred_melodies_from_labels",
@@ -245,4 +249,119 @@ def _label_as_mapping(lab: PipelineLabel) -> dict[str, Any]:
             else None
         ),
         "pitches": lab.pitches,
+    }
+
+
+def labels_with_canonical_locations(
+    labels: list[dict[str, Any]],
+    notes: list[ScoreSoundingNote],
+    *,
+    pad_notes: int = 2,
+) -> list[dict[str, Any]]:
+    """Attach score_part / note_ids when a timed label can be projected."""
+
+    output = []
+    for label in labels:
+        if is_repeated_pass(label):
+            continue
+        item = dict(label)
+        span = melody_span_from_label(item, notes, pad_notes=pad_notes)
+        if span is None:
+            output.append(item)
+            continue
+        item["score_part"] = {
+            "start_note_index": span.start_note_index,
+            "end_note_index": span.end_note_index,
+            "pad_notes": span.pad_notes,
+            "start_measure": span.start_measure,
+            "end_measure": span.end_measure,
+        }
+        item["pitches"] = list(span.pitches)
+        item["note_ids"] = list(span.note_ids)
+        if item.get("type") == "repetition" and item.get("extra_copies") is None:
+            item["extra_copies"] = 1
+        output.append(item)
+    return output
+
+
+def official_label_metrics(
+    gold_labels: list[dict[str, Any]],
+    pred_labels: list[dict[str, Any]],
+    *,
+    score_event_count: int | None = None,
+) -> dict[str, Any]:
+    """Headline note-wise F1 with an explicit pitch-list diagnostic."""
+
+    gold = [dict(label) for label in gold_labels if not is_repeated_pass(label)]
+    pred = [dict(label) for label in pred_labels if not is_repeated_pass(label)]
+    official = match_note_wise_labels_detail(
+        gold, pred, score_event_count=score_event_count
+    )
+    gold_mels = gold_melodies_from_labels(gold)
+    pred_mels = [
+        WeakMelody(
+            pitches=[int(value) for value in (label.get("pitches") or [])],
+            type=label.get("type"),
+            extra_copies=label.get("extra_copies"),
+            note_ids=[str(value) for value in (label.get("note_ids") or [])],
+        )
+        for label in pred
+        if isinstance(label.get("pitches"), list) and label.get("pitches")
+    ]
+    legacy = match_melodies_detail(gold_mels, pred_mels)
+    available = official.get("status") == "available"
+    return {
+        "official_note_wise": official,
+        "f1": float(official["f1"]) if available else 0.0,
+        "precision": float(official["precision"]) if available else 0.0,
+        "recall": float(official["recall"]) if available else 0.0,
+        "credit": float(official.get("credit") or 0.0) if available else 0.0,
+        "predicted": int(official.get("predicted") or 0) if available else len(pred),
+        "gold": int(official.get("gold") or 0) if available else len(gold),
+        "n_pred": len(pred),
+        "n_gold": len(gold),
+        "legacy_pitch_similarity_f1": float(legacy["f1"]),
+        "legacy_pitch_similarity_precision": float(legacy["precision"]),
+        "legacy_pitch_similarity_recall": float(legacy["recall"]),
+        "set_f1": float(legacy["f1"]),
+        "status": official.get("status"),
+    }
+
+
+def micro_note_wise(details: list[dict[str, Any]]) -> dict[str, Any]:
+    available = [
+        row for row in details if row.get("status") == "available"
+    ]
+    credit = sum(float(row.get("credit") or 0.0) for row in available)
+    predicted = sum(int(row.get("predicted") or 0) for row in available)
+    gold = sum(int(row.get("gold") or 0) for row in available)
+    if not available:
+        return {
+            "status": "unavailable",
+            "credit": 0.0,
+            "predicted": 0,
+            "gold": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+        }
+    if not predicted and not gold:
+        precision = recall = 1.0
+    else:
+        precision = credit / predicted if predicted else 0.0
+        recall = credit / gold if gold else 0.0
+    f1 = (
+        2.0 * precision * recall / (precision + recall)
+        if precision + recall
+        else 0.0
+    )
+    return {
+        "status": "available",
+        "schema_version": NOTE_WISE_METRIC_SCHEMA,
+        "credit": credit,
+        "predicted": predicted,
+        "gold": gold,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
     }

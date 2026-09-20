@@ -1,0 +1,15 @@
+{
+  "frozen_decode_config": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v3\\decode_config.json",
+  "frozen_decode_config_sha256": "b55fa88dce20d1f8ac3425214f75d3f8f60762caf989486c0872e5377408bbc4",
+  "frozen_decode_config_unmodified": true,
+  "overlay": {
+    "identity_span": "padded",
+    "pad_notes": 2,
+    "require_path_operation_gate": true
+  },
+  "rationale": {
+    "pad_notes": "DataCreate gold writes pad_notes=2; official identity is the padded start/end, not the core",
+    "require_path_operation_gate": "Emit wrong only on SUBSTITUTE, extra only on EXTRA, miss only on DELETE; skip MATCH rows"
+  },
+  "schema_version": "align-error-heads-v3-decode-overlay-v1"
+}

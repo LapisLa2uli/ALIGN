@@ -918,6 +918,7 @@ def train_note_aligner(cfg: NoteAlignTrainConfig) -> Path:
             "manifest": str(cfg.manifest) if cfg.manifest is not None else None,
         }
         torch.save(payload, last_path)
+        # Component diagnostic only: alignment-map F1 cannot promote a model.
         improved = map_metrics["f1"] > best_f1 + 1e-4
         if improved:
             best_f1 = map_metrics["f1"]

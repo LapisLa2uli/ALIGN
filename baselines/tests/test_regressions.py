@@ -234,6 +234,12 @@ class EvalTests(unittest.TestCase):
             self.assertEqual(result['micro']['all']['F1'], 1)
             self.assertEqual(result['micro']['class_aware']['F1'], 0.5)
             self.assertEqual(result['micro']['class_aware']['n_pred'], 2)
+            self.assertIn('legacy_mir_eval_onset_50ms', result)
+            self.assertEqual(
+                result['legacy_mir_eval_onset_50ms']['micro']['correct']['F1'], 1
+            )
+            self.assertIsNotNone(result['official_note_wise'])
+            self.assertEqual(result['official_note_wise']['status'], 'available')
             midi.instruments[-1].name = 'unknown_typo'
             midi.write(str(pred / 'clip/mix.mid'))
             with self.assertRaisesRegex(ValueError, 'Unclassified'):
@@ -262,6 +268,9 @@ class EvalTests(unittest.TestCase):
             result = evaluate(root, pred)
             for name in ("extra", "missing", "correct", "all"):
                 self.assertEqual(result["micro"][name]["F1"], 1.0)
+            self.assertEqual(result["legacy_mir_eval_onset_50ms"]["micro"]["all"]["F1"], 1.0)
+            self.assertEqual(result["official_note_wise"]["status"], "available")
+            self.assertEqual(result["official_note_wise"]["f1"], 1.0)
             (pred / "only_correct" / "mix.mid").unlink()
             with self.assertRaisesRegex(ValueError, "coverage mismatch"):
                 evaluate(root, pred)

@@ -111,6 +111,7 @@ def test_nll_has_gradients_and_gold_mass() -> None:
     loss, parts = drop_emit_nll(model, lattice, normalize=False)
     assert torch.isfinite(loss)
     assert parts["log_partition"] >= parts["gold_log_partition"] - 1e-5
+    assert parts["length_nll"] > 0
     loss.backward()
     assert model.emit_bias.grad is not None
     assert torch.isfinite(model.emit_bias.grad)

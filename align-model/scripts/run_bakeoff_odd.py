@@ -150,6 +150,7 @@ def eval_one(key: str, n_eval: int = 100, device: str = "cuda") -> dict:
     metrics = {
         "id": spec["id"],
         "variant": spec["variant"],
+        "note_wise_f1": round(sum(r["melody_f1"] for r in rows) / n, 4),
         "set_f1": round(sum(r["melody_f1"] for r in rows) / n, 4),
         "precision": round(sum(r["melody_precision"] for r in rows) / n, 4),
         "recall": round(sum(r["melody_recall"] for r in rows) / n, 4),

@@ -495,6 +495,7 @@ def train_note_transcriber(
         _save_checkpoint(
             last_path, model, cfg, epoch, val_metrics, optimizer, scaler
         )
+        # Component diagnostic only: acoustic onset F1 cannot promote a model.
         if val_metrics["f1"] > best_f1 or not best_path.exists():
             best_f1 = float(val_metrics["f1"])
             _save_checkpoint(

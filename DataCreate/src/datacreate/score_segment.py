@@ -10,8 +10,14 @@ from music21 import chord, converter, duration, meter, note, stream, tempo
 _PITCH_TYPES = (note.Note, note.Rest, note.Unpitched, chord.Chord)
 
 
+def _parse_score(path: Path):
+    # Every bundle uses the same score basenames. Bypass music21's disk cache
+    # so an in-place score replacement cannot reuse another bundle's parse.
+    return converter.parse(str(path), forceSource=True)
+
+
 def get_measure_count(score_path: Path) -> int:
-    score = converter.parse(str(score_path))
+    score = _parse_score(score_path)
     if not score.parts:
         return 0
     measures = list(score.parts[0].recurse().getElementsByClass(stream.Measure))
@@ -85,7 +91,7 @@ def _bar_quarter_length(
 
 
 def get_score_info(score_path: Path) -> dict:
-    score = converter.parse(str(score_path))
+    score = _parse_score(score_path)
     title = None
     if score.metadata and score.metadata.title:
         title = score.metadata.title
@@ -527,7 +533,7 @@ def extract_measure_range(
             f"Invalid measure range {start_measure}-{end_measure}; start must be >= 1 and end >= start"
         )
 
-    score = converter.parse(str(source_path))
+    score = _parse_score(source_path)
     total = get_measure_count(source_path)
     if total == 0:
         raise ValueError(f"Score has no measures: {source_path}")

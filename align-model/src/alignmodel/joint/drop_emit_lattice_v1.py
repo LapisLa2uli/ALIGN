@@ -777,21 +777,35 @@ def drop_emit_nll(
     lattice: DropEmitLattice,
     *,
     normalize: bool = True,
+    length_weight: float = 25.0,
     frozen_crf_score: float | None = None,
 ) -> tuple[Tensor, dict[str, Tensor]]:
     if not prove_gold_path_coverage(lattice)["passed"]:
         raise ValueError("Refusing to train on incomplete gold-path coverage")
-    log_partition = drop_emit_log_partition(
-        model, lattice, gold_only=False, frozen_crf_score=frozen_crf_score
+    from .drop_emit_dp_fast_v1 import (
+        fast_drop_emit_forward,
+        fast_gold_path_log_prob,
     )
-    gold_partition = drop_emit_log_partition(
-        model, lattice, gold_only=True, frozen_crf_score=frozen_crf_score
+
+    alpha, log_partition = fast_drop_emit_forward(
+        model, lattice, frozen_crf_score=frozen_crf_score
     )
-    loss = log_partition - gold_partition
+    gold_partition = fast_gold_path_log_prob(
+        model, lattice, frozen_crf_score=frozen_crf_score
+    )
+    path_nll = log_partition - gold_partition
+    n_gold = len(lattice.targets)
+    if n_gold < alpha.shape[0]:
+        length_nll = log_partition - torch.logsumexp(alpha[n_gold], dim=0)
+    else:
+        length_nll = log_partition.new_tensor(0.0)
+    loss = path_nll + float(length_weight) * length_nll
     if normalize:
         loss = loss / max(len(lattice.groups) + len(lattice.targets), 1)
     return loss, {
         "loss": loss.detach(),
+        "path_nll": path_nll.detach(),
+        "length_nll": length_nll.detach(),
         "log_partition": log_partition.detach(),
         "gold_log_partition": gold_partition.detach(),
     }

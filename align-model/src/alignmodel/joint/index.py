@@ -152,7 +152,11 @@ class ScoreEventIndex:
         score_path: Path | str,
         lineage: Mapping[str, Any] | None = None,
     ) -> "ScoreEventIndex":
-        parsed = converter.parse(str(Path(score_path)))
+        # DataCreate stores every sample score under the same basename
+        # (``verified_score.musicxml``).  music21's disk cache can otherwise
+        # return a stale parse from a different sample after a score is
+        # regenerated in place.
+        parsed = converter.parse(str(Path(score_path)), forceSource=True)
         source_notes = _ordered_source_notes(parsed)
         elements_by_source = {
             source_index: element

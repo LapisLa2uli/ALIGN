@@ -1130,7 +1130,7 @@ def _calibrate_edit_softmax_threshold(
     best = max(pool, key=lambda c: (c["f1"], c["prec"], c["t"]))
     thr = max(float(best["t"]), EDIT_SOFTMAX_FLOOR)
     print(
-        f"stage2 calib (hard set-F1) thr={thr:.2f} "
+        f"stage2 calib (official note-wise F1) thr={thr:.2f} "
         f"f1={best['f1']:.3f} p={best['prec']:.3f} r={best['rec']:.3f} "
         f"mean_n_pred={best['mean_n_pred']:.2f} gold={best['mean_n_gold']:.2f} "
         f"clips={len(clip_rows)}"
@@ -1305,7 +1305,7 @@ def _calibrate_rhythm_threshold(
     pool = usable or candidates
     best = max(pool, key=lambda c: (c["f1"], c["prec"], c["t"]))
     print(
-        f"stage3 calib (hard set-F1) thr={best['t']:.2f} "
+        f"stage3 calib (official note-wise F1) thr={best['t']:.2f} "
         f"f1={best['f1']:.3f} p={best['prec']:.3f} r={best['rec']:.3f} "
         f"mean_n_pred={best['mean_n_pred']:.2f} gold={best['mean_n_gold']:.2f} "
         f"clips={len(clip_rows)}"

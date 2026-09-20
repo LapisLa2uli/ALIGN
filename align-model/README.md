@@ -195,17 +195,20 @@ align-model eval-melodies --data ".\synth-pipeline\output"
 align-model eval-melodies --data ".\synth-pipeline\output" --pred melody_pred.json
 ```
 
-`eval-melodies` is the official synth metric. Gold is the schema **1.2** `pitches` list on each first-pass label. Predictions that already store `pitches` are used as-is; time-only preds are mapped onto the clean score with the same core-plus-pad rules (extras use the notes before and after the insert).
+`eval-melodies` is the official synth metric. Gold is schema **1.2** labels with canonical score-event identity (`score_part` / `note_ids` / audited extras). Predictions without a validated identity remain unmatched. Schema **1.1** gold without a projection is officially unavailable.
 
-- Precision = matched predictions / all predictions (each pred ≤ 1 gold)
-- Recall = matched golds / all golds (each gold ≤ 1 pred)
-- Headline = F1 (`melody_f1`)
+- Matching is exclusive one-to-one on canonical location, never pitch lists or timestamps
+- Same location and type receives 1.0; same location with a different type receives 0.5; a wrong location receives 0
+- Headline = official note-wise F1 (`melody_f1` / `official_note_wise`)
+- Pitch-list similarity remains under `legacy_pitch_similarity_*`
 
-`smoke` prints that score first; timestamp `repetition_iou` is still included (first-pass gold only).
+`smoke` prints that score first; timestamp `repetition_iou` is still included as a diagnostic (first-pass gold only).
 
 `run` writes `pipeline_pred.json`. `run-melody` writes `melody_pred.json`. Both are schema **1.2**. Stage 4 is opt-in via `--timbre`.
 
 ## Train
+
+Full command-line flag reference, working-directory conventions, and parameter recipes: [TRAINING.md](TRAINING.md). The selected hyperparameter card for each model: [HYPERPARAMETERS.md](HYPERPARAMETERS.md). Discover live flags with `align-model train-stages --help` or `python align-model/scripts/<script>.py --help`.
 
 Learned heads on `performance_mel.npy`. Default train root is `synth-pipeline/output` (schema 1.2 synth). DataCreate currently contains 94 real-take/fixture folders (`001`–`093` plus `demo_001`); all remain schema 1.1 and only 3 currently have `note_alignment_v2.json`.
 
@@ -277,7 +280,7 @@ Basic Pitch cache/frontend version is `align-basic-pitch-0.4.0-v2`; PESTO featur
 
 ### External transcription benchmark
 
-These are frozen upstream models, not models trained by this repository. Each was calibrated on 40 clips and evaluated on up to 80 clips per split from the full note-alignment manifest (actual valid counts: 75 val, 78 test-ID, 80 test-OOD). F1 uses pitch-correct note matching with onset tolerance.
+These are frozen upstream models, not models trained by this repository. Each was calibrated on 40 clips and evaluated on up to 80 clips per split from the full note-alignment manifest (actual valid counts: 75 val, 78 test-ID, 80 test-OOD). The F1 below is an acoustic onset/pitch diagnostic and is not official note-wise model F1. Promotion still requires end-to-end canonical score-event scoring.
 
 | Model | Methodology | Calibrated decoder settings | Val F1 | Test-ID F1 | Test-OOD F1 |
 |---|---|---|---:|---:|---:|

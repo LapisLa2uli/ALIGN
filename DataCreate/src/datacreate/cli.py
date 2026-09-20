@@ -49,13 +49,18 @@ def main() -> None:
     )
     realign = sub.add_parser(
         "realign-corpus",
-        help="Re-align all samples; relocate unlabeled score excerpts from transcription",
+        help="Re-align samples; relocate unlabeled score excerpts from RawData scores",
     )
     realign.add_argument("--limit", type=int)
     realign.add_argument(
         "--keep-segments",
         action="store_true",
         help="Do not change unlabeled score regions",
+    )
+    realign.add_argument(
+        "--unlabeled-only",
+        action="store_true",
+        help="Skip samples that already have human labels in labels.json",
     )
 
     args = parser.parse_args()
@@ -117,13 +122,17 @@ def main() -> None:
             config,
             logger,
             relocate_unlabeled=not args.keep_segments,
+            unlabeled_only=args.unlabeled_only,
             limit=args.limit,
         )
         failed = [row for row in rows if row.get("status") != "ok"]
         moved = [row for row in rows if row.get("relocated")]
+        switched = [row for row in rows if row.get("score_changed")]
         print(
             f"Re-aligned {len(rows) - len(failed)}/{len(rows)} samples; "
-            f"{len(moved)} unlabeled score regions updated; {len(failed)} failed"
+            f"{len(moved)} score regions updated; "
+            f"{len(switched)} RawData score files switched; "
+            f"{len(failed)} failed"
         )
         for row in failed:
             print(f"  ERROR {row.get('sample')}: {row.get('error')}", file=sys.stderr)

@@ -36,10 +36,17 @@ from datacreate.web.compare_eval import default_eval_dir, load_summary, sample_p
 WEB_DIR = Path(__file__).resolve().parent
 STATIC_DIR = WEB_DIR / "static"
 TEMPLATES_DIR = WEB_DIR / "templates"
-LabelSource = Literal["human", "agent"]
+LabelSource = Literal["human", "agent", "polytune", "laddersym"]
 LABEL_SOURCE_FILES: dict[LabelSource, str] = {
     "human": "labels.json",
     "agent": "labels_agent.json",
+    "polytune": "labels_polytune.json",
+    "laddersym": "labels_laddersym.json",
+}
+PROVENANCE_KEYS: dict[LabelSource, str] = {
+    "agent": "agent_labeling",
+    "polytune": "baseline_labeling",
+    "laddersym": "baseline_labeling",
 }
 
 
@@ -123,7 +130,10 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
 
     def _inject_asset_versions(name: str) -> HTMLResponse:
         html = (TEMPLATES_DIR / name).read_text(encoding="utf-8")
-        js_name = "compare.js" if name == "compare.html" else "annotate.js"
+        js_name = {
+            "compare.html": "compare.js",
+            "label_compare.html": "label_compare.js",
+        }.get(name, "annotate.js")
         js_v = int((STATIC_DIR / js_name).stat().st_mtime)
         css_v = int((STATIC_DIR / "style.css").stat().st_mtime)
         html = html.replace("/static/style.css", f"/static/style.css?v={css_v}")
@@ -133,6 +143,10 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
     @app.get("/compare", response_class=HTMLResponse)
     def compare_index() -> HTMLResponse:
         return _inject_asset_versions("compare.html")
+
+    @app.get("/label-compare", response_class=HTMLResponse)
+    def label_compare_index() -> HTMLResponse:
+        return _inject_asset_versions("label_compare.html")
 
     @app.get("/api/samples")
     def list_samples() -> list[dict[str, Any]]:
@@ -155,6 +169,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                     "id": d.name,
                     "label_count": counts["human"],
                     "agent_label_count": counts["agent"],
+                    "polytune_label_count": counts["polytune"],
+                    "laddersym_label_count": counts["laddersym"],
                 }
             )
         items.sort(key=lambda x: _sample_sort_key(x["id"]))
@@ -398,17 +414,18 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         if not sample_dir.exists():
             raise HTTPException(404, "Sample not found")
         doc = LabelsDocument(
-            schema_version="1.2" if label_source == "agent" else config.schema_version,
+            schema_version="1.2" if label_source != "human" else config.schema_version,
             annotator_id=payload.annotator_id,
             labels=payload.labels,  # type: ignore[arg-type]
             self_reported=payload.self_reported,  # type: ignore[arg-type]
         )
         path = _labels_path(sample_dir, label_source)
         document = doc.model_dump()
-        if label_source == "agent" and path.exists():
-            metadata = read_json(path).get("agent_labeling")
+        provenance_key = PROVENANCE_KEYS.get(label_source)
+        if provenance_key and path.exists():
+            metadata = read_json(path).get(provenance_key)
             if metadata is not None:
-                document["agent_labeling"] = {
+                document[provenance_key] = {
                     **metadata,
                     "edited_in_gui": True,
                 }

@@ -86,13 +86,19 @@ def _eval_holdout(holdout: list[Path], pred_dir: Path, tag: str) -> tuple[list[d
             write_prediction(state, pred_path)
             labels = [pipeline_label_to_dict(lab) for lab in state.labels]
         hard = eval_sample(sample, pred_labels=labels, soft=False)
-        soft = eval_sample(sample, pred_labels=labels, soft=True)
+        soft = {
+            **hard,
+            "melody_f1": hard["legacy_pitch_similarity_f1"],
+            "melody_precision": hard["legacy_pitch_similarity_precision"],
+            "melody_recall": hard["legacy_pitch_similarity_recall"],
+        }
         hard_rows.append(hard)
         soft_rows.append(soft)
         if i == 1 or i % 20 == 0:
             print(
                 f"eval {tag} {i}/{len(holdout)} "
-                f"hard_f1={hard['melody_f1']:.3f} soft_f1={soft['melody_f1']:.3f}",
+                f"note_wise_f1={hard['melody_f1']:.3f} "
+                f"legacy_pitch_f1={soft['melody_f1']:.3f}",
                 flush=True,
             )
     return hard_rows, soft_rows
@@ -166,7 +172,7 @@ def main() -> None:
     soft = _mean_block(soft_rows)
     summary = {
         "weights": str(OUT),
-        "metric": "type_aware_set_f1",
+        "metric": "official_note_wise",
         "holdout": "random12k seed=365 first 10% then 100",
         "n_samples": hard["n_samples"],
         "stage_paths": stage_paths,
