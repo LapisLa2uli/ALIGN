@@ -160,3 +160,35 @@ def test_fast_semimarkov_span_matches_reference() -> None:
     )
     assert fast_events == reference_events
     assert fast_deletions == reference_deletions
+
+
+def test_fast_decode_handles_terminal_delete_after_final_candidate() -> None:
+    score = (
+        ScoreEvent(0, 60, 0.0, 1.0, (0,)),
+        ScoreEvent(1, 62, 1.0, 2.0, (1,)),
+    )
+    template = (
+        OrnamentTemplateUnit(60, 0.0, "linked", 0, 0),
+        OrnamentTemplateUnit(62, 1.0, "linked", 1, 0),
+    )
+    hypothesis = LatticeHypothesis(
+        GrammarHypothesis(
+            None, 0, ((0, 0), (1, 0)), (0.0, 1.0)
+        ),
+        template,
+        True,
+        0.0,
+    )
+    candidates = (IdentityCandidate(60, 0.0, 0.4, 1.0),)
+    lattice = IdentityLattice(
+        candidates, score, (hypothesis,), None, frozenset()
+    )
+    model = OrnamentIdentityCRF(hidden=8)
+    reference_events, reference_deletions, _ = decode_identity_crf(
+        model, lattice
+    )
+    fast_events, fast_deletions, _ = fast_decode_identity_crf(
+        model, lattice
+    )
+    assert fast_events == reference_events
+    assert fast_deletions == reference_deletions

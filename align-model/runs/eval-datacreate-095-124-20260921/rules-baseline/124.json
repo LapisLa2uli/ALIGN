@@ -1,0 +1,67 @@
+{
+  "annotator_id": "frozen_error_heads_v2",
+  "audio_reference": "performance_audio.wav",
+  "labels": [
+    {
+      "deviation_ms": -301.86,
+      "end_time": 7.4807,
+      "id": "error_head_0000",
+      "note_ids": [
+        "note_0009",
+        "note_0010"
+      ],
+      "pitches": [
+        72,
+        74
+      ],
+      "rhythm_subtype": "short",
+      "score_part": {
+        "core_end_note_index": 10,
+        "core_start_note_index": 10,
+        "end_measure": 4,
+        "end_note_index": 10,
+        "pad_notes": 1,
+        "start_measure": 4,
+        "start_note_index": 9
+      },
+      "source": "frozen_error_heads_v2",
+      "start_time": 6.8537,
+      "type": "rhythm_error"
+    }
+  ],
+  "pipeline": {
+    "diagnostics": {
+      "audio": {
+        "channels": 1,
+        "duration_sec": 8.553333333333333,
+        "frames": 188601,
+        "sample_rate": 22050,
+        "sha256": "a6465a5e00752a075240436e67f41996f39ac7d693d35b2234781f402aa74bca"
+      },
+      "candidate_count": 11,
+      "candidate_pitch_in_score_ratio": 1.0,
+      "candidate_to_score_count_ratio": 1.0,
+      "candidate_union_all_count": 12,
+      "canonical_to_score_count_ratio": 1.0,
+      "canonical_transcription_count": 11,
+      "copy_event_count": 0,
+      "decoded_event_count": 11,
+      "deleted_score_event_count": 0,
+      "mapped_event_count": 11,
+      "mapped_score_coverage": 1.0,
+      "operations": {
+        "MATCH": 11
+      },
+      "path_score": 6.121842384338379,
+      "retained_candidate_count": 11,
+      "score_event_count": 11,
+      "score_measure_max": 4,
+      "score_measure_min": 3,
+      "unmapped_event_count": 0
+    },
+    "intonation_masked": true,
+    "sample_id": "124",
+    "upstream_frozen": true
+  },
+  "schema_version": "1.2"
+}

@@ -271,6 +271,7 @@ def regenerate_bundle_musesounds(
     sample_rate: int = 22050,
     work_dir: Path | None = None,
     env: dict[str, str] | None = None,
+    dataset_version: str | None = None,
 ) -> str:
     from synthpipeline.musesounds import (
         MUSESOUNDS_RENDER_MARK as mark,
@@ -305,7 +306,9 @@ def regenerate_bundle_musesounds(
             prepare_bb_clarinet_xml(xml_src, xml_copy)
             export_musesounds_mp3(xml_copy, mp3_path, env=env)
             mp3_to_wav(mp3_path, wav_path, sample_rate=sample_rate)
-        _finalize_musesounds_bundle(sample_dir, meta, meta_path, semitones, sample_rate)
+        _finalize_musesounds_bundle(
+            sample_dir, meta, meta_path, semitones, sample_rate, dataset_version
+        )
     finally:
         if work_dir is None:
             shutil.rmtree(tmp_root, ignore_errors=True)
@@ -318,6 +321,7 @@ def _finalize_musesounds_bundle(
     meta_path: Path,
     semitones: int,
     sample_rate: int,
+    dataset_version: str | None = None,
 ) -> None:
     from datacreate.stages.stage5_alignment import run_alignment, write_candidates
     from datacreate.stages.stage7_features import extract_mels
@@ -350,6 +354,10 @@ def _finalize_musesounds_bundle(
         schema = str(json.loads(labels_path.read_text(encoding="utf-8")).get("schema_version") or schema)
     write_candidates(alignment.candidates, sample_dir, schema)
     inferred_space, _offset = infer_midi_pitch_space(sample_dir, meta)
+    # A fresh render replaces any degraded performance audio and its clean source.
+    for key in ("audio_degrade", "degrade", "performance_audio_clean"):
+        meta.pop(key, None)
+    (sample_dir / "performance_audio_clean.wav").unlink(missing_ok=True)
     meta["sounding_transpose"] = int(semitones)
     meta["sound_profile"] = "MuseSounds"
     meta["soundfont"] = "muse_woodwinds_clarinet"
@@ -362,6 +370,8 @@ def _finalize_musesounds_bundle(
             audio_render=MUSESOUNDS_RENDER_MARK,
         )
     )
+    if dataset_version:
+        meta["dataset_version"] = dataset_version
     meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
 
@@ -391,6 +401,7 @@ def regenerate_root(
     strip_ornaments: bool = False,
     backend: str = "soundfont",
     batch_size: int = 16,
+    dataset_version: str | None = None,
 ) -> dict[str, int]:
     backend = str(backend or "soundfont").lower()
     if backend == "musesounds":
@@ -401,6 +412,7 @@ def regenerate_root(
             sample_rate=sample_rate,
             batch_size=batch_size,
             workers=workers,
+            dataset_version=dataset_version,
         )
     dirs = discover_bundles(root)
     counts = {
@@ -455,6 +467,7 @@ def _musesounds_run_pending(payload: dict) -> dict[str, int]:
     batch_n = max(1, int(payload["batch_size"]))
     work_root = Path(payload["work_root"])
     label = str(payload.get("label") or "w")
+    version = payload.get("dataset_version")
     home = payload.get("home")
     env = musescore_worker_env(Path(home)) if home else None
     counts = {"converted": 0, "failed": 0, "n": len(pending)}
@@ -498,6 +511,7 @@ def _musesounds_run_pending(payload: dict) -> dict[str, int]:
                         sample_rate=sample_rate,
                         work_dir=work_root / f"retry_{sample_dir.name}",
                         env=env,
+                        dataset_version=version,
                     )
                     counts["converted"] += 1
                 except Exception as one_exc:
@@ -521,7 +535,7 @@ def _musesounds_run_pending(payload: dict) -> dict[str, int]:
                     else {}
                 )
                 _finalize_musesounds_bundle(
-                    sample_dir, meta, meta_path, semitones, sample_rate
+                    sample_dir, meta, meta_path, semitones, sample_rate, version
                 )
                 counts["converted"] += 1
             except Exception as exc:
@@ -540,6 +554,7 @@ def regenerate_root_musesounds(
     sample_rate: int = 22050,
     batch_size: int = 16,
     workers: int = 4,
+    dataset_version: str | None = None,
 ) -> dict[str, int]:
     """Re-render WAVs with Muse Woodwinds clarinet. Scores, MIDI, and labels stay put."""
     from synthpipeline.musesounds import MUSESOUNDS_RENDER_MARK
@@ -588,6 +603,7 @@ def regenerate_root_musesounds(
                     "work_root": str(work_root / "w0"),
                     "home": None,
                     "label": "w0",
+                    "dataset_version": dataset_version,
                 }
             )
             counts["converted"] += part["converted"]
@@ -608,6 +624,7 @@ def regenerate_root_musesounds(
                     "work_root": str(work_root / f"w{i}"),
                     "home": str(work_root / f"home_w{i}"),
                     "label": f"w{i}",
+                    "dataset_version": dataset_version,
                 }
             )
         with ProcessPoolExecutor(max_workers=len(jobs)) as pool:

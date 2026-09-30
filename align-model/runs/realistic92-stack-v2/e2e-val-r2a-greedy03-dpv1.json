@@ -1,0 +1,31 @@
+{
+  "split": "val",
+  "clips": 935,
+  "aligner": "dp_v1",
+  "costs": {},
+  "notes_file": "runs\\realistic92-stack-v2\\notes-val-r2a-greedy03.json",
+  "notes_sha256": "25a84646a341e44201af265a019391e000b088c0e2220166abb11b6939fe5a5a",
+  "f1": 0.9401448455463968,
+  "precision": 0.9510253693789137,
+  "recall": 0.9295104701151019,
+  "bootstrap_95": {
+    "replicates": 1000,
+    "lower_95": 0.9367937481524492,
+    "median": 0.9400968143860677,
+    "upper_95": 0.9434827654763922
+  },
+  "per_type_f1": {
+    "match": 0.9706221145909862,
+    "copy": 0.9454772691766912,
+    "substitute": 0.748031496062992,
+    "extra": 0.7740896483850764,
+    "missed_note": 0.5830592105263157
+  },
+  "by_group_f1": {
+    "rawdata": 0.9467585274655795,
+    "procedural": 0.9351780597625869
+  },
+  "errors": {
+    "ValueError: No repeat hypothesis within the length slack": 2
+  }
+}

@@ -137,6 +137,8 @@ def _normalize_transcribed_notes(payload: dict[str, Any]) -> list[dict[str, Any]
                 "score_index": score_index,
                 "is_rest": False,
                 "duration_ql": round(max(0.0625, (end - start) * 2.0), 4),
+                "ignored": bool(raw.get("ignored")),
+                "ignored_reason": raw.get("ignored_reason"),
             }
         )
     return notes

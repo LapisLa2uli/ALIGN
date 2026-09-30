@@ -1,0 +1,57 @@
+{
+  "schema_version": "align-orn-generalization-v4-generation-freeze-protocol-v1",
+  "release_name": "orn-generalization-v4",
+  "frozen_utc": "2026-09-21T11:41:30.9429164Z",
+  "objective": "freeze a new independent population before any v3-result-driven model change",
+  "seed": 40000,
+  "requested_rows": 360,
+  "minimum_strict_audit_rows": 100,
+  "freezer_sha256": "a74cfe77a1180fe891e3fea11cc511d1cb4af59fed877d71dde79d9539e165e6",
+  "temporary_source_root": "E:/outputRaw_orn_v4_lockbox_20260921",
+  "membership_rule": "all rows in the fixed seed/count range that pass the predeclared strict global-lineage and schema audit",
+  "membership_uses_model_outcomes": false,
+  "generation": {
+    "config": "synth-pipeline/config/mixed_orn_10k_random.yaml",
+    "config_sha256": "cb5cc3538831d7dbcc0cb4eb891b7c83f49a8a541f39965f5ccf876268535884",
+    "command": "python -m synthpipeline.cli --config config/mixed_orn_10k_random.yaml generate --count 360 --workers 8 --soundfont freepats --seed 40000 --output E:/outputRaw_orn_v4_lockbox_20260921",
+    "implementation_sha256": {
+      "pipeline.py": "0d31c06515b07b6c2e8459521e82b57da5637b26c0ad90bd8b0a0b0b6e77907b",
+      "scoregen.py": "4bc5791497d1b918454465fa526c8178a8105f3f62e116c2d8ca0e5da0fe1e64",
+      "errors.py": "eb78b94fe2c52369c83325c1522c757d379ec47ad841e6ca959e818db2246881",
+      "render.py": "8785e7ddfd56176aaa9070d153748400c10c1366f38e87d371398a53da56ed7e",
+      "note_map.py": "da1a580be4b756e58c64e31afa5a819037e68f95cdb0b1ca8eac8bd81a0fc688",
+      "timing.py": "a3e09b2fef1afc569192b6eea2aebd610557370fc0bbfa181af4ce3bd0b0cfb9"
+    }
+  },
+  "freeze": {
+    "freezer": "align-model/scripts/freeze_orn_generalization_v3.py",
+    "freezer_sha256": "a74cfe77a1180fe891e3fea11cc511d1cb4af59fed877d71dde79d9539e165e6",
+    "repair_implementation_sha256": "94cec25074cfa2c55ce3a9ac3d1103caa5fe75c05719eb74a52c488e509ecab7",
+    "requirements": [
+      "schema and label-span validity",
+      "exact renderer-ornament reconstruction",
+      "identity-CRF exact target round trip",
+      "no overlap with v2 development, v2 lockbox, or v3 lockbox groups/audio/scores"
+    ],
+    "target_encryption": "AES-256-GCM with external key",
+    "delete_temporary_source_after_verified_freeze": true
+  },
+  "prior_data": {
+    "v2_release_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+    "v2_lockbox_manifest_sha256": "bb6c87500942fb90e7f1de5e917e598c68694be2703406b416a5317599f337f8",
+    "v3_lockbox_manifest_sha256": "a49a8ae096290f9358945932bb5c420fd5f3f0dc6d62013e001f730bddb797d2",
+    "v3_result_f1": 0.7324128862590401
+  },
+  "future_evaluation": {
+    "success_threshold_f1": 0.8,
+    "one_shot": true,
+    "predictions_must_be_frozen_before_key_or_target_read": true,
+    "post_v4_lockbox_tuning": false
+  },
+  "state_at_protocol_freeze": {
+    "temporary_source_exists": false,
+    "v4_targets_exist": false,
+    "v4_membership_known": false,
+    "v3_result_driven_tuning_started": false
+  }
+}

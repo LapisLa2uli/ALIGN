@@ -1,0 +1,141 @@
+{
+  "cache": "runs\\realistic92-stack-v2\\cache-val-ctc-r2a",
+  "clips": 1108,
+  "reports": [
+    {
+      "spec": {
+        "decoder": "greedy",
+        "blank_scale": 1.0
+      },
+      "precision": 0.9814737381064129,
+      "recall": 0.9423437743238482,
+      "f1": 0.961510809409955,
+      "predicted": 117185,
+      "gold": 122051,
+      "recall_by": {
+        "dur_120to200": 0.9628,
+        "dur_50to80": 0.7898,
+        "dur_80to120": 0.9172,
+        "dur_ge200": 0.9532,
+        "dur_lt50": 0.7363,
+        "ornament_renderer_only": 0.8532,
+        "pitch_change": 0.955,
+        "reg_clarion_B4_C6": 0.9444,
+        "reg_high_gt_C6": 0.932,
+        "reg_low_lt_G4": 0.9367,
+        "reg_throat_G4_Bb4": 0.9557,
+        "same_pitch_neighbor": 0.8762
+      },
+      "support_by": {
+        "dur_120to200": 52702,
+        "dur_50to80": 2750,
+        "dur_80to120": 15812,
+        "dur_ge200": 47048,
+        "dur_lt50": 3739,
+        "ornament_renderer_only": 22326,
+        "pitch_change": 102496,
+        "reg_clarion_B4_C6": 63600,
+        "reg_high_gt_C6": 9203,
+        "reg_low_lt_G4": 36593,
+        "reg_throat_G4_Bb4": 12655,
+        "same_pitch_neighbor": 19555
+      },
+      "false_positives": {
+        "flicker_ABA": 390,
+        "other": 943,
+        "split_same_pitch": 838
+      },
+      "false_positive_rate": 0.018526261893587064
+    },
+    {
+      "spec": {
+        "decoder": "greedy",
+        "blank_scale": 0.3
+      },
+      "precision": 0.9742647367316971,
+      "recall": 0.9513072404158918,
+      "f1": 0.9626491340071138,
+      "predicted": 119175,
+      "gold": 122051,
+      "recall_by": {
+        "dur_120to200": 0.969,
+        "dur_50to80": 0.8051,
+        "dur_80to120": 0.9284,
+        "dur_ge200": 0.9636,
+        "dur_lt50": 0.7507,
+        "ornament_renderer_only": 0.8651,
+        "pitch_change": 0.9604,
+        "reg_clarion_B4_C6": 0.9529,
+        "reg_high_gt_C6": 0.9419,
+        "reg_low_lt_G4": 0.9463,
+        "reg_throat_G4_Bb4": 0.9644,
+        "same_pitch_neighbor": 0.9035
+      },
+      "support_by": {
+        "dur_120to200": 52702,
+        "dur_50to80": 2750,
+        "dur_80to120": 15812,
+        "dur_ge200": 47048,
+        "dur_lt50": 3739,
+        "ornament_renderer_only": 22326,
+        "pitch_change": 102496,
+        "reg_clarion_B4_C6": 63600,
+        "reg_high_gt_C6": 9203,
+        "reg_low_lt_G4": 36593,
+        "reg_throat_G4_Bb4": 12655,
+        "same_pitch_neighbor": 19555
+      },
+      "false_positives": {
+        "flicker_ABA": 440,
+        "other": 1126,
+        "split_same_pitch": 1501
+      },
+      "false_positive_rate": 0.025735263268302916
+    },
+    {
+      "spec": {
+        "decoder": "structured",
+        "config": {}
+      },
+      "precision": 0.9643067528437611,
+      "recall": 0.9522658560765581,
+      "f1": 0.9582484809009885,
+      "predicted": 120527,
+      "gold": 122051,
+      "recall_by": {
+        "dur_120to200": 0.9696,
+        "dur_50to80": 0.8084,
+        "dur_80to120": 0.9302,
+        "dur_ge200": 0.964,
+        "dur_lt50": 0.7582,
+        "ornament_renderer_only": 0.8676,
+        "pitch_change": 0.9607,
+        "reg_clarion_B4_C6": 0.9531,
+        "reg_high_gt_C6": 0.9426,
+        "reg_low_lt_G4": 0.9488,
+        "reg_throat_G4_Bb4": 0.9652,
+        "same_pitch_neighbor": 0.9083
+      },
+      "support_by": {
+        "dur_120to200": 52702,
+        "dur_50to80": 2750,
+        "dur_80to120": 15812,
+        "dur_ge200": 47048,
+        "dur_lt50": 3739,
+        "ornament_renderer_only": 22326,
+        "pitch_change": 102496,
+        "reg_clarion_B4_C6": 63600,
+        "reg_high_gt_C6": 9203,
+        "reg_low_lt_G4": 36593,
+        "reg_throat_G4_Bb4": 12655,
+        "same_pitch_neighbor": 19555
+      },
+      "false_positives": {
+        "flicker_ABA": 450,
+        "other": 1129,
+        "split_same_pitch": 2723
+      },
+      "false_positive_rate": 0.03569324715623885
+    }
+  ]
+}

@@ -79,6 +79,30 @@ def test_normalize_transcribed_notes_keeps_unmapped_extras():
     assert notes[0]["pitch"] == "C4"
     assert notes[1]["score_index"] is None
     assert notes[1]["pitch"] == "E4"
+    assert notes[1]["ignored"] is False
+
+
+def test_normalize_transcribed_notes_marks_ignored_extras():
+    notes = _normalize_transcribed_notes(
+        {
+            "transcribed_notes": [
+                {"pitch": 60, "start": 0.0, "end": 0.2},
+                {
+                    "pitch": 70,
+                    "start": 0.2,
+                    "end": 0.3,
+                    "ignored": True,
+                    "ignored_reason": "joint_noise",
+                },
+                {"pitch": 64, "start": 0.3, "end": 0.5},
+            ],
+            "note_mapping": [0, None, 1],
+        }
+    )
+    assert notes[1]["ignored"] is True
+    assert notes[1]["ignored_reason"] == "joint_noise"
+    assert notes[1]["score_index"] is None
+    assert notes[2]["score_index"] == 1
 
 
 def test_render_reuses_cached_synth(tmp_path, monkeypatch):

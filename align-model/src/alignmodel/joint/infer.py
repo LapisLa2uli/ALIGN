@@ -15,7 +15,7 @@ from .candidates import (
     basic_pitch_candidate_union,
 )
 from .index import JointEvent, ScoreEvent, ScoreEventIndex
-from .lattice import JointCandidate, LatticeConfig, LatticePath, SparseJointLattice
+from .lattice import JointCandidate, JointOperation, LatticeConfig, LatticePath, SparseJointLattice
 from .train import load_joint_model
 
 _PC_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
@@ -160,7 +160,13 @@ def build_gui_alignment_payload(
     result: JointSampleResult,
     sounding: Sequence[Any],
 ) -> dict[str, Any]:
-    """Emit the DataCreate `note_alignment_v2.json` document."""
+    """Emit the DataCreate `note_alignment_v2.json` document.
+
+    Kept path events remain the alignment surface. Joint ``NOISE`` steps are
+    still written into ``transcribed_notes`` with ``ignored=True`` so the GUI
+    can show extras the post-processor discarded without treating them as
+    real ``extra_note`` labels.
+    """
 
     sounding_by_index = {
         int(getattr(note, "index")): note for note in sounding
@@ -168,26 +174,42 @@ def build_gui_alignment_payload(
     transcribed: list[dict[str, Any]] = []
     mapping: list[int | None] = []
     events: list[dict[str, Any]] = []
-    for event in result.events:
+    ignored_count = 0
+    for step in result.path.steps:
+        candidate = result.candidates[step.candidate_index]
+        ignored = step.operation == JointOperation.NOISE
         score_index = None
-        if event.score_span is not None:
+        if not ignored and step.score_span is not None:
             score_index = match_sounding_index(
-                result.score[event.score_span[0]], sounding
+                result.score[step.score_span[0]], sounding
             )
-        transcribed.append(
-            {
-                "pitch": int(event.pitch),
-                "start": float(event.start),
-                "end": float(event.end),
-                "confidence": float(event.confidence),
-            }
-        )
-        mapping.append(score_index)
-        if score_index is None:
+        note_payload: dict[str, Any] = {
+            "pitch": int(candidate.pitch),
+            "start": float(candidate.start),
+            "end": float(candidate.end),
+            "confidence": float(candidate.confidence),
+        }
+        if ignored:
+            note_payload["ignored"] = True
+            note_payload["ignored_reason"] = "joint_noise"
+            ignored_count += 1
+        transcribed.append(note_payload)
+        mapping.append(None if ignored else score_index)
+        if ignored or score_index is None:
             continue
         written = sounding_by_index.get(score_index)
         if written is None:
             continue
+        relationship = (
+            "copy"
+            if step.structural_operation
+            in {JointOperation.REPEAT_ENTER, JointOperation.REPLAY}
+            else (
+                "match"
+                if step.operation == JointOperation.MATCH
+                else "substitute"
+            )
+        )
         event_index = len(events)
         midi = int(getattr(written, "pitch"))
         events.append(
@@ -204,12 +226,15 @@ def build_gui_alignment_payload(
                 - float(getattr(written, "ql_start")),
                 "ref_start": float(getattr(written, "start")),
                 "ref_end": float(getattr(written, "end")),
-                "perf_start": float(event.start),
-                "perf_end": float(event.end),
-                "alignment_kind": event.relationship,
-                "is_repetition": event.relationship == "copy",
+                "perf_start": float(candidate.start),
+                "perf_end": float(candidate.end),
+                "alignment_kind": relationship,
+                "is_repetition": relationship == "copy",
             }
         )
+    kept_count = sum(
+        1 for step in result.path.steps if step.operation != JointOperation.NOISE
+    )
     return {
         "format_version": 2,
         "engine": "align-joint",
@@ -228,8 +253,9 @@ def build_gui_alignment_payload(
             "event_count": len(events),
             "transcribed_note_count": len(transcribed),
             "mapped_note_count": sum(value is not None for value in mapping),
+            "ignored_note_count": ignored_count,
             "candidate_count": len(result.candidates),
-            "kept_note_count": len(result.events),
+            "kept_note_count": kept_count,
             "score_event_count": len(result.score),
             "minimum_candidate_confidence": result.minimum_candidate_confidence,
             "path_score": float(result.path.score),

@@ -1,0 +1,43 @@
+{
+  "split": "val",
+  "clips": 467,
+  "aligner": "dp_v2",
+  "costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.4,
+    "alternative_min_confidence": 0.1
+  },
+  "notes_file": "runs\\realistic92-stack-v2\\notes-val-v3b-rich07-oddhalf.json",
+  "notes_sha256": "26da5d68e7f05137f6eef2c0523644fe1d6223bc946d2c04a5c0227ad7d8038b",
+  "f1": 0.9608032646048109,
+  "precision": 0.972480781012233,
+  "recall": 0.9494028670100905,
+  "bootstrap_95": {
+    "replicates": 1000,
+    "lower_95": 0.9558074965043308,
+    "median": 0.9608726876106417,
+    "upper_95": 0.9658372797625062
+  },
+  "per_type_f1": {
+    "match": 0.9839797483323787,
+    "copy": 0.960368031545561,
+    "substitute": 0.8040854224698235,
+    "extra": 0.8537718984626385,
+    "missed_note": 0.7021883920076117
+  },
+  "by_group_f1": {
+    "rawdata": 0.9475800761958516,
+    "procedural": 0.9701886162577199
+  },
+  "errors": {}
+}

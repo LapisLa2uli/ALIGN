@@ -1,0 +1,45 @@
+{
+  "schema_version": "align-orn-v5-mel-identity-candidate-v1",
+  "frozen_utc": "2026-09-25T12:13:18.752210+00:00",
+  "frozen": true,
+  "objective": "official exclusive note-wise lockbox F1 >= 0.80",
+  "method": {
+    "transcriber": "align-mel-transcriber-v1",
+    "minimum_confidence": 0.72,
+    "decode_overrides": {
+      "boundary_threshold": 0.42,
+      "strong_rearticulation": 0.58
+    },
+    "checkpoint": "runs/joint-outputraw-full-v1/mel-transcriber-v1/full-training-all4544-v2/candidate-epoch-018.pt",
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "identity_crf_checkpoint": "runs/joint-outputraw-full-v1/orn-generalization-v2/development/identity-crf-fast-v2/full-v1/best.pt",
+    "identity_crf_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1",
+    "development_grid_sha256": "b5d198a78cbd40897cf459f845448267bb6f4577ce6a60efcfc11377ddd79c85",
+    "development_evaluator_sha256": "3d4452622308b4f0f600a1f5755fe1af6031e55c39dded6a95b2775137879a95"
+  },
+  "holdout": {
+    "freeze_sha256": "e9f285c742624fa6e8213b4675a22fd0a626d5c15f5d3deb4fc9562e9c156186",
+    "rows": 140,
+    "targets_read": false,
+    "key_read": false,
+    "opened": false
+  },
+  "development_evidence": {
+    "population": "opened ORN v3 + opened ORN v4 lockboxes after ORN v5 freeze",
+    "rows": 224,
+    "selected_variant": 32,
+    "precision": 0.7892645815722739,
+    "recall": 0.8275281396791634,
+    "f1": 0.8079435815342014,
+    "report_sha256": "b5d198a78cbd40897cf459f845448267bb6f4577ce6a60efcfc11377ddd79c85",
+    "v5_targets_read": false
+  },
+  "version_rationale": {
+    "earlier_version": "ORN v4 mel candidate used min_confidence 0.75 with default decode thresholds and reached lockbox F1 0.798517 (recall-limited).",
+    "earlier_limitation": "Match/copy recall was the shortfall; development on v3 alone did not expose the need for slightly lower confidence with softer boundary splitting.",
+    "later_change": "After sealing v5, grid mel min_confidence and small decode overrides on pooled opened v3+v4; select conf=0.72 with boundary_threshold=0.42 and strong_rearticulation=0.58.",
+    "comparable_result": "Pooled development F1 0.807944 with recall 0.827528 and precision 0.789265.",
+    "status": "frozen for one-shot ORN v5 evaluation; no ORN v5 target or key has been read"
+  },
+  "post_lockbox_tuning": false
+}

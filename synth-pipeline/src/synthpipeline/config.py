@@ -20,6 +20,8 @@ class SynthConfig:
     render: dict[str, Any] = field(default_factory=dict)
     generation: dict[str, Any] = field(default_factory=dict)
     errors: dict[str, Any] = field(default_factory=dict)
+    degrade: dict[str, Any] = field(default_factory=dict)
+    dataset: dict[str, Any] = field(default_factory=dict)
     _config_path: Path | None = field(default=None, repr=False)
 
     @classmethod
@@ -35,6 +37,8 @@ class SynthConfig:
             "render",
             "generation",
             "errors",
+            "degrade",
+            "dataset",
         }
         payload = {k: v for k, v in data.items() if k in known}
         cfg = cls(**payload)
@@ -55,6 +59,11 @@ class SynthConfig:
         if path.is_absolute():
             return path
         return (self.config_dir.parent / path).resolve()
+
+    def dataset_version(self, step: str) -> str | None:
+        """x.y version (datasets.yaml) that ``step`` (generate/musesounds/degrade) produces."""
+        value = (self.dataset.get("versions") or {}).get(step)
+        return str(value) if value is not None else None
 
     def sample_rate(self) -> int:
         return int(self.audio.get("sample_rate", 22050))

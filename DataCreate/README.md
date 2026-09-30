@@ -106,9 +106,32 @@ note alignment directly. Configure the isolated Python and checkpoint through
 contextual weights remain as a fallback via `paths.note_alignment_weights`.
 
 The **Label set** selector switches between the primary human annotation
-(`labels.json`) and the independent Basic-Pitch transcription review
-(`labels_agent.json`). Saving writes only the selected file. Agent labels are
-generated without an ALIGN aligner or error model:
+(`labels.json`) and the current frozen-model annotation
+(`labels_agent.json`). Saving writes only the selected file.
+
+The current agent set uses the repository-trained mel transcriber
+(`candidate-epoch-018.pt`), followed by the frozen ALIGN joint aligner and
+error-heads v5. The all-sample inference run performs no training and stages
+and validates every document before committing any replacement:
+
+```powershell
+cd ..\align-model
+python scripts\label_datacreate_agent_mel.py `
+  --samples ..\DataCreate\samples `
+  --output runs\datacreate-agent-labels-mel-v1-<timestamp> `
+  --backup-manifest runs\datacreate-agent-labels-pre-mel-<timestamp>\BACKUP_MANIFEST.json `
+  --expected-backup-sha256 <manifest-sha256> --device cuda
+```
+
+The 2026-09-21 migration archived and hash-verified all prior Basic Pitch
+agent labels under
+`align-model/runs/datacreate-agent-labels-pre-mel-20260921-192105/`.
+Per-sample mel transcriptions and joint alignments are retained in the mel run
+directory for inspection and exact rollback.
+
+The older independent Basic Pitch transcription-review generator remains
+available as a legacy alternative; it does not use the ALIGN aligner or error
+model:
 
 ```powershell
 python scripts/label_from_transcriptions.py `
@@ -188,7 +211,7 @@ DataCreate creates or edits bundles; it does not define a fixed global train spl
 
 | Dataset / root | Methodology | Size | Intended use |
 |---|---|---:|---|
-| `samples/001`–`samples/093` plus `demo_001` | Human clarinet takes against uploaded clean MusicXML; alignment candidates require review | 94 local bundles; all currently schema 1.1, with `note_alignment_v2.json` present on 3 | Real-recording validation and annotation, not current model training |
+| `samples/001`–`samples/124` plus `demo_001` | Human clarinet takes against uploaded clean MusicXML; alignment candidates require review | 125 local bundles. ID 094 remains Mozart; IDs 095–124 are split evenly across the newly added *Spirited Away*, *Howl's Moving Castle*, and *A Cruel Angel's Thesis* scores. Every bundle has frozen mel transcription/alignment artifacts and agent labels | Real-recording validation and annotation, not current model training |
 | `samples/synthetic/` | Legacy DataCreate Stage 9 corruption of a supplied score | User-selected count (`synthetic.corruptions_per_score=3` by default) | Fixtures and small tests |
 | `synth-pipeline/1000dataexport` | Early procedural one-error bundles | 1,000 | Historical model training |
 | `E:/output` (`procedural12k`) | Procedural multi-error synthetic melodies with exact lineage | 12,000 in the full manifest; 11,488 pass the strict refiner policy | Historical Model A/B, transcriber, and aligner training |

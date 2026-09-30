@@ -21,7 +21,10 @@ Run artifacts (`history.json`, checkpoint `train_config`, `evaluation-*.json`) o
 | Family | Winning card | Headline | Status |
 |---|---|---|---|
 | Transcription (production) | Frozen Basic Pitch 0.4.0, cleanup + calibrated decode | 0.657 P/R/F1 on `outputRaw_sf_10k` 200-test transcription | Current decoder |
+| Transcription (DataCreate agent labeling) | Mel transcriber v1, epoch 18, confidence 0.80 | 0.772 official note-wise transcription F1; 0.708 through the fixed downstream aligner on the same 358-row validation | Current future-project/DataCreate agent-label default; not global production |
 | Transcription (standalone AMT bench) | Same Basic Pitch, onset 0.50 / frame 0.40 | 0.827 test-ID acoustic F1 | Diagnostic only; not official note-wise F1 |
+| Transcription (dataset 9.2, score-free) | Mel CTC transcriber, round 2, blank scale 0.3 | 0.965 written-pitch sequence LCS F1 on the held-out 9.2 test split | Superseded by stack v3 |
+| Transcriber + aligner stack (9.2 / fast 10.2) | Dual-resolution long-context CTC v3 + robust DP aligner v2 | Combined official note-wise F1 0.967 on 9.2 test, 0.990 on fast test; notes < 80 ms recall 0.89–0.90 | Passed its > 0.95 target |
 | Layer 1 | `outputRaw_sf_10k` hybrid scorer | 0.666 candidate-row val F1; used by the current pipeline | Promoted for that dataset |
 | Note-to-score aligner | Contextual cached-sequence v3 + `contextual` decode | 0.509 mapping F1 on the locked 200-test subset | Current aligner |
 | Model A | Procedural-only stages 1–3 | 0.206 type-aware melody F1 on 100-bundle holdout | Historical |
@@ -30,6 +33,7 @@ Run artifacts (`history.json`, checkpoint `train_config`, `evaluation-*.json`) o
 | NoteFrameNet | v2 | Calibrated val F1 0.1115 | Rejected |
 | Clarinet refiner | v3 bounded run | Test-ID F1 0.304 vs Basic Pitch 0.827 | Not promoted |
 | Pairwise aligner | Optimized v3 | Val mapping F1 ~0.297 | Rejected |
+| Perfect-transcription aligner (dataset 9.2) | Structured DP v1 on repaired lineage | 0.983 official note-wise F1 on the held-out 9.2 test population | Passed its > 0.95 target; identity CRF scores 0.990 on the same val |
 | Joint error heads (trained classifier) | v2 predicted-upstream | Layer 2 typed-error F1 0.289 | Experimental |
 | Joint error heads (honest four-type) | v5 hybrid | Four-type F1 0.209 | Experimental; not promoted |
 
@@ -74,6 +78,94 @@ Cleanup alone moved default F1 from 0.648 to 0.650 and the count ratio from 1.07
 That acoustic onset/pitch F1 is not official note-wise model F1 and is not used for checkpoint promotion.
 
 Source `BasicPitchDecodeConfig` defaults are the bench pair (`0.50` / `0.40`). Loaded `note_decoder.json` overrides them for production.
+
+### 1.1b Frozen mel transcriber v1 (DataCreate agent-label default)
+
+The earlier DataCreate agent-label stack used frozen Basic Pitch candidates.
+On the comparable 358-row synthetic validation, Basic Pitch plus the fixed
+downstream aligner reached official note-wise F1 **0.632252**. It also retained
+the observed false same-pitch split / missed-note boundary tradeoff.
+
+The later repository-trained mel transcriber predicts voiced, pitch, onset,
+boundary, rearticulation, and confidence heads directly. Epoch 18 reached
+official transcriber F1 **0.772097** and fixed-downstream-aligner F1
+**0.707803** on the same validation population. This comparable gain targets
+the Basic Pitch boundary limitation. It was not promoted globally because the
+original 0.95 gate was unmet and the evidence was synthetic-domain only.
+By explicit project decision, it is now the default for future DataCreate
+agent-label generation, while the older Basic Pitch stack remains available
+for rollback.
+
+| Setting | Value |
+|---|---|
+| Checkpoint | `runs/joint-outputraw-full-v1/mel-transcriber-v1/full-training-all4544-v2/candidate-epoch-018.pt` |
+| Checkpoint SHA-256 | `3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e` |
+| Voice on / off | 0.52 / 0.35 |
+| Onset / boundary | 0.48 / 0.46 |
+| Strong rearticulation | 0.64 |
+| Same-pitch merge gap | 0.045 s |
+| Minimum note / confidence | 0.040 s / 0.80 |
+| Pitch-change persistence | 4 frames |
+| Pitch alternatives | 3 |
+| DataCreate inference | 94 samples, 10,729 transcribed notes, 1,043 agent labels |
+| Training during relabel | None |
+| Rollback | `runs/datacreate-agent-labels-pre-mel-20260921-192105/` |
+
+The sparse DataCreate human error labels do not currently distinguish the two
+agent sets under official exact-location scoring: both scored zero on 25
+non-empty documents. That is not evidence of parity or improvement. The mel
+switch is therefore operationally selected for future work, with the prior
+agent set retained, rather than claimed as a real-audio promotion.
+
+### 1.1c Mel CTC transcriber on dataset 9.2
+
+Frozen Basic Pitch scored 0.811 written-pitch sequence LCS F1 on 9.2, and
+mel v1 epoch 018 scored 0.756 on 9.2 val: Muse Sounds plus degradation is far
+from the FreePats training audio. `note_map` timestamps do not match the Muse
+Sounds audio, so training targets come from forced Viterbi alignment of the
+gold pitch order. Round 1 fine-tuned epoch 018 on those targets (val 0.894)
+but merged repeated same-pitch notes. Round 2 re-aligned with the round-1
+model and added a CTC pitch head, which separates repeats with blanks. Details
+and hashes: `runs/realistic92-transcriber-v1/RESULT_SUMMARY.md`.
+
+| Setting | Value |
+|---|---|
+| Split | Score-grouped, frozen before training: train 6,864 / val 1,108 / test 2,028 |
+| Targets | Forced alignment with the round-1 model; degraded + clean Muse Sounds audio |
+| Init | Round-1 fine-tuned mel v1 (tcn, dim 128, 8 blocks, 32 conv channels) |
+| CTC head | Conv3 + SiLU + Conv1 to 49 pitches + blank |
+| Loss | CTC + 0.5 × mel v1 frame loss |
+| Optimizer | AdamW, OneCycle lr `3e-4`, weight decay `1e-3`, grad clip 2 |
+| Batch / crop / epochs | 24 / 1,024 frames, 2 crops per clip / 15 (best epoch 14) |
+| Decode | Greedy CTC, blank probability × 0.3 (chosen on val) |
+| Val / test F1 | 0.962 / **0.965** (test 95% CI 0.964–0.966) |
+
+```powershell
+python align-model\scripts\train_mel_ctc_realistic92.py `
+  --cache runs\realistic92-transcriber-v1\cache-aligned-r2 `
+  --root E:\outputRaw_realistic_10k --split runs\realistic92-transcriber-v1\split.json `
+  --output-dir runs\realistic92-transcriber-v1\ctc-r2-a `
+  --resource-status runs\TRAINING_RESOURCE_STATUS.json `
+  --init-mel-checkpoint runs\realistic92-transcriber-v1\train-r1-ft018\best.pt `
+  --epochs 15 --batch-size 24 --learning-rate 3e-4 --val-limit 300
+```
+
+### 1.1d Stack v3: dual-resolution CTC transcriber + robust aligner (9.2 / fast)
+
+Round-2 CTC plus DP v1 reached combined val F1 0.940. It missed short notes
+(75% recall under 50 ms) and repeats, and the aligner broke down on imperfect
+input. v3 adds a 23 ms analysis branch, about ±2.9 s context, and realistic
+augmentation. It is fine-tuned on 9.2 + fast 10.2 and paired with robust DP
+v2. Details: `runs/realistic92-stack-v2/RESULT_SUMMARY.md`.
+
+| Setting | Value |
+|---|---|
+| Input | 128 long-window mel bands (2,048 / 93 ms) + 64 short-window bands (512 / 23 ms), 256-sample hop |
+| Model | Two frequency encoders → 12 dilated TCN blocks (dilations 1–32, twice), width 256, CTC head + frame heads; 2.09M parameters |
+| Training | 9.2: 6 + 12 epochs (resumed after an out-of-memory crash); then 9.2 + fast: 8 epochs; AdamW with OneCycle, 2,048-frame crops, batch 8 |
+| Decode | Greedy CTC, blank scale 0.5, rich outputs (confidence, runner-up pitch, optional candidates ≥ 0.08) |
+| Aligner v2 costs | substitute 1.1, insert 1.2, delete 1.0, copy 1.0, drop below confidence 0.85 at cost 0.8, optional match 0.15, runner-up match 0.6 |
+| Test | Combined F1 **0.967** on 9.2 (95% CI 0.965–0.969) and **0.990** on fast; 9.2 transcriber recall 0.886 under 50 ms and 0.903 at 50–80 ms, false-positive rate 1.2% |
 
 ### 1.2 Layer 1 `NoteRepetitionScorer`
 
@@ -150,6 +242,24 @@ python align-model\scripts\train_cached_contextual_aligner.py `
   --out ...\contextual_note_aligner.pt `
   --train-samples 1000 --val-samples 200 --epochs 5 --batch-size 8
 ```
+
+### 1.3b Perfect-transcription aligner on dataset 9.2
+
+Input is the gold rendered note sequence (perfect transcription). Raw 9.2
+`note_map` lineage has rendered-to-score mapping errors, so targets were
+rebuilt with the fail-closed ORN ornament reconstruction. Simultaneous-onset
+MIDI notes are reordered to match the template first, because music21 puts
+grace notes on the principal's onset. Eligible clips: train 6,628, val 935,
+test 1,836. Details and hashes:
+`runs/realistic92-aligner-v1/RESULT_SUMMARY.md`.
+
+| Setting | Value |
+|---|---|
+| Hypotheses | No repeat, or one measure window × 1–2 extra copies, each ornament-expanded |
+| Costs | substitute 1.4, extra 1.0, missed 1.0, ornament skip 0.35, ornament ±2 semitones 0.30, same-pitch merge 0.15, per copy 0.5 |
+| Training | None (hand-set costs, checked on train only) |
+| Val / test F1 | 0.985 / **0.983** (test 95% CI 0.981–0.984) |
+| Comparison | Frozen identity CRF fast v2 on the same repaired val: 0.990, about 16× slower |
 
 ### 1.4 Alignment decode strategy
 
@@ -374,6 +484,18 @@ Oracle-upstream Layer 2 F1 0.972 shows the remaining ceiling is upstream localiz
 | v3 max-F1 cluster decode | Sequence clustering, hysteresis, one-to-one NMS | 0.193 | Legacy pitch-list; not note-wise |
 | v4 hybrid + val-fitted linear selector | Direct operations blended with v2 | **0.226** | Selector fitted on validation (leakage) |
 | v5 train-only selector | Leakage-group 3,634 fit / 910 calibrate; val opened once | 0.209 | Honest; missed the 0.02 material-gain gate |
+
+The earlier repetition projection collapsed every copy row in a clip into one
+global minimum/maximum score span. It avoided the thousands of duplicate
+per-transition labels seen in v1/v2, but a clip containing two disjoint repeated
+phrases incorrectly labeled all intervening non-repeated score material. The
+later projection clusters monotonic, row-adjacent, contiguous copy episodes;
+only exact repeated passes of the same source core consolidate via
+`extra_copies`. On DataCreate 095–124 this changed 25 broad labels (median 29
+core notes, maximum 52) into 148 localized labels (median 2, maximum 31; only
+two over 20 notes). Existing mel transcriptions were reused unchanged. This is
+the current DataCreate agent-label projection, but it does not retrain or
+promote the experimental error heads.
 
 If the question is "best trained Layer 2/3 hyperparameters," use **v2**. If the question is "best honest four-type policy," use **v5**. v4 looks better than v5 only because it tuned on validation. None are production.
 

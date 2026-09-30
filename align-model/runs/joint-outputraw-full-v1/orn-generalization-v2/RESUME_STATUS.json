@@ -1,9 +1,9 @@
 {
   "schema_version": "align-orn-generalization-v2-resume-status-v1",
-  "state": "drop_emit_lattice_v1_training_validation_unopened",
+  "state": "lockbox_080_failed_no_post_test_tuning",
   "paused_at_utc": "2026-09-17T23:30:00Z",
   "resumed_at_utc": "2026-09-18T04:39:00Z",
-  "updated_at_utc": "2026-09-19T04:12:00Z",
+  "updated_at_utc": "2026-09-20T17:36:50.5497362Z",
   "working_directory": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model",
   "completed": {
     "repair_policy": {
@@ -87,11 +87,17 @@
     },
     "orn_generalization_v2": {
       "rows": 57,
-      "opened": false,
-      "targets_read_after_freeze": false,
+      "opened": true,
+      "targets_read_after_freeze": true,
       "encrypted_targets": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\orn-generalization-v2\\lockbox\\targets.aes256gcm",
       "encrypted_targets_sha256": "c7079136237b03aeb222396af0a45ff6c5a5e6a43238e127b91a800ec939bd38",
-      "public_input_tree_sha256": "be28205f2873ea8f3624f64c3d135675bad9e0f4e8386e585c9f83c5457bf820"
+      "public_input_tree_sha256": "be28205f2873ea8f3624f64c3d135675bad9e0f4e8386e585c9f83c5457bf820",
+      "opening_number": 1,
+      "frozen_predictions_sha256": "16e81d5fa08c80532401d061d04ddeb7e614fef8e2fd7839f12fc9419a826c5e",
+      "report": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\lockbox-eval-local-v1\\LOCKBOX_REPORT.json",
+      "report_sha256": "6a79d8ae62f6e90fa2e7443f5dda85b90620a69093b6c41c3afecff71ce9abcd",
+      "official_f1": 0.7983416770963705,
+      "objective_080_passed": false
     },
     "original_mapper_v6_test_accessed": false
   },
@@ -107,10 +113,10 @@
   },
   "last_command": {
     "status": "succeeded",
-    "purpose": "Identity-CRF one-row atomic checkpoint smoke test",
-    "pid": 15900,
+    "purpose": "One-shot encrypted ORN v2 local-rescue lockbox evaluation",
+    "pid": 41388,
     "exit_code": 0,
-    "command": ".\\.venv-amt-bench\\Scripts\\python.exe -u scripts\\train_identity_crf_v1.py --release-manifest runs\\joint-outputraw-full-v1\\orn-generalization-v2\\release_manifest.json --expected-release-sha256 5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705 --coverage-report runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-v1\\coverage.json --output-dir runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-v1\\smoke --resource-status runs\\TRAINING_RESOURCE_STATUS.json --epochs 1 --hidden 16 --learning-rate 0.001 --max-negative-hypotheses 2 --max-train-rows 1 --max-calibration-rows 1 --checkpoint-every-steps 1 --bootstrap-replicates 10 --device cpu --seed 20260919"
+    "report": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\lockbox-eval-local-v1\\LOCKBOX_REPORT.json"
   },
   "drop_emit_lattice_v1": {
     "schema_version": "align-drop-emit-lattice-v1",
@@ -125,35 +131,38 @@
     "acoustic_emits": 45282,
     "template_inserts": 3651,
     "dropped_groups": 192027,
-    "training_dir": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\drop-emit-lattice-v1\\train-v3",
-    "training_state": "running_epoch_1_unnormalized_nll",
+    "training_dir": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\drop-emit-lattice-v1\\train-v6",
+    "training_state": "rejected_after_epoch_1_calibration",
     "rejected_train_v1": "Partition was conditioned on the gold emission count, so honest decode emitted ~200 notes against ~30 gold. Stopped at step 800.",
     "rejected_train_v2": "Length-normalized loss flattened near 0.51; decode under-emitted (ratios 0.12-0.44). Stopped after step 128.",
-    "train_v3_note": "Raw NLL from train-v2 step-100 weights. At step 50, loss ~158 and emission ratios 0.44-0.78 on 4 cal clips.",
-    "open_validation_read": false,
-    "lockbox_targets_read": false
+    "train_v3_note": "Raw NLL from train-v2 step-100 weights. At step 50, loss ~158 and emission ratios on 4 cal clips were 0.44-0.78.",
+    "train_v6_result": "All-count partition restored a nonzero length NLL, but epoch-1 calibration F1 was 0.498622. Basic-Pitch count reached 0.653840 and oracle count 0.676801, identifying selection rather than count as the blocker.",
+    "open_validation_read": true,
+    "lockbox_targets_read": true
   },
   "current_blocker": {
-    "type": "drop_emit_calibration_not_yet_measured",
-    "detail": "train-v3 uses unnormalized NLL and honest decode without gold event count. At step 50, mean loss ~158 and emission ratios on 4 cal clips are 0.44-0.78 (was 0.12-0.44 under length-normalized train-v2). Teacher-through-CRF ceiling remains 0.8958. Validation unopened. Best finished deployable score is still template-rescue 0.80680.",
-    "release_or_target_blocked": false,
+    "type": "final_lockbox_below_objective",
+    "detail": "The frozen target-free local-rescue candidate reached development F1 0.803941 and 0.801359, but the one-shot 57-row encrypted lockbox produced P/R/F1 0.799843/0.796846/0.798342 (95% bootstrap 0.775540-0.821041). The 0.80 objective failed by 0.001658 F1; no post-lockbox tuning is allowed.",
+    "release_or_target_blocked": true,
     "coverage_blocked": false,
     "source_root_exists": true,
-    "remaining_combined_f1_gap": 0.04319661458333335,
-    "blocker_report": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\ACOUSTIC_SUPPORT_BLOCKER.json"
+    "remaining_combined_f1_gap": 0.0016583229036295313,
+    "blocker_report": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\lockbox-eval-local-v1\\LOCKBOX_REPORT.json"
   },
   "next_action": {
-    "recommended": "Finish DROP/EMIT train-v1 (901 train / 64 calibration, frozen CRF). Promote only if combined calibration F1 >= 0.85, then open validation once. Do not retune the rejected interval scorer.",
+    "recommended": "Do not tune against this lockbox. Any further model development requires a newly frozen, independent held-out population before training resumes.",
     "completed_mapper_checkpoint": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\identity-crf-fast-v2\\full-v1\\best.pt",
     "completed_mapper_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1",
-    "best_current_candidate": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\template-rescue-v3\\RESCUE_CANDIDATE.json",
-    "best_current_candidate_sha256": "3be0fc2f423bb00d3f99738d9039304a6c6d96b589a2af3ca0cc0711d1c044a2",
+    "best_current_candidate": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\template-rescue-local-v1\\FROZEN_CANDIDATE_080.json",
+    "best_current_candidate_sha256": "f44b7f44e5d2f4b7ba99c97de5a478f94f16c8842d87da1c5235c53138605f9f",
     "milestone_status": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\MILESTONE_STATUS.json"
   },
   "isolation": {
-    "paused_before_further_validation": true,
-    "v2_open_validation_opened": false,
-    "v2_lockbox_opened": false,
+    "paused_before_further_validation": false,
+    "v2_open_validation_opened": true,
+    "v2_open_validation_disqualified_as_held_out": true,
+    "v2_lockbox_opened": true,
+    "predictions_frozen_before_v2_lockbox_target_or_key_read": true,
     "v1_lockbox_opened": false,
     "production_weights_mutated": false,
     "paper_updated": false,

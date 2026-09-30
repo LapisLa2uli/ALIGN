@@ -1,0 +1,42 @@
+{
+  "schema_version": "align-mel-ctc-realistic92-train-config-v1",
+  "args": {
+    "cache": "runs\\realistic92-transcriber-v1\\cache-smoke",
+    "root": "E:\\outputRaw_realistic_10k",
+    "split": "runs\\realistic92-transcriber-v1\\split.json",
+    "output_dir": "runs\\realistic92-transcriber-v1\\ctc-smoke",
+    "resource_status": "runs\\TRAINING_RESOURCE_STATUS.json",
+    "init_mel_checkpoint": "runs\\realistic92-transcriber-v1\\train-r1-ft018\\best.pt",
+    "init_ctc_checkpoint": "None",
+    "epochs": "1",
+    "batch_size": "8",
+    "crop_frames": "1024",
+    "crops_per_clip": "2",
+    "learning_rate": "0.0003",
+    "weight_decay": "0.001",
+    "frame_loss_weight": "0.5",
+    "ctc_weight": "1.0",
+    "augmentation_probability": "0.55",
+    "val_limit": "8",
+    "temporal_dim": "128",
+    "temporal_blocks": "8",
+    "conv_channels": "32",
+    "seed": "20260926"
+  },
+  "model": {
+    "n_mels": 128,
+    "midi_min": 52,
+    "midi_max": 100,
+    "conv_channels": 32,
+    "temporal_dim": 128,
+    "spectral_blocks": 4,
+    "temporal_blocks": 8,
+    "temporal_kind": "tcn",
+    "gru_layers": 2,
+    "dropout": 0.1,
+    "use_mel_skip": true
+  },
+  "cache_pack_id": "b1b1e095eeaa0b5a686f2a8849fba10b02838efd5b38ba1cd0ff16a68ddbf0ef",
+  "split_sha256": "1cb5acc9fc25c2e99280df6248a803171e71818232afb6c9a68fa4f37a94b06a",
+  "locked_test_materialized": false
+}

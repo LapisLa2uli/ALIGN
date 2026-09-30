@@ -1,0 +1,1777 @@
+{
+  "schema_version": "align-datacreate-ctc-r2a-dp-v1",
+  "created_utc": "2026-09-26T05:39:49.593604+00:00",
+  "samples_root": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples",
+  "sample_count": 125,
+  "succeeded": 125,
+  "failed": 0,
+  "failures": [],
+  "transcriber_candidate": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-transcriber-v1\\CANDIDATE_CTC_R2A.json",
+  "transcriber_candidate_sha256": "cd318cabc7640dbec46383e2cb5f73907c476044db55897893d88d7be3d717f7",
+  "aligner_candidate": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-aligner-v1\\CANDIDATE_DP_V1.json",
+  "aligner_candidate_sha256": "f4d8006052cfcf953ccf7031e115af166c31783c986194b6756f76c8111c5b96",
+  "per_sample_files": [
+    "transcription_ctc_r2a.json",
+    "note_alignment_dp_v1.json"
+  ],
+  "protected_files_unchanged": [
+    "labels.json",
+    "labels_agent.json"
+  ],
+  "training_performed": false,
+  "totals_by_relationship": {
+    "match": 10872,
+    "extra": 1971,
+    "missed_note": 1155,
+    "copy": 905,
+    "substitute": 1210
+  },
+  "samples": [
+    {
+      "sample": "001",
+      "notes": 50,
+      "score_events": 49,
+      "extra_copies": 0,
+      "counts": {
+        "match": 49,
+        "extra": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.45
+    },
+    {
+      "sample": "002",
+      "notes": 114,
+      "score_events": 117,
+      "extra_copies": 0,
+      "counts": {
+        "match": 112,
+        "extra": 2,
+        "missed_note": 4
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.46
+    },
+    {
+      "sample": "003",
+      "notes": 74,
+      "score_events": 74,
+      "extra_copies": 0,
+      "counts": {
+        "match": 74,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.23
+    },
+    {
+      "sample": "004",
+      "notes": 112,
+      "score_events": 112,
+      "extra_copies": 0,
+      "counts": {
+        "match": 112,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.37
+    },
+    {
+      "sample": "005",
+      "notes": 206,
+      "score_events": 174,
+      "extra_copies": 1,
+      "counts": {
+        "match": 173,
+        "extra": 25,
+        "copy": 8,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.61
+    },
+    {
+      "sample": "006",
+      "notes": 159,
+      "score_events": 153,
+      "extra_copies": 0,
+      "counts": {
+        "match": 151,
+        "extra": 7,
+        "substitute": 1,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.43
+    },
+    {
+      "sample": "007",
+      "notes": 262,
+      "score_events": 6,
+      "extra_copies": 2,
+      "counts": {
+        "substitute": 3,
+        "extra": 73,
+        "match": 3,
+        "copy": 183,
+        "missed_note": 0
+      },
+      "length_slack_fallback": true,
+      "seconds": 0.07
+    },
+    {
+      "sample": "008",
+      "notes": 58,
+      "score_events": 59,
+      "extra_copies": 0,
+      "counts": {
+        "match": 56,
+        "extra": 2,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "009",
+      "notes": 50,
+      "score_events": 56,
+      "extra_copies": 0,
+      "counts": {
+        "match": 47,
+        "extra": 3,
+        "missed_note": 8
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.12
+    },
+    {
+      "sample": "010",
+      "notes": 184,
+      "score_events": 177,
+      "extra_copies": 0,
+      "counts": {
+        "match": 176,
+        "extra": 8,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.5
+    },
+    {
+      "sample": "011",
+      "notes": 83,
+      "score_events": 85,
+      "extra_copies": 0,
+      "counts": {
+        "match": 83,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.24
+    },
+    {
+      "sample": "012",
+      "notes": 98,
+      "score_events": 92,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 1,
+        "extra": 7,
+        "match": 90,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.16
+    },
+    {
+      "sample": "013",
+      "notes": 225,
+      "score_events": 175,
+      "extra_copies": 1,
+      "counts": {
+        "match": 174,
+        "extra": 49,
+        "substitute": 1,
+        "copy": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.59
+    },
+    {
+      "sample": "014",
+      "notes": 90,
+      "score_events": 90,
+      "extra_copies": 0,
+      "counts": {
+        "match": 88,
+        "extra": 1,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.21
+    },
+    {
+      "sample": "015",
+      "notes": 121,
+      "score_events": 117,
+      "extra_copies": 0,
+      "counts": {
+        "match": 114,
+        "extra": 6,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.45
+    },
+    {
+      "sample": "016",
+      "notes": 78,
+      "score_events": 74,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 5,
+        "match": 73,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.23
+    },
+    {
+      "sample": "017",
+      "notes": 113,
+      "score_events": 112,
+      "extra_copies": 0,
+      "counts": {
+        "match": 112,
+        "extra": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.38
+    },
+    {
+      "sample": "018",
+      "notes": 177,
+      "score_events": 174,
+      "extra_copies": 0,
+      "counts": {
+        "match": 172,
+        "extra": 4,
+        "substitute": 1,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.62
+    },
+    {
+      "sample": "019",
+      "notes": 155,
+      "score_events": 153,
+      "extra_copies": 0,
+      "counts": {
+        "match": 152,
+        "extra": 3,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.49
+    },
+    {
+      "sample": "020",
+      "notes": 270,
+      "score_events": 238,
+      "extra_copies": 1,
+      "counts": {
+        "match": 229,
+        "extra": 24,
+        "substitute": 1,
+        "copy": 16,
+        "missed_note": 8
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.86
+    },
+    {
+      "sample": "021",
+      "notes": 58,
+      "score_events": 60,
+      "extra_copies": 0,
+      "counts": {
+        "match": 55,
+        "extra": 3,
+        "missed_note": 5
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.29
+    },
+    {
+      "sample": "022",
+      "notes": 51,
+      "score_events": 50,
+      "extra_copies": 0,
+      "counts": {
+        "match": 47,
+        "extra": 4,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "023",
+      "notes": 185,
+      "score_events": 171,
+      "extra_copies": 1,
+      "counts": {
+        "match": 169,
+        "copy": 6,
+        "extra": 8,
+        "substitute": 2,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.65
+    },
+    {
+      "sample": "024",
+      "notes": 81,
+      "score_events": 85,
+      "extra_copies": 0,
+      "counts": {
+        "match": 80,
+        "extra": 1,
+        "missed_note": 5
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "025",
+      "notes": 96,
+      "score_events": 98,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 2,
+        "match": 91,
+        "extra": 3,
+        "missed_note": 5
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.18
+    },
+    {
+      "sample": "026",
+      "notes": 294,
+      "score_events": 265,
+      "extra_copies": 1,
+      "counts": {
+        "match": 263,
+        "extra": 29,
+        "copy": 1,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 2.48
+    },
+    {
+      "sample": "027",
+      "notes": 115,
+      "score_events": 117,
+      "extra_copies": 0,
+      "counts": {
+        "match": 113,
+        "extra": 1,
+        "substitute": 1,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.58
+    },
+    {
+      "sample": "028",
+      "notes": 73,
+      "score_events": 73,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 1,
+        "match": 72,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.49
+    },
+    {
+      "sample": "029",
+      "notes": 114,
+      "score_events": 112,
+      "extra_copies": 0,
+      "counts": {
+        "match": 112,
+        "extra": 2,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.39
+    },
+    {
+      "sample": "030",
+      "notes": 178,
+      "score_events": 174,
+      "extra_copies": 0,
+      "counts": {
+        "match": 174,
+        "extra": 4,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.54
+    },
+    {
+      "sample": "031",
+      "notes": 193,
+      "score_events": 174,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 5,
+        "match": 173,
+        "substitute": 1,
+        "copy": 14,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.54
+    },
+    {
+      "sample": "032",
+      "notes": 164,
+      "score_events": 153,
+      "extra_copies": 1,
+      "counts": {
+        "match": 148,
+        "extra": 5,
+        "substitute": 1,
+        "copy": 10,
+        "missed_note": 4
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.49
+    },
+    {
+      "sample": "033",
+      "notes": 153,
+      "score_events": 153,
+      "extra_copies": 0,
+      "counts": {
+        "match": 152,
+        "extra": 1,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.6
+    },
+    {
+      "sample": "034",
+      "notes": 244,
+      "score_events": 238,
+      "extra_copies": 0,
+      "counts": {
+        "match": 233,
+        "extra": 10,
+        "substitute": 1,
+        "missed_note": 4
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.91
+    },
+    {
+      "sample": "035",
+      "notes": 290,
+      "score_events": 238,
+      "extra_copies": 2,
+      "counts": {
+        "match": 228,
+        "extra": 25,
+        "substitute": 5,
+        "copy": 32,
+        "missed_note": 5
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.9
+    },
+    {
+      "sample": "036",
+      "notes": 279,
+      "score_events": 238,
+      "extra_copies": 1,
+      "counts": {
+        "match": 225,
+        "extra": 34,
+        "substitute": 3,
+        "copy": 17,
+        "missed_note": 10
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.78
+    },
+    {
+      "sample": "037",
+      "notes": 113,
+      "score_events": 108,
+      "extra_copies": 1,
+      "counts": {
+        "match": 105,
+        "extra": 7,
+        "copy": 1,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.73
+    },
+    {
+      "sample": "038",
+      "notes": 182,
+      "score_events": 165,
+      "extra_copies": 1,
+      "counts": {
+        "match": 158,
+        "substitute": 6,
+        "copy": 12,
+        "extra": 6,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.43
+    },
+    {
+      "sample": "039",
+      "notes": 206,
+      "score_events": 177,
+      "extra_copies": 1,
+      "counts": {
+        "match": 175,
+        "extra": 10,
+        "substitute": 1,
+        "copy": 20,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.53
+    },
+    {
+      "sample": "040",
+      "notes": 83,
+      "score_events": 85,
+      "extra_copies": 0,
+      "counts": {
+        "match": 81,
+        "substitute": 1,
+        "extra": 1,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "041",
+      "notes": 113,
+      "score_events": 98,
+      "extra_copies": 1,
+      "counts": {
+        "match": 89,
+        "extra": 12,
+        "copy": 12,
+        "missed_note": 9
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.18
+    },
+    {
+      "sample": "042",
+      "notes": 194,
+      "score_events": 174,
+      "extra_copies": 0,
+      "counts": {
+        "match": 174,
+        "extra": 20,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.7
+    },
+    {
+      "sample": "043",
+      "notes": 196,
+      "score_events": 173,
+      "extra_copies": 1,
+      "counts": {
+        "match": 173,
+        "extra": 22,
+        "copy": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.54
+    },
+    {
+      "sample": "044",
+      "notes": 90,
+      "score_events": 90,
+      "extra_copies": 0,
+      "counts": {
+        "match": 86,
+        "extra": 3,
+        "substitute": 1,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.26
+    },
+    {
+      "sample": "045",
+      "notes": 69,
+      "score_events": 67,
+      "extra_copies": 0,
+      "counts": {
+        "match": 66,
+        "substitute": 1,
+        "extra": 2,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "046",
+      "notes": 104,
+      "score_events": 181,
+      "extra_copies": 0,
+      "counts": {
+        "match": 101,
+        "substitute": 1,
+        "extra": 2,
+        "missed_note": 77
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.06
+    },
+    {
+      "sample": "047",
+      "notes": 104,
+      "score_events": 69,
+      "extra_copies": 1,
+      "counts": {
+        "substitute": 27,
+        "match": 24,
+        "extra": 20,
+        "copy": 33,
+        "missed_note": 17
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.64
+    },
+    {
+      "sample": "048",
+      "notes": 146,
+      "score_events": 3,
+      "extra_copies": 2,
+      "counts": {
+        "extra": 110,
+        "match": 2,
+        "substitute": 1,
+        "copy": 33,
+        "missed_note": 0
+      },
+      "length_slack_fallback": true,
+      "seconds": 0.22
+    },
+    {
+      "sample": "049",
+      "notes": 131,
+      "score_events": 3,
+      "extra_copies": 2,
+      "counts": {
+        "extra": 103,
+        "match": 3,
+        "copy": 25,
+        "missed_note": 0
+      },
+      "length_slack_fallback": true,
+      "seconds": 0.1
+    },
+    {
+      "sample": "050",
+      "notes": 111,
+      "score_events": 101,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 16,
+        "match": 24,
+        "substitute": 65,
+        "copy": 6,
+        "missed_note": 11
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.38
+    },
+    {
+      "sample": "051",
+      "notes": 50,
+      "score_events": 30,
+      "extra_copies": 2,
+      "counts": {
+        "substitute": 2,
+        "extra": 2,
+        "match": 15,
+        "copy": 31,
+        "missed_note": 13
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.07
+    },
+    {
+      "sample": "052",
+      "notes": 37,
+      "score_events": 10,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 4,
+        "extra": 27,
+        "match": 6,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.05
+    },
+    {
+      "sample": "053",
+      "notes": 38,
+      "score_events": 16,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 2,
+        "extra": 22,
+        "match": 14,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.04
+    },
+    {
+      "sample": "054",
+      "notes": 37,
+      "score_events": 10,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 4,
+        "extra": 27,
+        "match": 6,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.06
+    },
+    {
+      "sample": "055",
+      "notes": 46,
+      "score_events": 342,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 12,
+        "match": 34,
+        "missed_note": 295
+      },
+      "length_slack_fallback": true,
+      "seconds": 3.9
+    },
+    {
+      "sample": "056",
+      "notes": 30,
+      "score_events": 145,
+      "extra_copies": 0,
+      "counts": {
+        "match": 17,
+        "substitute": 12,
+        "extra": 1,
+        "missed_note": 116
+      },
+      "length_slack_fallback": true,
+      "seconds": 0.57
+    },
+    {
+      "sample": "057",
+      "notes": 32,
+      "score_events": 145,
+      "extra_copies": 0,
+      "counts": {
+        "match": 17,
+        "substitute": 14,
+        "extra": 1,
+        "missed_note": 114
+      },
+      "length_slack_fallback": true,
+      "seconds": 0.53
+    },
+    {
+      "sample": "058",
+      "notes": 106,
+      "score_events": 90,
+      "extra_copies": 1,
+      "counts": {
+        "substitute": 41,
+        "extra": 19,
+        "match": 31,
+        "copy": 15,
+        "missed_note": 18
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.24
+    },
+    {
+      "sample": "059",
+      "notes": 104,
+      "score_events": 91,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 47,
+        "extra": 28,
+        "match": 29,
+        "missed_note": 12
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.38
+    },
+    {
+      "sample": "060",
+      "notes": 285,
+      "score_events": 187,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 118,
+        "match": 70,
+        "substitute": 97,
+        "missed_note": 20
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.73
+    },
+    {
+      "sample": "061",
+      "notes": 302,
+      "score_events": 187,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 109,
+        "match": 70,
+        "substitute": 95,
+        "copy": 28,
+        "missed_note": 22
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.73
+    },
+    {
+      "sample": "062",
+      "notes": 33,
+      "score_events": 85,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 12,
+        "extra": 6,
+        "match": 15,
+        "missed_note": 53
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.2
+    },
+    {
+      "sample": "063",
+      "notes": 118,
+      "score_events": 142,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 99,
+        "match": 15,
+        "extra": 4,
+        "missed_note": 28
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.4
+    },
+    {
+      "sample": "064",
+      "notes": 112,
+      "score_events": 138,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 94,
+        "match": 15,
+        "extra": 3,
+        "missed_note": 29
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.38
+    },
+    {
+      "sample": "065",
+      "notes": 219,
+      "score_events": 187,
+      "extra_copies": 0,
+      "counts": {
+        "match": 56,
+        "substitute": 112,
+        "extra": 51,
+        "missed_note": 19
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.55
+    },
+    {
+      "sample": "066",
+      "notes": 243,
+      "score_events": 187,
+      "extra_copies": 0,
+      "counts": {
+        "match": 66,
+        "extra": 87,
+        "substitute": 90,
+        "missed_note": 31
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.55
+    },
+    {
+      "sample": "067",
+      "notes": 113,
+      "score_events": 138,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 82,
+        "match": 19,
+        "extra": 12,
+        "missed_note": 37
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.55
+    },
+    {
+      "sample": "068",
+      "notes": 152,
+      "score_events": 126,
+      "extra_copies": 1,
+      "counts": {
+        "match": 120,
+        "extra": 15,
+        "copy": 17,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.47
+    },
+    {
+      "sample": "069",
+      "notes": 139,
+      "score_events": 126,
+      "extra_copies": 0,
+      "counts": {
+        "match": 120,
+        "extra": 19,
+        "missed_note": 4
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.48
+    },
+    {
+      "sample": "070",
+      "notes": 131,
+      "score_events": 123,
+      "extra_copies": 0,
+      "counts": {
+        "match": 120,
+        "extra": 11,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.43
+    },
+    {
+      "sample": "071",
+      "notes": 180,
+      "score_events": 147,
+      "extra_copies": 1,
+      "counts": {
+        "match": 127,
+        "extra": 36,
+        "copy": 13,
+        "substitute": 4,
+        "missed_note": 13
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.82
+    },
+    {
+      "sample": "072",
+      "notes": 252,
+      "score_events": 226,
+      "extra_copies": 1,
+      "counts": {
+        "match": 204,
+        "extra": 22,
+        "substitute": 13,
+        "copy": 13,
+        "missed_note": 4
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.51
+    },
+    {
+      "sample": "073",
+      "notes": 273,
+      "score_events": 230,
+      "extra_copies": 2,
+      "counts": {
+        "match": 203,
+        "extra": 31,
+        "substitute": 11,
+        "copy": 28,
+        "missed_note": 8
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.69
+    },
+    {
+      "sample": "074",
+      "notes": 265,
+      "score_events": 229,
+      "extra_copies": 2,
+      "counts": {
+        "match": 198,
+        "substitute": 16,
+        "extra": 21,
+        "copy": 30,
+        "missed_note": 9
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.66
+    },
+    {
+      "sample": "075",
+      "notes": 464,
+      "score_events": 405,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 58,
+        "match": 373,
+        "substitute": 20,
+        "copy": 13,
+        "missed_note": 6
+      },
+      "length_slack_fallback": false,
+      "seconds": 12.11
+    },
+    {
+      "sample": "076",
+      "notes": 262,
+      "score_events": 228,
+      "extra_copies": 1,
+      "counts": {
+        "match": 202,
+        "extra": 33,
+        "substitute": 20,
+        "copy": 7,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.94
+    },
+    {
+      "sample": "077",
+      "notes": 357,
+      "score_events": 302,
+      "extra_copies": 1,
+      "counts": {
+        "match": 277,
+        "substitute": 22,
+        "extra": 47,
+        "copy": 11,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 2.99
+    },
+    {
+      "sample": "078",
+      "notes": 148,
+      "score_events": 89,
+      "extra_copies": 1,
+      "counts": {
+        "match": 77,
+        "extra": 27,
+        "copy": 43,
+        "substitute": 1,
+        "missed_note": 11
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.24
+    },
+    {
+      "sample": "079",
+      "notes": 117,
+      "score_events": 72,
+      "extra_copies": 1,
+      "counts": {
+        "match": 62,
+        "extra": 30,
+        "substitute": 8,
+        "copy": 17,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.14
+    },
+    {
+      "sample": "080",
+      "notes": 86,
+      "score_events": 72,
+      "extra_copies": 0,
+      "counts": {
+        "match": 70,
+        "extra": 15,
+        "substitute": 1,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.14
+    },
+    {
+      "sample": "081",
+      "notes": 97,
+      "score_events": 72,
+      "extra_copies": 0,
+      "counts": {
+        "match": 71,
+        "extra": 26,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.15
+    },
+    {
+      "sample": "082",
+      "notes": 159,
+      "score_events": 159,
+      "extra_copies": 0,
+      "counts": {
+        "match": 151,
+        "extra": 7,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.73
+    },
+    {
+      "sample": "083",
+      "notes": 130,
+      "score_events": 114,
+      "extra_copies": 1,
+      "counts": {
+        "substitute": 3,
+        "extra": 11,
+        "match": 105,
+        "copy": 11,
+        "missed_note": 4
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.33
+    },
+    {
+      "sample": "084",
+      "notes": 125,
+      "score_events": 120,
+      "extra_copies": 0,
+      "counts": {
+        "match": 112,
+        "substitute": 3,
+        "extra": 10,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.38
+    },
+    {
+      "sample": "085",
+      "notes": 44,
+      "score_events": 44,
+      "extra_copies": 0,
+      "counts": {
+        "match": 42,
+        "extra": 2,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.1
+    },
+    {
+      "sample": "086",
+      "notes": 66,
+      "score_events": 45,
+      "extra_copies": 0,
+      "counts": {
+        "match": 43,
+        "substitute": 1,
+        "extra": 22,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.31
+    },
+    {
+      "sample": "087",
+      "notes": 96,
+      "score_events": 95,
+      "extra_copies": 0,
+      "counts": {
+        "match": 90,
+        "substitute": 1,
+        "extra": 5,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.28
+    },
+    {
+      "sample": "088",
+      "notes": 88,
+      "score_events": 88,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 7,
+        "match": 81,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.31
+    },
+    {
+      "sample": "089",
+      "notes": 245,
+      "score_events": 227,
+      "extra_copies": 1,
+      "counts": {
+        "match": 209,
+        "extra": 19,
+        "substitute": 9,
+        "copy": 8,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.6
+    },
+    {
+      "sample": "090",
+      "notes": 40,
+      "score_events": 41,
+      "extra_copies": 0,
+      "counts": {
+        "match": 40,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.08
+    },
+    {
+      "sample": "091",
+      "notes": 39,
+      "score_events": 41,
+      "extra_copies": 0,
+      "counts": {
+        "match": 39,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.09
+    },
+    {
+      "sample": "092",
+      "notes": 332,
+      "score_events": 249,
+      "extra_copies": 2,
+      "counts": {
+        "match": 228,
+        "substitute": 20,
+        "extra": 62,
+        "copy": 22,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 1.04
+    },
+    {
+      "sample": "093",
+      "notes": 55,
+      "score_events": 47,
+      "extra_copies": 0,
+      "counts": {
+        "match": 46,
+        "extra": 9,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.07
+    },
+    {
+      "sample": "094",
+      "notes": 66,
+      "score_events": 73,
+      "extra_copies": 0,
+      "counts": {
+        "match": 34,
+        "substitute": 21,
+        "extra": 11,
+        "missed_note": 17
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.18
+    },
+    {
+      "sample": "095",
+      "notes": 88,
+      "score_events": 63,
+      "extra_copies": 1,
+      "counts": {
+        "match": 61,
+        "copy": 18,
+        "extra": 9,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.33
+    },
+    {
+      "sample": "096",
+      "notes": 83,
+      "score_events": 73,
+      "extra_copies": 1,
+      "counts": {
+        "match": 66,
+        "extra": 12,
+        "copy": 5,
+        "missed_note": 6
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.45
+    },
+    {
+      "sample": "097",
+      "notes": 54,
+      "score_events": 43,
+      "extra_copies": 1,
+      "counts": {
+        "match": 41,
+        "substitute": 2,
+        "extra": 2,
+        "copy": 9,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "098",
+      "notes": 78,
+      "score_events": 65,
+      "extra_copies": 1,
+      "counts": {
+        "match": 62,
+        "extra": 11,
+        "copy": 5,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.33
+    },
+    {
+      "sample": "099",
+      "notes": 55,
+      "score_events": 55,
+      "extra_copies": 1,
+      "counts": {
+        "match": 51,
+        "copy": 3,
+        "extra": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.25
+    },
+    {
+      "sample": "100",
+      "notes": 44,
+      "score_events": 42,
+      "extra_copies": 1,
+      "counts": {
+        "match": 36,
+        "substitute": 1,
+        "copy": 6,
+        "extra": 1,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.17
+    },
+    {
+      "sample": "101",
+      "notes": 18,
+      "score_events": 15,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 15,
+        "extra": 3,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.1
+    },
+    {
+      "sample": "102",
+      "notes": 55,
+      "score_events": 47,
+      "extra_copies": 1,
+      "counts": {
+        "match": 45,
+        "extra": 4,
+        "copy": 6,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.24
+    },
+    {
+      "sample": "103",
+      "notes": 46,
+      "score_events": 18,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 29,
+        "match": 5,
+        "substitute": 12,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.1
+    },
+    {
+      "sample": "104",
+      "notes": 35,
+      "score_events": 37,
+      "extra_copies": 0,
+      "counts": {
+        "match": 31,
+        "substitute": 4,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.18
+    },
+    {
+      "sample": "105",
+      "notes": 68,
+      "score_events": 48,
+      "extra_copies": 1,
+      "counts": {
+        "substitute": 14,
+        "extra": 19,
+        "match": 25,
+        "copy": 10,
+        "missed_note": 8
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.15
+    },
+    {
+      "sample": "106",
+      "notes": 88,
+      "score_events": 21,
+      "extra_copies": 2,
+      "counts": {
+        "substitute": 10,
+        "match": 7,
+        "extra": 22,
+        "copy": 49,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.13
+    },
+    {
+      "sample": "107",
+      "notes": 62,
+      "score_events": 56,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 5,
+        "match": 53,
+        "copy": 4,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.2
+    },
+    {
+      "sample": "108",
+      "notes": 68,
+      "score_events": 56,
+      "extra_copies": 1,
+      "counts": {
+        "match": 53,
+        "extra": 8,
+        "copy": 7,
+        "missed_note": 3
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.2
+    },
+    {
+      "sample": "109",
+      "notes": 75,
+      "score_events": 63,
+      "extra_copies": 1,
+      "counts": {
+        "match": 59,
+        "extra": 9,
+        "copy": 7,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.28
+    },
+    {
+      "sample": "110",
+      "notes": 74,
+      "score_events": 56,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 15,
+        "match": 55,
+        "copy": 4,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.2
+    },
+    {
+      "sample": "111",
+      "notes": 53,
+      "score_events": 46,
+      "extra_copies": 1,
+      "counts": {
+        "match": 46,
+        "extra": 1,
+        "copy": 6,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.13
+    },
+    {
+      "sample": "112",
+      "notes": 58,
+      "score_events": 45,
+      "extra_copies": 2,
+      "counts": {
+        "match": 42,
+        "extra": 2,
+        "substitute": 1,
+        "copy": 13,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.15
+    },
+    {
+      "sample": "113",
+      "notes": 74,
+      "score_events": 59,
+      "extra_copies": 1,
+      "counts": {
+        "extra": 13,
+        "match": 58,
+        "copy": 3,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.27
+    },
+    {
+      "sample": "114",
+      "notes": 22,
+      "score_events": 18,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 9,
+        "extra": 8,
+        "match": 5,
+        "missed_note": 2
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.06
+    },
+    {
+      "sample": "115",
+      "notes": 24,
+      "score_events": 23,
+      "extra_copies": 0,
+      "counts": {
+        "match": 23,
+        "extra": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.07
+    },
+    {
+      "sample": "116",
+      "notes": 50,
+      "score_events": 40,
+      "extra_copies": 1,
+      "counts": {
+        "match": 38,
+        "extra": 5,
+        "copy": 6,
+        "substitute": 1,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.12
+    },
+    {
+      "sample": "117",
+      "notes": 48,
+      "score_events": 38,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 12,
+        "match": 35,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.12
+    },
+    {
+      "sample": "118",
+      "notes": 23,
+      "score_events": 19,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 4,
+        "match": 18,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.05
+    },
+    {
+      "sample": "119",
+      "notes": 26,
+      "score_events": 31,
+      "extra_copies": 0,
+      "counts": {
+        "substitute": 1,
+        "match": 23,
+        "extra": 2,
+        "missed_note": 5
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.08
+    },
+    {
+      "sample": "120",
+      "notes": 20,
+      "score_events": 18,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 2,
+        "match": 17,
+        "substitute": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.06
+    },
+    {
+      "sample": "121",
+      "notes": 31,
+      "score_events": 43,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 1,
+        "match": 27,
+        "substitute": 3,
+        "missed_note": 11
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.09
+    },
+    {
+      "sample": "122",
+      "notes": 53,
+      "score_events": 47,
+      "extra_copies": 1,
+      "counts": {
+        "match": 46,
+        "extra": 1,
+        "copy": 6,
+        "missed_note": 1
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.11
+    },
+    {
+      "sample": "123",
+      "notes": 22,
+      "score_events": 25,
+      "extra_copies": 0,
+      "counts": {
+        "extra": 4,
+        "match": 9,
+        "substitute": 9,
+        "missed_note": 5
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.07
+    },
+    {
+      "sample": "124",
+      "notes": 11,
+      "score_events": 11,
+      "extra_copies": 0,
+      "counts": {
+        "match": 11,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.07
+    },
+    {
+      "sample": "demo_001",
+      "notes": 50,
+      "score_events": 49,
+      "extra_copies": 0,
+      "counts": {
+        "match": 49,
+        "extra": 1,
+        "missed_note": 0
+      },
+      "length_slack_fallback": false,
+      "seconds": 0.11
+    }
+  ]
+}

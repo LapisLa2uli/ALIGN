@@ -1,0 +1,42 @@
+{
+  "schema_version": "align-orn-generalization-v4-status-v1",
+  "state": "lockbox_failed_no_post_test_tuning",
+  "objective_f1": 0.8,
+  "development": {
+    "rows": 114,
+    "precision": 0.8291674497274948,
+    "recall": 0.8007259528130671,
+    "f1": 0.8146985504570216
+  },
+  "lockbox": {
+    "rows": 110,
+    "opened": true,
+    "opening_number": 1,
+    "predictions_frozen_before_target_or_key_read": true,
+    "precision": 0.8143345939132001,
+    "recall": 0.7833015763034817,
+    "f1": 0.7985166872682324,
+    "credit": 4522.0,
+    "predicted": 5553,
+    "gold": 5773,
+    "success": false,
+    "bootstrap_95": {
+      "lower_95": 0.7678211001851475,
+      "median": 0.8000884669873741,
+      "upper_95": 0.8282878801656279,
+      "replicates": 1000
+    }
+  },
+  "artifacts": {
+    "candidate_sha256": "ea149d8d8011abdb3e35ac5627384da99e66a4c2a9032f2ce0f59c6fffaa3eaf",
+    "protocol_sha256": "398424f9b3ca432fcff15d3ed5afd741494600e9122af3530a14e1bcb0a07bd7",
+    "frozen_predictions_sha256": "4be6ff800e035354cea62fccedf54cbc955a0059303980b9dd40c827b9cb89ac",
+    "opening_record_sha256": "18d4e2563ae2e69e4590abfe3f4c4f8230fe292c195fc4641783773c2b4e6361",
+    "report_sha256": "e11aed6ce00e84cba8d717b75e4f1f10dbb31cd2a1e46de07a4c84f8b3eb601c"
+  },
+  "decision": {
+    "candidate_promoted": false,
+    "post_lockbox_tuning_allowed": false,
+    "alternate_test_selection_allowed": false
+  }
+}

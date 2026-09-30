@@ -169,6 +169,11 @@ def generate_samples(
                     "soundfont_path": str(preset.path),
                     "clarinet_program": preset.program,
                     **snippet_meta,
+                    **(
+                        {"dataset_version": config.dataset_version("generate")}
+                        if config.dataset_version("generate")
+                        else {}
+                    ),
                 },
                 midi_backend=backend,
             )
@@ -387,14 +392,24 @@ def _build_sample(
         sounding_transpose=sounding,
         keep_ornaments=keep_ornaments,
     )
-    attach_rendered_events(
-        note_map,
-        perf_wav.with_suffix(".mid"),
-        sounding_transpose=sounding,
-        performed_score_path=performance_path,
-    )
+    try:
+        attach_rendered_events(
+            note_map,
+            perf_wav.with_suffix(".mid"),
+            sounding_transpose=sounding,
+            performed_score_path=performance_path,
+        )
+    except ValueError as exc:
+        # Ornament MIDI export can occasionally leave an unmatched note-on.
+        # Such a bundle has no exact audible lineage: reject this sample while
+        # allowing the fixed seed/count generation job to audit later rows.
+        raise InjectionError(
+            f"Rendered MIDI lineage is invalid: {exc}"
+        ) from exc
     if not note_map["rendered_notes"]:
-        raise RuntimeError("Rendered MIDI has no note events; refusing an empty note map")
+        raise InjectionError(
+            "Rendered MIDI has no note events; refusing an empty note map"
+        )
     write_note_map(sample_dir / "note_map.json", note_map)
     ingest_performance(perf_wav, sample_dir, dc_config, logger)
 

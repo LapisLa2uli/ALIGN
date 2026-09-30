@@ -7,7 +7,9 @@ marginals, avoiding a Python autograd graph per lattice edge.
 
 from __future__ import annotations
 
+from collections import OrderedDict
 from dataclasses import dataclass
+import weakref
 from math import inf
 from typing import Any, Mapping
 
@@ -52,7 +54,15 @@ class PackedEdges:
     template_is_ornament: np.ndarray
 
 
-_PACK_CACHE: dict[tuple[int, int, bool], PackedEdges] = {}
+_PACK_CACHE: OrderedDict[
+    tuple[int, int, bool],
+    tuple[
+        weakref.ReferenceType[IdentityLattice],
+        weakref.ReferenceType[LatticeHypothesis],
+        PackedEdges,
+    ],
+] = OrderedDict()
+_PACK_CACHE_MAX = 256
 
 
 def pack_hypothesis_edges(
@@ -64,7 +74,13 @@ def pack_hypothesis_edges(
     key = (id(lattice), id(hypothesis), bool(gold_only))
     cached = _PACK_CACHE.get(key)
     if cached is not None:
-        return cached
+        lattice_ref, hypothesis_ref, packed = cached
+        if lattice_ref() is lattice and hypothesis_ref() is hypothesis:
+            _PACK_CACHE.move_to_end(key)
+            return packed
+        # Python may reuse object IDs after prior lattices are collected.
+        # Never return packed edges for a different lattice/hypothesis.
+        del _PACK_CACHE[key]
     if gold_only and lattice.targets is None:
         raise ValueError("Gold edge packing requires targets")
     rows, columns = len(lattice.candidates), len(hypothesis.template)
@@ -157,7 +173,14 @@ def pack_hypothesis_edges(
             dtype=np.bool_,
         ),
     )
-    _PACK_CACHE[key] = packed
+    _PACK_CACHE[key] = (
+        weakref.ref(lattice),
+        weakref.ref(hypothesis),
+        packed,
+    )
+    _PACK_CACHE.move_to_end(key)
+    while len(_PACK_CACHE) > _PACK_CACHE_MAX:
+        _PACK_CACHE.popitem(last=False)
     return packed
 
 
@@ -686,7 +709,14 @@ def fast_decode_identity_crf(
         column = int(packed.column[edge])
         previous_column = int(packed.previous_column[edge])
         action_counts[action] += 1
-        candidate = lattice.candidates[row - 1] if row else None
+        # DELETE/template-only edges may end on the sentinel row after the
+        # final candidate. Only candidate-consuming actions have a real
+        # 1-based candidate row.
+        candidate = (
+            lattice.candidates[row - 1]
+            if 0 < row <= len(lattice.candidates)
+            else None
+        )
         unit = hypothesis.template[column - 1] if column else None
         if action == LINK:
             assert candidate is not None and unit is not None

@@ -1,0 +1,71 @@
+{
+  "schema_version": "align-orn-v3-local-template-rescue-candidate-v1",
+  "frozen_utc": "2026-09-21T11:32:45.2260486Z",
+  "frozen": true,
+  "objective": "official exclusive note-wise lockbox F1 >= 0.80",
+  "method": {
+    "mode": "direct_template_local_warp",
+    "evidence_threshold": 0.4,
+    "window_sec": 0.15,
+    "timing": "piecewise-linear interpolation from target-free identity-CRF score/copy anchors",
+    "implementation": "scripts/calibrate_v2_template_rescue.py",
+    "implementation_sha256": "1e0c10e27bc7b51ea16c1f5442850a56bd254157d49d66bd44ba734c3619ca5e",
+    "base_candidate": "runs/joint-outputraw-full-v1/orn-generalization-v2/development/template-rescue-v3/RESCUE_CANDIDATE.json",
+    "base_candidate_sha256": "3be0fc2f423bb00d3f99738d9039304a6c6d96b589a2af3ca0cc0711d1c044a2",
+    "identity_crf_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1"
+  },
+  "holdout_freeze": {
+    "path": "runs/joint-outputraw-full-v1/orn-generalization-v3/FREEZE.json",
+    "sha256": "5a5da342cf8eb44d736ac2f3ca80512c2c2a6ba62d011f4156b6a3b49e8e71bb",
+    "rows": 114,
+    "frozen_before_v2_lockbox_became_development": true,
+    "targets_read": false,
+    "key_read": false,
+    "opened": false
+  },
+  "development_evidence": {
+    "calibration_64": {
+      "credit": 2489.0,
+      "predicted": 3120,
+      "gold": 3072,
+      "f1": 0.8039405684754523,
+      "report_sha256": "70c42cf3722e832d675238b4c7e8c9ced1ac017448e910fa320b19a8ad6abb33"
+    },
+    "reclassified_open_development_111": {
+      "credit": 4540.5,
+      "predicted": 5697,
+      "gold": 5635,
+      "f1": 0.8013589834098129,
+      "report_sha256": "4bd0baa9cc067991fbd181e188214dc4fd4a0847a1fbf2894f8309c8f2140f0d"
+    },
+    "opened_v2_lockbox_as_v3_development_57": {
+      "credit": 2551.5,
+      "predicted": 3190,
+      "gold": 3202,
+      "f1": 0.7983416770963705,
+      "grid_report_sha256": "6b1b33c4b43e5b1b201678a44ef96ede0de22c69592e0c0623f6ecd4c8d01e31",
+      "v3_targets_read": false
+    },
+    "combined_rows": 232,
+    "combined_credit": 9581.0,
+    "combined_predicted": 12007,
+    "combined_gold": 11909,
+    "combined_f1": 0.801220939956514
+  },
+  "version_rationale": {
+    "earlier_version": "The v2 candidate was frozen from 175 development rows and narrowly failed its 57-row lockbox at F1 0.798342.",
+    "earlier_limitation": "Development support was too small to characterize the threshold robustly; the point estimate missed 0.80 by 0.001658.",
+    "later_change": "Before any post-v2 tuning, a fresh 114-row generated lockbox was frozen. The opened v2 lockbox was then reclassified as development and added to the fixed-parameter evidence.",
+    "comparable_result": "The unchanged 0.40/0.15 local-rescue setting has aggregate F1 0.801221 over 232 pre-v3 development rows.",
+    "status": "frozen for one-shot v3 evaluation; no v3 target or key has been read"
+  },
+  "metric": {
+    "unit": "canonical score-note/event identity",
+    "matching": "exclusive one-to-one",
+    "exact_identity_and_type": 1.0,
+    "exact_identity_wrong_type": 0.5,
+    "wrong_identity": 0.0,
+    "timestamp_metrics": "diagnostic only"
+  },
+  "post_lockbox_tuning": false
+}

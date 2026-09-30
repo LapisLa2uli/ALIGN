@@ -443,6 +443,108 @@ class ErrorHeadTrainingTests(unittest.TestCase):
         self.assertEqual(labels[1]["pitches"], [60, 61, 62])
         self.assertEqual(labels[1]["extra_copies"], 1)
 
+    def test_schema_12_splits_disjoint_repetition_score_ranges(self) -> None:
+        score = tuple(
+            ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)
+            for i in range(8)
+        )
+        spans = ((0, 1), (1, 2), (5, 6), (6, 7))
+        rows = tuple(
+            [
+                HeadRow(
+                    np.zeros(FEATURE_DIM, np.float32),
+                    "event",
+                    index,
+                    span,
+                    0.5 * index,
+                    0.5 * index + 0.4,
+                    False,
+                )
+                for index, span in enumerate(spans)
+            ]
+            + [
+                HeadRow(
+                    np.zeros(FEATURE_DIM, np.float32),
+                    "event",
+                    index + 4,
+                    span,
+                    4.0 + 0.5 * index,
+                    4.4 + 0.5 * index,
+                    True,
+                )
+                for index, span in enumerate(spans)
+            ]
+        )
+        prediction = HeadPrediction(
+            ("match",) * len(rows),
+            (False,) * len(rows),
+            (0.0,) * len(rows),
+            ("none",) * len(rows),
+            ((1.0, 0.0, 0.0, 0.0),) * len(rows),
+            (0.0,) * len(rows),
+        )
+        labels = [
+            label
+            for label in schema12_document(
+                "fixture", rows, prediction, score
+            )["labels"]
+            if label["type"] == "repetition"
+        ]
+        self.assertEqual(len(labels), 2)
+        self.assertEqual(
+            [
+                (
+                    label["score_part"]["core_start_note_index"],
+                    label["score_part"]["core_end_note_index"],
+                )
+                for label in labels
+            ],
+            [(0, 1), (5, 6)],
+        )
+        self.assertEqual(
+            labels[0]["repeats_label_range"],
+            {"start_time": 0.0, "end_time": 0.9},
+        )
+        self.assertEqual(
+            labels[1]["repeats_label_range"],
+            {"start_time": 1.0, "end_time": 1.9},
+        )
+
+    def test_schema_12_consolidates_identical_copy_passes(self) -> None:
+        score = tuple(
+            ScoreEvent(i, 60 + i, float(i), float(i + 1), (i,), measure=1)
+            for i in range(4)
+        )
+        rows = (
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 0, (0, 1), 0.0, 0.4, False),
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 1, (1, 2), 0.5, 0.9, False),
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 2, (0, 1), 2.0, 2.4, True),
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 3, (1, 2), 2.5, 2.9, True),
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 4, (0, 1), 4.0, 4.4, True),
+            HeadRow(np.zeros(FEATURE_DIM, np.float32), "event", 5, (1, 2), 4.5, 4.9, True),
+        )
+        prediction = HeadPrediction(
+            ("match",) * len(rows),
+            (False,) * len(rows),
+            (0.0,) * len(rows),
+            ("none",) * len(rows),
+            ((1.0, 0.0, 0.0, 0.0),) * len(rows),
+            (0.0,) * len(rows),
+        )
+        labels = [
+            label
+            for label in schema12_document(
+                "fixture", rows, prediction, score
+            )["labels"]
+            if label["type"] == "repetition"
+        ]
+        self.assertEqual(len(labels), 1)
+        self.assertEqual(labels[0]["extra_copies"], 2)
+        self.assertEqual(
+            labels[0]["repeats_label_range"],
+            {"start_time": 0.0, "end_time": 0.9},
+        )
+
     def test_unpaired_transcription_is_suppressed_without_audited_error(self) -> None:
         score = _score()
         row = HeadRow(

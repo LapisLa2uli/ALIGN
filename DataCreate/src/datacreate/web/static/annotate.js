@@ -1602,23 +1602,34 @@ function appendDurationDots(svgParts, cx, cy, dots, color = "#222") {
   }
 }
 
-function appendNoteGlyph(svgParts, cx, cy, ql, stemUp, color = "#222") {
+function appendNoteGlyph(svgParts, cx, cy, ql, stemUp, color = "#222", { ignored = false } = {}) {
   const { base, dots } = classifyDurationQl(ql);
-  const open = base >= 2;
+  const open = ignored || base >= 2;
   const rx = base >= 4 ? 7 : 5;
   const ry = base >= 4 ? 5 : 4;
+  const dash = ignored ? ` stroke-dasharray="3 2"` : "";
+  const opacity = ignored ? ` opacity="0.72"` : "";
   svgParts.push(
     `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" ` +
-      `fill="${open ? "none" : color}" stroke="${color}" stroke-width="1.5" ` +
+      `fill="${open ? "none" : color}" stroke="${color}" stroke-width="1.5"${dash}${opacity} ` +
       `transform="rotate(-20 ${cx} ${cy})"/>`,
   );
+  if (ignored) {
+    const mark = 5.5;
+    svgParts.push(
+      `<line x1="${cx - mark}" y1="${cy - mark}" x2="${cx + mark}" y2="${cy + mark}" ` +
+        `stroke="${color}" stroke-width="1.6" opacity="0.85"/>`,
+      `<line x1="${cx + mark}" y1="${cy - mark}" x2="${cx - mark}" y2="${cy + mark}" ` +
+        `stroke="${color}" stroke-width="1.6" opacity="0.85"/>`,
+    );
+  }
   if (base <= 2) {
     const stemH = 22;
     const sx = stemUp ? cx + rx - 1 : cx - rx + 1;
     const sy1 = cy;
     const sy2 = stemUp ? cy - stemH : cy + stemH;
     svgParts.push(
-      `<line x1="${sx}" y1="${sy1}" x2="${sx}" y2="${sy2}" stroke="${color}" stroke-width="1.4"/>`,
+      `<line x1="${sx}" y1="${sy1}" x2="${sx}" y2="${sy2}" stroke="${color}" stroke-width="1.4"${dash}${opacity}/>`,
     );
     let flags = 0;
     if (base <= 0.5) flags = 1;
@@ -1630,7 +1641,7 @@ function appendNoteGlyph(svgParts, cx, cy, ql, stemUp, color = "#222") {
       const tipX = stemUp ? sx + 9 : sx - 9;
       svgParts.push(
         `<path d="M${sx} ${fy} Q${sx + (stemUp ? 6 : -6)} ${fy + (stemUp ? 3 : -3)} ${tipX} ${tipY}" ` +
-          `fill="none" stroke="${color}" stroke-width="1.4"/>`,
+          `fill="none" stroke="${color}" stroke-width="1.4"${dash}${opacity}/>`,
       );
     }
   }
@@ -1713,6 +1724,7 @@ function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf, xs 
     match: "#222",
     sub: "#c45c12",
     extra: "#c0392b",
+    ignored: "#7a6b8a",
     miss: "#7a7a7a",
   };
 
@@ -1776,7 +1788,9 @@ function buildStaffSvg(events, pxPerSec, width, { fill = "#f8f8f8", startOf, xs 
       const cy = midi != null ? midiToStaffY(midi, staffBottomY, lineGap) : staffMidY;
       const noteSteps = midi != null ? midiToStaffSteps(midi) : null;
       if (noteSteps != null) appendLedgerLines(noteSteps, x);
-      appendNoteGlyph(svgParts, x, cy, ql, cy >= staffMidY, ink);
+      appendNoteGlyph(svgParts, x, cy, ql, cy >= staffMidY, ink, {
+        ignored: ev.alignKind === "ignored",
+      });
     }
   });
   svgParts.push("</svg>");
@@ -1813,6 +1827,7 @@ function mappedScoreIndices(transcribed = getTranscribedNotes()) {
 }
 
 function transcribedAlignKind(note, refByIndex) {
+  if (note.ignored) return "ignored";
   if (note.score_index == null) return "extra";
   const ref = refByIndex.get(note.score_index);
   if (!ref) return "extra";
@@ -1876,9 +1891,12 @@ function renderTranscriptionStrip() {
     const ref = ev.score_index != null ? refByIndex.get(ev.score_index) : null;
     const played = ev.pitch || midiToPitchName(ev.midi) || "?";
     const written = ref ? (ref.pitch || midiToPitchName(eventMidi(ref)) || "?") : "—";
-    hit.title = kind === "extra"
-      ? `Extra ${played}`
-      : `${played} → ${written}${ref?.measure != null ? ` · m${ref.measure}` : ""}`;
+    hit.title = kind === "ignored"
+      ? `Ignored extra ${played} (post-processor noise)`
+      : kind === "extra"
+        ? `Extra ${played}`
+        : `${played} → ${written}${ref?.measure != null ? ` · m${ref.measure}` : ""}`;
+    if (kind === "ignored") hit.classList.add("ignored");
     container.appendChild(hit);
   });
 }
@@ -2966,6 +2984,7 @@ function setupPrepControls() {
   document.getElementById("applySegmentBtn").onclick = applyScoreSegment;
   document.getElementById("applyTrimBtn").onclick = applyPerformanceTrim;
   document.getElementById("realignBtn").onclick = reAlignSample;
+  document.getElementById("relabelBtn").onclick = reLabelSample;
   document.getElementById("viewFullScoreBtn").onclick = () => {
     if (!sampleData?.full_score_url) return;
     if ((sampleData.prep?.total_measures || 0) > LARGE_SCORE_MEASURES) {
@@ -3496,6 +3515,43 @@ async function reAlignSample() {
   } finally {
     btn.disabled = false;
     btn.textContent = "Re-align";
+  }
+}
+
+async function reLabelSample() {
+  if (!currentSample) return;
+  if (!confirm(
+    "Rebuild agent labels from the current alignment and transcription?\n\n"
+    + "This overwrites labels_agent.json only. Your labels (labels.json) are unchanged.",
+  )) return;
+  const btn = document.getElementById("relabelBtn");
+  btn.disabled = true;
+  btn.textContent = "Labeling…";
+  try {
+    const res = await fetch(`/api/samples/${currentSample}/re-label`, { method: "POST" });
+    if (!res.ok) throw new Error(await res.text());
+    const result = await res.json();
+    labelSource = "agent";
+    const sourceSelect = document.getElementById("labelSourceSelect");
+    if (sourceSelect) sourceSelect.value = "agent";
+    await loadSample(currentSample);
+    await loadSampleList();
+    const counts = result.counts_by_type || {};
+    const countText = Object.keys(counts).length
+      ? Object.entries(counts).map(([type, count]) => `${count} ${type}`).join(", ")
+      : "no labels kept";
+    const dismissed = (result.dismissed_types || []).length
+      ? `\nDismissed types (over cap): ${result.dismissed_types.join(", ")}`
+      : "";
+    alert(
+      `Agent labels updated from ${result.source || "current alignment"}.\n`
+      + `${result.label_count ?? 0} kept (${countText}).${dismissed}`,
+    );
+  } catch (err) {
+    alert(err.message || String(err));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Re-label";
   }
 }
 

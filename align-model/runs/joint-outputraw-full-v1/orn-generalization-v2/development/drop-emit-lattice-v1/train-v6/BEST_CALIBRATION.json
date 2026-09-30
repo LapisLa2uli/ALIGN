@@ -1,0 +1,76 @@
+{
+  "bootstrap_95": {
+    "lower_95": 0.4641860408031588,
+    "median": 0.49951870647864427,
+    "replicates": 1000,
+    "upper_95": 0.5320498239569912
+  },
+  "checkpoint": "runs\\joint-outputraw-full-v1\\orn-generalization-v2\\development\\drop-emit-lattice-v1\\train-v6\\best.pt",
+  "checkpoint_sha256": "d7f3fd672b0711849ae9dbbc9499eb79356f8a15a9231e8c7ba8d7e1772d8c6e",
+  "combined_f1": 0.4986220472440944,
+  "decode_mode": "drop_emit_through_crf+score_count",
+  "epoch": 1,
+  "gate": 0.85,
+  "gate_passed": false,
+  "lockbox_targets_read": false,
+  "open_validation_read": false,
+  "per_type": {
+    "copy": {
+      "credit": 49.0,
+      "f1": 0.08319185059422753,
+      "gold": 1032,
+      "precision": 0.3356164383561644,
+      "predicted": 146,
+      "recall": 0.04748062015503876,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "extra": {
+      "credit": 58.0,
+      "f1": 0.15263157894736842,
+      "gold": 467,
+      "precision": 0.19795221843003413,
+      "predicted": 293,
+      "recall": 0.12419700214132762,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "match": {
+      "credit": 679.0,
+      "f1": 0.6333955223880596,
+      "gold": 1433,
+      "precision": 0.9549929676511955,
+      "predicted": 711,
+      "recall": 0.473831123517097,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "missed_note": {
+      "credit": 29.0,
+      "f1": 0.11623246492985972,
+      "gold": 64,
+      "precision": 0.06666666666666667,
+      "predicted": 435,
+      "recall": 0.453125,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    },
+    "substitute": {
+      "credit": 36.0,
+      "f1": 0.14428857715430862,
+      "gold": 76,
+      "precision": 0.0851063829787234,
+      "predicted": 423,
+      "recall": 0.47368421052631576,
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "status": "available",
+      "type_mismatch_credit": 0.5
+    }
+  },
+  "schema_version": "align-drop-emit-lattice-v1-best",
+  "supports": null
+}

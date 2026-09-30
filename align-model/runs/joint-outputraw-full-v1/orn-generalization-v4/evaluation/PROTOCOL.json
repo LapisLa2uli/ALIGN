@@ -1,0 +1,42 @@
+{
+  "schema_version": "align-orn-v4-mel-lockbox-protocol-v1",
+  "frozen_utc": "2026-09-21T13:32:25.3704825Z",
+  "objective": "official exclusive one-to-one canonical note-wise F1 >= 0.80",
+  "success_threshold_f1": 0.8,
+  "candidate_sha256": "ea149d8d8011abdb3e35ac5627384da99e66a4c2a9032f2ce0f59c6fffaa3eaf",
+  "evaluator_sha256": "84fd4d6fb3fab53d25f6187c1c6d420d3cefdbf43320ed7bed7320057cd8aeba",
+  "freeze_sha256": "d7dea5a1e34641c597cac23078295eacc2e6b5d0ef81c1626271cb49fcb9a6b2",
+  "manifest_sha256": "2c1b2616820c09bc041a1803ac5e058273021a7ffc33c0454c6149edafe9ba72",
+  "targets_sha256": "891112528bb5cbcd355efc2160c77560921031263485732a748c4e7b6d4a42e5",
+  "key_sha256": "0b96d92902b3b1ec29b853ebb50d33dd5402be09cd43836ccc9682e05184a00f",
+  "population": {
+    "rows": 110,
+    "membership_selected_without_model_outcomes": true,
+    "overlap_with_v2_or_v3": false,
+    "plaintext_source_deleted": true
+  },
+  "candidate": {
+    "frontend": "ALIGN mel transcriber v1",
+    "minimum_confidence": 0.75,
+    "identity_mapper": "frozen identity CRF fast v2",
+    "development_rows": 114,
+    "development_f1": 0.8146985504570216,
+    "development_precision": 0.8291674497274948,
+    "development_recall": 0.8007259528130671,
+    "v4_targets_read": false
+  },
+  "procedure": [
+    "verify candidate, evaluator, freeze, envelope, public manifest, checkpoints, and all public input hashes",
+    "run score-blind mel transcription followed by score-aware frozen identity mapping",
+    "atomically freeze and hash all predictions before key/target access",
+    "write opening sentinels, then validate the external key and decrypt once",
+    "score the official exclusive note-wise metric and forbid post-lockbox tuning"
+  ],
+  "decision": {
+    "success": "F1 >= 0.80",
+    "failure": "F1 < 0.80",
+    "rounding_to_threshold": false,
+    "post_lockbox_tuning_allowed": false,
+    "alternate_test_selection_allowed": false
+  }
+}

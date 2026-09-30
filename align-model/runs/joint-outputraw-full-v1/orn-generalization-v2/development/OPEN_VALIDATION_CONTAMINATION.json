@@ -1,0 +1,35 @@
+{
+  "schema_version": "align-orn-v2-open-validation-contamination-v1",
+  "recorded_utc": "2026-09-20T16:18:41.3539996Z",
+  "status": "open_validation_disqualified_as_held_out",
+  "cause": "Ad hoc DROP/EMIT count diagnostics loaded the complete development_targets JSONL archive into a dictionary instead of filtering rows while streaming.",
+  "scope": {
+    "archive_rows_parsed": [
+      "train",
+      "calibration",
+      "open_validation"
+    ],
+    "metrics_computed_from": [
+      "calibration"
+    ],
+    "open_validation_metrics_computed": false,
+    "open_validation_target_values_printed": false,
+    "open_validation_target_values_persisted_by_diagnostics": false
+  },
+  "decision": {
+    "open_validation_may_not_support_a_held_out_claim": true,
+    "open_validation_may_only_be_used_as_development_from_now_on": true,
+    "encrypted_lockbox_remains_the_only_final_held_out_split": true
+  },
+  "lockbox_integrity": {
+    "opened": false,
+    "opening_sentinel_exists": false,
+    "manifest_sha256": "bb6c87500942fb90e7f1de5e917e598c68694be2703406b416a5317599f337f8",
+    "encrypted_targets_sha256": "c7079136237b03aeb222396af0a45ff6c5a5e6a43238e127b91a800ec939bd38"
+  },
+  "isolation_flags": {
+    "open_validation_targets_read": true,
+    "lockbox_targets_read": false,
+    "lockbox_key_read": false
+  }
+}

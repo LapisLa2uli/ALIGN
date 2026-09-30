@@ -1,0 +1,80 @@
+{
+  "schema_version": "align-orn-generalization-v5-generation-freeze-protocol-v1",
+  "release_name": "orn-generalization-v5",
+  "frozen_utc": "2026-09-25T09:32:54.310526+00:00",
+  "objective": "freeze a new independent population before any v4-result-driven model change",
+  "seed": 50000,
+  "requested_rows": 500,
+  "minimum_strict_audit_rows": 100,
+  "freezer_sha256": "a74cfe77a1180fe891e3fea11cc511d1cb4af59fed877d71dde79d9539e165e6",
+  "temporary_source_root": "E:/outputRaw_orn_v5_lockbox_20260925",
+  "membership_rule": "all rows in the fixed seed/count range that pass the predeclared strict global-lineage and schema audit",
+  "membership_uses_model_outcomes": false,
+  "generation": {
+    "config": "synth-pipeline/config/mixed_orn_10k_random.yaml",
+    "config_sha256": "1a6ba3994e21f3ad60b8fb5ca835ab2c603b96d0cf23ffd8e6ca99ae559b3907",
+    "command": "python -m synthpipeline.cli --config config/mixed_orn_10k_random.yaml generate --count 500 --workers 8 --soundfont freepats --seed 50000 --output E:/outputRaw_orn_v5_lockbox_20260925 --skip-existing",
+    "amendment": {
+      "reason": "first 360-row draw yielded only 95 strict-audit-eligible rows (<100 minimum); extend fixed seed range to 500 without outcome-dependent membership",
+      "prior_eligible_at_360": 95,
+      "amended_utc": "2026-09-25T09:32:54.310526+00:00"
+    },
+    "implementation_sha256": {
+      "pipeline.py": "c6fe1f11caa9b65498b638dcd76589e0971a5c0cd2adf44348db0d14c7c121fa",
+      "scoregen.py": "31cc8a6c51fd196928b050c4ca0acaa73242128c1719ea16fba38f78729429d9",
+      "errors.py": "eb78b94fe2c52369c83325c1522c757d379ec47ad841e6ca959e818db2246881",
+      "render.py": "8785e7ddfd56176aaa9070d153748400c10c1366f38e87d371398a53da56ed7e",
+      "note_map.py": "da1a580be4b756e58c64e31afa5a819037e68f95cdb0b1ca8eac8bd81a0fc688",
+      "timing.py": "a3e09b2fef1afc569192b6eea2aebd610557370fc0bbfa181af4ce3bd0b0cfb9"
+    }
+  },
+  "freeze": {
+    "freezer": "align-model/scripts/freeze_orn_generalization_v3.py",
+    "freezer_sha256": "a74cfe77a1180fe891e3fea11cc511d1cb4af59fed877d71dde79d9539e165e6",
+    "repair_implementation_sha256": "94cec25074cfa2c55ce3a9ac3d1103caa5fe75c05719eb74a52c488e509ecab7",
+    "requirements": [
+      "schema and label-span validity",
+      "exact renderer-ornament reconstruction",
+      "identity-CRF exact target round trip",
+      "no overlap with v2 development, v2 lockbox, v3 lockbox, or v4 lockbox groups/audio/scores"
+    ],
+    "target_encryption": "AES-256-GCM with external key",
+    "key_path_outside_repository": "C:/Users/Hank/AppData/Local/Cursor/AgentStores/cursor_agent_stores/u158847504/files/orn-generalization-v5-lockbox-aes256.key",
+    "key_sha256": "010cf5ed1e37b4758053bafc47890dc0749db60f953f172bf4c3af77a1f732b3",
+    "delete_temporary_source_after_verified_freeze": true
+  },
+  "prior_data": {
+    "v2_release_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+    "v2_lockbox_manifest_sha256": "bb6c87500942fb90e7f1de5e917e598c68694be2703406b416a5317599f337f8",
+    "v3_lockbox_manifest_sha256": "a49a8ae096290f9358945932bb5c420fd5f3f0dc6d62013e001f730bddb797d2",
+    "v4_lockbox_manifest_sha256": "2c1b2616820c09bc041a1803ac5e058273021a7ffc33c0454c6149edafe9ba72",
+    "v4_result_f1": 0.7985166872682324,
+    "v4_decision": "failed_exact_0.80_no_post_lockbox_tuning"
+  },
+  "pre_freeze_evidence_not_used_for_membership": {
+    "realistic_10k_transcriber_eval": {
+      "path": "align-model/runs/joint-outputraw-full-v1/realistic-10k-transcriber-eval-v1/REPORT.json",
+      "note": "score-agnostic Basic Pitch vs Mel on dataset 9.2; not used for lockbox membership"
+    },
+    "v4_per_type_gap": {
+      "match_f1": 0.9282915360501568,
+      "copy_f1": 0.736218444100979,
+      "extra_f1": 0.41749502982107356,
+      "missed_note_f1": 0.3699731903485255,
+      "substitute_f1": 0.48908296943231444,
+      "note": "observed after v4 opening; may guide post-freeze development only"
+    }
+  },
+  "future_evaluation": {
+    "success_threshold_f1": 0.8,
+    "one_shot": true,
+    "predictions_must_be_frozen_before_key_or_target_read": true,
+    "post_v5_lockbox_tuning": false
+  },
+  "state_at_protocol_freeze": {
+    "temporary_source_exists": false,
+    "v5_targets_exist": false,
+    "v5_membership_known": false,
+    "v4_result_driven_tuning_started": false
+  }
+}

@@ -174,3 +174,61 @@ def test_parallel_human_agent_view_is_served(tmp_path):
     assert 'id="humanWaveform"' in html
     assert 'id="agentWaveform"' in html
     assert "/static/label_compare.js?v=" in html
+
+
+def test_relabel_route_rewrites_agent_labels_only(tmp_path):
+    from music21 import note, stream
+    import wave
+
+    sample = tmp_path / "001"
+    sample.mkdir()
+    (sample / "performance_audio.wav").write_bytes(b"wav")
+    score = stream.Score()
+    part = stream.Part()
+    for pitch in [60, 62, 64]:
+        part.append(note.Note(pitch, quarterLength=1.0))
+    score.append(part)
+    score.write("musicxml", fp=str(sample / "verified_score.musicxml"))
+    with wave.open(str(sample / "performance_audio.wav"), "wb") as wav:
+        wav.setnchannels(1)
+        wav.setsampwidth(2)
+        wav.setframerate(22050)
+        wav.writeframes(b"\0\0" * 22050)
+    human = _document("human", "manual", "human_1")
+    _labels_path(sample, "human").write_text(json.dumps(human), encoding="utf-8")
+    (sample / "note_alignment_v2.json").write_text(
+        json.dumps(
+            {
+                "engine": "align-joint",
+                "transcribed_notes": [
+                    {"pitch": 60, "start": 0.0, "end": 0.4, "confidence": 0.9},
+                    {"pitch": 63, "start": 0.5, "end": 0.9, "confidence": 0.8},
+                    {"pitch": 64, "start": 1.0, "end": 1.4, "confidence": 0.9},
+                ],
+                "note_mapping": [0, 1, 2],
+                "repetitions": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    app = create_app(
+        PipelineConfig(
+            schema_version="1.1",
+            paths={"samples_root": str(tmp_path)},
+            taxonomy=["wrong_note", "extra_note", "missed_note"],
+        )
+    )
+    endpoints = {
+        route.name: route.endpoint
+        for route in app.routes
+        if getattr(route, "name", None)
+        and getattr(route, "endpoint", None) is not None
+    }
+    result = endpoints["relabel_sample"]("001")
+    assert result["status"] == "ok"
+    assert result["label_source"] == "agent"
+    assert result["label_count"] >= 1
+    assert json.loads(_labels_path(sample, "human").read_text())["labels"][0]["id"] == "human_1"
+    agent = json.loads(_labels_path(sample, "agent").read_text())
+    assert agent["agent_labeling"]["method"] == "current_note_alignment_review_v1"
+    assert any(label["type"] == "wrong_note" for label in agent["labels"])

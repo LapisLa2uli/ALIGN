@@ -1,0 +1,25 @@
+{
+  "schema_version": "align-realistic92-transcriber-split-v1-freeze",
+  "frozen_utc": "2026-09-27T01:18:53.600086+00:00",
+  "split_sha256": "e5fd2bac069a6eb009337634323fd46c647739d58769ffe1b177f88a96a6ab03",
+  "test_hashes_sha256": "0e32ccbdd48de2353315b2450c5b56fea389bb48816c6be61ef33f83d0fdd159",
+  "counts": {
+    "train": 4000,
+    "val": 400,
+    "test": 600
+  },
+  "score_groups": {
+    "train": [],
+    "val": [],
+    "test": []
+  },
+  "test_evaluations": [],
+  "rules": [
+    "train only on the train split",
+    "select checkpoints and decoders on the val split only",
+    "evaluate a frozen candidate on the test split once",
+    "headline metric: written-pitch sequence LCS F1 against note_map rendered_notes"
+  ],
+  "membership_selected_without_model_outcomes": true,
+  "selection_digest": "764831033797f078c97050906da9843578f6233dabb1733971bcd056d04ddfa0"
+}

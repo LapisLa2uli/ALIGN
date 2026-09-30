@@ -2064,30 +2064,104 @@ def schema12_document(
         if row.kind == "event" and row.is_copy and row.score_span is not None
     ]
     if copy_specs:
-        # The schema represents a replay as one source melody plus a copy
-        # count.  Segmenting at each replay-state transition generated
-        # thousands of duplicate labels in v1/v2 diagnostics.
-        spans = [row.score_span for _index, row in copy_specs]
-        assert all(span is not None for span in spans)
-        start_index, start_row = min(
-            copy_specs, key=lambda value: value[1].start_sec
-        )
-        end_row = max(copy_specs, key=lambda value: value[1].end_sec)[1]
-        specs.append(
-            {
-            "type": "repetition",
-            "core": (
+        # v1/v2 emitted duplicate labels at every replay transition. The first
+        # v3 fix over-corrected by taking one global min/max over every copy in
+        # the clip, which incorrectly included unrelated score material between
+        # disjoint repeated phrases. Build monotonic contiguous copy episodes
+        # first, then consolidate only repeated passes of the exact same source
+        # phrase.
+        clusters: list[list[tuple[int, HeadRow]]] = []
+        current: list[tuple[int, HeadRow]] = []
+        current_end = -1
+        previous_index = -2
+        previous_start = -1
+        for index, row in copy_specs:
+            assert row.score_span is not None
+            span_start, span_end = map(int, row.score_span)
+            continues = (
+                bool(current)
+                and index == previous_index + 1
+                and span_start >= previous_start
+                and span_start <= current_end + 1
+            )
+            if current and not continues:
+                clusters.append(current)
+                current = []
+                current_end = -1
+            current.append((index, row))
+            current_end = max(current_end, span_end)
+            previous_index = index
+            previous_start = span_start
+        if current:
+            clusters.append(current)
+
+        repetition_specs: list[dict[str, Any]] = []
+        for cluster in clusters:
+            spans = [row.score_span for _index, row in cluster]
+            core = (
                 min(int(span[0]) for span in spans if span is not None),
                 max(int(span[1]) for span in spans if span is not None),
-            ),
-            "row_index": start_index,
-            "start_time": start_row.start_sec,
-            "end_time": end_row.end_sec,
-            "deviation_ms": None,
-            "rhythm_subtype": None,
-            "extra_copies": 1,
-            }
-        )
+            )
+            source_rows = [
+                row
+                for row in rows
+                if row.kind == "event"
+                and not row.is_copy
+                and row.score_span is not None
+                and int(row.score_span[0]) < core[1]
+                and int(row.score_span[1]) > core[0]
+            ]
+            repetition_specs.append(
+                {
+                    "type": "repetition",
+                    "core": core,
+                    "row_index": cluster[0][0],
+                    "last_row_index": cluster[-1][0],
+                    "start_time": min(
+                        row.start_sec for _index, row in cluster
+                    ),
+                    "end_time": max(
+                        row.end_sec for _index, row in cluster
+                    ),
+                    "repeat_source_start": (
+                        min(row.start_sec for row in source_rows)
+                        if source_rows
+                        else min(row.start_sec for _index, row in cluster)
+                    ),
+                    "repeat_source_end": (
+                        max(row.end_sec for row in source_rows)
+                        if source_rows
+                        else max(row.end_sec for _index, row in cluster)
+                    ),
+                    "deviation_ms": None,
+                    "rhythm_subtype": None,
+                    "extra_copies": 1,
+                }
+            )
+        consolidated: dict[tuple[int, int], dict[str, Any]] = {}
+        for spec in repetition_specs:
+            key = tuple(map(int, spec["core"]))
+            previous = consolidated.get(key)
+            if previous is None:
+                consolidated[key] = spec
+                continue
+            previous["extra_copies"] = int(
+                previous["extra_copies"]
+            ) + int(spec["extra_copies"])
+            previous["row_index"] = min(
+                int(previous["row_index"]), int(spec["row_index"])
+            )
+            previous["last_row_index"] = max(
+                int(previous["last_row_index"]),
+                int(spec["last_row_index"]),
+            )
+            previous["start_time"] = min(
+                float(previous["start_time"]), float(spec["start_time"])
+            )
+            previous["end_time"] = max(
+                float(previous["end_time"]), float(spec["end_time"])
+            )
+        specs.extend(consolidated.values())
 
     specs.sort(key=lambda value: (int(value["row_index"]), str(value["type"])))
     merged: list[dict[str, Any]] = []
@@ -2098,6 +2172,7 @@ def schema12_document(
             core = spec["core"]
             can_merge = (
                 spec["type"] == previous["type"]
+                and spec["type"] != "repetition"
                 and int(spec["row_index"]) <= int(previous["last_row_index"]) + 1
                 and core[0] <= previous_core[1]
             )
@@ -2156,8 +2231,18 @@ def schema12_document(
         if spec["type"] == "repetition":
             label["extra_copies"] = int(spec.get("extra_copies", 1))
             label["repeats_label_range"] = {
-                "start_time": label["start_time"],
-                "end_time": label["end_time"],
+                "start_time": round(
+                    float(
+                        spec.get("repeat_source_start", label["start_time"])
+                    ),
+                    4,
+                ),
+                "end_time": round(
+                    float(
+                        spec.get("repeat_source_end", label["end_time"])
+                    ),
+                    4,
+                ),
             }
         labels.append(label)
     return {

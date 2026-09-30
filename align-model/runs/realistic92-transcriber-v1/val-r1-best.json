@@ -1,0 +1,604 @@
+{
+  "schema_version": "align-realistic92-transcriber-val-v1",
+  "checkpoint": "runs\\realistic92-transcriber-v1\\train-r1-ft018\\best.pt",
+  "checkpoint_sha256": "dde4d1c3061b83db444d6103ef67b538088352fd6560d4030b486778f3215f96",
+  "clips": 1108,
+  "variants": [
+    {
+      "variant": 0,
+      "override": {},
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108289,
+        "predicted": 123256,
+        "gold": 122051,
+        "precision": 0.8785698059323684,
+        "recall": 0.8872438570761403,
+        "f1": 0.8828855271150029,
+        "count_ratio": 1.0098729219752398
+      },
+      "procedural": {
+        "matched": 52317,
+        "predicted": 57779,
+        "gold": 63050,
+        "precision": 0.9054673843437927,
+        "recall": 0.8297700237906424,
+        "f1": 0.8659676071141861,
+        "count_ratio": 0.9163996827914354
+      },
+      "rawdata": {
+        "matched": 55972,
+        "predicted": 65477,
+        "gold": 59001,
+        "precision": 0.8548345220459093,
+        "recall": 0.9486618870866595,
+        "f1": 0.8993075081540514,
+        "count_ratio": 1.1097608515109914
+      }
+    },
+    {
+      "variant": 1,
+      "override": {
+        "min_confidence": 0.5
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.5
+      },
+      "all": {
+        "matched": 108277,
+        "predicted": 122657,
+        "gold": 122051,
+        "precision": 0.8827625003057307,
+        "recall": 0.8871455375212002,
+        "f1": 0.8849485917910325,
+        "count_ratio": 1.0049651375244775
+      },
+      "procedural": {
+        "matched": 52310,
+        "predicted": 57661,
+        "gold": 63050,
+        "precision": 0.9071989733095159,
+        "recall": 0.8296590007930215,
+        "f1": 0.8666981468134636,
+        "count_ratio": 0.914528152260111
+      },
+      "rawdata": {
+        "matched": 55967,
+        "predicted": 64996,
+        "gold": 59001,
+        "precision": 0.8610837590005539,
+        "recall": 0.9485771427602921,
+        "f1": 0.9027153882755228,
+        "count_ratio": 1.1016084473144523
+      }
+    },
+    {
+      "variant": 2,
+      "override": {
+        "min_confidence": 0.7
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.7
+      },
+      "all": {
+        "matched": 107598,
+        "predicted": 118641,
+        "gold": 122051,
+        "precision": 0.9069208789541559,
+        "recall": 0.8815822893708368,
+        "f1": 0.894072092134346,
+        "count_ratio": 0.972060859804508
+      },
+      "procedural": {
+        "matched": 51868,
+        "predicted": 56111,
+        "gold": 63050,
+        "precision": 0.9243820284792643,
+        "recall": 0.8226486915146709,
+        "f1": 0.8705532850513171,
+        "count_ratio": 0.8899444885011896
+      },
+      "rawdata": {
+        "matched": 55730,
+        "predicted": 62530,
+        "gold": 59001,
+        "precision": 0.8912521989445067,
+        "recall": 0.9445602616904798,
+        "f1": 0.9171322543219426,
+        "count_ratio": 1.0598125455500753
+      }
+    },
+    {
+      "variant": 3,
+      "override": {
+        "voice_on": 0.46,
+        "voice_off": 0.3,
+        "onset_threshold": 0.42
+      },
+      "decode_config": {
+        "voice_on": 0.46,
+        "voice_off": 0.3,
+        "onset_threshold": 0.42,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108344,
+        "predicted": 123756,
+        "gold": 122051,
+        "precision": 0.8754646239374253,
+        "recall": 0.887694488369616,
+        "f1": 0.8815371409276384,
+        "count_ratio": 1.013969570097746
+      },
+      "procedural": {
+        "matched": 52355,
+        "predicted": 57977,
+        "gold": 63050,
+        "precision": 0.9030305120996257,
+        "recall": 0.8303727200634418,
+        "f1": 0.8651788443900947,
+        "count_ratio": 0.9195400475812847
+      },
+      "rawdata": {
+        "matched": 55989,
+        "predicted": 65779,
+        "gold": 59001,
+        "precision": 0.8511683059943143,
+        "recall": 0.9489500177963085,
+        "f1": 0.897403430036865,
+        "count_ratio": 1.1148794088235792
+      }
+    },
+    {
+      "variant": 4,
+      "override": {
+        "voice_on": 0.58,
+        "voice_off": 0.4,
+        "onset_threshold": 0.54
+      },
+      "decode_config": {
+        "voice_on": 0.58,
+        "voice_off": 0.4,
+        "onset_threshold": 0.54,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108222,
+        "predicted": 122742,
+        "gold": 122051,
+        "precision": 0.8817030845187467,
+        "recall": 0.8866949062277245,
+        "f1": 0.8841919499332089,
+        "count_ratio": 1.0056615677053036
+      },
+      "procedural": {
+        "matched": 52264,
+        "predicted": 57585,
+        "gold": 63050,
+        "precision": 0.9075974646175219,
+        "recall": 0.8289294210943695,
+        "f1": 0.8664815352095163,
+        "count_ratio": 0.9133227597145123
+      },
+      "rawdata": {
+        "matched": 55958,
+        "predicted": 65157,
+        "gold": 59001,
+        "precision": 0.8588179320717652,
+        "recall": 0.9484246029728309,
+        "f1": 0.9013998292498268,
+        "count_ratio": 1.104337214623481
+      }
+    },
+    {
+      "variant": 5,
+      "override": {
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "merge_gap_sec": 0.055
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108289,
+        "predicted": 123256,
+        "gold": 122051,
+        "precision": 0.8785698059323684,
+        "recall": 0.8872438570761403,
+        "f1": 0.8828855271150029,
+        "count_ratio": 1.0098729219752398
+      },
+      "procedural": {
+        "matched": 52317,
+        "predicted": 57779,
+        "gold": 63050,
+        "precision": 0.9054673843437927,
+        "recall": 0.8297700237906424,
+        "f1": 0.8659676071141861,
+        "count_ratio": 0.9163996827914354
+      },
+      "rawdata": {
+        "matched": 55972,
+        "predicted": 65477,
+        "gold": 59001,
+        "precision": 0.8548345220459093,
+        "recall": 0.9486618870866595,
+        "f1": 0.8993075081540514,
+        "count_ratio": 1.1097608515109914
+      }
+    },
+    {
+      "variant": 6,
+      "override": {
+        "boundary_threshold": 0.4,
+        "strong_rearticulation": 0.58,
+        "min_note_sec": 0.035
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.4,
+        "strong_rearticulation": 0.58,
+        "min_note_sec": 0.035,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 111518,
+        "predicted": 140920,
+        "gold": 122051,
+        "precision": 0.7913567981833665,
+        "recall": 0.9137000106512851,
+        "f1": 0.8481391484232103,
+        "count_ratio": 1.1545993068471376
+      },
+      "procedural": {
+        "matched": 55057,
+        "predicted": 67995,
+        "gold": 63050,
+        "precision": 0.809721303036988,
+        "recall": 0.8732275971451229,
+        "f1": 0.8402762409859209,
+        "count_ratio": 1.0784298176050753
+      },
+      "rawdata": {
+        "matched": 56461,
+        "predicted": 72925,
+        "gold": 59001,
+        "precision": 0.774233801851217,
+        "recall": 0.9569498822053863,
+        "f1": 0.8559495474735836,
+        "count_ratio": 1.2359960000677954
+      }
+    },
+    {
+      "variant": 7,
+      "override": {
+        "boundary_threshold": 0.4,
+        "strong_rearticulation": 0.58,
+        "min_note_sec": 0.03,
+        "onset_threshold": 0.42
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.42,
+        "boundary_threshold": 0.4,
+        "strong_rearticulation": 0.58,
+        "min_note_sec": 0.03,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 111520,
+        "predicted": 140945,
+        "gold": 122051,
+        "precision": 0.7912306218737806,
+        "recall": 0.9137163972437752,
+        "f1": 0.8480737349617484,
+        "count_ratio": 1.154804139253263
+      },
+      "procedural": {
+        "matched": 55058,
+        "predicted": 68002,
+        "gold": 63050,
+        "precision": 0.8096526572747861,
+        "recall": 0.8732434575733545,
+        "f1": 0.8402466196624241,
+        "count_ratio": 1.0785408406026962
+      },
+      "rawdata": {
+        "matched": 56462,
+        "predicted": 72943,
+        "gold": 59001,
+        "precision": 0.7740564550402369,
+        "recall": 0.9569668310706598,
+        "f1": 0.8558479354877827,
+        "count_ratio": 1.2363010796427178
+      }
+    },
+    {
+      "variant": 8,
+      "override": {
+        "min_note_sec": 0.03
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.03,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108289,
+        "predicted": 123256,
+        "gold": 122051,
+        "precision": 0.8785698059323684,
+        "recall": 0.8872438570761403,
+        "f1": 0.8828855271150029,
+        "count_ratio": 1.0098729219752398
+      },
+      "procedural": {
+        "matched": 52317,
+        "predicted": 57779,
+        "gold": 63050,
+        "precision": 0.9054673843437927,
+        "recall": 0.8297700237906424,
+        "f1": 0.8659676071141861,
+        "count_ratio": 0.9163996827914354
+      },
+      "rawdata": {
+        "matched": 55972,
+        "predicted": 65477,
+        "gold": 59001,
+        "precision": 0.8548345220459093,
+        "recall": 0.9486618870866595,
+        "f1": 0.8993075081540514,
+        "count_ratio": 1.1097608515109914
+      }
+    },
+    {
+      "variant": 9,
+      "override": {
+        "min_note_sec": 0.05
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.05,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 4,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 106531,
+        "predicted": 118017,
+        "gold": 122051,
+        "precision": 0.9026750383419337,
+        "recall": 0.8728400422774086,
+        "f1": 0.8875068730526352,
+        "count_ratio": 0.9669482429476203
+      },
+      "procedural": {
+        "matched": 50875,
+        "predicted": 54787,
+        "gold": 63050,
+        "precision": 0.9285961998284264,
+        "recall": 0.8068992862807296,
+        "f1": 0.8634809100706909,
+        "count_ratio": 0.8689452815226011
+      },
+      "rawdata": {
+        "matched": 55656,
+        "predicted": 63230,
+        "gold": 59001,
+        "precision": 0.8802150877747904,
+        "recall": 0.943306045660243,
+        "f1": 0.9106691428524679,
+        "count_ratio": 1.0716767512415044
+      }
+    },
+    {
+      "variant": 10,
+      "override": {
+        "pitch_change_frames": 2
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.04,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 2,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108555,
+        "predicted": 124861,
+        "gold": 122051,
+        "precision": 0.8694067803397378,
+        "recall": 0.8894232738773136,
+        "f1": 0.8793011275272162,
+        "count_ratio": 1.0230231624484847
+      },
+      "procedural": {
+        "matched": 52498,
+        "predicted": 58321,
+        "gold": 63050,
+        "precision": 0.9001560329898322,
+        "recall": 0.8326407613005551,
+        "f1": 0.8650830923367195,
+        "count_ratio": 0.9249960348929421
+      },
+      "rawdata": {
+        "matched": 56057,
+        "predicted": 66540,
+        "gold": 59001,
+        "precision": 0.8424556657649535,
+        "recall": 0.9501025406349045,
+        "f1": 0.8930468930468931,
+        "count_ratio": 1.12777749529669
+      }
+    },
+    {
+      "variant": 11,
+      "override": {
+        "pitch_change_frames": 3,
+        "min_note_sec": 0.03
+      },
+      "decode_config": {
+        "voice_on": 0.52,
+        "voice_off": 0.35,
+        "onset_threshold": 0.48,
+        "boundary_threshold": 0.52,
+        "strong_rearticulation": 0.7,
+        "min_note_sec": 0.03,
+        "merge_gap_sec": 0.055,
+        "pitch_change_frames": 3,
+        "alternatives": 3,
+        "min_confidence": 0.0
+      },
+      "all": {
+        "matched": 108643,
+        "predicted": 125133,
+        "gold": 122051,
+        "precision": 0.868220213692631,
+        "recall": 0.8901442839468746,
+        "f1": 0.8790455692925108,
+        "count_ratio": 1.025251739027128
+      },
+      "procedural": {
+        "matched": 52568,
+        "predicted": 58494,
+        "gold": 63050,
+        "precision": 0.8986904639792116,
+        "recall": 0.8337509912767644,
+        "f1": 0.8650036200881984,
+        "count_ratio": 0.9277398889770023
+      },
+      "rawdata": {
+        "matched": 56075,
+        "predicted": 66639,
+        "gold": 59001,
+        "precision": 0.8414742117978962,
+        "recall": 0.9504076202098269,
+        "f1": 0.8926297357529449,
+        "count_ratio": 1.1294554329587634
+      }
+    }
+  ],
+  "best_variant": 2,
+  "best": {
+    "variant": 2,
+    "override": {
+      "min_confidence": 0.7
+    },
+    "decode_config": {
+      "voice_on": 0.52,
+      "voice_off": 0.35,
+      "onset_threshold": 0.48,
+      "boundary_threshold": 0.52,
+      "strong_rearticulation": 0.7,
+      "min_note_sec": 0.04,
+      "merge_gap_sec": 0.055,
+      "pitch_change_frames": 4,
+      "alternatives": 3,
+      "min_confidence": 0.7
+    },
+    "all": {
+      "matched": 107598,
+      "predicted": 118641,
+      "gold": 122051,
+      "precision": 0.9069208789541559,
+      "recall": 0.8815822893708368,
+      "f1": 0.894072092134346,
+      "count_ratio": 0.972060859804508
+    },
+    "procedural": {
+      "matched": 51868,
+      "predicted": 56111,
+      "gold": 63050,
+      "precision": 0.9243820284792643,
+      "recall": 0.8226486915146709,
+      "f1": 0.8705532850513171,
+      "count_ratio": 0.8899444885011896
+    },
+    "rawdata": {
+      "matched": 55730,
+      "predicted": 62530,
+      "gold": 59001,
+      "precision": 0.8912521989445067,
+      "recall": 0.9445602616904798,
+      "f1": 0.9171322543219426,
+      "count_ratio": 1.0598125455500753
+    }
+  }
+}

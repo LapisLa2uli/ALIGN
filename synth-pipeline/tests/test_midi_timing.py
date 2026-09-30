@@ -35,3 +35,39 @@ def test_multiple_tracks_tempo_changes_and_velocity_zero_off(tmp_path):
     midi.tracks.extend([tempo, notes])
     midi.save(path)
     assert midi_note_times(path) == [(60, 0.0, 1.5)]
+
+
+def test_same_pitch_retrigger_closes_previous_voice(tmp_path):
+    path = tmp_path / "retrigger.mid"
+    midi = mido.MidiFile(ticks_per_beat=480)
+    track = mido.MidiTrack(
+        [
+            mido.MetaMessage("set_tempo", tempo=500000),
+            mido.Message("note_on", note=60, velocity=80),
+            mido.Message("note_on", note=60, velocity=80, time=240),
+            mido.Message("note_off", note=60, time=240),
+            # music21 can leave a redundant old-voice note-off.
+            mido.Message("note_off", note=60, time=240),
+        ]
+    )
+    midi.tracks.append(track)
+    midi.save(path)
+    assert midi_note_times(path) == [
+        (60, 0.0, 0.25),
+        (60, 0.25, 0.5),
+    ]
+
+
+def test_missing_final_note_off_is_clipped_at_track_end(tmp_path):
+    path = tmp_path / "hanging.mid"
+    midi = mido.MidiFile(ticks_per_beat=480)
+    track = mido.MidiTrack(
+        [
+            mido.MetaMessage("set_tempo", tempo=500000),
+            mido.Message("note_on", note=62, velocity=80),
+            mido.MetaMessage("end_of_track", time=480),
+        ]
+    )
+    midi.tracks.append(track)
+    midi.save(path)
+    assert midi_note_times(path) == [(62, 0.0, 0.5)]

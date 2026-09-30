@@ -140,6 +140,7 @@ def _direct_rescue(
     *,
     evidence_threshold: float,
     window_sec: float,
+    anchor_events: Sequence[Any] | None = None,
 ) -> tuple[IdentityCandidate, ...]:
     accepted = list(acoustic._identity_candidates(base, features))
     patterns = score_ornament_patterns(score_path, tuple(score))
@@ -154,6 +155,37 @@ def _direct_rescue(
     template_start = min(value.time for value in template)
     template_end = max(value.time for value in template)
     template_extent = max(template_end - template_start, 1e-6)
+    local_template_times: list[float] = []
+    local_audio_times: list[float] = []
+    if anchor_events:
+        linked_times = {
+            (int(unit.score_index), int(unit.copy_pass)): float(unit.time)
+            for unit in template
+            if unit.score_index is not None and not unit.is_ornament
+        }
+        anchors = []
+        for event in anchor_events:
+            if event.score_span is None:
+                continue
+            key = (int(event.score_span[0]), int(event.copy_pass))
+            if key in linked_times:
+                anchors.append((linked_times[key], float(event.start)))
+        for template_time, audio_time in sorted(anchors):
+            if local_template_times and abs(
+                template_time - local_template_times[-1]
+            ) <= 1e-9:
+                local_audio_times[-1] = 0.5 * (
+                    local_audio_times[-1] + audio_time
+                )
+                continue
+            local_template_times.append(template_time)
+            local_audio_times.append(audio_time)
+        if len(local_audio_times) >= 2:
+            local_audio_times = list(
+                np.maximum.accumulate(
+                    np.asarray(local_audio_times, np.float64)
+                )
+            )
     times = np.asarray(features.frame_times, np.float64)
     for unit in ornaments:
         axis = int(unit.pitch) - 21
@@ -162,6 +194,19 @@ def _direct_rescue(
         expected = audio_start + (
             (float(unit.time) - template_start) / template_extent
         ) * audio_extent
+        if (
+            len(local_template_times) >= 2
+            and local_template_times[0]
+            <= float(unit.time)
+            <= local_template_times[-1]
+        ):
+            expected = float(
+                np.interp(
+                    float(unit.time),
+                    local_template_times,
+                    local_audio_times,
+                )
+            )
         frame_indices = np.flatnonzero(np.abs(times - expected) <= window_sec)
         if not len(frame_indices):
             continue

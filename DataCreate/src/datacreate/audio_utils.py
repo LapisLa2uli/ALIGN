@@ -51,6 +51,14 @@ def _find_ffmpeg() -> str | None:
             candidate = Path(prefix) / rel
             if candidate.exists():
                 return str(candidate)
+    try:
+        import imageio_ffmpeg
+
+        bundled = Path(imageio_ffmpeg.get_ffmpeg_exe())
+        if bundled.is_file():
+            return str(bundled)
+    except (ImportError, RuntimeError, OSError):
+        pass
     return None
 
 

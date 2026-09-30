@@ -34,6 +34,7 @@ align-model/.venv-amt-bench/
 *.wav
 *.mp3
 *.flac
+*.m4a
 *.mid
 *.midi
 *.sqlite
@@ -66,3 +67,21 @@ align-model/data-audit/**/bundle_index.json
 align-model/data-audit/**/bundle_index.jsonl
 align-model/data-audit/**/hash_cache.json
 align-model/data-audit/**/split.json
+
+# Local sample archive. samples/ and samples_zips/ are already ignored;
+# this zip is a 1.2 GB copy and exceeds GitHub's 100 MB blob limit.
+DataCreate/samples.zip
+
+# Third-party baseline weights and copied evaluation bundles.
+# The .ckpt files are about 2 GB each. Keep FINDINGS, reports, and scripts.
+*.ckpt
+experiments/**/checkpoints/
+experiments/**/bundle_root/
+
+# Relabel leftovers, same class as previous-agent-labels/
+previous-score-artifacts/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini

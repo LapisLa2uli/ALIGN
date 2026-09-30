@@ -1,0 +1,3707 @@
+{
+  "agent_labeling": {
+    "alignment_artifact": "note_alignment_v2.json",
+    "alignment_engine": "align-joint",
+    "dismissed_types": [],
+    "kept_counts_by_type": {
+      "extra_note": 52,
+      "missed_note": 11,
+      "wrong_note": 24
+    },
+    "mapped_note_count": 51,
+    "maximum_labels_per_type": 10000,
+    "method": "current_note_alignment_review_v1",
+    "raw_counts_by_type": {
+      "extra_note": 52,
+      "missed_note": 11,
+      "wrong_note": 24
+    },
+    "replaced_previous_agent_labels": true,
+    "score_note_count": 21,
+    "transcribed_note_count": 103,
+    "transcriber": "current_sample_transcription",
+    "uses_error_heads": false,
+    "uses_project_alignment_or_error_models": true
+  },
+  "annotator_id": "cursor_agent_current_alignment_review_v1",
+  "audio_reference": "performance_audio.wav",
+  "labels": [
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 76.",
+      "core_note_ids": [
+        "note_0000"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 0.2438,
+      "extra_copies": null,
+      "id": "agent_missed_0000",
+      "measure_number": 47,
+      "note_id": "note_0000",
+      "note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002"
+      ],
+      "pitches": [
+        76,
+        74,
+        71
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 0,
+        "core_start_note_index": 0,
+        "end_measure": 47,
+        "end_note_index": 2,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 0
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 0.0813,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 51; score has MIDI 74 (confidence 0.65).",
+      "core_note_ids": [
+        "note_0001"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 0.3947,
+      "extra_copies": null,
+      "id": "agent_wrong_0001_0000",
+      "measure_number": 47,
+      "note_id": "note_0001",
+      "note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002",
+        "note_0003"
+      ],
+      "pitches": [
+        76,
+        74,
+        71,
+        73
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 1,
+        "core_start_note_index": 1,
+        "end_measure": 47,
+        "end_note_index": 3,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 0
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 0.3251,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 73.",
+      "core_note_ids": [
+        "note_0003"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0003",
+      "measure_number": 47,
+      "note_id": "note_0003",
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 3,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 5,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 74.",
+      "core_note_ids": [
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0004",
+      "measure_number": 48,
+      "note_id": "note_0004",
+      "note_ids": [
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 4,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 2
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 74.",
+      "core_note_ids": [
+        "note_0005"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0005",
+      "measure_number": 48,
+      "note_id": "note_0005",
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 5,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 7,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 74.",
+      "core_note_ids": [
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0006",
+      "measure_number": 48,
+      "note_id": "note_0006",
+      "note_ids": [
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 6,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 4
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 74.",
+      "core_note_ids": [
+        "note_0007"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0007",
+      "measure_number": 48,
+      "note_id": "note_0007",
+      "note_ids": [
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008",
+        "note_0009"
+      ],
+      "pitches": [
+        74,
+        74,
+        74,
+        84,
+        82
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 7,
+        "core_start_note_index": 7,
+        "end_measure": 48,
+        "end_note_index": 9,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 5
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 84.",
+      "core_note_ids": [
+        "note_0008"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0008",
+      "measure_number": 48,
+      "note_id": "note_0008",
+      "note_ids": [
+        "note_0006",
+        "note_0007",
+        "note_0008",
+        "note_0009",
+        "note_0010"
+      ],
+      "pitches": [
+        74,
+        74,
+        84,
+        82,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 8,
+        "core_start_note_index": 8,
+        "end_measure": 48,
+        "end_note_index": 10,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 6
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 82.",
+      "core_note_ids": [
+        "note_0009"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0009",
+      "measure_number": 48,
+      "note_id": "note_0009",
+      "note_ids": [
+        "note_0007",
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011"
+      ],
+      "pitches": [
+        74,
+        84,
+        82,
+        81,
+        78
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 9,
+        "core_start_note_index": 9,
+        "end_measure": 49,
+        "end_note_index": 11,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 7
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 81.",
+      "core_note_ids": [
+        "note_0010"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0010",
+      "measure_number": 48,
+      "note_id": "note_0010",
+      "note_ids": [
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012"
+      ],
+      "pitches": [
+        84,
+        82,
+        81,
+        78,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 10,
+        "core_start_note_index": 10,
+        "end_measure": 49,
+        "end_note_index": 12,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 8
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 78.",
+      "core_note_ids": [
+        "note_0011"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 2.7832,
+      "extra_copies": null,
+      "id": "agent_missed_0011",
+      "measure_number": 49,
+      "note_id": "note_0011",
+      "note_ids": [
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013"
+      ],
+      "pitches": [
+        82,
+        81,
+        78,
+        79,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 11,
+        "core_start_note_index": 11,
+        "end_measure": 50,
+        "end_note_index": 13,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 9
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 2.7032,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 71 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0012",
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 4.5421,
+      "extra_copies": null,
+      "id": "agent_extra_0003",
+      "measure_number": 49,
+      "note_id": null,
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        81,
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 12,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 10
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 3.9848,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: no transcribed note matched score MIDI 81.",
+      "core_note_ids": [
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 4.5879,
+      "extra_copies": null,
+      "id": "agent_missed_0013",
+      "measure_number": 50,
+      "note_id": "note_0013",
+      "note_ids": [
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 13,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 11
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 4.5079,
+      "type": "missed_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80; score has MIDI 81 (confidence 0.93).",
+      "core_note_ids": [
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 5.587,
+      "extra_copies": null,
+      "id": "agent_wrong_0014_0004",
+      "measure_number": 50,
+      "note_id": "note_0014",
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 16,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 4.5537,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80; score has MIDI 81 (confidence 0.94).",
+      "core_note_ids": [
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 5.587,
+      "extra_copies": null,
+      "id": "agent_wrong_0015_0005",
+      "measure_number": 50,
+      "note_id": "note_0015",
+      "note_ids": [
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 15,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 13
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 4.6001,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80; score has MIDI 81 (confidence 0.84).",
+      "core_note_ids": [
+        "note_0016"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 6.1339,
+      "extra_copies": null,
+      "id": "agent_wrong_0016_0006",
+      "measure_number": 50,
+      "note_id": "note_0016",
+      "note_ids": [
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017",
+        "note_0018"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 16,
+        "core_start_note_index": 16,
+        "end_measure": 50,
+        "end_note_index": 18,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 14
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 5.587,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80; score has MIDI 81 (confidence 0.86).",
+      "core_note_ids": [
+        "note_0017"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 6.668,
+      "extra_copies": null,
+      "id": "agent_wrong_0017_0007",
+      "measure_number": 50,
+      "note_id": "note_0017",
+      "note_ids": [
+        "note_0015",
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        79,
+        78
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 17,
+        "core_start_note_index": 17,
+        "end_measure": 50,
+        "end_note_index": 19,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 15
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 6.1339,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 79; score has MIDI 78 (confidence 0.89).",
+      "core_note_ids": [
+        "note_0019"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 7.1672,
+      "extra_copies": null,
+      "id": "agent_wrong_0019_0009",
+      "measure_number": 50,
+      "note_id": "note_0019",
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 19,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 6.668,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.89).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 8.4224,
+      "extra_copies": null,
+      "id": "agent_extra_0011",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 8.2482,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.93).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 9.2235,
+      "extra_copies": null,
+      "id": "agent_extra_0012",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 8.4224,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.82).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 10.2812,
+      "extra_copies": null,
+      "id": "agent_extra_0013",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 9.2235,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 81 has no score counterpart (confidence 0.87).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 10.8617,
+      "extra_copies": null,
+      "id": "agent_extra_0014",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 10.2812,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83 has no score counterpart (confidence 0.86).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 11.2217,
+      "extra_copies": null,
+      "id": "agent_extra_0015",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 10.8037,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 84 has no score counterpart (confidence 0.91).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 12.8251,
+      "extra_copies": null,
+      "id": "agent_extra_0016",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 11.2217,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 72; score has MIDI 74 (confidence 0.68).",
+      "core_note_ids": [
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 13.661,
+      "extra_copies": null,
+      "id": "agent_wrong_0004_0017",
+      "measure_number": 48,
+      "note_id": "note_0004",
+      "note_ids": [
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 4,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 2
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 13.1966,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 84 has no score counterpart (confidence 0.93).",
+      "core_note_ids": [
+        "note_0004",
+        "note_0005"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 15.5547,
+      "extra_copies": null,
+      "id": "agent_extra_0018",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007"
+      ],
+      "pitches": [
+        71,
+        73,
+        74,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 5,
+        "core_start_note_index": 4,
+        "end_measure": 48,
+        "end_note_index": 7,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 2
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 14.2312,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 81 has no score counterpart (confidence 0.71).",
+      "core_note_ids": [
+        "note_0004",
+        "note_0005"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 15.7405,
+      "extra_copies": null,
+      "id": "agent_extra_0019",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007"
+      ],
+      "pitches": [
+        71,
+        73,
+        74,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 5,
+        "core_start_note_index": 4,
+        "end_measure": 48,
+        "end_note_index": 7,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 2
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 15.5896,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 77 has no score counterpart (confidence 0.74).",
+      "core_note_ids": [
+        "note_0004",
+        "note_0005"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 15.9624,
+      "extra_copies": null,
+      "id": "agent_extra_0020",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007"
+      ],
+      "pitches": [
+        71,
+        73,
+        74,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 5,
+        "core_start_note_index": 4,
+        "end_measure": 48,
+        "end_note_index": 7,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 2
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 15.7173,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 69; score has MIDI 74 (confidence 0.76).",
+      "core_note_ids": [
+        "note_0005"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 16.3571,
+      "extra_copies": null,
+      "id": "agent_wrong_0005_0021",
+      "measure_number": 48,
+      "note_id": "note_0005",
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 5,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 7,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 16.1249,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 65 has no score counterpart (confidence 0.79).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 16.5893,
+      "extra_copies": null,
+      "id": "agent_extra_0022",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 16.3223,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 60 has no score counterpart (confidence 0.82).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 16.8331,
+      "extra_copies": null,
+      "id": "agent_extra_0023",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 16.5661,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 65 has no score counterpart (confidence 0.76).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 17.0305,
+      "extra_copies": null,
+      "id": "agent_extra_0024",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 16.8099,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 69 has no score counterpart (confidence 0.85).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 17.2859,
+      "extra_copies": null,
+      "id": "agent_extra_0025",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 17.0421,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 72; score has MIDI 74 (confidence 0.81).",
+      "core_note_ids": [
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 17.7271,
+      "extra_copies": null,
+      "id": "agent_wrong_0006_0026",
+      "measure_number": 48,
+      "note_id": "note_0006",
+      "note_ids": [
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 6,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 4
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 17.2975,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 76; score has MIDI 74 (confidence 0.80).",
+      "core_note_ids": [
+        "note_0007"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 18.2392,
+      "extra_copies": null,
+      "id": "agent_wrong_0007_0027",
+      "measure_number": 48,
+      "note_id": "note_0007",
+      "note_ids": [
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008",
+        "note_0009"
+      ],
+      "pitches": [
+        74,
+        74,
+        74,
+        84,
+        82
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 7,
+        "core_start_note_index": 7,
+        "end_measure": 48,
+        "end_note_index": 9,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 5
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 17.669,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 78 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0010",
+        "note_0011"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 19.2377,
+      "extra_copies": null,
+      "id": "agent_extra_0028",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013"
+      ],
+      "pitches": [
+        84,
+        82,
+        81,
+        78,
+        79,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 11,
+        "core_start_note_index": 10,
+        "end_measure": 50,
+        "end_note_index": 13,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 8
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 18.216,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 78 has no score counterpart (confidence 0.86).",
+      "core_note_ids": [
+        "note_0011",
+        "note_0012"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 20.2258,
+      "extra_copies": null,
+      "id": "agent_extra_0030",
+      "measure_number": 49,
+      "note_id": null,
+      "note_ids": [
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014"
+      ],
+      "pitches": [
+        82,
+        81,
+        78,
+        79,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 12,
+        "core_start_note_index": 11,
+        "end_measure": 50,
+        "end_note_index": 14,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 9
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 19.2377,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83; score has MIDI 81 (confidence 0.87).",
+      "core_note_ids": [
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 22.2704,
+      "extra_copies": null,
+      "id": "agent_wrong_0014_0033",
+      "measure_number": 50,
+      "note_id": "note_0014",
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 16,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 21.2475,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.86).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 22.9787,
+      "extra_copies": null,
+      "id": "agent_extra_0034",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 22.6884,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 68 has no score counterpart (confidence 0.76).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 23.6288,
+      "extra_copies": null,
+      "id": "agent_extra_0037",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 23.3618,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 64 has no score counterpart (confidence 0.83).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 24.4892,
+      "extra_copies": null,
+      "id": "agent_extra_0038",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 23.6056,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0003",
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 25.6851,
+      "extra_copies": null,
+      "id": "agent_extra_0039",
+      "measure_number": 47,
+      "note_id": null,
+      "note_ids": [
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        74,
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 3,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 1
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 25.3832,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 76; score has MIDI 74 (confidence 0.85).",
+      "core_note_ids": [
+        "note_0004"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 25.8244,
+      "extra_copies": null,
+      "id": "agent_wrong_0004_0040",
+      "measure_number": 48,
+      "note_id": "note_0004",
+      "note_ids": [
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006"
+      ],
+      "pitches": [
+        71,
+        73,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 4,
+        "core_start_note_index": 4,
+        "end_measure": 48,
+        "end_note_index": 6,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 2
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 25.5457,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 76; score has MIDI 74 (confidence 0.85).",
+      "core_note_ids": [
+        "note_0005"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 25.8373,
+      "extra_copies": null,
+      "id": "agent_wrong_0005_0041",
+      "measure_number": 48,
+      "note_id": "note_0005",
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 5,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 7,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 25.6038,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 71 has no score counterpart (confidence 0.71).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 26.0579,
+      "extra_copies": null,
+      "id": "agent_extra_0042",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 25.8257,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 68 has no score counterpart (confidence 0.85).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 26.2668,
+      "extra_copies": null,
+      "id": "agent_extra_0043",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 25.9882,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 59 has no score counterpart (confidence 0.89).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 26.6151,
+      "extra_copies": null,
+      "id": "agent_extra_0044",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 26.1972,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 59 has no score counterpart (confidence 0.81).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 26.5571,
+      "extra_copies": null,
+      "id": "agent_extra_0045",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 26.2436,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 68 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 26.859,
+      "extra_copies": null,
+      "id": "agent_extra_0046",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 26.5339,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 71 has no score counterpart (confidence 0.85).",
+      "core_note_ids": [
+        "note_0005",
+        "note_0006"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 27.2305,
+      "extra_copies": null,
+      "id": "agent_extra_0047",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008"
+      ],
+      "pitches": [
+        73,
+        74,
+        74,
+        74,
+        74,
+        84
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 6,
+        "core_start_note_index": 5,
+        "end_measure": 48,
+        "end_note_index": 8,
+        "pad_notes": 2,
+        "start_measure": 47,
+        "start_note_index": 3
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 26.8473,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 79 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0012",
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 28.7178,
+      "extra_copies": null,
+      "id": "agent_extra_0051",
+      "measure_number": 49,
+      "note_id": null,
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        81,
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 12,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 10
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 28.2302,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 77; score has MIDI 79 (confidence 0.85).",
+      "core_note_ids": [
+        "note_0012"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 30.925,
+      "extra_copies": null,
+      "id": "agent_wrong_0012_0057",
+      "measure_number": 49,
+      "note_id": "note_0012",
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014"
+      ],
+      "pitches": [
+        81,
+        78,
+        79,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 12,
+        "core_start_note_index": 12,
+        "end_measure": 50,
+        "end_note_index": 14,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 10
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 30.4258,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 78 has no score counterpart (confidence 0.89).",
+      "core_note_ids": [
+        "note_0016",
+        "note_0017"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 31.4939,
+      "extra_copies": null,
+      "id": "agent_extra_0058",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        79,
+        78
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 17,
+        "core_start_note_index": 16,
+        "end_measure": 50,
+        "end_note_index": 19,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 14
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 30.9482,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 78 has no score counterpart (confidence 0.83).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 32.9697,
+      "extra_copies": null,
+      "id": "agent_extra_0062",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 32.482,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 75 has no score counterpart (confidence 0.86).",
+      "core_note_ids": [
+        "note_0010",
+        "note_0011"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 33.9462,
+      "extra_copies": null,
+      "id": "agent_extra_0064",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013"
+      ],
+      "pitches": [
+        84,
+        82,
+        81,
+        78,
+        79,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 11,
+        "core_start_note_index": 10,
+        "end_measure": 50,
+        "end_note_index": 13,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 8
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 33.4689,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 76 has no score counterpart (confidence 0.80).",
+      "core_note_ids": [
+        "note_0010",
+        "note_0011"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 34.4918,
+      "extra_copies": null,
+      "id": "agent_extra_0065",
+      "measure_number": 48,
+      "note_id": null,
+      "note_ids": [
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013"
+      ],
+      "pitches": [
+        84,
+        82,
+        81,
+        78,
+        79,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 11,
+        "core_start_note_index": 10,
+        "end_measure": 50,
+        "end_note_index": 13,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 8
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 33.9462,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83; score has MIDI 81 (confidence 0.77).",
+      "core_note_ids": [
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 35.6645,
+      "extra_copies": null,
+      "id": "agent_wrong_0013_0067",
+      "measure_number": 50,
+      "note_id": "note_0013",
+      "note_ids": [
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 13,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 11
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 35.618,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83; score has MIDI 81 (confidence 0.93).",
+      "core_note_ids": [
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 36.2114,
+      "extra_copies": null,
+      "id": "agent_wrong_0014_0068",
+      "measure_number": 50,
+      "note_id": "note_0014",
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 16,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 35.6645,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 86 has no score counterpart (confidence 0.90).",
+      "core_note_ids": [
+        "note_0014",
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 37.1054,
+      "extra_copies": null,
+      "id": "agent_extra_0069",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 36.1534,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 84 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0014",
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 37.6162,
+      "extra_copies": null,
+      "id": "agent_extra_0070",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 37.117,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83 has no score counterpart (confidence 0.74).",
+      "core_note_ids": [
+        "note_0014",
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 37.7917,
+      "extra_copies": null,
+      "id": "agent_extra_0071",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 37.5582,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83; score has MIDI 81 (confidence 0.74).",
+      "core_note_ids": [
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 37.7917,
+      "extra_copies": null,
+      "id": "agent_wrong_0015_0072",
+      "measure_number": 50,
+      "note_id": "note_0015",
+      "note_ids": [
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 15,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 13
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 37.6162,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83; score has MIDI 81 (confidence 0.87).",
+      "core_note_ids": [
+        "note_0016"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 38.5811,
+      "extra_copies": null,
+      "id": "agent_wrong_0016_0073",
+      "measure_number": 50,
+      "note_id": "note_0016",
+      "note_ids": [
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017",
+        "note_0018"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        79
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 16,
+        "core_start_note_index": 16,
+        "end_measure": 50,
+        "end_note_index": 18,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 14
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 37.7917,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80; score has MIDI 79 (confidence 0.66).",
+      "core_note_ids": [
+        "note_0018"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 39.2661,
+      "extra_copies": null,
+      "id": "agent_wrong_0018_0075",
+      "measure_number": 50,
+      "note_id": "note_0018",
+      "note_ids": [
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 18,
+        "core_start_note_index": 18,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 16
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 39.1384,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80; score has MIDI 79 (confidence 0.75).",
+      "core_note_ids": [
+        "note_0012"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 39.5331,
+      "extra_copies": null,
+      "id": "agent_wrong_0012_0076",
+      "measure_number": 49,
+      "note_id": "note_0012",
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014"
+      ],
+      "pitches": [
+        81,
+        78,
+        79,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 12,
+        "core_start_note_index": 12,
+        "end_measure": 50,
+        "end_note_index": 14,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 10
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 39.2661,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83 has no score counterpart (confidence 0.87).",
+      "core_note_ids": [
+        "note_0012",
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 39.7782,
+      "extra_copies": null,
+      "id": "agent_extra_0077",
+      "measure_number": 49,
+      "note_id": null,
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        81,
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 12,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 10
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 39.4867,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 86 has no score counterpart (confidence 0.78).",
+      "core_note_ids": [
+        "note_0012",
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 39.964,
+      "extra_copies": null,
+      "id": "agent_extra_0078",
+      "measure_number": 49,
+      "note_id": null,
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        81,
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 12,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 48,
+        "start_note_index": 10
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 39.7434,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 88; score has MIDI 81 (confidence 0.80).",
+      "core_note_ids": [
+        "note_0013"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 40.2078,
+      "extra_copies": null,
+      "id": "agent_wrong_0013_0079",
+      "measure_number": 50,
+      "note_id": "note_0013",
+      "note_ids": [
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015"
+      ],
+      "pitches": [
+        78,
+        79,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 13,
+        "core_start_note_index": 13,
+        "end_measure": 50,
+        "end_note_index": 15,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 11
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 39.9176,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 86 has no score counterpart (confidence 0.73).",
+      "core_note_ids": [
+        "note_0013",
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 40.3936,
+      "extra_copies": null,
+      "id": "agent_extra_0080",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016"
+      ],
+      "pitches": [
+        78,
+        79,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 13,
+        "end_measure": 50,
+        "end_note_index": 16,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 11
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 40.1614,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 84 has no score counterpart (confidence 0.92).",
+      "core_note_ids": [
+        "note_0013",
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 41.2411,
+      "extra_copies": null,
+      "id": "agent_extra_0081",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016"
+      ],
+      "pitches": [
+        78,
+        79,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 13,
+        "end_measure": 50,
+        "end_note_index": 16,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 11
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 40.3703,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 84; score has MIDI 81 (confidence 0.85).",
+      "core_note_ids": [
+        "note_0014"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 41.601,
+      "extra_copies": null,
+      "id": "agent_wrong_0014_0082",
+      "measure_number": 50,
+      "note_id": "note_0014",
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 14,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 16,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 41.2411,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 86 has no score counterpart (confidence 0.69).",
+      "core_note_ids": [
+        "note_0014",
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 41.601,
+      "extra_copies": null,
+      "id": "agent_extra_0083",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 41.4152,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 84 has no score counterpart (confidence 0.85).",
+      "core_note_ids": [
+        "note_0014",
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 41.7764,
+      "extra_copies": null,
+      "id": "agent_extra_0084",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 41.601,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83 has no score counterpart (confidence 0.83).",
+      "core_note_ids": [
+        "note_0014",
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 42.0202,
+      "extra_copies": null,
+      "id": "agent_extra_0085",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        79,
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 14,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 49,
+        "start_note_index": 12
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 41.7764,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83; score has MIDI 81 (confidence 0.87).",
+      "core_note_ids": [
+        "note_0015"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 42.682,
+      "extra_copies": null,
+      "id": "agent_wrong_0015_0086",
+      "measure_number": 50,
+      "note_id": "note_0015",
+      "note_ids": [
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        81
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 15,
+        "core_start_note_index": 15,
+        "end_measure": 50,
+        "end_note_index": 17,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 13
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 42.0202,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 83 has no score counterpart (confidence 0.82).",
+      "core_note_ids": [
+        "note_0016",
+        "note_0017"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 43.0535,
+      "extra_copies": null,
+      "id": "agent_extra_0088",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        81,
+        79,
+        78
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 17,
+        "core_start_note_index": 16,
+        "end_measure": 50,
+        "end_note_index": 19,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 14
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 42.8329,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.87).",
+      "core_note_ids": [
+        "note_0017",
+        "note_0018"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 43.9836,
+      "extra_copies": null,
+      "id": "agent_extra_0090",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0015",
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        81,
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 18,
+        "core_start_note_index": 17,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 15
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 43.2509,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 78; score has MIDI 79 (confidence 0.79).",
+      "core_note_ids": [
+        "note_0018"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 44.6338,
+      "extra_copies": null,
+      "id": "agent_wrong_0018_0091",
+      "measure_number": 50,
+      "note_id": "note_0018",
+      "note_ids": [
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 18,
+        "core_start_note_index": 18,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 16
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 44.39,
+      "type": "wrong_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.79).",
+      "core_note_ids": [
+        "note_0018",
+        "note_0019"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 44.8892,
+      "extra_copies": null,
+      "id": "agent_extra_0092",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 19,
+        "core_start_note_index": 18,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 16
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 44.5409,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 80 has no score counterpart (confidence 0.89).",
+      "core_note_ids": [
+        "note_0018",
+        "note_0019"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 44.9008,
+      "extra_copies": null,
+      "id": "agent_extra_0093",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0016",
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 19,
+        "core_start_note_index": 18,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 16
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 44.5873,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 64 has no score counterpart (confidence 0.88).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 46.5855,
+      "extra_copies": null,
+      "id": "agent_extra_0095",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 45.8889,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 68 has no score counterpart (confidence 0.87).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 47.0848,
+      "extra_copies": null,
+      "id": "agent_extra_0096",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 46.5507,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 68 has no score counterpart (confidence 0.91).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 47.0964,
+      "extra_copies": null,
+      "id": "agent_extra_0097",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 46.8642,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 71 has no score counterpart (confidence 0.92).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 47.8523,
+      "extra_copies": null,
+      "id": "agent_extra_0098",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 47.0848,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 64 has no score counterpart (confidence 0.84).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 48.6998,
+      "extra_copies": null,
+      "id": "agent_extra_0099",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 48.2122,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 68 has no score counterpart (confidence 0.94).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 49.1991,
+      "extra_copies": null,
+      "id": "agent_extra_0100",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 48.7114,
+      "type": "extra_note"
+    },
+    {
+      "comment": "Current alignment review: transcribed MIDI 72 has no score counterpart (confidence 0.74).",
+      "core_note_ids": [
+        "note_0019",
+        "note_0020"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 49.7925,
+      "extra_copies": null,
+      "id": "agent_extra_0101",
+      "measure_number": 50,
+      "note_id": null,
+      "note_ids": [
+        "note_0017",
+        "note_0018",
+        "note_0019",
+        "note_0020"
+      ],
+      "pitches": [
+        81,
+        79,
+        78,
+        76
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 20,
+        "core_start_note_index": 19,
+        "end_measure": 50,
+        "end_note_index": 20,
+        "pad_notes": 2,
+        "start_measure": 50,
+        "start_note_index": 17
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 49.1758,
+      "type": "extra_note"
+    }
+  ],
+  "schema_version": "1.2",
+  "self_reported": []
+}

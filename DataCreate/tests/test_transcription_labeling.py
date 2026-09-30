@@ -11,7 +11,9 @@ from datacreate.transcription_labeling import (
     TranscribedNote,
     align_pitch_sequences,
     build_agent_label_document,
+    build_agent_label_document_from_note_alignment,
     detect_repetitions,
+    relabel_sample_from_current_alignment,
 )
 
 
@@ -106,3 +108,67 @@ def test_more_than_ten_labels_of_one_type_are_all_dismissed(tmp_path):
     assert document["labels"] == []
     assert document["agent_labeling"]["raw_counts_by_type"]["missed_note"] == 16
     assert document["agent_labeling"]["dismissed_types"] == ["missed_note"]
+
+
+def test_relabel_from_note_alignment_uses_current_mapping(tmp_path):
+    sample = tmp_path / "sample"
+    _write_sample(sample, [60, 62, 64, 65], [60, 61, 62, 67, 65])
+    (sample / "note_alignment_v2.json").write_text(
+        json.dumps(
+            {
+                "engine": "align-joint",
+                "transcribed_notes": [
+                    {"pitch": 60, "start": 0.0, "end": 0.4, "confidence": 0.9},
+                    {"pitch": 61, "start": 0.5, "end": 0.9, "confidence": 0.8},
+                    {"pitch": 62, "start": 1.0, "end": 1.4, "confidence": 0.9},
+                    {"pitch": 67, "start": 1.5, "end": 1.9, "confidence": 0.7},
+                    {"pitch": 65, "start": 2.0, "end": 2.4, "confidence": 0.9},
+                ],
+                "note_mapping": [0, None, 1, 2, 3],
+                "repetitions": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    result = relabel_sample_from_current_alignment(sample, maximum_per_type=10)
+    document = build_agent_label_document_from_note_alignment(sample)
+    types = [label["type"] for label in document["labels"]]
+    assert result["source"] == "note_alignment_v2.json"
+    assert result["label_count"] == len(document["labels"])
+    assert "extra_note" in types
+    assert "wrong_note" in types
+    assert document["agent_labeling"]["method"] == "current_note_alignment_review_v1"
+    assert (sample / "labels_agent.json").is_file()
+    synced = json.loads((sample / "transcription_notes.json").read_text(encoding="utf-8"))
+    assert len(synced["transcribed_notes"]) == 5
+
+
+def test_relabel_skips_ignored_postprocessor_extras(tmp_path):
+    sample = tmp_path / "sample"
+    _write_sample(sample, [60, 62], [60, 70, 62])
+    (sample / "note_alignment_v2.json").write_text(
+        json.dumps(
+            {
+                "engine": "align-joint",
+                "transcribed_notes": [
+                    {"pitch": 60, "start": 0.0, "end": 0.4, "confidence": 0.9},
+                    {
+                        "pitch": 70,
+                        "start": 0.45,
+                        "end": 0.55,
+                        "confidence": 0.3,
+                        "ignored": True,
+                        "ignored_reason": "joint_noise",
+                    },
+                    {"pitch": 62, "start": 0.6, "end": 1.0, "confidence": 0.9},
+                ],
+                "note_mapping": [0, None, 1],
+                "repetitions": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    document = build_agent_label_document_from_note_alignment(sample)
+    types = [label["type"] for label in document["labels"]]
+    assert "extra_note" not in types
+    assert document["agent_labeling"]["transcribed_note_count"] == 2

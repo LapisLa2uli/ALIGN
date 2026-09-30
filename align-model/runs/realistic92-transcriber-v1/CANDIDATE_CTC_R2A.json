@@ -1,0 +1,28 @@
+{
+  "schema_version": "align-realistic92-ctc-candidate-v1",
+  "frozen_utc": "2026-09-25T19:20:04.081683+00:00",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-transcriber-v1\\ctc-r2-a\\best.pt",
+  "checkpoint_sha256": "65b10b77d0bb0d29fd4c0397362ec3d6c05338d7634975decea72823cd7eced4",
+  "blank_scale": 0.3,
+  "decoder": "greedy CTC with blank probability scaled before argmax",
+  "metric": "written-pitch sequence LCS F1 vs note_map rendered_notes, micro over clips",
+  "selection": "best epoch by 300-clip val subset during training; blank scale by full val",
+  "val_evidence": {
+    "clips": 1108,
+    "f1": 0.9626491340071138,
+    "precision": 0.9742647367316971,
+    "recall": 0.9513072404158918,
+    "procedural_f1": 0.9640898923585035,
+    "rawdata_f1": 0.9611292369813185,
+    "report_sha256": "7e5717bf1ac8bc065eae7e45f592f4bb0e76968d7092ab2e67b645ea9192aa32"
+  },
+  "training": {
+    "cache": "cache-aligned-r2 (forced alignment with round-1 fine-tuned mel model)",
+    "cache_metadata_sha256": "8fcd9e62261d98346dfedb51fbd16063a4491dc13431fc0bd09274fd6e4695bd",
+    "init": "train-r1-ft018/best.pt (mel v1 epoch 018 fine-tuned on cache-aligned-r1)",
+    "history_sha256": "9d6e824d88881797f759f6e7e7ac24189b22e5ca0c386d62d609d7035e1c7694"
+  },
+  "split_sha256": "1cb5acc9fc25c2e99280df6248a803171e71818232afb6c9a68fa4f37a94b06a",
+  "evaluator_sha256": "93cde7150601a63766f9e5da4c0d9f26dd8b89452a3172761ee74cbaa24f6ce8",
+  "test_read_before_freeze": false
+}

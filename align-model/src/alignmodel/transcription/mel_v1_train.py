@@ -57,6 +57,7 @@ class MelTrainConfig:
     compile_model: bool = False
     max_train_rows: int | None = None
     augmentation_probability: float = 0.55
+    init_checkpoint: Path | None = None
     model: MelTranscriberConfig = field(default_factory=MelTranscriberConfig)
 
 
@@ -325,6 +326,13 @@ def train_mel_transcriber(
         (reference / pitch_counts).sqrt().clamp(0.5, 3.0).float().to(target)
     )
     model = MelNoteTranscriber(config.model).to(target)
+    if config.init_checkpoint is not None and resume is None:
+        initial = torch.load(
+            Path(config.init_checkpoint), map_location=target, weights_only=False
+        )
+        if initial.get("model_config") != config.model.to_dict():
+            raise ValueError("Initial checkpoint model configuration mismatch")
+        model.load_state_dict(initial["model_state_dict"])
     fused = target.type == "cuda" and "fused" in __import__("inspect").signature(
         torch.optim.AdamW
     ).parameters

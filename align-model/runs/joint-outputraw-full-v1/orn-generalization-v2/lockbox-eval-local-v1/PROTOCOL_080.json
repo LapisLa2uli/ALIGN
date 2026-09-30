@@ -1,0 +1,58 @@
+{
+  "schema_version": "align-orn-v2-local-rescue-lockbox-protocol-v1",
+  "frozen_utc": "2026-09-20T17:32:10.2242530Z",
+  "objective": "honestly measured combined transcription-to-score official note-wise F1 >= 0.80 on a locked held-out split",
+  "success_threshold_f1": 0.8,
+  "candidate": "runs/joint-outputraw-full-v1/orn-generalization-v2/development/template-rescue-local-v1/FROZEN_CANDIDATE_080.json",
+  "candidate_sha256": "f44b7f44e5d2f4b7ba99c97de5a478f94f16c8842d87da1c5235c53138605f9f",
+  "evaluator": "scripts/eval_v2_template_rescue_lockbox.py",
+  "evaluator_sha256": "a7a1ccac7b5849df8a643dcb5a95852c3d73a5eb4ba3229f595ce18a893a55b6",
+  "lockbox": {
+    "rows": 57,
+    "provenance": "generated-only",
+    "manifest_sha256": "bb6c87500942fb90e7f1de5e917e598c68694be2703406b416a5317599f337f8",
+    "encrypted_targets_sha256": "c7079136237b03aeb222396af0a45ff6c5a5e6a43238e127b91a800ec939bd38",
+    "key_sha256": "86b0f360d72409ff3756e2eb89b88130a2ac779edb003e7aa618c6d874f5ac54",
+    "algorithm": "AES-256-GCM",
+    "aad": "align-orn-generalization-release-v2:lockbox-targets",
+    "opening_limit": 1
+  },
+  "procedure": [
+    "verify evaluator, candidate, checkpoint, public manifest, encrypted envelope, and every public input hash",
+    "run inference from public audio and score inputs only",
+    "atomically freeze and hash all predictions",
+    "write opening sentinels before reading the key or encrypted targets",
+    "validate the key hash and decrypt exactly once",
+    "score exclusive one-to-one canonical score-event identities",
+    "write the immutable report and forbid post-lockbox tuning"
+  ],
+  "metric": {
+    "unit": "canonical score-note/event identity",
+    "matching": "exclusive one-to-one",
+    "exact_identity_and_type": 1.0,
+    "exact_identity_wrong_type": 0.5,
+    "wrong_identity": 0.0,
+    "timestamp_metrics": "diagnostic only"
+  },
+  "decision": {
+    "success": "official combined lockbox F1 >= 0.80",
+    "failure": "official combined lockbox F1 < 0.80",
+    "post_lockbox_tuning_allowed": false,
+    "lockbox_result_may_not_select_another_candidate": true
+  },
+  "protocol_history": {
+    "original_v2_gate_f1": 0.85,
+    "original_v2_gate_passed": false,
+    "original_v2_gate_changed": false,
+    "original_v2_promotion_possible_from_this_run": false,
+    "reason_for_separate_threshold": "The active user objective is 0.80. This protocol is frozen for that distinct objective before any lockbox prediction or target/key read; it does not retroactively satisfy or alter the original 0.85 promotion policy.",
+    "open_validation_status": "disqualified as held-out after a diagnostic loader parsed its target rows; used only as development",
+    "open_validation_contamination_sha256": "a56609808869ec32da7f9c8fc14de3e6c74b2428bad843710747e6ce36144315"
+  },
+  "isolation_at_freeze": {
+    "predictions_frozen": false,
+    "lockbox_opening_sentinel_exists": false,
+    "lockbox_targets_read": false,
+    "lockbox_key_read": false
+  }
+}

@@ -117,8 +117,35 @@ Audio, scores, labels, mel files and note maps are unaffected by this conversion
 | `config/default.yaml` | One content error per clip; repetition 35%; no squeaks; no standalone repeat; no restart gap |
 | `config/multi_error_10k.yaml` | Procedural scores; 1–8 errors; equal weights; `squeak.prob` 0; repetition 0.80; standalone repetition 0.20; restart gap 0.2–1.0 s |
 | `config/rawdata_snippets_2k.yaml` | Uploaded-score snippets; 2,000 requested clips; 8–16 measures, at least 12 notes; otherwise the same multi-error settings |
-| `config/rawdata_sf_10k.yaml` | Uploaded-score snippets rendered to `E:/outputRaw_sf_10k`; score `001` excluded; 10,000 requested clips; otherwise the same multi-error settings |
-| `config/fast_notes_1k.yaml` | Procedural sixteenth-note etudes at ~125 BPM (~500 notes/min) to `E:/outputRaw_fast_1k`; ornaments kept; no intonation/squeak |
+| `config/rawdata_sf_10k.yaml` | Dataset 6.0: uploaded-score snippets; score `001` excluded; otherwise the same multi-error settings |
+| `config/mixed_orn_10k_random.yaml` / `_rawdata.yaml` | Dataset 7.x: 5,000 procedural + 5,000 snippets; ornaments kept; no intonation/squeak; written range E3–G6 |
+| `config/fast_notes_1k.yaml` | Dataset 8.x: procedural sixteenth-note etudes at ~125 BPM (~480 notes/min); ornaments kept; no intonation/squeak |
+| `config/realistic_10k_random.yaml` / `_rawdata.yaml` | Dataset 9.x: as 7.x, but procedural rhythms use `generation.beat_cells` (~4.8 notes/s, matching DataCreate recordings) and a tuned `degrade` block |
+
+Each dataset config has a `dataset.versions` block naming the x.y version every step produces (`generate`, `musesounds`, `degrade`); that step writes it to `metadata.json` as `dataset_version`.
+
+### Realistic-recording degradation (`degrade-audio`)
+
+`degrade-audio` makes Muse Sounds performance audio sound like the DataCreate phone recordings (iPhone Voice Memos, AAC 64 kbps). It degrades `performance_audio.wav` only (the reference stays a clean render, as in DataCreate), keeps the clean render as `performance_audio_clean.wav`, recomputes mels and alignment candidates, and records the sampled parameters under `metadata.degrade`. Every stage preserves timing, so labels are untouched. The stages, in order:
+
+1. Dereverberation (removes some of the hall ambience baked into Muse Sounds samples).
+2. Harmonic sharpening.
+3. Tonguing dips before note onsets.
+4. Pitch wander and level shimmer.
+5. Breath noise.
+6. Room reverb.
+7. Phone microphone EQ.
+8. Background noise, with occasional hum and thumps.
+9. Slow gain drift.
+10. AGC (automatic level) compression.
+11. 48 kHz AAC round trip.
+12. Rare clipping.
+
+The parameters were tuned with `scripts/tune_degrade.py` and are checked with `scripts/compare_mel_stats.py`. A regularized logistic regression separates clean Muse Sounds audio from the 124 real recordings perfectly (5-fold CV AUC 1.00); on degraded audio it scores 0.99. The same classifier separates one real recording session from the others at 0.96–1.00, so the remaining gap is on the order of the variation between real sessions. The largest single-feature gap is 0.79 AUC (real sessions differ by up to 0.98).
+
+```powershell
+synth-pipeline --config config/realistic_10k_random.yaml degrade-audio --root 9.2 --workers 16
+```
 
 Existing 1.1 bundles (or 1.2 extras that still have a single-note core) can be rewritten onto the current gold rules:
 
@@ -184,16 +211,27 @@ Open the output root in the DataCreate annotator (`datacreate serve`) like any o
 
 ## Dataset version registry
 
-The YAML config and CLI `--count` define a requested corpus. The final accepted count can be smaller when score parsing, rendering, or exact-lineage validation rejects a bundle. Frozen manifests under `align-model/runs/` are authoritative for model training.
+Datasets are named by version **x.y**; `datasets.yaml` is the source of truth (paths, recipes, renders, and why each version replaced the previous one).
 
-| Dataset/version | Score source and methodology | Render/pitch metadata | Requested or accepted size | Known model use |
-|---|---|---|---:|---|
-| Default procedural | Newly generated monophonic melodies, 8–16 measures, one planted content error, optional one-measure replay | Current generation writes `audio_render: soundfont_v1`; written MIDI is rendered at sounding transpose -2 | User-selected | Fixtures and smoke tests |
-| `1000dataexport` | Earlier procedural one-error corpus | Historical mixed render metadata; audit before reuse | 1,000 | Early RUMAA-lite and Model A |
-| `procedural12k` / `E:/output` | Procedural multi-error score generation with exact note lineage | Historical bundles include pitch-space corrections; strict refiner policy records effective transpose explicitly | 12,000 in the full manifest; strict subset 11,488: 9,197 train / 1,138 val / 1,153 test-ID | Model A/B, NoteFrameNet, Basic Pitch/refiner, aligner experiments |
-| `output_10k_multi` | `multi_error_10k.yaml`; procedural scores, 1–8 equally weighted content errors, repetition policy below | FreePats SoundFont, sounding -2 | 10,000 requested by the documented command; this root is not currently present on disk | Configured large procedural training option |
-| `output_2k_rawdata` / `raw2k` | `rawdata_snippets_2k.yaml`; random 8–16-measure windows from uploaded scores | FreePats, sounding -2 | Config requests 2,000 per generation command; frozen full manifest contains 2,100: 1,268 train / 140 val / 692 test-OOD | Training and OOD/generalization evaluation |
-| `outputRaw_sf_10k` | `rawdata_sf_10k.yaml`; uploaded-score snippets, score `001` excluded, exact lineage | `soundfont_v1`, FreePats, sounding -2 | 10,000 accepted: 8,004 train / 999 val / 997 test-ID | Current Layer 1 and contextual aligner; Basic Pitch calibration |
+- **x** bumps for a new generation run: new scores and new planted-error plans.
+- **y** bumps for a revision of the same bundles (same sample IDs and error plans): re-render, ornament stripping, or audio post-processing. When a revision rewrote audio in place, the older minor is `superseded_in_place`.
+
+Folders keep their historical names because frozen manifests under `align-model/runs/` reference them; those manifests remain authoritative for model training. Commands take the version instead of a path (`--root 7.1`, `--output 9.0`). `synth-pipeline datasets list` prints the registry, and `synth-pipeline datasets link` writes version-named shortcuts plus `INDEX.txt` under `E:/ALIGN_datasets` (E: is exFAT, so shortcuts rather than junctions). Accepted counts can be smaller than requested when score parsing, rendering, or exact-lineage validation rejects a bundle.
+
+| Version | Folder | Content | Audio | Bundles | Known model use |
+|---|---|---|---|---:|---|
+| 1.0 | `synth-pipeline/1000dataexport` | Procedural, one planted error, schema 1.1 | FreePats re-render | 1,000 | Early RUMAA-lite and Model A |
+| 2.0 | `E:/output` (not on disk) | `procedural12k`: procedural multi-error with exact note lineage | FreePats | 12,000; strict subset 11,488 (9,197 / 1,138 / 1,153) | Model A/B, NoteFrameNet, Basic Pitch/refiner, aligners |
+| 3.0 | `synth-pipeline/output_2k_rawdata` | `raw2k`: RawData snippets, `rawdata_snippets_2k.yaml` | FreePats re-render, ornaments kept | 2,104; frozen manifest 2,100 (1,268 / 140 / 692 OOD) | Raw-score training and OOD evaluation |
+| 3.1 | `E:/output_2k_rawdata` | Same bundles as 3.0 | Ornaments stripped (3.0's player held ornament notes under the melody) | 2,104 | Also referenced by frozen splits |
+| 4.0 | `E:/output_2` (not on disk) | Procedural, `multi_error_10k.yaml`, seed 42 | FreePats | 20,000 | — |
+| 5.1 | `E:/outputRaw_2` | RawData snippets (5.0 audio overwritten) | Ornaments stripped, same fix as 3.1 | 20,000 | — |
+| 6.0 | `E:/outputRaw_sf_10k` | `rawdata_sf_10k.yaml`, score `001` excluded | `soundfont_v1` FreePats | 10,000 (8,004 / 999 / 997) | Current Layer 1 and contextual aligner |
+| 7.1 | `E:/outputRaw_orn_10k` | 5k procedural + 5k snippets, ornaments kept (7.0 audio overwritten) | Muse Sounds (FreePats timbre too far from a real clarinet) | 10,000 | — |
+| 8.1 | `E:/outputRaw_fast_1k` | Sixteenth-note etudes, ~480 notes/min (8.0 audio overwritten) | Muse Sounds | 1,000 | — |
+| 9.2 | `E:/outputRaw_realistic_10k` | As 7.x with DataCreate-like note density (7.x had ~1.8 vs ~5 onsets/s) and repeats read once | Muse Sounds + `realistic_v1` degradation; clean 9.1 render kept per bundle | 10,000 | Experimental; not yet evaluated |
+
+`Default procedural` output (`config/default.yaml`) is for fixtures and smoke tests and is not versioned.
 
 ### Shared generation hyperparameters
 
@@ -234,6 +272,7 @@ The YAML config and CLI `--count` define a requested corpus. The final accepted 
 | `musesounds_v1` | Re-render of bundle MusicXML through MuseScore `--sound-profile MuseSounds` (Muse Woodwinds Bb clarinet), MP3→WAV. Scores, MIDI, and labels are unchanged. |
 | `oscillator_v1` / `oscillator_v1_bare` | Historical re-render marker retained by `regenerate-audio`; despite the name, the current implementation resolves and renders a SoundFont. `bare` strips ornaments. |
 | `soundfont_rerender` | Legacy written-MIDI re-render marker understood by pitch-policy compatibility code |
+| `audio_degrade: realistic_v1` | Separate marker set by `degrade-audio` on top of `musesounds_v1`; a later `regenerate-audio --backend musesounds --force` clears it and deletes `performance_audio_clean.wav` |
 
 Do not rewrite these markers manually. Use `synth-pipeline regenerate-audio` or the shared pitch-convention helpers so `midi_pitch_space`, `audio_pitch_space`, `sounding_transpose`, and `effective_audio_transpose` stay consistent.
 

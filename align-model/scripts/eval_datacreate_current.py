@@ -164,22 +164,35 @@ def _audio_info(path: Path) -> dict[str, Any]:
 
 
 def _expected_samples(root: Path) -> list[Path]:
-    return [root / f"{index:03d}" for index in range(1, 94)] + [
+    return [root / f"{index:03d}" for index in range(1, 125)] + [
         root / "demo_001"
     ]
 
 
-def _selected_samples(root: Path, sample_id: str | None = None) -> list[Path]:
+def _selected_samples(
+    root: Path,
+    sample_id: str | None = None,
+    min_id: int | None = None,
+    max_id: int | None = None,
+) -> list[Path]:
     expected = _expected_samples(root)
-    if sample_id is None:
-        return expected
-    by_name = {path.name: path for path in expected}
-    if sample_id not in by_name:
-        raise ValueError(
-            f"Unknown DataCreate sample id {sample_id!r}; "
-            "expected 001-093 or demo_001"
-        )
-    return [by_name[sample_id]]
+    if sample_id is not None:
+        by_name = {path.name: path for path in expected}
+        if sample_id not in by_name:
+            raise ValueError(
+                f"Unknown DataCreate sample id {sample_id!r}; "
+                "expected 001-124 or demo_001"
+            )
+        expected = [by_name[sample_id]]
+    if min_id is not None or max_id is not None:
+        lo = 1 if min_id is None else int(min_id)
+        hi = 10**9 if max_id is None else int(max_id)
+        expected = [
+            path
+            for path in expected
+            if path.name.isdigit() and lo <= int(path.name) <= hi
+        ]
+    return expected
 
 
 class _SampleReadGuard:
@@ -807,15 +820,25 @@ def freeze(args: argparse.Namespace) -> None:
     os.environ["TF_NUM_INTRAOP_THREADS"] = str(max(1, int(args.cpu_threads)))
     os.environ["TF_NUM_INTEROP_THREADS"] = "1"
 
-    expected = _selected_samples(args.samples.resolve(), args.sample_id)
+    expected = _selected_samples(
+        args.samples.resolve(),
+        args.sample_id,
+        getattr(args, "min_id", None),
+        getattr(args, "max_id", None),
+    )
     if any(
         output == sample.resolve() or output.is_relative_to(sample.resolve())
         for sample in expected
     ):
         raise ValueError("Output must be outside every sample directory")
+    subset_requested = (
+        args.sample_id is not None
+        or getattr(args, "min_id", None) is not None
+        or getattr(args, "max_id", None) is not None
+    )
     guard = (
         _install_sample_read_guard(expected, _FREEZE_SAMPLE_INPUTS, "freeze")
-        if args.sample_id is not None
+        if subset_requested
         else None
     )
     discovered = [path for path in expected if path.is_dir()]
@@ -918,8 +941,10 @@ def freeze(args: argparse.Namespace) -> None:
             "samples_root": str(args.samples.resolve()),
             "output": str(output),
             "subset": {
-                "requested": args.sample_id is not None,
+                "requested": subset_requested,
                 "sample_ids": [path.name for path in expected],
+                "min_id": getattr(args, "min_id", None),
+                "max_id": getattr(args, "max_id", None),
             },
             "discovered_expected": len(discovered),
             "expected": len(expected),
@@ -2408,8 +2433,10 @@ def _default_paths(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--sample-id",
-        help="Evaluate one expected sample id (001-093 or demo_001)",
+        help="Evaluate one expected sample id (001-124 or demo_001)",
     )
+    parser.add_argument("--min-id", type=int, help="Inclusive numeric sample floor")
+    parser.add_argument("--max-id", type=int, help="Inclusive numeric sample ceiling")
     parser.add_argument(
         "--output",
         type=Path,

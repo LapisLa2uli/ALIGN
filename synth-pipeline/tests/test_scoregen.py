@@ -164,6 +164,131 @@ def test_snippet_rejects_out_of_range_window():
         raise AssertionError("expected out-of-range snippet to fail")
 
 
+def test_beat_cells_fill_measures_from_cells():
+    from music21 import note
+
+    cfg = SynthConfig(
+        generation={
+            "measures_min": 4,
+            "measures_max": 4,
+            "meters": [[4, 4]],
+            "beat_cells": {4: [[1, [1, 1, 1, 1]]]},
+            "tempo_min": 120,
+            "tempo_max": 120,
+            "rest_probability": 0.0,
+            "ornament_prob": 0.0,
+            "pitch_min": "E3",
+            "pitch_max": "G6",
+        }
+    )
+    score = generate_score(random.Random(5), cfg)
+    measures = list(score.parts[0].getElementsByClass("Measure"))
+    for m in measures:
+        assert abs(float(m.duration.quarterLength) - 4.0) < 1e-9
+    durs = [float(n.duration.quarterLength) for n in score.flatten().getElementsByClass(note.Note)]
+    # Sixteenths everywhere except the held last beat of the phrase.
+    assert durs.count(0.25) == 3 * 16 + 12
+    assert durs[-1] == 1.0
+
+
+def test_pitch_focus_makes_range_more_common():
+    from music21 import note
+
+    def share(focus):
+        gen = {
+            "measures_min": 8,
+            "measures_max": 8,
+            "meters": [[4, 4]],
+            "duration_units": [1],
+            "rest_probability": 0.0,
+            "ornament_prob": 0.0,
+            "pitch_min": "E3",
+            "pitch_max": "G6",
+        }
+        if focus:
+            gen["pitch_focus"] = {"low": "B-3", "high": "G#4", "weight": 2.0}
+        cfg = SynthConfig(generation=gen)
+        inside = total = 0
+        for seed in range(30):
+            mids = [n.pitch.midi for n in generate_score(random.Random(seed), cfg).recurse().getElementsByClass(note.Note)]
+            inside += sum(58 <= m <= 68 for m in mids)
+            total += len(mids)
+        return inside / total
+
+    assert share(True) > share(False) + 0.15
+
+
+def test_leap_melody_jumps_into_and_out_of_focus_band():
+    from music21 import note
+
+    cfg = SynthConfig(
+        generation={
+            "measures_min": 8,
+            "measures_max": 8,
+            "meters": [[4, 4]],
+            "duration_units": [1],
+            "rest_probability": 0.0,
+            "ornament_prob": 0.0,
+            "pitch_min": "E3",
+            "pitch_max": "G6",
+            "leap_melody": {"focus_low": "B-3", "focus_high": "G#4", "jump_prob": 0.8},
+        }
+    )
+    cross = pairs = 0
+    for seed in range(20):
+        mids = [n.pitch.midi for n in generate_score(random.Random(seed), cfg).recurse().getElementsByClass(note.Note)]
+        for a, b in zip(mids, mids[1:]):
+            pairs += 1
+            if (58 <= a <= 68) != (58 <= b <= 68):
+                cross += 1
+                assert abs(b - a) >= 2
+    assert cross / pairs > 0.6
+
+
+def test_beat_cells_reject_partial_beats():
+    from synthpipeline.scoregen import _beat_cells
+
+    cfg = SynthConfig(generation={"beat_cells": {4: [[1, [1, 2]]]}})
+    try:
+        _beat_cells(cfg)
+    except ValueError:
+        return
+    raise AssertionError("expected a cell that does not fill a beat to fail")
+
+
+def test_loaded_scores_play_repeats_once(tmp_path: Path) -> None:
+    from music21 import bar, meter, note, stream
+
+    from synthpipeline.scoregen import load_score, write_musicxml
+
+    part = stream.Part()
+    for i in range(4):
+        m = stream.Measure(number=i + 1)
+        if i == 0:
+            m.insert(0, meter.TimeSignature("4/4"))
+        m.append(note.Note(60 + i, quarterLength=4.0))
+        part.append(m)
+    part.getElementsByClass(stream.Measure)[1].leftBarline = bar.Repeat(direction="start")
+    part.getElementsByClass(stream.Measure)[2].rightBarline = bar.Repeat(direction="end")
+    src = stream.Score()
+    src.insert(0, part)
+    path = tmp_path / "with_repeats.musicxml"
+    write_musicxml(src, path)
+
+    score = load_score(path, SynthConfig(generation={"pitch_min": "E3", "pitch_max": "G6"}))
+    barlines = [
+        b
+        for m in score.recurse().getElementsByClass(stream.Measure)
+        for b in (m.leftBarline, m.rightBarline)
+    ]
+    assert not any(isinstance(b, bar.Repeat) for b in barlines)
+    midi_path = tmp_path / "out.mid"
+    score.write("midi", fp=str(midi_path))
+    from synthpipeline.timing import midi_note_times
+
+    assert len(midi_note_times(midi_path)) == 4
+
+
 def test_midi_export_is_written_minus_two(tmp_path: Path) -> None:
     import logging
 

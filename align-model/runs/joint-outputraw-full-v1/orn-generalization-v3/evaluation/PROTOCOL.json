@@ -1,0 +1,58 @@
+{
+  "schema_version": "align-orn-v3-lockbox-evaluation-protocol-v1",
+  "frozen_utc": "2026-09-21T11:33:58.3309907Z",
+  "objective": "official exclusive one-to-one canonical note-wise F1 >= 0.80",
+  "success_threshold_f1": 0.8,
+  "candidate": "runs/joint-outputraw-full-v1/orn-generalization-v3/development/FROZEN_CANDIDATE.json",
+  "candidate_sha256": "a70679959cda097d00b458380a69fadde3987215ef37d2b11271fabd815540a0",
+  "evaluator": "scripts/eval_v3_template_rescue_lockbox.py",
+  "evaluator_sha256": "47328bcab7fcd73e47f16045413fc28166ca2f7cf9cea8a7c068e17221f8fddd",
+  "freeze_sha256": "5a5da342cf8eb44d736ac2f3ca80512c2c2a6ba62d011f4156b6a3b49e8e71bb",
+  "lockbox_manifest_sha256": "a49a8ae096290f9358945932bb5c420fd5f3f0dc6d62013e001f730bddb797d2",
+  "encrypted_targets_sha256": "e8d41ed3169474f840dfd0c09bce5a9dfc9ec5b82fea74c0452c3608690b5626",
+  "key_sha256": "88c3e54487b9f4fbf2457057ed6c291daed3ade7fb6db1bd893d496f6a6c760e",
+  "population": {
+    "rows": 114,
+    "membership_rule": "all strict-audit-passing rows from the fixed 30000-30359 seed range",
+    "membership_selected_without_model_outcomes": true,
+    "prior_overlap_failures": 0,
+    "plaintext_source_deleted_after_freeze": true
+  },
+  "development": {
+    "rows": 232,
+    "combined_credit": 9581.0,
+    "combined_predicted": 12007,
+    "combined_gold": 11909,
+    "combined_f1": 0.801220939956514,
+    "v3_targets_read": false,
+    "v3_key_read": false
+  },
+  "procedure": [
+    "verify evaluator, candidate, freeze, public manifest, encrypted envelope, checkpoint, and every public input hash",
+    "run all inference from public audio and score inputs only",
+    "atomically freeze and hash all 114 predictions",
+    "write both opening sentinels before reading the key or target envelope",
+    "validate the external key hash and decrypt once",
+    "score exclusive one-to-one canonical identities with exact type=1.0 and wrong type at exact identity=0.5",
+    "write the immutable report and forbid post-lockbox tuning"
+  ],
+  "decision": {
+    "success": "F1 >= 0.80",
+    "failure": "F1 < 0.80",
+    "rounding_to_threshold": false,
+    "post_lockbox_tuning_allowed": false,
+    "alternate_test_selection_allowed": false
+  },
+  "metric": {
+    "schema_version": "align-note-wise-score-event-metric-v1",
+    "unit": "canonical score-note/event identity",
+    "matching": "exclusive one-to-one",
+    "timestamps": "diagnostic only"
+  },
+  "state_at_freeze": {
+    "predictions_frozen": false,
+    "opening_sentinel_exists": false,
+    "targets_read": false,
+    "key_read": false
+  }
+}

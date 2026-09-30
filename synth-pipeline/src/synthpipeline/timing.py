@@ -9,6 +9,8 @@ from datacreate.melody import extra_neighbor_core, padded_melody
 from synthpipeline.errors import PlannedLabel
 
 MIN_DURATION = 0.05
+MIN_MIDI_NOTE_SEC = 0.03
+MAX_MIDI_NOTE_SEC = 2.8
 
 
 def ql_to_seconds(ql: float, bpm: float) -> float:
@@ -26,20 +28,35 @@ def midi_note_times(midi_path: Path) -> list[tuple[int, float, float]]:
     events = []
     seconds = 0.0
     serial = 0
+
+    def close(channel: int, pitch: int, end: float) -> bool:
+        pending = active[(channel, pitch)]
+        if not pending:
+            return False
+        start, order = pending.pop()
+        clipped_end = max(
+            start + MIN_MIDI_NOTE_SEC,
+            min(float(end), start + MAX_MIDI_NOTE_SEC),
+        )
+        events.append((order, int(pitch), start, clipped_end))
+        return True
+
     for message in mido.MidiFile(midi_path):
         seconds += message.time
         if message.type == "note_on" and message.velocity > 0:
+            # MIDI note-ons retrigger a channel/key. music21 ornament export
+            # can emit the new onset before the old note-off; the SoundFont
+            # renderer closes the prior voice at this onset.
+            close(message.channel, message.note, seconds)
             active[(message.channel, message.note)].append((seconds, serial))
             serial += 1
         elif message.type == "note_off" or (message.type == "note_on" and message.velocity == 0):
-            pending = active[(message.channel, message.note)]
-            if pending:
-                start, order = pending.popleft()
-                if seconds <= start:
-                    raise ValueError(f"Nonpositive MIDI note duration in {midi_path}")
-                events.append((order, int(message.note), start, seconds))
-    if any(active.values()):
-        raise ValueError(f"Unclosed MIDI note events in {midi_path}")
+            close(message.channel, message.note, seconds)
+    # Match the renderer's finite-note policy for a genuinely missing final
+    # note-off instead of inventing an unbounded audible event.
+    for (channel, pitch), pending in list(active.items()):
+        while pending:
+            close(channel, pitch, seconds)
     return [(pitch, start, end) for _, pitch, start, end in sorted(events)]
 
 

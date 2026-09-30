@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import copy
+import math
 import random
+from dataclasses import dataclass
 from pathlib import Path
 
 from music21 import (
@@ -44,6 +46,31 @@ def _duration_units(config: SynthConfig | None = None) -> list[int]:
         return list(DURATION_UNITS)
     units = [max(1, int(u)) for u in raw]
     return units or list(DURATION_UNITS)
+
+
+BeatCells = dict[int, list[tuple[float, list[int]]]]
+
+
+def _beat_cells(config: SynthConfig | None = None) -> BeatCells | None:
+    """``generation.beat_cells``: per beat length (sixteenths), weighted rhythm cells.
+
+    Each cell's total must be a whole number of beats, e.g. ``[4, [2, 2]]`` is
+    two eighths filling one quarter-note beat with weight 4.
+    """
+    raw = (config.generation if config is not None else {}).get("beat_cells")
+    if not raw:
+        return None
+    out: BeatCells = {}
+    for beat, cells in dict(raw).items():
+        beat = int(beat)
+        parsed = []
+        for weight, units in cells:
+            units = [max(1, int(u)) for u in units]
+            if sum(units) % beat:
+                raise ValueError(f"beat cell {units} does not fill whole {beat}-sixteenth beats")
+            parsed.append((float(weight), units))
+        out[beat] = parsed
+    return out
 
 
 def clarinet_instrument() -> instrument.Instrument:
@@ -140,7 +167,10 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
 
     measure_ql = beats * (4.0 / beat_type)
     beat_units = 6 if beat_type == 8 else max(1, int(round(4 * 4 / beat_type)))
-    current_idx = _start_index(scale_pitches, k)
+    focus = _pitch_focus(config, scale_pitches)
+    leap = _leap_spec(config, scale_pitches)
+    center = leap.center if leap else focus[2] if focus else 67
+    current_idx = _start_index(scale_pitches, k, around=center)
 
     score = stream.Score()
     score.insert(0, metadata.Metadata())
@@ -171,6 +201,9 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
             beat_units=beat_units,
             syncopation_prob=syncopation_prob,
             duration_units=_duration_units(config),
+            beat_cells=_beat_cells(config),
+            focus=focus,
+            leap=leap,
         )
         part.append(measure)
 
@@ -227,6 +260,7 @@ def load_score(path: Path, config: SynthConfig) -> stream.Score:
     _ensure_clarinet(score)
     _chords_to_top_notes(score)
     _ensure_measures(score)
+    linearize_repeats(score)
     _ensure_tempo(score, config)
     if score.metadata is None:
         score.insert(0, metadata.Metadata())
@@ -237,6 +271,32 @@ def load_score(path: Path, config: SynthConfig) -> stream.Score:
 
         strip_ornaments(score)
     return score
+
+
+def linearize_repeats(score: stream.Score) -> int:
+    """Turn repeat barlines, volta brackets, and jump marks into a straight read.
+
+    Labels and note maps describe the written notes once; both music21 MIDI
+    export and MuseScore would otherwise play repeated sections twice (or fail
+    on a snippet that cuts a repeat pair in half).
+    """
+    from music21 import bar, repeat, spanner
+
+    changed = 0
+    for m in score.recurse().getElementsByClass(stream.Measure):
+        if isinstance(m.leftBarline, bar.Repeat):
+            m.leftBarline = None
+            changed += 1
+        if isinstance(m.rightBarline, bar.Repeat):
+            m.rightBarline = bar.Barline("regular")
+            changed += 1
+    for kind in (spanner.RepeatBracket, repeat.RepeatExpression):
+        for item in list(score.recurse().getElementsByClass(kind)):
+            site = item.activeSite
+            if site is not None:
+                site.remove(item)
+                changed += 1
+    return changed
 
 
 def resolve_score_inputs(
@@ -528,9 +588,95 @@ def _diatonic_pitches(k: m21key.Key, lo: pitch.Pitch, hi: pitch.Pitch) -> list[p
     return out
 
 
-def _start_index(scale_pitches: list[pitch.Pitch], k: m21key.Key) -> int:
+PitchFocus = tuple[frozenset[int], float, int]
+
+
+def _pitch_focus(config: SynthConfig, scale_pitches: list[pitch.Pitch]) -> PitchFocus | None:
+    """``generation.pitch_focus``: favour written pitches in ``[low, high]``.
+
+    Returns the scale indices inside the range, the step weight multiplier, and
+    the range centre (MIDI) used as the starting pitch.
+    """
+    spec = config.generation.get("pitch_focus")
+    if not spec:
+        return None
+    lo = pitch.Pitch(str(spec["low"])).midi
+    hi = pitch.Pitch(str(spec["high"])).midi
+    weight = float(spec.get("weight", 1.0))
+    inside = frozenset(i for i, p in enumerate(scale_pitches) if lo <= p.midi <= hi)
+    if not inside or weight <= 0:
+        return None
+    return inside, weight, (lo + hi) // 2
+
+
+@dataclass(frozen=True)
+class LeapSpec:
+    inside: frozenset[int]
+    below: tuple[int, ...]
+    above: tuple[int, ...]
+    lo: int
+    hi: int
+    jump_prob: float
+    high_share: float
+    min_leap: int
+    leap_scale: float
+
+    @property
+    def center(self) -> int:
+        return (self.lo + self.hi) // 2
+
+
+def _leap_spec(config: SynthConfig, scale_pitches: list[pitch.Pitch]) -> LeapSpec | None:
+    """``generation.leap_melody``: melodies that jump between a focus band and notes outside it."""
+    spec = config.generation.get("leap_melody")
+    if not spec:
+        return None
+    lo = pitch.Pitch(str(spec["focus_low"])).midi
+    hi = pitch.Pitch(str(spec["focus_high"])).midi
+    inside = frozenset(i for i, p in enumerate(scale_pitches) if lo <= p.midi <= hi)
+    if not inside:
+        return None
+    return LeapSpec(
+        inside=inside,
+        below=tuple(i for i, p in enumerate(scale_pitches) if p.midi < lo),
+        above=tuple(i for i, p in enumerate(scale_pitches) if p.midi > hi),
+        lo=lo,
+        hi=hi,
+        jump_prob=float(spec.get("jump_prob", 0.8)),
+        high_share=float(spec.get("high_share", 0.5)),
+        min_leap=int(spec.get("min_leap_semitones", 4)),
+        leap_scale=float(spec.get("leap_scale_semitones", 7.0)),
+    )
+
+
+def _leap_next(rng: random.Random, idx: int, scale: list[pitch.Pitch], leap: LeapSpec) -> int:
+    """Next scale index: usually a leap into or out of the focus band, else a step within the region."""
+    cur = scale[idx].midi
+    in_focus = idx in leap.inside
+    if rng.random() < leap.jump_prob:
+        if in_focus:
+            sides = [s for s in (leap.above, leap.below) if s]
+            if not sides:
+                targets: tuple[int, ...] | frozenset[int] = leap.inside
+            elif len(sides) == 1:
+                targets = sides[0]
+            else:
+                targets = leap.above if rng.random() < leap.high_share else leap.below
+        else:
+            targets = leap.inside
+        cands = [t for t in targets if abs(scale[t].midi - cur) >= leap.min_leap] or list(targets)
+        weights = [math.exp(-abs(scale[t].midi - cur) / leap.leap_scale) for t in cands]
+        return rng.choices(cands, weights=weights, k=1)[0]
+    if in_focus:
+        region = set(leap.inside)
+    else:
+        region = set(leap.below if cur < leap.lo else leap.above)
+    options = [j for j in (idx - 1, idx + 1) if j in region] or [idx]
+    return rng.choice(options)
+
+
+def _start_index(scale_pitches: list[pitch.Pitch], k: m21key.Key, around: int = 67) -> int:
     tonic_name = k.tonic.name
-    around = 67  # G4
     best = 0
     best_dist = 10**9
     for i, p in enumerate(scale_pitches):
@@ -556,33 +702,88 @@ def _fill_measure(
     beat_units: int = 4,
     syncopation_prob: float = 0.12,
     duration_units: list[int] | None = None,
+    beat_cells: BeatCells | None = None,
+    focus: PitchFocus | None = None,
+    leap: LeapSpec | None = None,
 ) -> int:
     units = int(round(measure_ql / 0.25))
     remaining = units
     offset_units = 0
     allowed = list(duration_units or DURATION_UNITS)
+    cells = (beat_cells or {}).get(int(beat_units))
+    planned = (
+        _cell_durations(rng, units, beat_units, cells, phrase_end) if cells else None
+    )
     while remaining > 0:
-        dur_units = _pick_duration(
-            rng,
-            remaining,
-            offset_units,
-            beat_units,
-            phrase_end=phrase_end,
-            syncopation_prob=syncopation_prob,
-            duration_units=allowed,
-        )
+        if planned is not None:
+            dur_units = planned.pop(0)
+        else:
+            dur_units = _pick_duration(
+                rng,
+                remaining,
+                offset_units,
+                beat_units,
+                phrase_end=phrase_end,
+                syncopation_prob=syncopation_prob,
+                duration_units=allowed,
+            )
         ql = dur_units * 0.25
         offset = offset_units * 0.25
         if rng.random() < rest_prob and remaining != units:
             measure.insert(offset, note.Rest(quarterLength=ql))
         else:
-            step = rng.choices([-2, -1, 0, 1, 2, 3, -3], weights=[1, 5, 2, 5, 1, 1, 1], k=1)[0]
-            current_idx = max(0, min(len(scale_pitches) - 1, current_idx + step))
+            if leap is not None:
+                current_idx = _leap_next(rng, current_idx, scale_pitches, leap)
+                measure.insert(offset, note.Note(scale_pitches[current_idx], quarterLength=ql))
+                remaining -= dur_units
+                offset_units += dur_units
+                continue
+            steps = [-2, -1, 0, 1, 2, 3, -3]
+            weights = [1.0, 5.0, 2.0, 5.0, 1.0, 1.0, 1.0]
+            last = len(scale_pitches) - 1
+            if focus is not None:
+                inside, boost, _center = focus
+                weights = [
+                    w * boost if max(0, min(last, current_idx + s)) in inside else w
+                    for s, w in zip(steps, weights)
+                ]
+            step = rng.choices(steps, weights=weights, k=1)[0]
+            current_idx = max(0, min(last, current_idx + step))
             n = note.Note(scale_pitches[current_idx], quarterLength=ql)
             measure.insert(offset, n)
         remaining -= dur_units
         offset_units += dur_units
     return current_idx
+
+
+def _cell_durations(
+    rng: random.Random,
+    units: int,
+    beat_units: int,
+    cells: list[tuple[float, list[int]]],
+    phrase_end: bool,
+) -> list[int]:
+    """Fill a measure beat by beat from weighted rhythm cells; phrases end on a held beat."""
+    out: list[int] = []
+    remaining = units
+    while remaining > 0:
+        if remaining < beat_units:
+            out.append(remaining)
+            break
+        if phrase_end and remaining == beat_units:
+            out.append(beat_units)
+            break
+        fits = [(w, c) for w, c in cells if sum(c) <= remaining]
+        if phrase_end:
+            fits = [(w, c) for w, c in fits if sum(c) <= remaining - beat_units] or fits
+        if not fits:
+            out.append(beat_units)
+            remaining -= beat_units
+            continue
+        cell = rng.choices([c for _, c in fits], weights=[w for w, _ in fits], k=1)[0]
+        out.extend(cell)
+        remaining -= sum(cell)
+    return out
 
 
 def _pick_duration(

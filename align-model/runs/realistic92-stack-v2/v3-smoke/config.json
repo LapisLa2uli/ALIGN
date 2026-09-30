@@ -1,0 +1,49 @@
+{
+  "schema_version": "align-mel-ctc-v3-realistic92-train-config-v1",
+  "args": {
+    "cache": "runs\\realistic92-stack-v2\\cache-dual-smoke",
+    "root": "E:\\outputRaw_realistic_10k",
+    "split": "runs\\realistic92-transcriber-v1\\split.json",
+    "output_dir": "runs\\realistic92-stack-v2\\v3-smoke",
+    "resource_status": "runs\\TRAINING_RESOURCE_STATUS.json",
+    "init_checkpoint": "None",
+    "extra_cache": "[]",
+    "extra_weight": "1.0",
+    "epochs": "1",
+    "batch_size": "8",
+    "crop_frames": "2048",
+    "crops_per_clip": "1",
+    "learning_rate": "0.0006",
+    "weight_decay": "0.001",
+    "frame_loss_weight": "0.5",
+    "augmentation_probability": "0.6",
+    "temporal_dim": "256",
+    "temporal_blocks": "12",
+    "val_stride": "200",
+    "val_blank_scale": "0.3",
+    "seed": "20260927"
+  },
+  "model": {
+    "long_mels": 128,
+    "short_mels": 64,
+    "midi_min": 52,
+    "midi_max": 100,
+    "conv_channels": 32,
+    "temporal_dim": 256,
+    "temporal_blocks": 12,
+    "dilation_cycle": 6,
+    "kernel_size": 5,
+    "dropout": 0.1
+  },
+  "cache_pack_id": "1c857a9b5daee2bd871fbec17a1d8c3d35c6aa81ad96cba171b5b54e9ef60369",
+  "split_sha256": "1cb5acc9fc25c2e99280df6248a803171e71818232afb6c9a68fa4f37a94b06a",
+  "val_clips": [
+    "synth_gen_20057",
+    "synth_gen_22593",
+    "synth_Weber1_25047",
+    "synth_Weber1_26459",
+    "synth_Weber1_27871",
+    "synth_Weber1_29285"
+  ],
+  "locked_test_materialized": false
+}

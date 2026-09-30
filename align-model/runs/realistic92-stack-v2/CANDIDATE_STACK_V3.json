@@ -1,0 +1,60 @@
+{
+  "schema_version": "align-stack-v3-candidate-v1",
+  "frozen_utc": "2026-09-27T10:56:48.445361+00:00",
+  "transcriber": "dual-resolution long-context mel CTC v3, fine-tuned on 9.2 + fast 10.2 train",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-stack-v2\\v3-c-fast\\best.pt",
+  "checkpoint_sha256": "60663218eba3a43b35691ec95c116f50eafbc2fd749428af35e566891c50cad9",
+  "decoder": {
+    "blank_scale": 0.5,
+    "candidate_threshold": 0.08
+  },
+  "aligner": "robust DP v2",
+  "aligner_costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.6,
+    "alternative_min_confidence": 0.1
+  },
+  "code_sha256": {
+    "src/alignmodel/transcription/mel_ctc_v3.py": "d1d988ae261e8d7287f6d3b830df8a64200b2076bf4a36de9c2d493cc4771fbb",
+    "src/alignmodel/transcription/ctc_decode_v2.py": "1d1386dedad812f786628e6b29b3312912b7909359501db7817f2748d4202a42",
+    "src/alignmodel/transcription/mel_v1.py": "ee5c19468912d9b4f14304913ef5022fd273459a7bf2f191549461487c18655e",
+    "src/alignmodel/joint/robust_dp_aligner_v2.py": "edb55b4bd3554a9555f476beb135aafac8b15bf51315babbe3908afae03ea920",
+    "src/alignmodel/joint/perfect_dp_aligner_v1.py": "72b53aa57ff68a64519f4ea7b056407d225e993b6540fbb0ede41b3f7847e2c7",
+    "src/alignmodel/joint/grammar_mapper_v2.py": "4fcdd698d7a77e76aedbccea6da7352857d3e71ce93e3acde775c199f48bcd9c",
+    "src/alignmodel/joint/ornament_mapper_v1.py": "cfe56ad0d082fe465c0c9068113ef8a30479669defba2248478035cea1726354",
+    "src/alignmodel/joint/index.py": "bbd9c45ad63a18ab37531f3e475830c015fd6e817a54a5b1c4da88ea48a2e5c8",
+    "scripts/e2e_eval_realistic92.py": "9cc2d6ed65ee1c8203265656c833bf087f357ca9c001898cfecad29c954079e1",
+    "scripts/eval_stack_v3_test.py": "28f8131f316a569a22ddd54da238c13d268f7b59602eace233c0e2731d83b3b4",
+    "scripts/realistic92_aligner_common.py": "f0feed2bf0ba2ae83c66d9cb7f798dc473b05c949dbb4f9dceefb6c1b0498f74",
+    "scripts/realistic92_transcriber_breakdown.py": "9e689c8cbcae6af5b6c2f006f7f960e6b8237d82d6c4f688df1ad565f57f487c"
+  },
+  "datasets": {
+    "realistic92": {
+      "root": "E:\\outputRaw_realistic_10k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-aligner-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "c660525a5710068af10bc7fa57d63a31d4521ee2498545b8ec1546af6628a00d"
+    },
+    "fast102": {
+      "root": "E:\\outputRaw_fast16_focus_5k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\fast102-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "058ef8c73238210c87d0d717aab7d0bb23596ce92b8de9b5d643bd5207ff91fc"
+    }
+  },
+  "val_evidence": {
+    "realistic92_val_combined_f1": 0.9657324941798893,
+    "realistic92_val_untouched_half_combined_f1": 0.9614717010570659,
+    "fast102_val_combined_f1": 0.9900323777433667
+  },
+  "selection": "checkpoint by val pitch-sequence F1 (9.2 + fast average); blank scale and aligner costs on val (costs on the even 9.2 val half)",
+  "test_read_before_freeze": false
+}

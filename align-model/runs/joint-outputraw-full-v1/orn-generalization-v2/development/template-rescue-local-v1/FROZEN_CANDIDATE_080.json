@@ -1,0 +1,71 @@
+{
+  "schema_version": "align-orn-v2-template-rescue-local-v1-candidate",
+  "frozen_utc": "2026-09-20T17:29:16.4836919Z",
+  "objective": "combined transcription-to-score official note-wise F1 >= 0.80",
+  "frozen": true,
+  "method": {
+    "mode": "direct_template_local_warp",
+    "evidence_threshold": 0.4,
+    "window_sec": 0.15,
+    "timing": "piecewise-linear interpolation from target-free identity-CRF score/copy anchors",
+    "base_candidate": "runs/joint-outputraw-full-v1/orn-generalization-v2/development/template-rescue-v3/RESCUE_CANDIDATE.json",
+    "base_candidate_sha256": "3be0fc2f423bb00d3f99738d9039304a6c6d96b589a2af3ca0cc0711d1c044a2",
+    "implementation": "scripts/calibrate_v2_template_rescue.py",
+    "implementation_sha256": "1e0c10e27bc7b51ea16c1f5442850a56bd254157d49d66bd44ba734c3619ca5e",
+    "development_evaluator": "scripts/eval_v2_template_rescue_development.py",
+    "development_evaluator_sha256": "efdb2cd28fc62e60658dc65b9e83b58dabf91863f0a2b93bfac3ebb1d94492ce"
+  },
+  "frozen_inputs": {
+    "release_manifest_sha256": "5f042aeead1d963caa50c77b6bae91475da3a0b32d7b4e422c48ae31a81b1705",
+    "identity_crf_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1"
+  },
+  "development_evidence": {
+    "calibration": {
+      "rows": 64,
+      "credit": 2489.0,
+      "predicted": 3120,
+      "gold": 3072,
+      "precision": 0.7977564102564103,
+      "recall": 0.8102213541666666,
+      "f1": 0.8039405684754523,
+      "report_sha256": "70c42cf3722e832d675238b4c7e8c9ced1ac017448e910fa320b19a8ad6abb33"
+    },
+    "former_open_validation_reclassified_as_development": {
+      "rows": 111,
+      "credit": 4540.5,
+      "predicted": 5697,
+      "gold": 5635,
+      "precision": 0.7969984202211691,
+      "recall": 0.8057684117125111,
+      "f1": 0.8013589834098129,
+      "grid_report_sha256": "4bd0baa9cc067991fbd181e188214dc4fd4a0847a1fbf2894f8309c8f2140f0d",
+      "contamination_report_sha256": "a56609808869ec32da7f9c8fc14de3e6c74b2428bad843710747e6ce36144315",
+      "held_out": false
+    },
+    "combined_rows": 175,
+    "combined_credit": 7029.5,
+    "combined_predicted": 8817,
+    "combined_gold": 8707,
+    "combined_f1": 0.802271170965533
+  },
+  "version_rationale": {
+    "earlier_version": "template-rescue-v3 used one global linear score-to-audio time map",
+    "earlier_limitation": "It reached calibration F1 0.806803 but only 0.792178 on the reclassified 111-row development split; local tempo variation limited ornament rescue.",
+    "later_change": "The local version interpolates ornament times from the frozen CRF's own predicted canonical score/copy anchors, without target lineage.",
+    "comparable_result": "On identical populations it reached F1 0.803941 on calibration and 0.801359 on the 111-row development split.",
+    "status": "frozen experimental candidate for the 0.80 objective; not promoted under the original v2 0.85 lockbox gate"
+  },
+  "evaluation_policy": {
+    "official_metric": "exclusive one-to-one canonical score-event identity; exact type=1.0, wrong type at exact identity=0.5, wrong identity=0",
+    "success_threshold_f1": 0.8,
+    "post_lockbox_tuning": false,
+    "original_v2_gate_f1": 0.85,
+    "original_v2_gate_changed": false
+  },
+  "isolation": {
+    "open_validation_held_out": false,
+    "lockbox_targets_read": false,
+    "lockbox_key_read": false,
+    "lockbox_opened": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "align-realistic92-transcriber-split-v1-freeze",
+  "frozen_utc": "2026-09-25T16:42:25.630762+00:00",
+  "split_sha256": "1cb5acc9fc25c2e99280df6248a803171e71818232afb6c9a68fa4f37a94b06a",
+  "test_hashes_sha256": "64eacb2126e0eeebfc642aa91403a4c004667a978b54bfad708d4708ec8f7e64",
+  "counts": {
+    "train": 6864,
+    "val": 1108,
+    "test": 2028
+  },
+  "score_groups": {
+    "train": [
+      "score:001",
+      "score:MozartClConcertoA",
+      "score:howls-moving-castle",
+      "score:spirited-away-medley-for-clarinet"
+    ],
+    "val": [
+      "score:Weber1"
+    ],
+    "test": [
+      "score:WeberITAV",
+      "score:a-cruel-angels-thesis-clarinet"
+    ]
+  },
+  "test_evaluations": [],
+  "rules": [
+    "train only on the train split",
+    "select checkpoints and decoders on the val split only",
+    "evaluate a frozen candidate on the test split once",
+    "headline metric: written-pitch sequence LCS F1 against note_map rendered_notes"
+  ],
+  "membership_selected_without_model_outcomes": true,
+  "selection_digest": "a5cab771705fbc960a2db69708afcabcde1a2488297a4c44f8d4f7e8fa5f6b81"
+}

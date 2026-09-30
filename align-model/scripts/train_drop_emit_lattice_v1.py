@@ -126,6 +126,7 @@ def _predict_row(
     *,
     mode: str,
     device: torch.device,
+    basic_pitch_count: int | None = None,
 ):
     if mode == "teacher_identity":
         emits = teacher_decode(lattice)
@@ -154,8 +155,16 @@ def _predict_row(
     elif mode.endswith("+score_count"):
         # Honest inference prior: verified score event count only.
         expected = len(index.events)
+    elif mode.endswith("+basic_pitch_count"):
+        if basic_pitch_count is None:
+            raise ValueError("basic_pitch_count decode requires an acoustic count")
+        # Honest inference count: standard Basic Pitch notes from the frozen
+        # acoustic frontend, independent of score targets.
+        expected = int(basic_pitch_count)
     base_mode = (
-        mode.replace("+oracle_count", "").replace("+score_count", "")
+        mode.replace("+oracle_count", "")
+        .replace("+score_count", "")
+        .replace("+basic_pitch_count", "")
     )
     emits, decode_diagnostics = decode_drop_emit(
         model,
@@ -220,6 +229,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "drop_emit_through_crf",
             "drop_emit_through_crf+oracle_count",
             "drop_emit_through_crf+score_count",
+            "drop_emit_through_crf+basic_pitch_count",
         ),
     )
     args = parser.parse_args(argv)
@@ -421,6 +431,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                         score_path,
                         mode=args.decode_mode,
                         device=device,
+                        basic_pitch_count=int(pools[sample]["standard_note_count"]),
                     )
                     samples.append(
                         JointMetricSample(

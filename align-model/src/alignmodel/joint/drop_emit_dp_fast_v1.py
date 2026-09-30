@@ -309,13 +309,18 @@ def fast_decode_drop_emit(
 ) -> tuple[tuple[DecodedEmit, ...], dict[str, Any]]:
     model.eval()
     n_groups = len(lattice.groups)
-    # Do not use the gold rendered length as the search cap. Acoustic group
-    # count plus the insert budget is available at inference; an explicit
-    # expected count is only for a declared prior such as oracle length.
+    # With a declared inference-time count, states above that count can never
+    # return to the forced terminal count. Keeping them makes exact-count
+    # decoding quadratic in the much larger acoustic lattice for no benefit.
+    # Free decoding still uses only inference-available acoustic support.
     emit_cap = int(
         max_emissions
         if max_emissions is not None
-        else max(expected_emissions or 0, n_groups + max_inserts_ahead)
+        else (
+            expected_emissions
+            if expected_emissions is not None
+            else n_groups + max_inserts_ahead
+        )
     )
     emit_cap = max(emit_cap, 1)
     with torch.no_grad():

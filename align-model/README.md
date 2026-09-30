@@ -106,6 +106,33 @@ The basic production pipeline is transcription-first:
 Requesting Layer 2 or 3 automatically runs its prerequisites. Intonation
 detection is disabled by default and filtered from final output.
 
+### DataCreate future-project mel labeling
+
+DataCreate agent-label generation now uses the frozen repository-trained mel
+transcriber rather than Basic Pitch, followed by the same frozen joint aligner
+and error-heads v5. This is an inference-only operational switch for future
+DataCreate work, not a claim that the mel checkpoint is globally promoted.
+On the same 358-row synthetic validation, the earlier Basic Pitch downstream
+alignment scored 0.632252 F1; the later mel transcriber scored 0.707803 through
+that fixed aligner. The later version targets the observed Basic Pitch
+same-pitch split and missed-note boundary failures, but real DataCreate human
+error labels remain too sparse to establish a comparable gain.
+
+The completed 94-sample run is
+`runs/datacreate-agent-labels-mel-v1-20260921-192439/`. It stores every
+transcription, joint alignment, prediction, staged label document, and hash.
+No training was performed. Before replacement, all prior agent labels were
+archived and verified under
+`runs/datacreate-agent-labels-pre-mel-20260921-192105/`.
+
+```powershell
+python scripts\label_datacreate_agent_mel.py `
+  --samples ..\DataCreate\samples `
+  --output runs\datacreate-agent-labels-mel-v1-<timestamp> `
+  --backup-manifest runs\datacreate-agent-labels-pre-mel-<timestamp>\BACKUP_MANIFEST.json `
+  --expected-backup-sha256 <sha256> --device cuda
+```
+
 Layer 1 also includes a small note-sequence scorer trained on 1,000 procedural
 bundles. Long phrases use deterministic tempo-tolerant matching; the learned
 scorer is only a one-note rescue when no long repetition was found, using the
@@ -210,7 +237,7 @@ align-model eval-melodies --data ".\synth-pipeline\output" --pred melody_pred.js
 
 Full command-line flag reference, working-directory conventions, and parameter recipes: [TRAINING.md](TRAINING.md). The selected hyperparameter card for each model: [HYPERPARAMETERS.md](HYPERPARAMETERS.md). Discover live flags with `align-model train-stages --help` or `python align-model/scripts/<script>.py --help`.
 
-Learned heads on `performance_mel.npy`. Default train root is `synth-pipeline/output` (schema 1.2 synth). DataCreate currently contains 94 real-take/fixture folders (`001`–`093` plus `demo_001`); all remain schema 1.1 and only 3 currently have `note_alignment_v2.json`.
+Learned heads on `performance_mel.npy`. Default train root is `synth-pipeline/output` (schema 1.2 synth). DataCreate currently contains 125 real-take/fixture folders (`001`–`124` plus `demo_001`). All have frozen mel agent-transcription/alignment artifacts; human labels remain separate.
 
 ### Model A — stages 1–3
 
@@ -258,7 +285,7 @@ This section records the repository's model history. Counts are bundle counts, n
 | Full note-alignment manifest | `procedural12k` plus `raw2k`, stratified by corpus/source/repetition/duration/intonation/recording/render | 14,100 rows: 10,871 train, 1,338 val, 1,199 test-ID, 692 test-OOD | NoteFrameNet v1/v2 and learned pairwise aligner |
 | `outputRaw_sf_10k` | Raw-score snippets rendered with FreePats (`soundfont_v1`), score `001` excluded, exact `note_map.json` supervision | 10,000 rows: 8,004 train, 999 val, 997 test-ID | Current dataset-specific Basic Pitch, Layer 1, and contextual aligner |
 | Model B bakeoff split | Fixed `random12k` train/validation partition with a separate 100-bundle holdout | 10,800 train, 1,200 val, 100 evaluated holdout bundles | Controlled v1–v7 architecture comparison |
-| DataCreate real takes `001–093` plus `demo_001` | Human recordings aligned to clean scores; all currently remain schema 1.1 and only 3 have note-first alignment artifacts | 94 inspection bundles, not a training corpus | Real-audio sanity/OOD checks only |
+| DataCreate real takes `001–124` plus `demo_001` | Human recordings aligned to clean scores; mel transcriptions, joint alignments, and agent labels are stored separately from human labels | 125 inspection bundles, not a training corpus | Real-audio sanity/OOD checks only |
 
 The full split files are the authoritative membership lists:
 

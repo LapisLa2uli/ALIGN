@@ -1,0 +1,328 @@
+{
+  "schema_version": "align-datacreate-stack-v3-alignment",
+  "sample": "123",
+  "score_sha256": "3e0bfd3d8bf0995d642abd6ee702e170438e1a8e92887e7f5d4fab8c3f6cb3cb",
+  "aligner": "robust_dp_aligner_v2",
+  "costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.6,
+    "alternative_min_confidence": 0.1
+  },
+  "score_event_count": 25,
+  "transcribed_note_count": 22,
+  "optional_candidate_count": 0,
+  "kept_note_count": 22,
+  "repeat_hypothesis": {
+    "source_span": null,
+    "extra_copies": 0
+  },
+  "path_cost": 18.4,
+  "missed_score_event_indices": [
+    2,
+    12,
+    24
+  ],
+  "counts": {
+    "substitute": 14,
+    "match": 8,
+    "missed_note": 3
+  },
+  "events": [
+    {
+      "note_index": 0,
+      "pitch": 62,
+      "start": 2.995374,
+      "end": 3.691973,
+      "relationship": "substitute",
+      "score_span": [
+        0,
+        1
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 1,
+      "pitch": 65,
+      "start": 3.691973,
+      "end": 4.446621,
+      "relationship": "match",
+      "score_span": [
+        1,
+        2
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 2,
+      "pitch": 67,
+      "start": 4.446621,
+      "end": 5.09678,
+      "relationship": "match",
+      "score_span": [
+        3,
+        4
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 3,
+      "pitch": 65,
+      "start": 5.09678,
+      "end": 5.804989,
+      "relationship": "substitute",
+      "score_span": [
+        4,
+        5
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 4,
+      "pitch": 67,
+      "start": 5.804989,
+      "end": 6.234558,
+      "relationship": "substitute",
+      "score_span": [
+        5,
+        6
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 5,
+      "pitch": 66,
+      "start": 6.234558,
+      "end": 6.617687,
+      "relationship": "substitute",
+      "score_span": [
+        6,
+        7
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 6,
+      "pitch": 66,
+      "start": 6.617687,
+      "end": 7.035646,
+      "relationship": "substitute",
+      "score_span": [
+        7,
+        8
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 7,
+      "pitch": 72,
+      "start": 7.035646,
+      "end": 7.395556,
+      "relationship": "substitute",
+      "score_span": [
+        8,
+        9
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 8,
+      "pitch": 69,
+      "start": 7.395556,
+      "end": 7.848345,
+      "relationship": "substitute",
+      "score_span": [
+        9,
+        10
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 9,
+      "pitch": 67,
+      "start": 7.848345,
+      "end": 8.266304,
+      "relationship": "substitute",
+      "score_span": [
+        10,
+        11
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 10,
+      "pitch": 66,
+      "start": 8.266304,
+      "end": 9.473741,
+      "relationship": "substitute",
+      "score_span": [
+        11,
+        12
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 11,
+      "pitch": 67,
+      "start": 9.473741,
+      "end": 9.833651,
+      "relationship": "match",
+      "score_span": [
+        13,
+        14
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 12,
+      "pitch": 67,
+      "start": 9.833651,
+      "end": 10.19356,
+      "relationship": "match",
+      "score_span": [
+        14,
+        15
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 13,
+      "pitch": 72,
+      "start": 10.19356,
+      "end": 10.518639,
+      "relationship": "substitute",
+      "score_span": [
+        15,
+        16
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 14,
+      "pitch": 69,
+      "start": 10.518639,
+      "end": 11.702857,
+      "relationship": "substitute",
+      "score_span": [
+        16,
+        17
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 15,
+      "pitch": 67,
+      "start": 11.702857,
+      "end": 12.051156,
+      "relationship": "substitute",
+      "score_span": [
+        17,
+        18
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 16,
+      "pitch": 67,
+      "start": 12.051156,
+      "end": 12.422676,
+      "relationship": "match",
+      "score_span": [
+        18,
+        19
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 17,
+      "pitch": 72,
+      "start": 12.422676,
+      "end": 12.747755,
+      "relationship": "substitute",
+      "score_span": [
+        19,
+        20
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 18,
+      "pitch": 70,
+      "start": 12.747755,
+      "end": 13.084444,
+      "relationship": "match",
+      "score_span": [
+        20,
+        21
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 19,
+      "pitch": 69,
+      "start": 13.084444,
+      "end": 13.270204,
+      "relationship": "match",
+      "score_span": [
+        21,
+        22
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 20,
+      "pitch": 67,
+      "start": 13.270204,
+      "end": 13.630113,
+      "relationship": "match",
+      "score_span": [
+        22,
+        23
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    },
+    {
+      "note_index": 21,
+      "pitch": 69,
+      "start": 13.630113,
+      "end": 13.730113,
+      "relationship": "substitute",
+      "score_span": [
+        23,
+        24
+      ],
+      "copy_pass": 0,
+      "from_optional_candidate": false
+    }
+  ]
+}

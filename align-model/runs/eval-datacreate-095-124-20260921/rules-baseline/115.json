@@ -1,0 +1,96 @@
+{
+  "annotator_id": "frozen_error_heads_v2",
+  "audio_reference": "performance_audio.wav",
+  "labels": [
+    {
+      "end_time": 0.1625,
+      "id": "error_head_0000",
+      "note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002"
+      ],
+      "pitches": [
+        62,
+        65,
+        67
+      ],
+      "score_part": {
+        "core_end_note_index": 1,
+        "core_start_note_index": 0,
+        "end_measure": 1,
+        "end_note_index": 2,
+        "pad_notes": 1,
+        "start_measure": 1,
+        "start_note_index": 0
+      },
+      "source": "frozen_error_heads_v2",
+      "start_time": 0.0697,
+      "type": "extra_note"
+    },
+    {
+      "deviation_ms": -278.64,
+      "end_time": 6.7957,
+      "id": "error_head_0001",
+      "note_ids": [
+        "note_0010",
+        "note_0011",
+        "note_0012"
+      ],
+      "pitches": [
+        67,
+        69,
+        69
+      ],
+      "rhythm_subtype": "short",
+      "score_part": {
+        "core_end_note_index": 11,
+        "core_start_note_index": 11,
+        "end_measure": 3,
+        "end_note_index": 12,
+        "pad_notes": 1,
+        "start_measure": 2,
+        "start_note_index": 10
+      },
+      "source": "frozen_error_heads_v2",
+      "start_time": 6.2616,
+      "type": "rhythm_error"
+    }
+  ],
+  "pipeline": {
+    "diagnostics": {
+      "audio": {
+        "channels": 1,
+        "duration_sec": 13.502675736961452,
+        "frames": 297734,
+        "sample_rate": 22050,
+        "sha256": "4a685a300882f25b7620bd733df7037ece5d663d309f134a5acb8811b506f920"
+      },
+      "candidate_count": 24,
+      "candidate_pitch_in_score_ratio": 0.9583333333333334,
+      "candidate_to_score_count_ratio": 1.0434782608695652,
+      "candidate_union_all_count": 31,
+      "canonical_to_score_count_ratio": 1.0,
+      "canonical_transcription_count": 23,
+      "copy_event_count": 0,
+      "decoded_event_count": 24,
+      "deleted_score_event_count": 0,
+      "mapped_event_count": 23,
+      "mapped_score_coverage": 1.0,
+      "operations": {
+        "EXTRA": 1,
+        "MATCH": 23
+      },
+      "path_score": 13.09887409210205,
+      "retained_candidate_count": 24,
+      "score_event_count": 23,
+      "score_measure_max": 4,
+      "score_measure_min": 1,
+      "unmapped_event_count": 1
+    },
+    "intonation_masked": true,
+    "sample_id": "115",
+    "upstream_frozen": true
+  },
+  "schema_version": "1.2"
+}

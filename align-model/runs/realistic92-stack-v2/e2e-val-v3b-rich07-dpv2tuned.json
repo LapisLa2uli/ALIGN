@@ -1,0 +1,43 @@
+{
+  "split": "val",
+  "clips": 935,
+  "aligner": "dp_v2",
+  "costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.4,
+    "alternative_min_confidence": 0.1
+  },
+  "notes_file": "runs\\realistic92-stack-v2\\notes-val-v3b-rich07.json",
+  "notes_sha256": "89378df753cab0620c75433a231e6bc93bd1fcab02cdd2a295ca66da4331ccaf",
+  "f1": 0.9652272185977873,
+  "precision": 0.9752330892344859,
+  "recall": 0.9554245828132945,
+  "bootstrap_95": {
+    "replicates": 1000,
+    "lower_95": 0.9622271015372027,
+    "median": 0.9652591637321899,
+    "upper_95": 0.9681429766659049
+  },
+  "per_type_f1": {
+    "match": 0.9843748591212773,
+    "copy": 0.9664671597710464,
+    "substitute": 0.8162528216704289,
+    "extra": 0.871061193564202,
+    "missed_note": 0.6982421875
+  },
+  "by_group_f1": {
+    "rawdata": 0.9580125885474922,
+    "procedural": 0.9705789049853993
+  },
+  "errors": {}
+}

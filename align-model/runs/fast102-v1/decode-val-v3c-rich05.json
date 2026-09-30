@@ -1,0 +1,54 @@
+{
+  "cache": "runs\\fast102-v1\\cache-val-v3c",
+  "clips": 400,
+  "reports": [
+    {
+      "spec": {
+        "decoder": "rich",
+        "config": {
+          "blank_scale": 0.5,
+          "candidate_threshold": 0.08
+        }
+      },
+      "precision": 0.9975264822715904,
+      "recall": 0.9800525788004445,
+      "f1": 0.9887123307647088,
+      "predicted": 108752,
+      "gold": 110691,
+      "recall_by": {
+        "dur_120to200": 0.9958,
+        "dur_50to80": 0.9038,
+        "dur_80to120": 0.988,
+        "dur_ge200": 0.9722,
+        "dur_lt50": 0.8845,
+        "ornament_renderer_only": 0.9454,
+        "pitch_change": 0.9808,
+        "reg_clarion_B4_C6": 0.9946,
+        "reg_high_gt_C6": 0.9972,
+        "reg_low_lt_G4": 0.9739,
+        "reg_throat_G4_Bb4": 0.9904,
+        "same_pitch_neighbor": 0.9293
+      },
+      "support_by": {
+        "dur_120to200": 82099,
+        "dur_50to80": 1487,
+        "dur_80to120": 6569,
+        "dur_ge200": 8360,
+        "dur_lt50": 12176,
+        "ornament_renderer_only": 23223,
+        "pitch_change": 109106,
+        "reg_clarion_B4_C6": 19386,
+        "reg_high_gt_C6": 1793,
+        "reg_low_lt_G4": 75104,
+        "reg_throat_G4_Bb4": 14408,
+        "same_pitch_neighbor": 1585
+      },
+      "false_positives": {
+        "flicker_ABA": 34,
+        "other": 197,
+        "split_same_pitch": 38
+      },
+      "false_positive_rate": 0.0024735177284095924
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+# Synthetic dataset registry. Refer to datasets by version ("7.1"), not folder name.
+#
+# Versioning:
+#   x (major) - a new generation run: new scores and new planted-error plans.
+#   y (minor) - a revision of the same bundles (same sample IDs and error plans):
+#               re-render, ornament stripping, or audio post-processing.
+# Physical folders keep their historical names because frozen manifests under
+# align-model/runs/ reference them. Relative paths resolve against this file. `synth-pipeline datasets link` creates
+# version-named junctions under alias_root that point at them.
+#
+# status: on_disk | missing | superseded_in_place (audio overwritten by the next
+# minor) | in_progress | planned (configured, not generated yet)
+
+alias_root: E:/ALIGN_datasets
+
+datasets:
+  "1.0":
+    name: procedural_1k
+    path: 1000dataexport
+    status: on_disk
+    bundles: 1000
+    recipe: Procedural melodies, one planted content error per clip, schema 1.1
+    render: soundfont_rerender (FreePats)
+    use: Early RUMAA-lite and Model A
+
+  "2.0":
+    name: procedural_12k
+    path: E:/output
+    status: missing
+    bundles: 12000
+    recipe: generate_12k.py; procedural multi-error melodies with exact note lineage (`procedural12k`)
+    render: FreePats; later oscillator re-render (Sep 9)
+    why: Replaced 1.0's one-error clips with 1-8 errors per clip and exact note lineage.
+    use: Model A/B, NoteFrameNet, Basic Pitch/refiner, aligners; strict subset 11,488
+
+  "3.0":
+    name: rawdata_2k
+    path: output_2k_rawdata
+    status: on_disk
+    bundles: 2104
+    recipe: config/rawdata_snippets_2k.yaml; 8-16-measure snippets of RawData/Score (`raw2k`)
+    render: soundfont_rerender (FreePats), ornaments kept
+    why: Procedural scores (2.0) do not cover real repertoire; snippets of uploaded scores add it.
+    use: Raw-score training and OOD evaluation (frozen splits reference this copy and 3.1)
+
+  "3.1":
+    name: rawdata_2k_bare
+    path: E:/output_2k_rawdata
+    status: on_disk
+    derived_from: "3.0"
+    bundles: 2104
+    render: oscillator_v1_bare (FreePats), ornaments stripped from scores and audio
+    why: >-
+      3.0's MIDI player rendered tremolos and other ornaments wrongly (notes held
+      under the melody) and dropped squeak pitches. Re-rendered with the fixed
+      player and ornaments removed from scores, MIDI, and audio.
+    use: Frozen splits reference this copy alongside 3.0
+
+  "4.0":
+    name: procedural_20k
+    path: E:/output_2
+    status: missing
+    bundles: 20000
+    recipe: config/multi_error_10k.yaml, seed 42
+    render: FreePats
+
+  "5.0":
+    name: rawdata_20k
+    path: E:/outputRaw_2
+    status: superseded_in_place
+    bundles: 20000
+    recipe: RawData/Score snippets, multi-error settings
+    render: soundfont_v1 (FreePats), ornaments kept
+  "5.1":
+    name: rawdata_20k_bare
+    path: E:/outputRaw_2
+    status: on_disk
+    derived_from: "5.0"
+    bundles: 20000
+    render: oscillator_v1_bare (FreePats), ornaments stripped
+    why: Same ornament-rendering fault as 3.0 -> 3.1.
+
+  "6.0":
+    name: rawdata_sf_10k
+    path: E:/outputRaw_sf_10k
+    status: on_disk
+    bundles: 10000
+    recipe: config/rawdata_sf_10k.yaml; RawData/Score snippets, score 001 excluded
+    render: soundfont_v1 (FreePats clarinet SoundFont), sounding -2
+    why: Clarinet SoundFont instead of the oscillator player; 001 held out.
+    use: Current Layer 1 and contextual aligner; frozen split 8,004 / 999 / 997
+
+  "7.0":
+    name: mixed_orn_10k
+    path: E:/outputRaw_orn_10k
+    status: superseded_in_place
+    bundles: 10000
+    recipe: >-
+      config/mixed_orn_10k_random.yaml (5,000 procedural, seed 42) +
+      config/mixed_orn_10k_rawdata.yaml (5,000 RawData snippets, seed 5042);
+      ornaments kept, no intonation errors or squeaks, written range E3-G6
+    render: soundfont_v1 (FreePats)
+  "7.1":
+    name: mixed_orn_10k_musesounds
+    path: E:/outputRaw_orn_10k
+    status: on_disk
+    derived_from: "7.0"
+    bundles: 10000
+    render: musesounds_v1 (MuseScore Muse Woodwinds Bb clarinet)
+    why: SoundFont timbre is far from a real clarinet; Muse Sounds is the quality renderer.
+
+  "8.0":
+    name: fast_1k
+    path: E:/outputRaw_fast_1k
+    status: superseded_in_place
+    bundles: 1000
+    recipe: config/fast_notes_1k.yaml; sixteenth notes at 122-128 BPM (~480 notes/min)
+    render: soundfont_v1 (FreePats)
+  "8.1":
+    name: fast_1k_musesounds
+    path: E:/outputRaw_fast_1k
+    status: on_disk
+    derived_from: "8.0"
+    bundles: 1000
+    render: musesounds_v1
+    why: Same renderer as 7.1.
+
+  "9.0":
+    name: realistic_10k
+    path: E:/outputRaw_realistic_10k
+    status: superseded_in_place
+    bundles: 10000
+    recipe: >-
+      config/realistic_10k_random.yaml (5,000 procedural with beat-cell rhythms,
+      ~4.8 notes/s, seed 20042) + config/realistic_10k_rawdata.yaml (5,000 RawData
+      snippets with repeats read straight through, seed 25042)
+    render: soundfont_v1 (FreePats)
+    why: >-
+      7.x procedural scores had ~1.8 onsets/s versus ~5/s in DataCreate recordings,
+      the main cause of mismatched frame-to-frame mel texture; newer RawData scores
+      with repeat barlines were rendered twice against once-through labels.
+  "9.1":
+    name: realistic_10k_musesounds
+    path: E:/outputRaw_realistic_10k
+    status: superseded_in_place
+    derived_from: "9.0"
+    bundles: 10000
+    render: musesounds_v1; kept per bundle as performance_audio_clean.wav once 9.2 is applied
+  "9.2":
+    name: realistic_10k_degraded
+    path: E:/outputRaw_realistic_10k
+    status: on_disk
+    derived_from: "9.1"
+    bundles: 10000
+    render: musesounds_v1 + audio_degrade realistic_v1 (performance audio only)
+    why: >-
+      Clean Muse Sounds audio is perfectly separable from DataCreate recordings
+      (mel-statistics classifier AUC 1.00). The degradation tuned in
+      scripts/tune_degrade.py brings AUC to 0.99, about the same as one real
+      recording session versus the others (0.96-1.00). Experimental; not yet
+      evaluated for training.
+
+  "10.0":
+    name: fast16_focus_5k
+    path: E:/outputRaw_fast16_focus_5k
+    status: superseded_in_place
+    bundles: 5000
+    recipe: >-
+      config/fast16_focus_5k.yaml; 5,000 procedural scores, seed 30042; sixteenth
+      notes throughout at 110-120 quarter notes per minute (~443 notes/min); leap
+      melodies: 80% of consecutive notes jump into or out of written Bb3-G#4
+      (median 9 semitones, from/to lower and higher notes equally); other
+      generation and error settings as 9.x
+    render: soundfont_v1 (FreePats)
+    why: >-
+      Written Bb3-G#4 notes are the hardest to recognise in real recordings, and
+      fast passages are under-represented in 9.x (~4.8 notes/s).
+  "10.1":
+    name: fast16_focus_5k_musesounds
+    path: E:/outputRaw_fast16_focus_5k
+    status: superseded_in_place
+    derived_from: "10.0"
+    bundles: 5000
+    render: musesounds_v1; kept per bundle as performance_audio_clean.wav once 10.2 is applied
+  "10.2":
+    name: fast16_focus_5k_degraded
+    path: E:/outputRaw_fast16_focus_5k
+    status: on_disk
+    derived_from: "10.1"
+    bundles: 5000
+    render: musesounds_v1 + audio_degrade realistic_v2
+    why: >-
+      realistic_v1 (9.2) left more reverb than the DataCreate recordings: median
+      20 dB decay after a note stops was 591 ms vs 412 ms real, because Muse Sounds
+      already decays slowly (598 ms) and v1 added room reverb. v2 drops the room
+      stage and dereverbs harder (414 ms). Mel-statistics classifier AUC 0.996 vs
+      0.988 for v1. Awaiting listening sign-off; not yet evaluated for training.

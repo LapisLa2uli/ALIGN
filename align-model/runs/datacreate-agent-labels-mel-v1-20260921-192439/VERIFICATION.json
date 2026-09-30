@@ -1,0 +1,57 @@
+{
+  "schema_version": "align-datacreate-agent-labels-mel-v1-verification",
+  "verified_utc": "2026-09-21T11:31:24.2000452Z",
+  "status": "committed_with_verified_rollback",
+  "samples": 94,
+  "training_performed": false,
+  "transcriptions": 94,
+  "alignments": 94,
+  "predictions": 94,
+  "valid_agent_label_documents": 94,
+  "committed_label_hash_mismatches": 0,
+  "human_labels_modified": false,
+  "new_agent_labels": {
+    "annotator_id": "cursor_agent_mel_transcriber_v1_error_heads_v5",
+    "count": 1043,
+    "counts_by_type": {
+      "extra_note": 410,
+      "missed_note": 472,
+      "repetition": 86,
+      "rhythm_error": 18,
+      "wrong_note": 57
+    },
+    "transcribed_notes": 10729,
+    "manifest_sha256": "dac7edf356c050f876cef7a8c5c8af4124ad1dfcc3bfa8fe440c23b12f866fd2"
+  },
+  "rollback": {
+    "samples": 94,
+    "agent_labels": 1046,
+    "counts_by_type": {
+      "extra_note": 287,
+      "missed_note": 639,
+      "repetition": 79,
+      "rhythm_error": 6,
+      "wrong_note": 35
+    },
+    "manifest": "D:/stuff/Audio Evaluation/ALIGN/align-model/runs/datacreate-agent-labels-pre-mel-20260921-192105/BACKUP_MANIFEST.json",
+    "manifest_sha256": "5f0fe044e13bfc8bde0ecb549f7252e01d09c1182406c4ba64a64dd5bdb346e3",
+    "all_archive_hashes_verified": true
+  },
+  "comparison_to_human_labels": {
+    "nonempty_human_gold_samples": 25,
+    "old_official_note_wise_f1": 0.0,
+    "new_official_note_wise_f1": 0.0,
+    "conclusion": "inconclusive: sparse human error labels have no exact canonical-location hits for either agent set",
+    "report_sha256": "04f5d2271cb71b4018fd9ab014b09c242c62a6053c601682b23e394ea7db0ae6"
+  },
+  "implementation": {
+    "script": "scripts/label_datacreate_agent_mel.py",
+    "script_sha256": "2ed2c77526e9b08f91fb4995d86b22b60cee53315ea3e0b511722c47db1e996b",
+    "mel_checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e"
+  },
+  "selection": {
+    "operational_default_for_future_datacreate_agent_labels": "mel_transcriber_v1",
+    "global_production_promotion_claimed": false,
+    "rollback_if_requested": true
+  }
+}

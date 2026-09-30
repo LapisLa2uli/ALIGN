@@ -386,6 +386,43 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             raise HTTPException(400, str(exc)) from exc
         return {"status": "ok", **info}
 
+    @app.post("/api/samples/{sample_id}/re-label")
+    def relabel_sample(sample_id: str) -> dict[str, Any]:
+        """Rewrite agent labels from the sample's current alignment/transcription."""
+
+        from datacreate.transcription_labeling import (
+            MAX_LABELS_PER_TYPE,
+            relabel_sample_from_current_alignment,
+        )
+
+        sample_dir = samples_root / sample_id
+        if not sample_dir.exists():
+            raise HTTPException(404, "Sample not found")
+        logger = setup_sample_logger(sample_dir, name="relabel")
+        try:
+            info = relabel_sample_from_current_alignment(
+                sample_dir, maximum_per_type=MAX_LABELS_PER_TYPE
+            )
+            errors = validate_labels_file(
+                sample_dir / "labels_agent.json", config
+            )
+            if errors:
+                raise ValueError("; ".join(errors))
+        except FileNotFoundError as exc:
+            raise HTTPException(404, str(exc)) from exc
+        except (ValueError, RuntimeError) as exc:
+            raise HTTPException(400, str(exc)) from exc
+        except Exception as exc:
+            logger.exception("Re-label failed for %s", sample_id)
+            raise HTTPException(500, str(exc)) from exc
+        logger.info(
+            "Re-labeled %s from %s: %d labels",
+            sample_id,
+            info.get("source"),
+            info.get("label_count"),
+        )
+        return {"status": "ok", "label_source": "agent", **info}
+
     @app.post("/api/samples/{sample_id}/trim-performance")
     def trim_performance(sample_id: str, payload: PerformanceTrimPayload) -> dict[str, Any]:
         sample_dir = samples_root / sample_id

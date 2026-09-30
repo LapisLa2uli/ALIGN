@@ -14,7 +14,7 @@ import wave
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 from datacreate.melody import (
     ScoreSoundingNote,
@@ -25,7 +25,9 @@ from datacreate.melody import (
 
 AGENT_LABEL_FILENAME = "labels_agent.json"
 AGENT_ANNOTATOR_ID = "cursor_agent_transcription_review_v1"
+ALIGNMENT_AGENT_ANNOTATOR_ID = "cursor_agent_current_alignment_review_v1"
 MAX_LABELS_PER_TYPE = 10
+NOTE_ALIGNMENT_FILENAME = "note_alignment_v2.json"
 
 
 @dataclass(frozen=True)
@@ -59,6 +61,8 @@ def load_transcription(path: Path) -> list[TranscribedNote]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     notes = []
     for raw in payload.get("transcribed_notes") or []:
+        if raw.get("ignored"):
+            continue
         start = float(raw.get("start") or 0.0)
         end = max(start + 0.001, float(raw.get("end") or start + 0.05))
         notes.append(
@@ -565,3 +569,428 @@ def write_agent_labels(
         encoding="utf-8",
     )
     return output
+
+
+def _operations_from_note_mapping(
+    score: Sequence[ScoreSoundingNote],
+    transcription: Sequence[TranscribedNote],
+    note_mapping: Sequence[Any],
+) -> list[AlignmentOperation]:
+    """Translate a joint note_mapping into edit operations for labeling."""
+
+    operations: list[AlignmentOperation] = []
+    next_score = 0
+    covered: set[int] = set()
+    for transcription_index, raw_score_index in enumerate(note_mapping):
+        if transcription_index >= len(transcription):
+            break
+        if raw_score_index is None:
+            operations.append(AlignmentOperation("insert", None, transcription_index))
+            continue
+        score_index = int(raw_score_index)
+        if not (0 <= score_index < len(score)):
+            operations.append(AlignmentOperation("insert", None, transcription_index))
+            continue
+        while next_score < score_index:
+            if next_score not in covered:
+                operations.append(AlignmentOperation("delete", next_score, None))
+            next_score += 1
+        heard = transcription[transcription_index].pitch
+        written = score[score_index].pitch
+        kind = "match" if heard == written else "substitute"
+        operations.append(AlignmentOperation(kind, score_index, transcription_index))
+        covered.add(score_index)
+        next_score = max(next_score, score_index + 1)
+    while next_score < len(score):
+        if next_score not in covered:
+            operations.append(AlignmentOperation("delete", next_score, None))
+        next_score += 1
+    return operations
+
+
+def _repetitions_from_alignment_payload(
+    payload: dict[str, Any],
+    transcription: Sequence[TranscribedNote],
+    note_mapping: Sequence[Any],
+    *,
+    old_to_new: Mapping[int, int] | None = None,
+) -> list[RepetitionMatch]:
+    matches: list[RepetitionMatch] = []
+    index_map = old_to_new or {}
+
+    def _remap(index: int) -> int | None:
+        if not index_map:
+            return index
+        return index_map.get(index)
+
+    for raw in payload.get("repetitions") or []:
+        if not isinstance(raw, dict):
+            continue
+        repeat_i0 = int(raw.get("repeat_i0", -1))
+        repeat_i1 = int(raw.get("repeat_i1", -1))
+        if repeat_i0 < 0 or repeat_i1 <= repeat_i0:
+            continue
+        inserted_old = range(repeat_i0, repeat_i1)
+        inserted = tuple(
+            remapped
+            for old_index in inserted_old
+            if (remapped := _remap(old_index)) is not None
+            and remapped < len(transcription)
+        )
+        if not inserted:
+            continue
+        source_i0 = int(raw.get("source_i0", -1))
+        source_i1 = int(raw.get("source_i1", -1))
+        score_indices = []
+        for transcription_index_old in range(max(0, source_i0), max(0, source_i1)):
+            transcription_index = _remap(transcription_index_old)
+            if transcription_index is None or transcription_index >= len(note_mapping):
+                continue
+            mapped = note_mapping[transcription_index]
+            if mapped is not None:
+                score_indices.append(int(mapped))
+        if not score_indices:
+            # Fallback: treat payload fields as score indices when present.
+            if raw.get("score_start") is not None and raw.get("score_end") is not None:
+                score_indices = list(
+                    range(int(raw["score_start"]), int(raw["score_end"]))
+                )
+            else:
+                continue
+        score_start = min(score_indices)
+        score_end = max(score_indices) + 1
+        source_new = _remap(source_i0) if source_i0 >= 0 else None
+        source_end_new = _remap(max(0, source_i1 - 1)) if source_i1 > 0 else None
+        matches.append(
+            RepetitionMatch(
+                inserted_indices=inserted,
+                score_start=score_start,
+                score_end=score_end,
+                repeat_start=float(
+                    raw.get("repeat_start", transcription[inserted[0]].start)
+                ),
+                repeat_end=float(
+                    raw.get("repeat_end", transcription[inserted[-1]].end)
+                ),
+                source_start=float(
+                    raw.get(
+                        "source_start",
+                        transcription[source_new].start
+                        if source_new is not None
+                        else transcription[inserted[0]].start,
+                    )
+                ),
+                source_end=float(
+                    raw.get(
+                        "source_end",
+                        transcription[source_end_new].end
+                        if source_end_new is not None
+                        else transcription[inserted[-1]].end,
+                    )
+                ),
+                similarity=float(raw.get("confidence", raw.get("similarity", 1.0))),
+            )
+        )
+    return matches
+
+
+def _sync_transcription_notes(
+    sample_dir: Path, transcription: Sequence[TranscribedNote]
+) -> None:
+    payload = {
+        "source": NOTE_ALIGNMENT_FILENAME,
+        "transcribed_notes": [
+            {
+                "pitch": note.pitch,
+                "start": note.start,
+                "end": note.end,
+                "confidence": note.confidence,
+            }
+            for note in transcription
+        ],
+    }
+    (sample_dir / "transcription_notes.json").write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def build_agent_label_document_from_note_alignment(
+    sample_dir: Path,
+    *,
+    maximum_per_type: int = MAX_LABELS_PER_TYPE,
+) -> dict[str, Any]:
+    """Build agent labels from the sample's current joint alignment artifact."""
+
+    alignment_path = sample_dir / NOTE_ALIGNMENT_FILENAME
+    if not alignment_path.is_file():
+        raise FileNotFoundError(alignment_path)
+    payload = json.loads(alignment_path.read_text(encoding="utf-8"))
+    score = parse_sounding_notes(sample_dir / "verified_score.musicxml")
+    transcription, mapping, old_to_new = _kept_notes_and_mapping_from_alignment(
+        payload
+    )
+    if not transcription and not score:
+        raise ValueError("Alignment has no transcribed notes or score notes")
+    if len(mapping) < len(transcription):
+        mapping.extend([None] * (len(transcription) - len(mapping)))
+    operations = _operations_from_note_mapping(score, transcription, mapping)
+    repetitions = _repetitions_from_alignment_payload(
+        payload, transcription, mapping, old_to_new=old_to_new
+    )
+    if not repetitions:
+        repetitions = detect_repetitions(score, transcription, operations)
+    repeated_insertions = {
+        index for match in repetitions for index in match.inserted_indices
+    }
+    audio_duration = _audio_duration(sample_dir / "performance_audio.wav")
+
+    labels: list[dict[str, Any]] = []
+    occupied_score: set[int] = set()
+    for operation_index, operation in enumerate(operations):
+        if operation.kind == "match":
+            continue
+        if operation.kind == "insert":
+            trans_index = operation.transcription_index
+            if trans_index is None or trans_index in repeated_insertions:
+                continue
+            note = transcription[trans_index]
+            next_score = next(
+                (
+                    candidate.score_index
+                    for candidate in operations[operation_index + 1 :]
+                    if candidate.score_index is not None
+                ),
+                len(score) - 1,
+            )
+            anchor = max(0, int(next_score or 0) - 1)
+            core_start, core_end = extra_neighbor_core(score, anchor)
+            label = _base_label(
+                f"agent_extra_{trans_index:04d}",
+                "extra_note",
+                note.start,
+                note.end,
+                (
+                    "Current alignment review: transcribed MIDI "
+                    f"{note.pitch} has no score counterpart "
+                    f"(confidence {note.confidence:.2f})."
+                ),
+            )
+            if score:
+                label.update(_score_fields(score, core_start, core_end))
+                label["measure_number"] = score[core_start].measure
+                occupied_score.update(range(core_start, core_end))
+            labels.append(label)
+        elif operation.kind == "delete" and operation.score_index is not None:
+            score_index = operation.score_index
+            start, end = _missed_note_time(
+                operation_index, operations, transcription, audio_duration
+            )
+            note = score[score_index]
+            label = _base_label(
+                f"agent_missed_{score_index:04d}",
+                "missed_note",
+                start,
+                end,
+                (
+                    "Current alignment review: no transcribed note matched "
+                    f"score MIDI {note.pitch}."
+                ),
+            )
+            label.update(_score_fields(score, score_index, score_index + 1))
+            label["measure_number"] = note.measure
+            label["note_id"] = note.note_id
+            labels.append(label)
+            occupied_score.add(score_index)
+        elif (
+            operation.kind == "substitute"
+            and operation.score_index is not None
+            and operation.transcription_index is not None
+        ):
+            score_index = operation.score_index
+            trans_index = operation.transcription_index
+            written = score[score_index]
+            heard = transcription[trans_index]
+            label = _base_label(
+                f"agent_wrong_{score_index:04d}_{trans_index:04d}",
+                "wrong_note",
+                heard.start,
+                heard.end,
+                (
+                    "Current alignment review: transcribed MIDI "
+                    f"{heard.pitch}; score has MIDI {written.pitch} "
+                    f"(confidence {heard.confidence:.2f})."
+                ),
+            )
+            label.update(_score_fields(score, score_index, score_index + 1))
+            label["measure_number"] = written.measure
+            label["note_id"] = written.note_id
+            labels.append(label)
+            occupied_score.add(score_index)
+
+    for repetition_index, match in enumerate(repetitions):
+        if not score or match.score_end > len(score):
+            continue
+        label = _base_label(
+            f"agent_repetition_{repetition_index:03d}",
+            "repetition",
+            match.repeat_start,
+            match.repeat_end,
+            (
+                "Current alignment review: unmatched notes replayed this "
+                f"score passage (similarity {match.similarity:.2f})."
+            ),
+        )
+        label.update(_score_fields(score, match.score_start, match.score_end))
+        label["measure_number"] = score[match.score_start].measure
+        label["note_id"] = score[match.score_start].note_id
+        label["repeats_label_range"] = {
+            "start_time": round(match.source_start, 4),
+            "end_time": round(match.source_end, 4),
+        }
+        label["extra_copies"] = 1
+        labels.append(label)
+        occupied_score.update(range(match.score_start, match.score_end))
+
+    labels.extend(_rhythm_labels(score, transcription, operations, occupied_score))
+    raw_counts = Counter(label["type"] for label in labels)
+    dismissed_types = sorted(
+        type_name
+        for type_name, count in raw_counts.items()
+        if count > maximum_per_type
+    )
+    kept = [label for label in labels if label["type"] not in dismissed_types]
+    kept.sort(key=lambda item: (item["start_time"], item["end_time"], item["type"]))
+    return {
+        "schema_version": "1.2",
+        "audio_reference": "performance_audio.wav",
+        "annotator_id": ALIGNMENT_AGENT_ANNOTATOR_ID,
+        "self_reported": [],
+        "labels": kept,
+        "agent_labeling": {
+            "method": "current_note_alignment_review_v1",
+            "transcriber": "current_sample_transcription",
+            "alignment_artifact": NOTE_ALIGNMENT_FILENAME,
+            "alignment_engine": payload.get("engine"),
+            "uses_project_alignment_or_error_models": True,
+            "uses_error_heads": False,
+            "maximum_labels_per_type": maximum_per_type,
+            "raw_counts_by_type": dict(sorted(raw_counts.items())),
+            "kept_counts_by_type": dict(
+                sorted(Counter(label["type"] for label in kept).items())
+            ),
+            "dismissed_types": dismissed_types,
+            "score_note_count": len(score),
+            "transcribed_note_count": len(transcription),
+            "mapped_note_count": sum(
+                value is not None for value in mapping[: len(transcription)]
+            ),
+            "replaced_previous_agent_labels": True,
+        },
+    }
+
+
+def notes_from_alignment_payload(payload: dict[str, Any]) -> list[TranscribedNote]:
+    return load_transcription_notes(payload.get("transcribed_notes") or [])
+
+
+def load_transcription_notes(raw_notes: Sequence[dict[str, Any]]) -> list[TranscribedNote]:
+    notes = []
+    for raw in raw_notes:
+        if raw.get("ignored"):
+            # Joint post-processor noise: visible in the GUI, not an error label.
+            continue
+        pitch = raw.get("pitch")
+        if pitch is None:
+            pitch = raw.get("midi")
+        if pitch is None:
+            continue
+        start = float(raw.get("start") or raw.get("perf_start") or 0.0)
+        end = max(start + 0.001, float(raw.get("end") or raw.get("perf_end") or start + 0.05))
+        notes.append(
+            TranscribedNote(
+                pitch=int(pitch),
+                start=start,
+                end=end,
+                confidence=float(raw.get("confidence") or 0.0),
+            )
+        )
+    return sorted(notes, key=lambda item: (item.start, item.end, item.pitch))
+
+
+def _kept_notes_and_mapping_from_alignment(
+    payload: dict[str, Any],
+) -> tuple[list[TranscribedNote], list[Any], dict[int, int]]:
+    """Drop ignored extras while remapping note_mapping / repetition indices."""
+
+    raw_notes = list(payload.get("transcribed_notes") or [])
+    raw_mapping = list(payload.get("note_mapping") or [])
+    notes: list[TranscribedNote] = []
+    mapping: list[Any] = []
+    old_to_new: dict[int, int] = {}
+    for old_index, raw in enumerate(raw_notes):
+        if raw.get("ignored"):
+            continue
+        pitch = raw.get("pitch")
+        if pitch is None:
+            pitch = raw.get("midi")
+        if pitch is None:
+            continue
+        start = float(raw.get("start") or raw.get("perf_start") or 0.0)
+        end = max(
+            start + 0.001,
+            float(raw.get("end") or raw.get("perf_end") or start + 0.05),
+        )
+        old_to_new[old_index] = len(notes)
+        notes.append(
+            TranscribedNote(
+                pitch=int(pitch),
+                start=start,
+                end=end,
+                confidence=float(raw.get("confidence") or 0.0),
+            )
+        )
+        mapping.append(raw_mapping[old_index] if old_index < len(raw_mapping) else None)
+    return notes, mapping, old_to_new
+
+
+def relabel_sample_from_current_alignment(
+    sample_dir: Path,
+    *,
+    maximum_per_type: int = MAX_LABELS_PER_TYPE,
+) -> dict[str, Any]:
+    """Rewrite ``labels_agent.json`` from current alignment/transcription artifacts."""
+
+    alignment_path = sample_dir / NOTE_ALIGNMENT_FILENAME
+    if alignment_path.is_file():
+        document = build_agent_label_document_from_note_alignment(
+            sample_dir, maximum_per_type=maximum_per_type
+        )
+        transcription = notes_from_alignment_payload(
+            json.loads(alignment_path.read_text(encoding="utf-8"))
+        )
+        _sync_transcription_notes(sample_dir, transcription)
+        source = NOTE_ALIGNMENT_FILENAME
+    elif (sample_dir / "transcription_notes.json").is_file():
+        document = build_agent_label_document(
+            sample_dir, maximum_per_type=maximum_per_type
+        )
+        source = "transcription_notes.json"
+    else:
+        raise FileNotFoundError(
+            f"{sample_dir.name}: need {NOTE_ALIGNMENT_FILENAME} or transcription_notes.json"
+        )
+
+    output = sample_dir / AGENT_LABEL_FILENAME
+    output.write_text(
+        json.dumps(document, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    return {
+        "path": str(output),
+        "source": source,
+        "label_count": len(document["labels"]),
+        "counts_by_type": dict(document["agent_labeling"]["kept_counts_by_type"]),
+        "dismissed_types": list(document["agent_labeling"]["dismissed_types"]),
+        "method": document["agent_labeling"]["method"],
+    }

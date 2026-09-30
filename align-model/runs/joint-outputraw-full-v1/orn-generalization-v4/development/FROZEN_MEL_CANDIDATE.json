@@ -1,0 +1,48 @@
+{
+  "schema_version": "align-orn-v4-mel-identity-candidate-v1",
+  "frozen_utc": "2026-09-21T13:31:29.0892355Z",
+  "frozen": true,
+  "objective": "official exclusive note-wise lockbox F1 >= 0.80",
+  "method": {
+    "transcriber": "align-mel-transcriber-v1",
+    "minimum_confidence": 0.75,
+    "checkpoint": "runs/joint-outputraw-full-v1/mel-transcriber-v1/full-training-all4544-v2/candidate-epoch-018.pt",
+    "checkpoint_sha256": "3d8f93732a810c3f8470a88316debb9f92b4680b2333c2187866e6090a730a4e",
+    "identity_crf_checkpoint": "runs/joint-outputraw-full-v1/orn-generalization-v2/development/identity-crf-fast-v2/full-v1/best.pt",
+    "identity_crf_checkpoint_sha256": "1d1547870e00165631043d2ced27df58ab34908ed1fb7a22708ac65eca2a5aa1",
+    "development_evaluator_sha256": "a7c852c7ea466801a432e869f9aad9a6640e2f9e983ba38a03164b3174b36a77"
+  },
+  "holdout": {
+    "freeze_sha256": "d7dea5a1e34641c597cac23078295eacc2e6b5d0ef81c1626271cb49fcb9a6b2",
+    "rows": 110,
+    "targets_read": false,
+    "key_read": false,
+    "opened": false
+  },
+  "development_evidence": {
+    "population": "opened ORN v3 lockbox after ORN v4 freeze",
+    "rows": 114,
+    "credit": 4412.0,
+    "predicted": 5321,
+    "gold": 5510,
+    "precision": 0.8291674497274948,
+    "recall": 0.8007259528130671,
+    "f1": 0.8146985504570216,
+    "bootstrap_95": {
+      "lower_95": 0.7862072958894102,
+      "median": 0.8159026849639419,
+      "upper_95": 0.8441239633754603,
+      "replicates": 500
+    },
+    "report_sha256": "67285c8dbb69c24debcfc754d6b4d9fb81248612fd7bfb197c18b00f43fc9b60",
+    "v4_targets_read": false
+  },
+  "version_rationale": {
+    "earlier_version": "Basic Pitch local-rescue over-predicted on ORN v3 and reached F1 0.732413; a stricter Basic Pitch grid improved to only 0.778431.",
+    "earlier_limitation": "The generic frontend produced too many copy/EXTRA candidates under the current ornament renderer distribution.",
+    "later_change": "Replace Basic Pitch with the repository-trained boundary-aware mel transcriber and retain the frozen identity CRF.",
+    "comparable_result": "The mel candidate reaches development F1 0.814699 with balanced 0.829167 precision and 0.800726 recall.",
+    "status": "frozen for one-shot ORN v4 evaluation; no ORN v4 target or key has been read"
+  },
+  "post_lockbox_tuning": false
+}

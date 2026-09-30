@@ -111,10 +111,55 @@ class JointInferGuiTests(unittest.TestCase):
         self.assertEqual([ev["score_index"] for ev in payload["events"]], [0, 1])
         self.assertEqual(payload["events"][0]["pitch"], "C4")
         self.assertEqual(payload["summary"]["mapped_note_count"], 2)
+        self.assertEqual(payload["summary"]["ignored_note_count"], 0)
         self.assertEqual(
             payload["summary"]["candidate_generation"],
             LEGACY_CANDIDATE_GENERATION_VERSION,
         )
+
+    def test_gui_payload_keeps_noise_extras_as_ignored(self) -> None:
+        sounding = [
+            FakeSounding(0, 60, 0.0, 1.0, 0.0, 0.5),
+            FakeSounding(1, 62, 1.0, 2.0, 0.5, 1.0),
+        ]
+        result = JointSampleResult(
+            sample_id="demo",
+            candidates=(
+                JointCandidate(60, 0.1, 0.5, 0.9),
+                JointCandidate(84, 0.55, 0.7, 0.4),
+                JointCandidate(62, 0.8, 1.1, 0.8),
+            ),
+            score=(
+                ScoreEvent(0, 60, 0.0, 1.0, (0,), 1),
+                ScoreEvent(1, 62, 1.0, 2.0, (1,), 1),
+            ),
+            path=LatticePath(
+                steps=(
+                    LatticeStep(0, (0, 1), JointOperation.MATCH, None, None),
+                    LatticeStep(1, None, JointOperation.NOISE, None, None),
+                    LatticeStep(2, (1, 2), JointOperation.MATCH, None, None),
+                ),
+                trailing_deletions=(),
+                score=1.0,
+            ),
+            events=(
+                JointEvent(60, 0.1, 0.5, (0, 1), "match", confidence=0.9),
+                JointEvent(62, 0.8, 1.1, (1, 2), "match", confidence=0.8),
+            ),
+            checkpoint=Path("joint_decoder.pt"),
+            minimum_candidate_confidence=0.65,
+            cache_path=Path("cache.npz"),
+        )
+        payload = build_gui_alignment_payload(result, sounding)
+        self.assertEqual(payload["note_mapping"], [0, None, 1])
+        self.assertTrue(payload["transcribed_notes"][1]["ignored"])
+        self.assertEqual(
+            payload["transcribed_notes"][1]["ignored_reason"], "joint_noise"
+        )
+        self.assertFalse(payload["transcribed_notes"][0].get("ignored"))
+        self.assertEqual(payload["summary"]["ignored_note_count"], 1)
+        self.assertEqual(payload["summary"]["kept_note_count"], 2)
+        self.assertEqual([ev["score_index"] for ev in payload["events"]], [0, 1])
 
 
 if __name__ == "__main__":

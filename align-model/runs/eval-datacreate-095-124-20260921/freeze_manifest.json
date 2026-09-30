@@ -1,0 +1,2600 @@
+{
+  "command": [
+    "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+    "d:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\eval_datacreate_current.py",
+    "freeze",
+    "--min-id",
+    "95",
+    "--max-id",
+    "124",
+    "--output",
+    "d:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921",
+    "--skip-production-baseline",
+    "--cpu-threads",
+    "2",
+    "--samples",
+    "d:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples"
+  ],
+  "created_utc": "2026-09-21T13:40:11.539032+00:00",
+  "discovered_expected": 30,
+  "environment": {
+    "basic_pitch": "0.4.0",
+    "basic_pitch_runtime": "tensorflow",
+    "cuda_visible_devices": "-1",
+    "executable": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+    "numpy": "1.26.4",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:27:10) [MSC v.1944 64 bit (AMD64)]",
+    "tensorflow": "2.15.0",
+    "torch": "2.6.0+cu124"
+  },
+  "expected": 30,
+  "gold_access": {
+    "forbidden_inputs_opened": [
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz",
+      "basic_pitch_cache.npz"
+    ],
+    "labels_opened": false,
+    "opened_sample_inputs": [
+      "metadata.json",
+      "performance_audio.wav",
+      "verified_score.musicxml"
+    ],
+    "phase": "freeze",
+    "process_separation_required": true,
+    "read_guard_enforced": true,
+    "source_contract": "Only verified_score.musicxml, performance_audio.wav, hash-validated Basic Pitch activations, metadata pitch convention, completed checkpoint/config/report files, and training resource status were read."
+  },
+  "inference_failed": 0,
+  "inference_succeeded": 30,
+  "model_selection": {
+    "active_checkpoint_read": false,
+    "error_heads_v2": {
+      "checkpoint_schema_version": "align-frozen-error-heads-v1",
+      "checkpoint_sha256": "aab5acc03eaa9480ef3f82000047f28df897fc55f56f5c922b2d410ac550443a",
+      "compatibility_basis": {
+        "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+        "data_fingerprint": "9359b82e650c10301cca16c871b088875f13faa60065b7b5079e7f62d62a82bd",
+        "joint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4"
+      },
+      "compatible": true,
+      "history_epochs": 8,
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\predicted\\best.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\error-heads-v2\\report.json",
+      "report_schema_version": "align-frozen-error-heads-report-v2",
+      "schema_thresholds": {
+        "extra_note": 0.4,
+        "missed_note": 1.01,
+        "rhythm_error": 0.5,
+        "wrong_note": 0.4
+      }
+    },
+    "excluded_active_training": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-outputraw-full-v1\\training-v1-optimized\\last_checkpoint.pt",
+      "read": false,
+      "reason": "last_checkpoint.pt is active/half-written by policy"
+    },
+    "joint_aligner_decoder": {
+      "checkpoint_schema_version": "align-end-to-end-joint-v2",
+      "checkpoint_sha256": "91baaa26dc408cd5ffdadea66bcb9fe9b61fac3bda4754f0a4f20392750fa2f4",
+      "completion": {
+        "best_validation_present": true,
+        "history_epochs": 1,
+        "progress": {
+          "local_cursor": 0,
+          "local_epoch": 0,
+          "local_in_epoch": 0,
+          "local_total_groups": 0,
+          "local_total_loss": 0.0,
+          "path_cursor": 0,
+          "path_epoch": 0,
+          "path_in_epoch": 0,
+          "path_total_loss": 0.0,
+          "path_trained": 0
+        },
+        "schema_version": "align-end-to-end-joint-v2"
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt",
+      "report": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\report.json",
+      "report_schema_version": "align-end-to-end-experiment-report-v2"
+    },
+    "production_baseline": {
+      "checkpoint_read": false,
+      "reason": "single-stack evaluation requested",
+      "status": "skipped"
+    },
+    "report_selection_evidence": {
+      "eligible_non_diagnostic_checkpoints": [
+        {
+          "modified_ns": 1789408130276316800,
+          "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\joint-audit-v2\\end-to-end-v2\\weak-note-continuation-optimized\\joint_decoder.pt"
+        }
+      ],
+      "selected_rank": 1
+    },
+    "selection_policy": "newest completed non-diagnostic joint checkpoint explicitly hash-compatible with completed predicted error-heads-v2; exclude last/active checkpoints",
+    "transcriber": {
+      "basic_pitch_version": "0.4.0",
+      "candidate_config_sha256": "27f3c072a5a0df387a0f91cbeb0e7a9816c36f7d38fa234fbf670f3219c444c6",
+      "candidate_version": "align-joint-candidates-v2-short-rescue",
+      "checkpoint": "external pretrained Basic Pitch package model; no local trainable transcriber checkpoint",
+      "config": {
+        "candidate_generation": "align-joint-candidates-v2-short-rescue",
+        "decode_configs": [
+          {
+            "adaptive_short_note_rescue": true,
+            "frame_threshold": 0.25,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.06,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 30.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.25,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.3,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 45.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.35,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          },
+          {
+            "adaptive_short_note_rescue": false,
+            "frame_threshold": 0.4,
+            "harmonic_overlap_ratio": 0.55,
+            "infer_onsets": true,
+            "maximum_frequency": 2600.0,
+            "melodia_trick": true,
+            "merge_boundary_window_frames": 2,
+            "merge_contour_continuity_threshold": 0.2,
+            "merge_frame_continuity_threshold": 0.18,
+            "merge_onset_threshold": 0.6,
+            "merge_same_pitch_gap_sec": 0.1,
+            "merge_unconditional_gap_sec": 0.025,
+            "minimum_frequency": 45.0,
+            "minimum_note_length_ms": 55.0,
+            "multiple_pitch_bends": true,
+            "onset_threshold": 0.5,
+            "rescue_combined_threshold": 0.31,
+            "rescue_confidence_floor": 0.65,
+            "rescue_contour_threshold": 0.2,
+            "rescue_frame_threshold": 0.18,
+            "rescue_max_note_length_ms": 110.0,
+            "rescue_min_note_length_ms": 20.0,
+            "rescue_onset_threshold": 0.28,
+            "rescue_overlap_ratio": 0.35,
+            "rescue_pitch_margin_threshold": -0.08,
+            "written_midi_max": 96,
+            "written_midi_min": 50
+          }
+        ],
+        "frozen": true,
+        "name": "Basic Pitch 0.4.0 activation cache"
+      },
+      "implementation": "Basic Pitch 0.4.0 frozen frontend"
+    }
+  },
+  "output": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921",
+  "process": {
+    "phase": "inference_freeze",
+    "pid": 33684
+  },
+  "resource_coordination": {
+    "cpu_threads": 2,
+    "decision": "CPU-only lease acquired; no active GPU lease observed",
+    "device": "cpu",
+    "lease": {
+      "lease_id": "09902880-7259-4ba9-a035-7cbdd96248e0",
+      "resource": "cpu",
+      "track": "eval-datacreate-current:eval-datacreate-095-124-20260921"
+    },
+    "status_before": {
+      "active_gpu_training": [],
+      "gpu_lease": null,
+      "gpu_lease_active": false,
+      "gpu_training_active": false,
+      "leases": {
+        "gpu_training": {
+          "claimed_utc": "2026-09-20T15:00:40.538163+00:00",
+          "command": [
+            "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\train_drop_emit_lattice_v1.py"
+          ],
+          "heartbeat_utc": "2026-09-20T15:00:40.538163+00:00",
+          "lease_id": "0bac9297-6a05-405c-808e-f3584b4c7afe",
+          "metadata": {
+            "device": "cuda",
+            "epochs": 2
+          },
+          "pid": 42668,
+          "track": "orn-v2-drop-emit-lattice-train"
+        }
+      },
+      "ownership": {
+        "gpu_physical_pids": [
+          1888,
+          2408,
+          2648,
+          3088,
+          5376,
+          5476,
+          6248,
+          11096,
+          12944,
+          14144,
+          14308,
+          14784,
+          14816,
+          14896,
+          14940,
+          16520,
+          16544,
+          16776,
+          17624,
+          18324,
+          18600,
+          20596,
+          21044,
+          21100,
+          21320,
+          22172,
+          24168,
+          24516,
+          32052,
+          33968,
+          38540
+        ],
+        "gpu_reserved": [],
+        "heavy_cpu_pids": [],
+        "paused_pids": [],
+        "waiting_or_stalled_pids": []
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+      "policy": {
+        "gpu_exclusive": true,
+        "max_heavy_cpu_jobs_during_gpu_training": 1,
+        "max_simultaneous_gpu_trainers": 1,
+        "physical_cpu_reserve_for_os": 2,
+        "recommended_loader_workers": 4,
+        "recommended_prefetch": 16,
+        "threads_per_loader_worker": 1
+      },
+      "recommended_concurrency": {
+        "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+        "current_heavy_jobs": 0,
+        "oversubscribed": false
+      },
+      "schema_version": "align-training-resource-status-v1",
+      "updated_utc": "2026-09-20T15:00:40.538163+00:00"
+    },
+    "status_snapshot": {
+      "active_gpu_training": [],
+      "gpu_lease": null,
+      "gpu_lease_active": false,
+      "gpu_training_active": false,
+      "leases": {
+        "cpu": {
+          "claimed_utc": "2026-09-21T13:38:43.597806+00:00",
+          "command": [
+            "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\.venv-amt-bench\\Scripts\\python.exe",
+            "d:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\scripts\\eval_datacreate_current.py",
+            "freeze",
+            "--min-id",
+            "95",
+            "--max-id",
+            "124",
+            "--output",
+            "d:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921",
+            "--skip-production-baseline",
+            "--cpu-threads",
+            "2",
+            "--samples",
+            "d:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples"
+          ],
+          "heartbeat_utc": "2026-09-21T13:38:43.597806+00:00",
+          "lease_id": "09902880-7259-4ba9-a035-7cbdd96248e0",
+          "metadata": {
+            "cpu_threads": 2,
+            "device": "cpu",
+            "sample_ids": [
+              "095",
+              "096",
+              "097",
+              "098",
+              "099",
+              "100",
+              "101",
+              "102",
+              "103",
+              "104",
+              "105",
+              "106",
+              "107",
+              "108",
+              "109",
+              "110",
+              "111",
+              "112",
+              "113",
+              "114",
+              "115",
+              "116",
+              "117",
+              "118",
+              "119",
+              "120",
+              "121",
+              "122",
+              "123",
+              "124"
+            ]
+          },
+          "pid": 33684,
+          "track": "eval-datacreate-current:eval-datacreate-095-124-20260921"
+        }
+      },
+      "ownership": {
+        "gpu_physical_pids": [
+          1888,
+          2408,
+          2648,
+          3088,
+          5376,
+          5476,
+          6248,
+          11096,
+          12944,
+          14144,
+          14308,
+          14784,
+          14816,
+          14896,
+          14940,
+          16520,
+          16544,
+          16776,
+          17624,
+          18324,
+          18600,
+          20596,
+          21044,
+          21100,
+          21320,
+          22172,
+          24168,
+          24516,
+          32052,
+          33968,
+          38540
+        ],
+        "gpu_reserved": [],
+        "heavy_cpu_pids": [],
+        "paused_pids": [],
+        "waiting_or_stalled_pids": []
+      },
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\TRAINING_RESOURCE_STATUS.json",
+      "policy": {
+        "gpu_exclusive": true,
+        "max_heavy_cpu_jobs_during_gpu_training": 1,
+        "max_simultaneous_gpu_trainers": 1,
+        "physical_cpu_reserve_for_os": 2,
+        "recommended_loader_workers": 4,
+        "recommended_prefetch": 16,
+        "threads_per_loader_worker": 1
+      },
+      "recommended_concurrency": {
+        "action": "Run one GPU trainer plus at most one bounded CPU loader; queue repacks, cache builds, and benchmarks.",
+        "current_heavy_jobs": 0,
+        "oversubscribed": false
+      },
+      "schema_version": "align-training-resource-status-v1",
+      "updated_utc": "2026-09-21T13:38:43.597806+00:00"
+    },
+    "tensorflow_gpu_hidden": true
+  },
+  "samples": [
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 56.34,
+          "frames": 1242297,
+          "sample_rate": 22050,
+          "sha256": "ad6f482830416f7ae8ff99d2f71db246152aad020ac8c7b1490aeafc9b899dc4"
+        },
+        "candidate_count": 108,
+        "candidate_pitch_in_score_ratio": 0.9351851851851852,
+        "candidate_to_score_count_ratio": 1.7142857142857142,
+        "candidate_union_all_count": 153,
+        "canonical_to_score_count_ratio": 1.4603174603174602,
+        "canonical_transcription_count": 92,
+        "copy_event_count": 28,
+        "decoded_event_count": 108,
+        "deleted_score_event_count": 1,
+        "mapped_event_count": 90,
+        "mapped_score_coverage": 0.9841269841269841,
+        "operations": {
+          "EXTRA": 18,
+          "MATCH": 88,
+          "SUBSTITUTE": 2
+        },
+        "path_score": -9.018558502197266,
+        "retained_candidate_count": 108,
+        "score_event_count": 63,
+        "score_measure_max": 22,
+        "score_measure_min": 1,
+        "unmapped_event_count": 18
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\095.npz",
+        "frozen_copy_sha256": "6a6ae4ba53bcc9f5bfa930ce049ab79c6e07eb5e469fd6d364e1087a9b90d14d",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "ad6f482830416f7ae8ff99d2f71db246152aad020ac8c7b1490aeafc9b899dc4"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\095\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "11cfcdc8a46556658175a973d3ccc9215bb87e44a30338d0f6e8eb3c1fdcf19d",
+        "rules": "bf49ece4f989bee5d26befe8d0b935da3c18108b156303c9b9059ea1c41b3a7d"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\095.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\095.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.6845003999987966,
+        "current_stack": 2.019803499999398,
+        "features": 19.533206200001587,
+        "production_alignment": 0.0,
+        "total": 22.269102300000668
+      },
+      "sample": "095",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 59.241360544217684,
+          "frames": 1306272,
+          "sample_rate": 22050,
+          "sha256": "5afedd3f3ba53d4a2629635dbc6acc8041e4a490439bb05872f600bed3a5ea3b"
+        },
+        "candidate_count": 94,
+        "candidate_pitch_in_score_ratio": 0.9680851063829787,
+        "candidate_to_score_count_ratio": 1.2876712328767124,
+        "candidate_union_all_count": 146,
+        "canonical_to_score_count_ratio": 1.1917808219178083,
+        "canonical_transcription_count": 87,
+        "copy_event_count": 52,
+        "decoded_event_count": 94,
+        "deleted_score_event_count": 45,
+        "mapped_event_count": 81,
+        "mapped_score_coverage": 0.863013698630137,
+        "operations": {
+          "EXTRA": 13,
+          "MATCH": 81
+        },
+        "path_score": -24.57052230834961,
+        "retained_candidate_count": 94,
+        "score_event_count": 73,
+        "score_measure_max": 47,
+        "score_measure_min": 23,
+        "unmapped_event_count": 13
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\096.npz",
+        "frozen_copy_sha256": "480088204bb2276cdbbea731356135e9222ad71b56493d6dbb08e79e26dfb551",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "5afedd3f3ba53d4a2629635dbc6acc8041e4a490439bb05872f600bed3a5ea3b"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\096\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "61b4bae2b3f3cbace5d8c04c4eef90c0aedc1c8c15270baffd1b86af9898c28c",
+        "rules": "70fb87df90a1aebc23ae69e9f886d4c7c22712a0bd71da667d0ff0c241baaf62"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\096.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\096.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.46470810000027996,
+        "current_stack": 1.561076400001184,
+        "features": 1.3537914999978966,
+        "production_alignment": 0.0,
+        "total": 3.412488599999051
+      },
+      "sample": "096",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 35.518684807256236,
+          "frames": 783187,
+          "sample_rate": 22050,
+          "sha256": "a958953b2ca5f5aa4e3dae95dd6168ad30888859dd4f479f6c5d46d6cd4a7611"
+        },
+        "candidate_count": 64,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.4883720930232558,
+        "candidate_union_all_count": 83,
+        "canonical_to_score_count_ratio": 1.372093023255814,
+        "canonical_transcription_count": 59,
+        "copy_event_count": 18,
+        "decoded_event_count": 64,
+        "deleted_score_event_count": 9,
+        "mapped_event_count": 52,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 12,
+          "MATCH": 51,
+          "SUBSTITUTE": 1
+        },
+        "path_score": -19.27265739440918,
+        "retained_candidate_count": 64,
+        "score_event_count": 43,
+        "score_measure_max": 63,
+        "score_measure_min": 48,
+        "unmapped_event_count": 12
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\097.npz",
+        "frozen_copy_sha256": "dc020a98fef2236cdc6bd3d90e4c6ef30d263be5237d5c9b74b46e449e8df60b",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "a958953b2ca5f5aa4e3dae95dd6168ad30888859dd4f479f6c5d46d6cd4a7611"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\097\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "bd9cda2f22bd259cf46b42c177d7fd774df313ada127a0a9156fb4745814a198",
+        "rules": "fe851b5d71a2113c2d2e7035e415a1552084bc14e141f95c981d73a9f90a8d00"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\097.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\097.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.28131730000313837,
+        "current_stack": 1.0912710999982664,
+        "features": 1.1078711000009207,
+        "production_alignment": 0.0,
+        "total": 2.508798200004094
+      },
+      "sample": "097",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 48.489342403628115,
+          "frames": 1069190,
+          "sample_rate": 22050,
+          "sha256": "178ca94fbc21b4d6ac4155b5e6966ddc14fcd600d90346fd8701ee53f3a58d58"
+        },
+        "candidate_count": 82,
+        "candidate_pitch_in_score_ratio": 0.9634146341463414,
+        "candidate_to_score_count_ratio": 1.2615384615384615,
+        "candidate_union_all_count": 125,
+        "canonical_to_score_count_ratio": 1.2769230769230768,
+        "canonical_transcription_count": 83,
+        "copy_event_count": 8,
+        "decoded_event_count": 82,
+        "deleted_score_event_count": 3,
+        "mapped_event_count": 71,
+        "mapped_score_coverage": 0.9692307692307692,
+        "operations": {
+          "EXTRA": 11,
+          "MATCH": 70,
+          "SUBSTITUTE": 1
+        },
+        "path_score": -15.311270713806152,
+        "retained_candidate_count": 82,
+        "score_event_count": 65,
+        "score_measure_max": 85,
+        "score_measure_min": 64,
+        "unmapped_event_count": 11
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\098.npz",
+        "frozen_copy_sha256": "20eba6c099db4e6fd5ff7ef868bdc56c29cea937791d7942ee3d4b4ccbb55e3f",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "178ca94fbc21b4d6ac4155b5e6966ddc14fcd600d90346fd8701ee53f3a58d58"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\098\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "d6619bf89526e8cfeadff9fd3dfc7f896763bea099f7e680da81b02c490c9547",
+        "rules": "d87d356ace5d5b9e4f2ef9706359dcb3b1b54f27f44f9ae7403e3ee7ed1817e7"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\098.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\098.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3663012999968487,
+        "current_stack": 1.115438600005291,
+        "features": 1.1465024999997695,
+        "production_alignment": 0.0,
+        "total": 2.6569295000008424
+      },
+      "sample": "098",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 36.884036281179135,
+          "frames": 813293,
+          "sample_rate": 22050,
+          "sha256": "761e2bfbaa11cab11c5593ae657389334e3622c97897fb9be221c458d59e4b6d"
+        },
+        "candidate_count": 68,
+        "candidate_pitch_in_score_ratio": 0.9852941176470589,
+        "candidate_to_score_count_ratio": 1.2363636363636363,
+        "candidate_union_all_count": 96,
+        "canonical_to_score_count_ratio": 1.1272727272727272,
+        "canonical_transcription_count": 62,
+        "copy_event_count": 0,
+        "decoded_event_count": 68,
+        "deleted_score_event_count": 2,
+        "mapped_event_count": 53,
+        "mapped_score_coverage": 0.9636363636363636,
+        "operations": {
+          "EXTRA": 15,
+          "MATCH": 53
+        },
+        "path_score": -15.537164688110352,
+        "retained_candidate_count": 68,
+        "score_event_count": 55,
+        "score_measure_max": 84,
+        "score_measure_min": 66,
+        "unmapped_event_count": 15
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\099.npz",
+        "frozen_copy_sha256": "a3342d9128589d5deac1654bd6a1eb6fa630c96fb6544975146ff943cdb15d1d",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "761e2bfbaa11cab11c5593ae657389334e3622c97897fb9be221c458d59e4b6d"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\099\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "7d19a350e62a58a25d1c56a2e988813e3ce8e5672a59c849b606e7ba6493c807",
+        "rules": "7bbade7ec71ee29335c00b86dba486de25e977652d145890c320a0f53780c76f"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\099.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\099.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.4702692000064417,
+        "current_stack": 1.5734474999990198,
+        "features": 0.9120991000017966,
+        "production_alignment": 0.0,
+        "total": 2.992291700000351
+      },
+      "sample": "099",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 28.2653514739229,
+          "frames": 623251,
+          "sample_rate": 22050,
+          "sha256": "49500fbaa8e8e542ac61052e09904eb0a65c74e9dbce1de101c1cd0f6ef9a4cc"
+        },
+        "candidate_count": 48,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.1428571428571428,
+        "candidate_union_all_count": 58,
+        "canonical_to_score_count_ratio": 1.0714285714285714,
+        "canonical_transcription_count": 45,
+        "copy_event_count": 5,
+        "decoded_event_count": 48,
+        "deleted_score_event_count": 4,
+        "mapped_event_count": 42,
+        "mapped_score_coverage": 0.9047619047619048,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 42
+        },
+        "path_score": -5.294798851013184,
+        "retained_candidate_count": 48,
+        "score_event_count": 42,
+        "score_measure_max": 97,
+        "score_measure_min": 83,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\100.npz",
+        "frozen_copy_sha256": "92834b47276bcadca4d2ca4c6580889feede291387082a44dba5b60792e65c17",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "49500fbaa8e8e542ac61052e09904eb0a65c74e9dbce1de101c1cd0f6ef9a4cc"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\100\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "3c3f0fefbfa4cb65d58657dfe5274ea3c2844ddd57fef9a506082354a164be8a",
+        "rules": "a47704baf7c0326714e85852299039adcc6d536ba03a86cab4625fc1aafe7cf3"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\100.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\100.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3036209999991115,
+        "current_stack": 1.0184646999987308,
+        "features": 1.0185773999983212,
+        "production_alignment": 0.0,
+        "total": 2.364279699999315
+      },
+      "sample": "100",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 12.649342403628118,
+          "frames": 278918,
+          "sample_rate": 22050,
+          "sha256": "8e93b2a64e971fd374d6253f17f9037ce7c5bf60ae382501ec215da03f758fbd"
+        },
+        "candidate_count": 19,
+        "candidate_pitch_in_score_ratio": 0.0,
+        "candidate_to_score_count_ratio": 1.2666666666666666,
+        "candidate_union_all_count": 29,
+        "canonical_to_score_count_ratio": 1.1333333333333333,
+        "canonical_transcription_count": 17,
+        "copy_event_count": 0,
+        "decoded_event_count": 19,
+        "deleted_score_event_count": 6,
+        "mapped_event_count": 9,
+        "mapped_score_coverage": 0.6,
+        "operations": {
+          "EXTRA": 10,
+          "SUBSTITUTE": 9
+        },
+        "path_score": -30.190561294555664,
+        "retained_candidate_count": 19,
+        "score_event_count": 15,
+        "score_measure_max": 148,
+        "score_measure_min": 143,
+        "unmapped_event_count": 10
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\101.npz",
+        "frozen_copy_sha256": "7f0a35fded730557306fbc73ea8a4b029e9512eca43e5bdcae0c22a8c39d5ec3",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "8e93b2a64e971fd374d6253f17f9037ce7c5bf60ae382501ec215da03f758fbd"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\101\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "3ac7fe28c1d97a482962993a0a2d082da07953987957b765043a7176579ee287",
+        "rules": "22c1dd9b451fc5b3c109ffd62a73a9427e3907ccf0611389290f194d9d965970"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\101.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\101.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.14334900000540074,
+        "current_stack": 0.34566159999667434,
+        "features": 0.46964020000450546,
+        "production_alignment": 0.0,
+        "total": 0.996883899999375
+      },
+      "sample": "101",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 36.54267573696145,
+          "frames": 805766,
+          "sample_rate": 22050,
+          "sha256": "6a63d8ed003398d7057aa1ec7850e71d1826111e6f47682d23b152e2bd649017"
+        },
+        "candidate_count": 60,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.2765957446808511,
+        "candidate_union_all_count": 73,
+        "canonical_to_score_count_ratio": 1.1702127659574468,
+        "canonical_transcription_count": 55,
+        "copy_event_count": 13,
+        "decoded_event_count": 60,
+        "deleted_score_event_count": 3,
+        "mapped_event_count": 55,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 54,
+          "SUBSTITUTE": 1
+        },
+        "path_score": -16.208572387695312,
+        "retained_candidate_count": 60,
+        "score_event_count": 47,
+        "score_measure_max": 116,
+        "score_measure_min": 101,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\102.npz",
+        "frozen_copy_sha256": "6a584365f611573f18f9f5b072e002066a8b061ccd75d2eac1286dce610a13f6",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "6a63d8ed003398d7057aa1ec7850e71d1826111e6f47682d23b152e2bd649017"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\102\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "de6a5200c4f16c88823cc99a6219557e77ed619ec02ca64cabd4c98d06c65b00",
+        "rules": "e95f8c472c0914bbe1d2e5c78aa17bb19a9d9a66af41bff6fba31632af20091d"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\102.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\102.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3456170999997994,
+        "current_stack": 1.1285126000002492,
+        "features": 1.0828067000038573,
+        "production_alignment": 0.0,
+        "total": 2.585440800001379
+      },
+      "sample": "102",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 35.945351473922905,
+          "frames": 792595,
+          "sample_rate": 22050,
+          "sha256": "70c3d0d11b25244d8d62d1c0c92d0a0cbf841b4b6e8a29ed27ed2989cd91373e"
+        },
+        "candidate_count": 60,
+        "candidate_pitch_in_score_ratio": 0.21666666666666667,
+        "candidate_to_score_count_ratio": 3.3333333333333335,
+        "candidate_union_all_count": 74,
+        "canonical_to_score_count_ratio": 3.1666666666666665,
+        "canonical_transcription_count": 57,
+        "copy_event_count": 13,
+        "decoded_event_count": 60,
+        "deleted_score_event_count": 16,
+        "mapped_event_count": 16,
+        "mapped_score_coverage": 0.7777777777777778,
+        "operations": {
+          "EXTRA": 44,
+          "MATCH": 4,
+          "SUBSTITUTE": 12
+        },
+        "path_score": -84.45547485351562,
+        "retained_candidate_count": 60,
+        "score_event_count": 18,
+        "score_measure_max": 148,
+        "score_measure_min": 142,
+        "unmapped_event_count": 44
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\103.npz",
+        "frozen_copy_sha256": "9d3e0078c9c12d7f26d6da42356f901342d1abbeb5e5735ba4cdceb273e99d48",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "70c3d0d11b25244d8d62d1c0c92d0a0cbf841b4b6e8a29ed27ed2989cd91373e"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "84031a2e4da17fba7d3462ae7fe7b8089cf5c2b640dff5f4032a42e7cb274b56",
+        "rules": "85ef6f498969f3408dd1267d2e46f7af805389b4428953b62c25a20cbebb78d8"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\103.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\103.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.6763551000040025,
+        "current_stack": 1.1022067000012612,
+        "features": 1.298495199996978,
+        "production_alignment": 0.0,
+        "total": 3.1069780999969225
+      },
+      "sample": "103",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 27.241360544217688,
+          "frames": 600672,
+          "sample_rate": 22050,
+          "sha256": "a267b01d7f8298779d0d48aab9398d0b63606546aa9e8546af7c1d7eff707a75"
+        },
+        "candidate_count": 42,
+        "candidate_pitch_in_score_ratio": 0.8333333333333334,
+        "candidate_to_score_count_ratio": 1.135135135135135,
+        "candidate_union_all_count": 60,
+        "canonical_to_score_count_ratio": 1.1081081081081081,
+        "canonical_transcription_count": 41,
+        "copy_event_count": 0,
+        "decoded_event_count": 42,
+        "deleted_score_event_count": 2,
+        "mapped_event_count": 35,
+        "mapped_score_coverage": 0.9459459459459459,
+        "operations": {
+          "EXTRA": 7,
+          "MATCH": 31,
+          "SUBSTITUTE": 4
+        },
+        "path_score": -50.97514343261719,
+        "retained_candidate_count": 42,
+        "score_event_count": 37,
+        "score_measure_max": 149,
+        "score_measure_min": 118,
+        "unmapped_event_count": 7
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\104.npz",
+        "frozen_copy_sha256": "21cfc70359cc8ff7a55727751d9795a24ec3f4b452076b956cbca5d90624b3f2",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "a267b01d7f8298779d0d48aab9398d0b63606546aa9e8546af7c1d7eff707a75"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\104\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "7dc6aec5dc68cc90f1bf4de9a5946e496bb1ec774ac5aec2687ca592aae9be1c",
+        "rules": "49b7692956fdfb551de4f66dfefe3345b53dc247b96158335a4869f287042ef1"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\104.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\104.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.2955274999985704,
+        "current_stack": 0.7129528000004939,
+        "features": 0.9049269000024651,
+        "production_alignment": 0.0,
+        "total": 1.9450089999954798
+      },
+      "sample": "104",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 34.7507029478458,
+          "frames": 766253,
+          "sample_rate": 22050,
+          "sha256": "a12c6eb065ed0425223e97c96759feb28e55cf1d688b598a1bac42a1855a073c"
+        },
+        "candidate_count": 77,
+        "candidate_pitch_in_score_ratio": 0.5714285714285714,
+        "candidate_to_score_count_ratio": 1.6041666666666667,
+        "candidate_union_all_count": 98,
+        "canonical_to_score_count_ratio": 1.4166666666666667,
+        "canonical_transcription_count": 68,
+        "copy_event_count": 23,
+        "decoded_event_count": 77,
+        "deleted_score_event_count": 42,
+        "mapped_event_count": 39,
+        "mapped_score_coverage": 0.5833333333333334,
+        "operations": {
+          "EXTRA": 38,
+          "MATCH": 33,
+          "SUBSTITUTE": 6
+        },
+        "path_score": -92.3199462890625,
+        "retained_candidate_count": 77,
+        "score_event_count": 48,
+        "score_measure_max": 13,
+        "score_measure_min": 1,
+        "unmapped_event_count": 38
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\105.npz",
+        "frozen_copy_sha256": "6cb7dd189dd094d58bc8fabdf6e53b928127bd2d5349b6c882ce82ac7bfe68f8",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "a12c6eb065ed0425223e97c96759feb28e55cf1d688b598a1bac42a1855a073c"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "05b57b212ade7f2aebed5beec3644a72a46b458986e658e45ad868c1b8747c48",
+        "rules": "03552bab52eb5266286bdd0e1f667aff11cb27a1b3eb0984c5b7ad08f800a795"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\105.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\105.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.37172450000070967,
+        "current_stack": 1.6267451000021538,
+        "features": 1.1456644999998389,
+        "production_alignment": 0.0,
+        "total": 3.1832387000031304
+      },
+      "sample": "105",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 51.988027210884354,
+          "frames": 1146336,
+          "sample_rate": 22050,
+          "sha256": "4060b589a91dc7d16b471ded4a985ced1b2d8f297376a4bce1d2a41361a6f202"
+        },
+        "candidate_count": 103,
+        "candidate_pitch_in_score_ratio": 0.4854368932038835,
+        "candidate_to_score_count_ratio": 4.904761904761905,
+        "candidate_union_all_count": 142,
+        "canonical_to_score_count_ratio": 4.619047619047619,
+        "canonical_transcription_count": 97,
+        "copy_event_count": 41,
+        "decoded_event_count": 103,
+        "deleted_score_event_count": 14,
+        "mapped_event_count": 51,
+        "mapped_score_coverage": 0.8095238095238095,
+        "operations": {
+          "EXTRA": 52,
+          "MATCH": 27,
+          "SUBSTITUTE": 24
+        },
+        "path_score": -105.8951644897461,
+        "retained_candidate_count": 103,
+        "score_event_count": 21,
+        "score_measure_max": 50,
+        "score_measure_min": 47,
+        "unmapped_event_count": 52
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\106.npz",
+        "frozen_copy_sha256": "89581e8afbe84aeb00905e9b9bb84a59a780ea6bf3547cdea8fd0a0e451ed587",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "4060b589a91dc7d16b471ded4a985ced1b2d8f297376a4bce1d2a41361a6f202"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "173fc9c84257d8e2a601bea6d2968b8fbdaea991e5ffc280900f642484b30ff0",
+        "rules": "ad432f9ccda2e6fc2be4a8f9fa9255a1c6ee345b5df0ee228ba073c0dc8d4877"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\106.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\106.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.6470017000028747,
+        "current_stack": 1.659757699999318,
+        "features": 1.655899600002158,
+        "production_alignment": 0.0,
+        "total": 3.9997437999991234
+      },
+      "sample": "106",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 38.846666666666664,
+          "frames": 856569,
+          "sample_rate": 22050,
+          "sha256": "228a3546e42d64db56e84692677b5f3cf81cd38840b7566ad9573b01f8ca308c"
+        },
+        "candidate_count": 63,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.125,
+        "candidate_union_all_count": 86,
+        "canonical_to_score_count_ratio": 1.0892857142857142,
+        "canonical_transcription_count": 61,
+        "copy_event_count": 46,
+        "decoded_event_count": 63,
+        "deleted_score_event_count": 55,
+        "mapped_event_count": 61,
+        "mapped_score_coverage": 0.6428571428571429,
+        "operations": {
+          "EXTRA": 2,
+          "MATCH": 61
+        },
+        "path_score": 16.176342010498047,
+        "retained_candidate_count": 63,
+        "score_event_count": 56,
+        "score_measure_max": 15,
+        "score_measure_min": 1,
+        "unmapped_event_count": 2
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\107.npz",
+        "frozen_copy_sha256": "5f61c56964656ebbb37d9ef4195a021c9a4784ace85a98f61bb93aa5e4a3a1d3",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "228a3546e42d64db56e84692677b5f3cf81cd38840b7566ad9573b01f8ca308c"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "42bc9440900b6dca6897c52578a0b2ebeffd948316ee0fb43afcd9a9dd6dc18c",
+        "rules": "3f147469c17d04194f14f036c4a04cc7adf37162f120c32e746eb52c825743c3"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\107.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\107.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.39726389999850653,
+        "current_stack": 1.1960113999957684,
+        "features": 1.3031869999977062,
+        "production_alignment": 0.0,
+        "total": 2.930303699999058
+      },
+      "sample": "107",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 37.05469387755102,
+          "frames": 817056,
+          "sample_rate": 22050,
+          "sha256": "d446e4213dd6543c46ab6580f3f368984b13678574932f002e0e6a63af5a71d7"
+        },
+        "candidate_count": 69,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.2321428571428572,
+        "candidate_union_all_count": 90,
+        "canonical_to_score_count_ratio": 1.2321428571428572,
+        "canonical_transcription_count": 69,
+        "copy_event_count": 36,
+        "decoded_event_count": 69,
+        "deleted_score_event_count": 31,
+        "mapped_event_count": 65,
+        "mapped_score_coverage": 0.8214285714285714,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 65
+        },
+        "path_score": 8.298544883728027,
+        "retained_candidate_count": 69,
+        "score_event_count": 56,
+        "score_measure_max": 15,
+        "score_measure_min": 1,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\108.npz",
+        "frozen_copy_sha256": "f58e514b7082f7fcafd55b4529140ede6c04619bb9b8e509772a4af59b54f32e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "d446e4213dd6543c46ab6580f3f368984b13678574932f002e0e6a63af5a71d7"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "e7450f77b920b67f57c645866d204ab0bde6f914d764174c596020540af1fb7c",
+        "rules": "ac094712c3e23837587bc67a628bd3c1c3312c82ec0e734d0d2505bbb8e7d7f7"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\108.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\108.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.33537000000069384,
+        "current_stack": 1.3141630999962217,
+        "features": 1.2767439000017475,
+        "production_alignment": 0.0,
+        "total": 2.958949500003655
+      },
+      "sample": "108",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 39.44403628117914,
+          "frames": 869741,
+          "sample_rate": 22050,
+          "sha256": "58a77faad50c789fa3b2b11ebe70594869c1607942f07f33dd3068978a5bfc10"
+        },
+        "candidate_count": 79,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.253968253968254,
+        "candidate_union_all_count": 87,
+        "canonical_to_score_count_ratio": 1.2063492063492063,
+        "canonical_transcription_count": 76,
+        "copy_event_count": 18,
+        "decoded_event_count": 79,
+        "deleted_score_event_count": 6,
+        "mapped_event_count": 75,
+        "mapped_score_coverage": 0.9841269841269841,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 75
+        },
+        "path_score": 19.6094913482666,
+        "retained_candidate_count": 79,
+        "score_event_count": 63,
+        "score_measure_max": 33,
+        "score_measure_min": 17,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\109.npz",
+        "frozen_copy_sha256": "1a8cb7424df7bb3eb77fd19cc5396dd9cb384e3ce2173d801370f53b7b3ff66a",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "58a77faad50c789fa3b2b11ebe70594869c1607942f07f33dd3068978a5bfc10"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "ab2f8cd372388b26d843f2575e919049dfec27a72de4b354d2346aad474f98b3",
+        "rules": "391cb0a53f4d6926ae882675e205b4b8128a9dbf3c616f77c4c001cfb31f252f"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\109.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\109.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3259168000004138,
+        "current_stack": 1.2032185999996727,
+        "features": 1.166957100002037,
+        "production_alignment": 0.0,
+        "total": 2.726578800000425
+      },
+      "sample": "109",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 37.39600907029479,
+          "frames": 824582,
+          "sample_rate": 22050,
+          "sha256": "31c2ef1b3858134205067f8956a90d7ad48e01a8acbd9ac43e27397434d75e7e"
+        },
+        "candidate_count": 76,
+        "candidate_pitch_in_score_ratio": 0.9868421052631579,
+        "candidate_to_score_count_ratio": 1.3571428571428572,
+        "candidate_union_all_count": 88,
+        "canonical_to_score_count_ratio": 1.3214285714285714,
+        "canonical_transcription_count": 74,
+        "copy_event_count": 53,
+        "decoded_event_count": 76,
+        "deleted_score_event_count": 41,
+        "mapped_event_count": 67,
+        "mapped_score_coverage": 0.8571428571428571,
+        "operations": {
+          "EXTRA": 9,
+          "MATCH": 66,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 9.79409122467041,
+        "retained_candidate_count": 76,
+        "score_event_count": 56,
+        "score_measure_max": 32,
+        "score_measure_min": 19,
+        "unmapped_event_count": 9
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\110.npz",
+        "frozen_copy_sha256": "9a610bd90c1e2108a1599c9576102cb59eec196a221ba55ba8dd460aa8cfe633",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "31c2ef1b3858134205067f8956a90d7ad48e01a8acbd9ac43e27397434d75e7e"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "db422dc5df8614ce63fd01269c888f30360843ffdf7a5d6984f103aaa77e9f03",
+        "rules": "0064618e62ad3a99883cba0ed58052b1579105fdf1b6a9a5cdc54a5e8daacdf7"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\110.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\110.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.41682199999922886,
+        "current_stack": 1.409699299998465,
+        "features": 1.3525675999990199,
+        "production_alignment": 0.0,
+        "total": 3.21084929999779
+      },
+      "sample": "110",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 30.825351473922904,
+          "frames": 679699,
+          "sample_rate": 22050,
+          "sha256": "e79ea23bc1e6fc49c295907b6a247a5b6c52b1ca97f3620fa6f0a724bb1a133a"
+        },
+        "candidate_count": 55,
+        "candidate_pitch_in_score_ratio": 0.9818181818181818,
+        "candidate_to_score_count_ratio": 1.1956521739130435,
+        "candidate_union_all_count": 64,
+        "canonical_to_score_count_ratio": 1.1521739130434783,
+        "canonical_transcription_count": 53,
+        "copy_event_count": 6,
+        "decoded_event_count": 55,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 52,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 3,
+          "MATCH": 52
+        },
+        "path_score": 31.810333251953125,
+        "retained_candidate_count": 55,
+        "score_event_count": 46,
+        "score_measure_max": 40,
+        "score_measure_min": 34,
+        "unmapped_event_count": 3
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\111.npz",
+        "frozen_copy_sha256": "4d0ccd10bcda2fce0113f3b01c8928b31cf593eabaf022e248603ab865bfd72b",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "e79ea23bc1e6fc49c295907b6a247a5b6c52b1ca97f3620fa6f0a724bb1a133a"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "598362b76460d4fcba667ded5d8454764e3f0f5ac2f8edc75d3aad42e39d8fb2",
+        "rules": "3e769083835c149b603e1df27abcf53038a4c39c746bdd66a9c0435f1513cdc1"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\111.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\111.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.23689500000182306,
+        "current_stack": 1.000299700004689,
+        "features": 0.9804331999985152,
+        "production_alignment": 0.0,
+        "total": 2.2479400000011083
+      },
+      "sample": "111",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 35.00666666666667,
+          "frames": 771897,
+          "sample_rate": 22050,
+          "sha256": "da8c4db02e0661e4b68123fa3d16d14666fe50318825e7c93739d626fbd05893"
+        },
+        "candidate_count": 65,
+        "candidate_pitch_in_score_ratio": 0.9692307692307692,
+        "candidate_to_score_count_ratio": 1.4444444444444444,
+        "candidate_union_all_count": 81,
+        "canonical_to_score_count_ratio": 1.3555555555555556,
+        "canonical_transcription_count": 61,
+        "copy_event_count": 12,
+        "decoded_event_count": 65,
+        "deleted_score_event_count": 4,
+        "mapped_event_count": 55,
+        "mapped_score_coverage": 0.9777777777777777,
+        "operations": {
+          "EXTRA": 10,
+          "MATCH": 54,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 15.645840644836426,
+        "retained_candidate_count": 65,
+        "score_event_count": 45,
+        "score_measure_max": 48,
+        "score_measure_min": 42,
+        "unmapped_event_count": 10
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\112.npz",
+        "frozen_copy_sha256": "3e979f2ad689a5e842494a487361aff3e451471e4837b80366ce6036a84d2a4e",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "da8c4db02e0661e4b68123fa3d16d14666fe50318825e7c93739d626fbd05893"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\112\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "810d1af96c4dd096c5e3cf123ad152218b08d6528f9805e90310237ab8cbd3ec",
+        "rules": "8fa6d0ae978af0bf2f05b84f6b9ccade0e3559c7d50a66053c7f07b4e7fde312"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\112.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\112.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.28164819999801693,
+        "current_stack": 1.2495973999975831,
+        "features": 1.05715020000207,
+        "production_alignment": 0.0,
+        "total": 2.619703500000469
+      },
+      "sample": "112",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 45.50267573696145,
+          "frames": 1003334,
+          "sample_rate": 22050,
+          "sha256": "22915c2d81b6a6357f0922025a304081bee4ef71356897de56374ee704e1f168"
+        },
+        "candidate_count": 78,
+        "candidate_pitch_in_score_ratio": 0.9871794871794872,
+        "candidate_to_score_count_ratio": 1.3220338983050848,
+        "candidate_union_all_count": 108,
+        "canonical_to_score_count_ratio": 1.305084745762712,
+        "canonical_transcription_count": 77,
+        "copy_event_count": 10,
+        "decoded_event_count": 78,
+        "deleted_score_event_count": 7,
+        "mapped_event_count": 63,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 15,
+          "MATCH": 63
+        },
+        "path_score": -7.638306617736816,
+        "retained_candidate_count": 78,
+        "score_event_count": 59,
+        "score_measure_max": 61,
+        "score_measure_min": 50,
+        "unmapped_event_count": 15
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\113.npz",
+        "frozen_copy_sha256": "252f1b5bdc64071a616fa91df4f38b97f5ccd7570b9e01eb8a941abd365b9e73",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "22915c2d81b6a6357f0922025a304081bee4ef71356897de56374ee704e1f168"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "6bb71d112ca8ed87c2579935534c0f0e883a45588d0efed59ed52e8ecda1b6eb",
+        "rules": "4954d9d812f5ae8e464252199942b65242f46221334263b01650795377c03b16"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\113.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\113.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.4764701999956742,
+        "current_stack": 1.3671705999950063,
+        "features": 1.3266995000012685,
+        "production_alignment": 0.0,
+        "total": 3.2038011999975424
+      },
+      "sample": "113",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 17.513333333333332,
+          "frames": 386169,
+          "sample_rate": 22050,
+          "sha256": "f07603042dbf1c764eec5b255badfaf64c8ed94ff7e59556f86474fa703160ed"
+        },
+        "candidate_count": 24,
+        "candidate_pitch_in_score_ratio": 0.5416666666666666,
+        "candidate_to_score_count_ratio": 1.3333333333333333,
+        "candidate_union_all_count": 33,
+        "canonical_to_score_count_ratio": 1.3888888888888888,
+        "canonical_transcription_count": 25,
+        "copy_event_count": 7,
+        "decoded_event_count": 24,
+        "deleted_score_event_count": 13,
+        "mapped_event_count": 15,
+        "mapped_score_coverage": 0.5555555555555556,
+        "operations": {
+          "EXTRA": 9,
+          "MATCH": 10,
+          "SUBSTITUTE": 5
+        },
+        "path_score": -28.98356819152832,
+        "retained_candidate_count": 24,
+        "score_event_count": 18,
+        "score_measure_max": 25,
+        "score_measure_min": 21,
+        "unmapped_event_count": 9
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\114.npz",
+        "frozen_copy_sha256": "a2d36007732c12c988121b23a3c5b0aaab8f8e1fb2ed609ecc603fbc2dd3ca62",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "f07603042dbf1c764eec5b255badfaf64c8ed94ff7e59556f86474fa703160ed"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\114\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "e492631b48df7b876b9fb1da076d3a73c6fed070a04df69d885b152c4b248d8b",
+        "rules": "46a83855f754bb7993ac14a4257bfeb7791d1ec1e50078b2bb0f064703365993"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\114.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\114.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.18160899999929825,
+        "current_stack": 0.36284819999855245,
+        "features": 0.6049916999982088,
+        "production_alignment": 0.0,
+        "total": 1.1792188000035821
+      },
+      "sample": "114",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 13.502675736961452,
+          "frames": 297734,
+          "sample_rate": 22050,
+          "sha256": "4a685a300882f25b7620bd733df7037ece5d663d309f134a5acb8811b506f920"
+        },
+        "candidate_count": 24,
+        "candidate_pitch_in_score_ratio": 0.9583333333333334,
+        "candidate_to_score_count_ratio": 1.0434782608695652,
+        "candidate_union_all_count": 31,
+        "canonical_to_score_count_ratio": 1.0,
+        "canonical_transcription_count": 23,
+        "copy_event_count": 0,
+        "decoded_event_count": 24,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 23,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 1,
+          "MATCH": 23
+        },
+        "path_score": 13.09887409210205,
+        "retained_candidate_count": 24,
+        "score_event_count": 23,
+        "score_measure_max": 4,
+        "score_measure_min": 1,
+        "unmapped_event_count": 1
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\115.npz",
+        "frozen_copy_sha256": "c02b4a25d2a03b9ce88a2708266402fd151eb7b49920a661bb0465c3893c6c37",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "4a685a300882f25b7620bd733df7037ece5d663d309f134a5acb8811b506f920"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\115\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "52c2e239ee83587574f235b621ade85170aa3580b9d5eb0ee82a787069b9e66b",
+        "rules": "2e75242e46a79d9b435fc4355fa9da40b9885ad423f9f6b705f802b10ed4ed81"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\115.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\115.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.12084730000060517,
+        "current_stack": 0.3830409000001964,
+        "features": 0.41839140000229236,
+        "production_alignment": 0.0,
+        "total": 0.9498010000024806
+      },
+      "sample": "115",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 32.873333333333335,
+          "frames": 724857,
+          "sample_rate": 22050,
+          "sha256": "6f0a2c3eab1f5811fce5e51076e86f506b4e0180f5d76905be33e8e187e9b553"
+        },
+        "candidate_count": 53,
+        "candidate_pitch_in_score_ratio": 0.9622641509433962,
+        "candidate_to_score_count_ratio": 1.325,
+        "candidate_union_all_count": 71,
+        "canonical_to_score_count_ratio": 1.275,
+        "canonical_transcription_count": 51,
+        "copy_event_count": 10,
+        "decoded_event_count": 53,
+        "deleted_score_event_count": 3,
+        "mapped_event_count": 48,
+        "mapped_score_coverage": 0.95,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 48
+        },
+        "path_score": 10.209981918334961,
+        "retained_candidate_count": 53,
+        "score_event_count": 40,
+        "score_measure_max": 16,
+        "score_measure_min": 9,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\116.npz",
+        "frozen_copy_sha256": "d03bb5eae3befc2535bcbee78a21c08f55fb27618f9bad0eef2c50db7d73cbc9",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "6f0a2c3eab1f5811fce5e51076e86f506b4e0180f5d76905be33e8e187e9b553"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "57966ba3289728260855ea883882074df55d3c8503c9fb87e40515f445fe2e88",
+        "rules": "b2d3a8143360d83de6ca543fb828f51aa3ccd5ddc9fee3e7850bc10a81461275"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\116.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\116.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.29817719999846304,
+        "current_stack": 0.9694815000038943,
+        "features": 0.9234872000015457,
+        "production_alignment": 0.0,
+        "total": 2.218675299998722
+      },
+      "sample": "116",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 32.02,
+          "frames": 706041,
+          "sample_rate": 22050,
+          "sha256": "6149c4d3398f35c9cb033e9f36ae26c9bd91af6049c6dca6145604988afb1781"
+        },
+        "candidate_count": 46,
+        "candidate_pitch_in_score_ratio": 0.9565217391304348,
+        "candidate_to_score_count_ratio": 1.2105263157894737,
+        "candidate_union_all_count": 71,
+        "canonical_to_score_count_ratio": 1.2105263157894737,
+        "canonical_transcription_count": 46,
+        "copy_event_count": 10,
+        "decoded_event_count": 46,
+        "deleted_score_event_count": 7,
+        "mapped_event_count": 40,
+        "mapped_score_coverage": 0.9473684210526315,
+        "operations": {
+          "EXTRA": 6,
+          "MATCH": 40
+        },
+        "path_score": -1.680177927017212,
+        "retained_candidate_count": 46,
+        "score_event_count": 38,
+        "score_measure_max": 24,
+        "score_measure_min": 17,
+        "unmapped_event_count": 6
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\117.npz",
+        "frozen_copy_sha256": "ae0419b839fa6ad2bd0e92d99b308dd6f37211c35667fe7f8ebf259a6d03edd9",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "6149c4d3398f35c9cb033e9f36ae26c9bd91af6049c6dca6145604988afb1781"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "0be93f286cc67bf0e3c862baf513718ac8036c937a0e35c18607ced22b69c29d",
+        "rules": "2559e899e1aaf87b7f25d6211042c13723184770fe14b63be9ab97e01a7b6716"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\117.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\117.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.3718189999999595,
+        "current_stack": 0.6421201999983168,
+        "features": 0.8887815000052797,
+        "production_alignment": 0.0,
+        "total": 1.9306052999963867
+      },
+      "sample": "117",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 15.29469387755102,
+          "frames": 337248,
+          "sample_rate": 22050,
+          "sha256": "2e67057c52f7befbd809a2d871e741e58c016dc41d6383a026ce4a8ee4619e30"
+        },
+        "candidate_count": 23,
+        "candidate_pitch_in_score_ratio": 0.9130434782608695,
+        "candidate_to_score_count_ratio": 1.2105263157894737,
+        "candidate_union_all_count": 34,
+        "canonical_to_score_count_ratio": 1.105263157894737,
+        "canonical_transcription_count": 21,
+        "copy_event_count": 0,
+        "decoded_event_count": 23,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 18,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 18
+        },
+        "path_score": -2.345452070236206,
+        "retained_candidate_count": 23,
+        "score_event_count": 19,
+        "score_measure_max": 28,
+        "score_measure_min": 25,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\118.npz",
+        "frozen_copy_sha256": "3c6e01482763ce624492fe803235a05441b3d73ad2e1acad001f9d1ff3dfb449",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "2e67057c52f7befbd809a2d871e741e58c016dc41d6383a026ce4a8ee4619e30"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\118\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "894c5e3877d26b50ef6b7589c37139a15851016acb7df120aa48faaec19a90c7",
+        "rules": "965741d31a99ca1ec127b2b69bf3efb492b5ff1ffcddfeb4f22752d7466949c2"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\118.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\118.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.10643530000379542,
+        "current_stack": 0.3660763000007137,
+        "features": 0.47665199999755714,
+        "production_alignment": 0.0,
+        "total": 0.9806914000000688
+      },
+      "sample": "118",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 15.209342403628117,
+          "frames": 335366,
+          "sample_rate": 22050,
+          "sha256": "e6c2ed09fe3178e25c938c52282c249b44d51037965c9fac7371e411bc49802e"
+        },
+        "candidate_count": 27,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.8709677419354839,
+        "candidate_union_all_count": 34,
+        "canonical_to_score_count_ratio": 0.8387096774193549,
+        "canonical_transcription_count": 26,
+        "copy_event_count": 0,
+        "decoded_event_count": 27,
+        "deleted_score_event_count": 7,
+        "mapped_event_count": 24,
+        "mapped_score_coverage": 0.7741935483870968,
+        "operations": {
+          "EXTRA": 3,
+          "MATCH": 24
+        },
+        "path_score": 0.6262694597244263,
+        "retained_candidate_count": 27,
+        "score_event_count": 31,
+        "score_measure_max": 36,
+        "score_measure_min": 31,
+        "unmapped_event_count": 3
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\119.npz",
+        "frozen_copy_sha256": "4feceb03060107a26084f2ff322a6853caf608cc54f0accd2643268c420c81c4",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "e6c2ed09fe3178e25c938c52282c249b44d51037965c9fac7371e411bc49802e"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "9465d03fdcb6342dc410115af40d005d489034c77c15bfb4360d4821b94ccfc4",
+        "rules": "173ea6311da5f31cc82d85a763610f044b0f863323bea06cf4099538490b93d4"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\119.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\119.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.15592569999716943,
+        "current_stack": 0.44230749999405816,
+        "features": 0.49621850000403356,
+        "production_alignment": 0.0,
+        "total": 1.1258995999960462
+      },
+      "sample": "119",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 14.1,
+          "frames": 310905,
+          "sample_rate": 22050,
+          "sha256": "efb5d172f2996279cacc8ac82c07a00b7d82bd98323203201d74caa17260062a"
+        },
+        "candidate_count": 19,
+        "candidate_pitch_in_score_ratio": 0.8947368421052632,
+        "candidate_to_score_count_ratio": 1.0555555555555556,
+        "candidate_union_all_count": 31,
+        "canonical_to_score_count_ratio": 1.0555555555555556,
+        "canonical_transcription_count": 19,
+        "copy_event_count": 0,
+        "decoded_event_count": 19,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 18,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "EXTRA": 1,
+          "MATCH": 17,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 6.950923919677734,
+        "retained_candidate_count": 19,
+        "score_event_count": 18,
+        "score_measure_max": 27,
+        "score_measure_min": 25,
+        "unmapped_event_count": 1
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\120.npz",
+        "frozen_copy_sha256": "3ce65264405b29781f529277478686d4b540ee1829961030ca74c74d9f600cf1",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "efb5d172f2996279cacc8ac82c07a00b7d82bd98323203201d74caa17260062a"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\120\\basic_pitch_cache.npz"
+      },
+      "hashes": {
+        "prediction": "45c3951dab58286389c4d9967487f0a73bd98d335af27c407e4cfbfedc4b3974",
+        "rules": "387345e3b6e8cb6fa3063c6ac819439c40aca62032dc7be9a6a5b0f8b91cf4f5"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\120.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\120.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.09657020000304328,
+        "current_stack": 0.2792660999984946,
+        "features": 0.4840102999951341,
+        "production_alignment": 0.0,
+        "total": 0.8798729999980424
+      },
+      "sample": "120",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 19.56136054421769,
+          "frames": 431328,
+          "sample_rate": 22050,
+          "sha256": "b32cad7ae03f509260c5ab8622e28fe1784b7f703052dbc86bb039393da8b37f"
+        },
+        "candidate_count": 30,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 0.6976744186046512,
+        "candidate_union_all_count": 35,
+        "canonical_to_score_count_ratio": 0.7209302325581395,
+        "canonical_transcription_count": 31,
+        "copy_event_count": 20,
+        "decoded_event_count": 30,
+        "deleted_score_event_count": 31,
+        "mapped_event_count": 30,
+        "mapped_score_coverage": 0.6046511627906976,
+        "operations": {
+          "MATCH": 30
+        },
+        "path_score": 3.3239338397979736,
+        "retained_candidate_count": 30,
+        "score_event_count": 43,
+        "score_measure_max": 33,
+        "score_measure_min": 25,
+        "unmapped_event_count": 0
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\121.npz",
+        "frozen_copy_sha256": "8cbb2b04d2123f1474b6ed53540b4a0570b453d14645121cb5258011c8ac274b",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "b32cad7ae03f509260c5ab8622e28fe1784b7f703052dbc86bb039393da8b37f"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "e1024b495141be78d2bf2dcaff438e17cedce234f5d382a8ac03ec5f49899078",
+        "rules": "671a33cd5108cd01727f0636d6fa80494725ba2db277eb5dda5904a87523dad3"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\121.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\121.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.2150474000009126,
+        "current_stack": 0.5436832999985199,
+        "features": 0.7796458999946481,
+        "production_alignment": 0.0,
+        "total": 1.5658540000003995
+      },
+      "sample": "121",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 31.764036281179138,
+          "frames": 700397,
+          "sample_rate": 22050,
+          "sha256": "c19a0ab17acc8d01439622c0abba8694e2caaee64bada4710549db50a993ab9b"
+        },
+        "candidate_count": 58,
+        "candidate_pitch_in_score_ratio": 0.9482758620689655,
+        "candidate_to_score_count_ratio": 1.2340425531914894,
+        "candidate_union_all_count": 73,
+        "canonical_to_score_count_ratio": 1.1914893617021276,
+        "canonical_transcription_count": 56,
+        "copy_event_count": 30,
+        "decoded_event_count": 58,
+        "deleted_score_event_count": 24,
+        "mapped_event_count": 54,
+        "mapped_score_coverage": 0.7659574468085106,
+        "operations": {
+          "EXTRA": 4,
+          "MATCH": 53,
+          "SUBSTITUTE": 1
+        },
+        "path_score": 23.042245864868164,
+        "retained_candidate_count": 58,
+        "score_event_count": 47,
+        "score_measure_max": 40,
+        "score_measure_min": 33,
+        "unmapped_event_count": 4
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\122.npz",
+        "frozen_copy_sha256": "34f1226a12e9c2b08da17dd0dad74a8f8b3362bb977ce5ffb4989ad72b7931a6",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "c19a0ab17acc8d01439622c0abba8694e2caaee64bada4710549db50a993ab9b"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "0fea81bc720adeddb51b34d5927b27f0a279461e63966933913eb57c30d514b6",
+        "rules": "0204e6f36be37adb958f3f479a21021d7070ed4de951ae18e42e90bfb6f42c6e"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\122.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\122.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.2658707000009599,
+        "current_stack": 1.0772874999966007,
+        "features": 0.8860492000021623,
+        "production_alignment": 0.0,
+        "total": 2.263806700000714
+      },
+      "sample": "122",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 15.550702947845805,
+          "frames": 342893,
+          "sample_rate": 22050,
+          "sha256": "34fca352a287a646eb10b7e353a4d44248209ddad2f4cb1ebdf25a729bc2426d"
+        },
+        "candidate_count": 24,
+        "candidate_pitch_in_score_ratio": 0.6666666666666666,
+        "candidate_to_score_count_ratio": 0.96,
+        "candidate_union_all_count": 35,
+        "canonical_to_score_count_ratio": 0.92,
+        "canonical_transcription_count": 23,
+        "copy_event_count": 7,
+        "decoded_event_count": 24,
+        "deleted_score_event_count": 15,
+        "mapped_event_count": 19,
+        "mapped_score_coverage": 0.6,
+        "operations": {
+          "EXTRA": 5,
+          "MATCH": 14,
+          "SUBSTITUTE": 5
+        },
+        "path_score": -24.14925765991211,
+        "retained_candidate_count": 24,
+        "score_event_count": 25,
+        "score_measure_max": 31,
+        "score_measure_min": 27,
+        "unmapped_event_count": 5
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\123.npz",
+        "frozen_copy_sha256": "0eb984a00acb7f047916ac5dd42c8820ab9fb54b2d4abf550d12b5128e701614",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "34fca352a287a646eb10b7e353a4d44248209ddad2f4cb1ebdf25a729bc2426d"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "8361750ade0f9760724d4eb4bccecbac85c833aa910d683fa0728a0aa8a3afc1",
+        "rules": "262eaa8cbe6b1090a4444fa04e0e4c9e2bac8bbf155bd82eb9b657a3ee05ad9b"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\123.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\123.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.17524910000065574,
+        "current_stack": 0.3277818999995361,
+        "features": 0.5033091999939643,
+        "production_alignment": 0.0,
+        "total": 1.0341359000012744
+      },
+      "sample": "123",
+      "status": "succeeded"
+    },
+    {
+      "diagnostics": {
+        "audio": {
+          "channels": 1,
+          "duration_sec": 8.553333333333333,
+          "frames": 188601,
+          "sample_rate": 22050,
+          "sha256": "a6465a5e00752a075240436e67f41996f39ac7d693d35b2234781f402aa74bca"
+        },
+        "candidate_count": 11,
+        "candidate_pitch_in_score_ratio": 1.0,
+        "candidate_to_score_count_ratio": 1.0,
+        "candidate_union_all_count": 12,
+        "canonical_to_score_count_ratio": 1.0,
+        "canonical_transcription_count": 11,
+        "copy_event_count": 0,
+        "decoded_event_count": 11,
+        "deleted_score_event_count": 0,
+        "mapped_event_count": 11,
+        "mapped_score_coverage": 1.0,
+        "operations": {
+          "MATCH": 11
+        },
+        "path_score": 6.121842384338379,
+        "retained_candidate_count": 11,
+        "score_event_count": 11,
+        "score_measure_max": 4,
+        "score_measure_min": 3,
+        "unmapped_event_count": 0
+      },
+      "feature_cache": {
+        "frozen_copy": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\feature-cache\\124.npz",
+        "frozen_copy_sha256": "45423c99c64e8ea14fa198a3e39a0dec16dbc34ba86c18634eed4772d22fa73f",
+        "metadata": {
+          "basic_pitch_version": "0.4.0",
+          "cache_schema_version": 1,
+          "frontend_version": "align-basic-pitch-0.4.0-v2",
+          "pitch_policy": {
+            "audio_to_written_shift": 2,
+            "contour_bins_per_semitone": 3,
+            "effective_audio_transpose": 2,
+            "policy": "effective_audio_transpose_to_written_axes_v1"
+          },
+          "pitch_space": "written",
+          "runtime": "tensorflow",
+          "wav_sha256": "a6465a5e00752a075240436e67f41996f39ac7d693d35b2234781f402aa74bca"
+        },
+        "sample_feature_cache_opened": false,
+        "source_kind": "fresh_audio_inference",
+        "source_path": null
+      },
+      "hashes": {
+        "prediction": "6bd3e05c2866313840462030281e58f268160b4738c81f49e0d12191d88ad1ba",
+        "rules": "dd10d54dd300e90c99cfd283954decadeb0f9caf5a91578b72d03b09ddfbe1db"
+      },
+      "paths": {
+        "prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\predictions\\124.json",
+        "rules": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\eval-datacreate-095-124-20260921\\rules-baseline\\124.json"
+      },
+      "runtime_seconds": {
+        "candidate_and_score": 0.0695798000015202,
+        "current_stack": 0.17143330000544665,
+        "features": 0.31004229999962263,
+        "production_alignment": 0.0,
+        "total": 0.570709599996917
+      },
+      "sample": "124",
+      "status": "succeeded"
+    }
+  ],
+  "samples_root": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples",
+  "schema_version": "align-datacreate-real-freeze-v1",
+  "subset": {
+    "max_id": 124,
+    "min_id": 95,
+    "requested": true,
+    "sample_ids": [
+      "095",
+      "096",
+      "097",
+      "098",
+      "099",
+      "100",
+      "101",
+      "102",
+      "103",
+      "104",
+      "105",
+      "106",
+      "107",
+      "108",
+      "109",
+      "110",
+      "111",
+      "112",
+      "113",
+      "114",
+      "115",
+      "116",
+      "117",
+      "118",
+      "119",
+      "120",
+      "121",
+      "122",
+      "123",
+      "124"
+    ]
+  }
+}

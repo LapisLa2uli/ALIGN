@@ -1,0 +1,42 @@
+{
+  "split": "val",
+  "clips": 399,
+  "aligner": "dp_v2",
+  "costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.6,
+    "alternative_min_confidence": 0.1
+  },
+  "notes_file": "runs\\fast102-v1\\notes-val-v3c-rich05.json",
+  "notes_sha256": "9434db78ce5654f46898dd80d4169b49334d01d38a79666c7e10f216b64687b5",
+  "f1": 0.9900323777433667,
+  "precision": 0.9967083908602986,
+  "recall": 0.9834452022662481,
+  "bootstrap_95": {
+    "replicates": 1000,
+    "lower_95": 0.989127074658124,
+    "median": 0.9900222445148853,
+    "upper_95": 0.9909566664209457
+  },
+  "per_type_f1": {
+    "match": 0.9970191127476766,
+    "copy": 0.9959829805227411,
+    "substitute": 0.9425414364640884,
+    "extra": 0.9546862314700665,
+    "missed_note": 0.6876687668766878
+  },
+  "by_group_f1": {
+    "procedural": 0.9900323777433667
+  },
+  "errors": {}
+}

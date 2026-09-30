@@ -21,6 +21,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--resource-status", type=Path, required=True)
     parser.add_argument("--resume", type=Path)
+    parser.add_argument("--init-checkpoint", type=Path)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--epochs", type=int, default=12)
     parser.add_argument("--batch-size", type=int, default=8)
@@ -70,6 +71,7 @@ def main() -> None:
         compile_model=args.compile,
         max_train_rows=args.max_train_rows,
         augmentation_probability=args.augmentation_probability,
+        init_checkpoint=args.init_checkpoint,
         model=model,
         seed=args.seed,
     )
@@ -80,7 +82,7 @@ def main() -> None:
                 "schema_version": "align-mel-transcriber-train-config-v1",
                 "cache": str(args.cache.resolve()),
                 "device": args.device,
-                "from_scratch": args.resume is None,
+                "from_scratch": args.resume is None and args.init_checkpoint is None,
                 "basic_pitch_dependency": False,
                 "score_input_to_acoustic_model": False,
                 "locked_test_materialized": False,
@@ -90,6 +92,9 @@ def main() -> None:
                     "output_dir": str(args.output_dir),
                     "resource_status": str(args.resource_status),
                     "resume": str(args.resume) if args.resume else None,
+                    "init_checkpoint": (
+                        str(args.init_checkpoint) if args.init_checkpoint else None
+                    ),
                 },
                 "model": model.to_dict(),
             },

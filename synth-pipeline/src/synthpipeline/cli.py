@@ -12,6 +12,16 @@ from synthpipeline.pipeline import generate_samples, generate_samples_parallel
 from synthpipeline.soundfonts import SOUNDFONT_IDS, fetch_soundfonts, list_soundfonts
 
 
+def _root(value: str) -> Path:
+    """Bundle root: a path, or a dataset version such as ``9.2`` from datasets.yaml."""
+    from synthpipeline.datasets import resolve_root
+
+    try:
+        return resolve_root(value)
+    except (KeyError, ValueError) as exc:
+        raise argparse.ArgumentTypeError(str(exc)) from exc
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="Generate clarinet MusicXML scores and ALIGN bundles with known errors"
@@ -27,7 +37,11 @@ def main(argv: list[str] | None = None) -> None:
         help="Existing MusicXML file or directory (omit to generate original scores)",
     )
     gen.add_argument("--seed", type=int, default=42)
-    gen.add_argument("--output", type=Path, help="Output root (default: config paths.output_root)")
+    gen.add_argument(
+        "--output",
+        type=_root,
+        help="Output root or dataset version (default: config paths.output_root)",
+    )
     gen.add_argument(
         "--midi-backend",
         choices=("music21", "musescore"),
@@ -63,10 +77,10 @@ def main(argv: list[str] | None = None) -> None:
     )
     conv.add_argument(
         "--root",
-        type=Path,
+        type=_root,
         action="append",
         default=None,
-        help="Bundle root (repeatable; default: output_root)",
+        help="Bundle root or dataset version (repeatable; default: output_root)",
     )
     conv.add_argument("--pad", type=int, default=2)
     conv.add_argument("--pad-random", action="store_true")
@@ -78,7 +92,7 @@ def main(argv: list[str] | None = None) -> None:
         "transpose-audio",
         help="Shift existing synth WAVs to sounding pitch (Bb clarinet: -2 semitones)",
     )
-    trans.add_argument("--root", type=Path, action="append", default=None)
+    trans.add_argument("--root", type=_root, action="append", default=None)
     trans.add_argument("--semitones", type=int, default=-2)
     trans.add_argument("--force", action="store_true")
     trans.add_argument("--workers", type=int, default=8)
@@ -87,7 +101,7 @@ def main(argv: list[str] | None = None) -> None:
         "regenerate-audio",
         help="Re-render bundle WAVs from MIDI at sounding pitch (keeps pitch-bends)",
     )
-    regen.add_argument("--root", type=Path, action="append", default=None)
+    regen.add_argument("--root", type=_root, action="append", default=None)
     regen.add_argument("--semitones", type=int, default=-2)
     regen.add_argument("--force", action="store_true")
     regen.add_argument(
@@ -113,6 +127,19 @@ def main(argv: list[str] | None = None) -> None:
         default=16,
         help="Muse Sounds job size (MusicXML pairs per MuseScore invocation)",
     )
+
+    deg = sub.add_parser(
+        "degrade-audio",
+        help="Make rendered performance audio sound like a phone recording (config degrade block)",
+    )
+    deg.add_argument("--root", type=_root, action="append", default=None)
+    deg.add_argument("--force", action="store_true")
+    deg.add_argument("--workers", type=int, default=8)
+
+    ds = sub.add_parser("datasets", help="List dataset versions (datasets.yaml) or link x.y aliases")
+    ds.add_argument("action", choices=("list", "link"), nargs="?", default="list")
+    ds.add_argument("--alias-root", type=Path, default=None)
+    ds.add_argument("--dry-run", action="store_true")
 
     fonts = sub.add_parser("list-soundfonts", help="Show available clarinet SoundFonts")
     fetch = sub.add_parser("fetch-soundfonts", help="Download bundled clarinet SoundFonts")
@@ -222,6 +249,7 @@ def main(argv: list[str] | None = None) -> None:
                 strip_ornaments=bool(getattr(args, "strip_ornaments", False)),
                 backend=str(getattr(args, "backend", "soundfont")),
                 batch_size=int(getattr(args, "batch_size", 16)),
+                dataset_version=config.dataset_version(str(getattr(args, "backend", "soundfont"))),
             )
             print(
                 f"root={root} bundles={counts['n_bundles']} converted={counts['converted']} "
@@ -230,6 +258,42 @@ def main(argv: list[str] | None = None) -> None:
             )
             failed += counts["failed"]
         return 0 if failed == 0 else 2
+    if args.command == "degrade-audio":
+        from synthpipeline.degrade_bundles import degrade_root
+
+        roots = args.root or [config.output_root()]
+        failed = 0
+        for root in roots:
+            counts = degrade_root(
+                Path(root),
+                config.degrade,
+                force=bool(args.force),
+                workers=int(args.workers),
+                sample_rate=config.sample_rate(),
+                dataset_version=config.dataset_version("degrade"),
+            )
+            print(
+                f"root={root} bundles={counts['n_bundles']} converted={counts['converted']} "
+                f"skip_done={counts['skip_done']} skip_render={counts['skip_render']} "
+                f"skip_missing={counts['skip_missing']} failed={counts['failed']}"
+            )
+            failed += counts["failed"]
+        return 0 if failed == 0 else 2
+    if args.command == "datasets":
+        from synthpipeline.datasets import link_aliases, load_registry
+
+        if args.action == "link":
+            for version_id, alias, target, action in link_aliases(args.alias_root, dry_run=args.dry_run):
+                print(f"{version_id:>5}  {action:14s} {alias} -> {target}")
+            return
+        registry, alias_root = load_registry()
+        for entry in registry.values():
+            derived = entry.info.get("derived_from")
+            note = f" (from {derived})" if derived else ""
+            print(f"{entry.id:>5}  {entry.status:20s} {entry.name}{note}")
+            print(f"       {entry.path}")
+        print(f"aliases: {alias_root}")
+        return
     if args.command == "list-soundfonts":
         for row in list_soundfonts(config):
             status = "ready" if row["installed"] else "MISSING"

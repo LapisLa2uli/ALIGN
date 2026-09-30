@@ -1,0 +1,68 @@
+{
+  "agent_labeling": {
+    "alignment_artifact": "note_alignment_v2.json",
+    "alignment_engine": "align-joint",
+    "dismissed_types": [],
+    "kept_counts_by_type": {
+      "extra_note": 1
+    },
+    "mapped_note_count": 23,
+    "maximum_labels_per_type": 10000,
+    "method": "current_note_alignment_review_v1",
+    "raw_counts_by_type": {
+      "extra_note": 1
+    },
+    "replaced_previous_agent_labels": true,
+    "score_note_count": 23,
+    "transcribed_note_count": 24,
+    "transcriber": "current_sample_transcription",
+    "uses_error_heads": false,
+    "uses_project_alignment_or_error_models": true
+  },
+  "annotator_id": "cursor_agent_current_alignment_review_v1",
+  "audio_reference": "performance_audio.wav",
+  "labels": [
+    {
+      "comment": "Current alignment review: transcribed MIDI 54 has no score counterpart (confidence 0.65).",
+      "core_note_ids": [
+        "note_0000",
+        "note_0001"
+      ],
+      "deviation_cents": null,
+      "deviation_ms": null,
+      "end_time": 0.1625,
+      "extra_copies": null,
+      "id": "agent_extra_0000",
+      "measure_number": 1,
+      "note_id": null,
+      "note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002",
+        "note_0003"
+      ],
+      "pitches": [
+        62,
+        65,
+        67,
+        65
+      ],
+      "repeats_label_range": null,
+      "score_part": {
+        "core_end_note_index": 1,
+        "core_start_note_index": 0,
+        "end_measure": 1,
+        "end_note_index": 3,
+        "pad_notes": 2,
+        "start_measure": 1,
+        "start_note_index": 0
+      },
+      "severity": 2,
+      "source": "agent",
+      "start_time": 0.0697,
+      "type": "extra_note"
+    }
+  ],
+  "schema_version": "1.2",
+  "self_reported": []
+}

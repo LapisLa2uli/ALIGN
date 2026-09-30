@@ -1,0 +1,44 @@
+{
+  "schema_version": "align-orn-v7-hybrid-lockbox-protocol-v1",
+  "frozen_utc": "2026-09-25T15:33:24.357536+00:00",
+  "objective": "official exclusive one-to-one canonical note-wise F1 >= 0.80",
+  "success_threshold_f1": 0.8,
+  "candidate_sha256": "30c5b9b60fbf55ecc9fd52a1efe553dd0a5c20fd61ff47546fb7147d85386c8c",
+  "evaluator_sha256": "5401a74117a9cbae8ab005bc15476394029548b4853ae6da6857b150d1680e0b",
+  "freeze_sha256": "ebc21c543e3c1e667b54b08e0746a24976045178dec5d961aedecfaa00dd977e",
+  "manifest_sha256": "faa2b62e79fbb3ff9ed90f97cc18602e704ca06bdc5afe7b5d8d8efb85742551",
+  "targets_sha256": "0fc17945409ea5d94ccb145c93a4395ae6f92cdedc0ce6bffcc6b9518c8500c7",
+  "key_sha256": "2729dfdb9c6ddfb6484874e7ef08bfcfb1d22984142daf8de17e3f5abba9f88b",
+  "population": {
+    "rows": 137,
+    "membership_selected_without_model_outcomes": true,
+    "overlap_with_v2_through_v6": false,
+    "plaintext_source_deleted": true
+  },
+  "candidate": {
+    "frontend": "ALIGN mel transcriber v1 plus Basic Pitch gap fill",
+    "minimum_confidence": 0.75,
+    "decode_overrides": {},
+    "maximum_overlap_sec": 0.02,
+    "identity_mapper": "frozen identity CRF fast v2",
+    "development_rows": 494,
+    "development_f1": 0.8189986380176042,
+    "development_precision": 0.8159301713313621,
+    "development_recall": 0.8220902709761672,
+    "v7_targets_read": false
+  },
+  "procedure": [
+    "verify candidate, evaluator, freeze, envelope, public manifest, checkpoints, and all public input hashes",
+    "run score-blind mel transcription, add non-overlapping Basic Pitch notes, then score-aware frozen identity mapping",
+    "atomically freeze and hash all predictions before key/target access",
+    "write opening sentinels, then validate the external key and decrypt once",
+    "score the official exclusive note-wise metric and forbid post-lockbox tuning"
+  ],
+  "decision": {
+    "success": "F1 >= 0.80",
+    "failure": "F1 < 0.80",
+    "rounding_to_threshold": false,
+    "post_lockbox_tuning_allowed": false,
+    "alternate_test_selection_allowed": false
+  }
+}
