@@ -104,9 +104,17 @@ or matching MIDI is missing, supply those files or use `--no-excerpts`.
 
 Clips include 0.25 seconds of context on either side, bounded by the recording.
 Set `excerpt_padding_seconds` in YAML to change this (0–2 seconds). Assembly
-keeps the original pitch and tempo, adjusts each excerpt's level with one bounded
-gain, adds short edge fades, and leaves 0.3-second pauses between speech and music.
-The finished MP3 is 44.1 kHz stereo. Missing label times produce spoken feedback
+keeps the original pitch and tempo and matches all speech and music segments
+using gated, frequency-weighted loudness (normally -20 LUFS). A single gain per
+segment preserves its internal dynamics. The shared target is lowered if needed
+to keep estimated peaks below -2 dBFS or avoid boosting very quiet material by
+more than 30 dB; silent clips stay silent. Clips shorter than 400 ms use a shorter
+loudness measurement window.
+
+Music snippets receive short edge fades and subtle room reverb (8% wet amplitude,
+0.25-second tail). Speech stays dry for clarity. There is 0.5 seconds of silence
+before each snippet and another 0.5 seconds after its reverb tail, so narration
+does not interrupt the decay. The finished MP3 is 44.1 kHz stereo. Missing label times produce spoken feedback
 without an excerpt for that point; no times are guessed from score positions.
 
 Use `--no-excerpts` or `include_performance: false` for narration alone.
@@ -125,7 +133,7 @@ the plan and selected clips for review without synthesizing speech.
 | `excerpt-NNN.wav` | Exact selected recording range with context, before final mix gain and fades. |
 | `reference-NNN.wav` | Corresponding passage from the rendered reference audio. |
 | `speech-NN-*.mp3` | Individual synthesized introduction, performance cue, and feedback segments. |
-| `timeline.json` | Segment order, final MP3 positions, source excerpt times, and mix gains. |
+| `timeline.json` | Segment order, final MP3 positions, source excerpt times, loudness/gains, reverb tails, and silence margins. |
 
 A dry run writes only the report, request, and manifest. Status is `dry_run`,
 `text_ready`, `complete`, `llm_failed`, or `tts_failed`, with `prepared` during
