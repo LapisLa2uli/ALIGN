@@ -16,7 +16,7 @@ from alignmodel.pipeline import run_pipeline
 from alignmodel.types import PipelineConfig, pipeline_label_to_dict
 
 
-def _note_first_payload(sample: Path, weights: Path, device: str) -> dict:
+def _note_first_payload(sample: Path, weights: Path, device: str, progress=None) -> dict:
     state = run_pipeline(
         sample,
         stages={1, 2},
@@ -28,6 +28,7 @@ def _note_first_payload(sample: Path, weights: Path, device: str) -> dict:
         device=device,
         weights_dir=None,
         alignment_weights_dir=weights,
+        progress=progress,
     )
     events = []
     for event_index, pair in enumerate(
@@ -169,10 +170,12 @@ def _transcription_payload(
     }
 
 
-def _joint_payload(sample: Path, checkpoint: Path, device: str) -> dict:
-    result = infer_joint_sample(sample, checkpoint, device=device)
+def _joint_payload(sample: Path, checkpoint: Path, device: str, progress=None) -> dict:
+    result = infer_joint_sample(sample, checkpoint, device=device, progress=progress)
     from datacreate.melody import parse_sounding_notes
 
+    if progress:
+        progress("labels")
     return build_gui_alignment_payload(
         result, parse_sounding_notes(sample / "verified_score.musicxml")
     )
@@ -191,12 +194,20 @@ def main() -> None:
         help="Dump frozen Basic Pitch notes without score alignment",
     )
     args = parser.parse_args()
+    def progress(step):
+        # A separate atomic file lets the web process observe the subprocess
+        # without parsing logs or contending with its job-status writer.
+        path = args.sample / "alignment_progress.json"
+        temporary = path.with_suffix(".tmp")
+        temporary.write_text(json.dumps({"step": step}), encoding="utf-8")
+        temporary.replace(path)
+
     if args.transcribe_only:
         payload = _transcription_payload(args.sample, args.checkpoint)
     elif args.checkpoint is not None:
-        payload = _joint_payload(args.sample, args.checkpoint, args.device)
+        payload = _joint_payload(args.sample, args.checkpoint, args.device, progress=progress)
     elif args.weights is not None:
-        payload = _note_first_payload(args.sample, args.weights, args.device)
+        payload = _note_first_payload(args.sample, args.weights, args.device, progress=progress)
     else:
         raise SystemExit("Provide --checkpoint (joint), --weights (legacy), or --transcribe-only")
     args.out.parent.mkdir(parents=True, exist_ok=True)

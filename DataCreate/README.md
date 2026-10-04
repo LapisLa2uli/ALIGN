@@ -4,6 +4,11 @@ Local pipeline for turning MusicXML/PDF scores plus performance recordings into 
 
 ## Setup
 
+For optional **label JSON → spoken analysis → MP3**, see
+[`docs/spoken_feedback.md`](docs/spoken_feedback.md). `datacreate-feedback`
+uses 302.AI for narration and Fish Audio directly for English speech, with
+credentials supplied through environment variables.
+
 ### 1. Conda environment
 
 ```powershell

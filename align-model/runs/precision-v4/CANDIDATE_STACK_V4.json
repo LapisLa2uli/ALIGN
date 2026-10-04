@@ -1,0 +1,224 @@
+{
+  "schema_version": "align-stack-v4-candidate-v1",
+  "frozen_utc": "2026-10-01T19:54:47.300699+00:00",
+  "description": "v3 transcriber (unchanged) + aligner v3: timing pass (weight 0.2) and logistic extra/missed gates fitted on the even 9.2/fast val halves for 0.97 precision; edge missed calls withheld",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-stack-v2\\v3-c-fast\\best.pt",
+  "checkpoint_sha256": "60663218eba3a43b35691ec95c116f50eafbc2fd749428af35e566891c50cad9",
+  "decoder": {
+    "blank_scale": 0.5,
+    "candidate_threshold": 0.08
+  },
+  "aligner_costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.6,
+    "alternative_min_confidence": 0.1
+  },
+  "aligner_v3": {
+    "artifact_ioi": 0,
+    "timing_weight": 0.2
+  },
+  "gate": {
+    "enabled": true,
+    "extra_model": {
+      "mean": [
+        -3.0225426688325574,
+        -2.7103135137192975,
+        0.07285458879618593,
+        0.27413587604290823,
+        -7.983786451773178,
+        0.6958127417496192,
+        0.015792610250297975,
+        0.26232866507749086,
+        0.2030877532777131,
+        0.9512067938021455
+      ],
+      "scale": [
+        0.7793424545940926,
+        0.9970950858226824,
+        0.2598986677223228,
+        0.44607879311361276,
+        2.1168124269818946,
+        0.12069557624912063,
+        0.12467338552215246,
+        0.29257983433272017,
+        0.23290676804542762,
+        0.21543644097203318
+      ],
+      "coef": [
+        -0.40062374593838324,
+        -0.09280046996981212,
+        -0.329667236017984,
+        -0.21257791604668497,
+        -0.7049622571976518,
+        -0.14805836871100347,
+        -0.18855997761909066,
+        -0.05864658661489545,
+        0.2176158422165257,
+        0.7241951315494765
+      ],
+      "intercept": 4.658395392360102
+    },
+    "extra_threshold": 0.86,
+    "missed_model": {
+      "mean": [
+        -7.894645405614207,
+        0.7189792491156947,
+        0.584497288718544,
+        0.5847995420392047,
+        0.6701679229736328,
+        -1.7551706006622938,
+        1.0478468899521531,
+        0.005980861244019139,
+        0.22966507177033493,
+        0.17822966507177032,
+        0.30980861244019137,
+        1.1743071173893305
+      ],
+      "scale": [
+        2.4816120220288984,
+        0.24372576334815124,
+        0.3508234447033694,
+        0.6697909302092713,
+        0.1350245247520198,
+        0.5518329714662183,
+        0.2447695275105937,
+        0.07710541325111667,
+        0.42061843494422696,
+        0.4920961447275996,
+        0.6889079504202383,
+        0.5992242195656543
+      ],
+      "coef": [
+        -2.029674793956286,
+        0.054227579619321245,
+        -1.1877028358127446,
+        0.6166339157701723,
+        0.2240218350147637,
+        -0.4506055595667863,
+        -0.5561762750440109,
+        -0.3040849700808943,
+        -1.073720301164169,
+        -0.5004444931049059,
+        0.44494724280872766,
+        0.17874396748423957
+      ],
+      "intercept": 1.1309188573952007
+    },
+    "missed_threshold": 0.88,
+    "missed_edge_runs": false
+  },
+  "datasets": {
+    "realistic92": {
+      "root": "E:\\outputRaw_realistic_10k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-aligner-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "c660525a5710068af10bc7fa57d63a31d4521ee2498545b8ec1546af6628a00d"
+    },
+    "fast102": {
+      "root": "E:\\outputRaw_fast16_focus_5k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\fast102-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "058ef8c73238210c87d0d717aab7d0bb23596ce92b8de9b5d643bd5207ff91fc"
+    }
+  },
+  "code_sha256": {
+    "src/alignmodel/joint/robust_dp_aligner_v3.py": "fedee957ec2a3b3027fe7ce3229610302123fb27560a4acbd0e71fc93e756e2d",
+    "src/alignmodel/joint/robust_dp_aligner_v2.py": "7fbee0364ec81ec2e325467a0d0d8c93ea7e632932c0d774b3f661a5568bc304",
+    "src/alignmodel/joint/perfect_dp_aligner_v1.py": "58d71391c92624f395ef78803d553682f2a0e7205bcec3112fb1e4d30b99ad57",
+    "src/alignmodel/joint/grammar_mapper_v2.py": "4fcdd698d7a77e76aedbccea6da7352857d3e71ce93e3acde775c199f48bcd9c",
+    "src/alignmodel/joint/ornament_mapper_v1.py": "cfe56ad0d082fe465c0c9068113ef8a30479669defba2248478035cea1726354",
+    "src/alignmodel/joint/index.py": "bbd9c45ad63a18ab37531f3e475830c015fd6e817a54a5b1c4da88ea48a2e5c8",
+    "src/alignmodel/joint/metrics.py": "9c81cb612cdc9c98d17ce70ac18ebe0749df6cc8b955704f83483e3f60baa164",
+    "src/alignmodel/transcription/mel_ctc_v3.py": "96e3678f93f63a40db7e455639e0f50b51868c80f42c90acc3e90d916b4cdd1b",
+    "src/alignmodel/transcription/ctc_decode_v2.py": "487a7c5210853783354eebd6d1a00b8900f77e1e740a1af88e41cecdf6dea4f8",
+    "src/alignmodel/transcription/mel_v1.py": "ee5c19468912d9b4f14304913ef5022fd273459a7bf2f191549461487c18655e",
+    "scripts/eval_stack_v4_test.py": "7f134733c8d731d75fa42590ec28a59f331564e5b234a1f4d4723bf6dde0913e",
+    "scripts/precision_harness_v4.py": "a69e25f8586ece292f8e00c75e4939f72d2a4fbfa644412056499165ca78ddef",
+    "scripts/audit_stack_v3_val_errors.py": "ee195434bb4f2d51dad4786047e5cbb171989898307bf774cb1fbf29b2f2a2bc",
+    "scripts/realistic92_aligner_common.py": "9179e132120099124b872ad6753ea1d8e21d2a743a3dd09495041ca54b5d3342"
+  },
+  "val_evidence": {
+    "even": {
+      "realistic92": {
+        "combined_f1": 0.9682,
+        "extra": {
+          "precision": 0.9736,
+          "recall": 0.8012,
+          "f1": 0.879,
+          "predicted": 4854,
+          "gold": 5899
+        },
+        "missed_note": {
+          "precision": 0.9751,
+          "recall": 0.47,
+          "f1": 0.6343,
+          "predicted": 241,
+          "gold": 500
+        }
+      },
+      "fast102": {
+        "combined_f1": 0.9905,
+        "extra": {
+          "precision": 0.9948,
+          "recall": 0.9207,
+          "f1": 0.9563,
+          "predicted": 7932,
+          "gold": 8571
+        },
+        "missed_note": {
+          "precision": 0.9816,
+          "recall": 0.7583,
+          "f1": 0.8556,
+          "predicted": 163,
+          "gold": 211
+        }
+      }
+    },
+    "odd": {
+      "realistic92": {
+        "combined_f1": 0.9592,
+        "extra": {
+          "precision": 0.957,
+          "recall": 0.7535,
+          "f1": 0.8432,
+          "predicted": 4674,
+          "gold": 5936
+        },
+        "missed_note": {
+          "precision": 0.9579,
+          "recall": 0.4744,
+          "f1": 0.6345,
+          "predicted": 261,
+          "gold": 527
+        }
+      },
+      "fast102": {
+        "combined_f1": 0.9887,
+        "extra": {
+          "precision": 0.9963,
+          "recall": 0.9076,
+          "f1": 0.9499,
+          "predicted": 7934,
+          "gold": 8710
+        },
+        "missed_note": {
+          "precision": 0.9559,
+          "recall": 0.6468,
+          "f1": 0.7715,
+          "predicted": 136,
+          "gold": 201
+        }
+      }
+    }
+  },
+  "selection": "gate thresholds: lowest threshold reaching 0.97 per-type precision on the even val halves of both datasets; odd halves read only",
+  "test_read_before_freeze": false
+}

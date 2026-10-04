@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import wave
 from pathlib import Path
+from copy import deepcopy
+import pytest
 
 from music21 import note, stream
 
@@ -14,6 +16,7 @@ from datacreate.transcription_labeling import (
     build_agent_label_document_from_note_alignment,
     detect_repetitions,
     relabel_sample_from_current_alignment,
+    build_agent_label_document_from_alignment_payload,
 )
 
 
@@ -172,3 +175,92 @@ def test_relabel_skips_ignored_postprocessor_extras(tmp_path):
     types = [label["type"] for label in document["labels"]]
     assert "extra_note" not in types
     assert document["agent_labeling"]["transcribed_note_count"] == 2
+
+
+def _v9_feedback_payload():
+    repeat = {
+        'id':'v9_0000','type':'repetition','source':'agent',
+        'score_event_indices':[0,1,2,3],
+        'note_ids':[f'note_{i:04d}' for i in range(4)],
+        'core_note_ids':[f'note_{i:04d}' for i in range(4)],
+        'score_part':{'start_note_index':0,'end_note_index':3,'pad_notes':0,
+                      'core_start_note_index':0,'core_end_note_index':3},
+        'start_time':2.,'end_time':3.9,'extra_copies':1,
+        'repeats_label_range':{'start_time':0.,'end_time':1.9},
+    }
+    return {
+        'engine':'align-joint',
+        'summary':{'backend':'ALIGN v9 (experimental)','status':'ok'},
+        'diagnostics':{'status':'ok','same_pitch_repair':{'schema_version':'same-pitch-repair-v2'}},
+        'provenance':{'candidate_sha256':'test-candidate'},
+        'labels':[repeat],'repetitions':[repeat],
+        # All replay notes are mapped, so the legacy insertion detector misses them.
+        'note_mapping':[0,1,2,3,0,1,2,3,4],
+        'transcribed_notes':[{'pitch':p,'start':i*.5,'end':i*.5+.4,'confidence':.9}
+                             for i,p in enumerate([60,62,64,65,60,62,64,65,67])],
+    }
+
+
+@pytest.mark.parametrize('explicit_contract',[False,True])
+def test_relabel_preserves_mapped_v9_repetition_and_provenance(tmp_path,explicit_contract):
+    sample=tmp_path/'sample'
+    _write_sample(sample,[60,62,64,65,67],[60,62,64,65,60,62,64,65,67])
+    payload=_v9_feedback_payload()
+    if explicit_contract:
+        payload['label_generation']={'schema_version':'datacreate-model-feedback-v1','method':'align_stack_v9'}
+    (sample/'note_alignment_v2.json').write_text(json.dumps(payload))
+    (sample/'labels.json').write_text('{"labels":[],"annotator_id":"human"}')
+    protected={n:(sample/n).read_bytes() for n in ('labels.json','transcription_notes.json','note_alignment_v2.json')}
+    result=relabel_sample_from_current_alignment(sample,maximum_per_type=0)
+    saved=json.loads((sample/'labels_agent.json').read_text())
+    assert saved['labels']==payload['labels']
+    assert result['counts_by_type']=={'repetition':1}
+    assert result['method']=='align_stack_v9' and result['dismissed_types']==[]
+    assert saved['agent_labeling']['candidate_sha256']=='test-candidate'
+    for name,content in protected.items():assert (sample/name).read_bytes()==content
+    relabel_sample_from_current_alignment(sample)
+    assert json.loads((sample/'labels_agent.json').read_text())==saved
+
+
+@pytest.mark.parametrize('status',['ok','alignment_uncertain'])
+def test_v9_empty_or_uncertain_feedback_never_falls_back_to_legacy_errors(tmp_path,status):
+    payload=_v9_feedback_payload()
+    payload['diagnostics']['status']=status
+    if status=='ok':payload['labels']=[]
+    original=deepcopy(payload)
+    doc=build_agent_label_document_from_alignment_payload(tmp_path,payload)
+    assert not doc['labels'] and not doc['agent_labeling']['kept_counts_by_type']
+    assert doc['agent_labeling']['status']==status
+    assert payload==original
+
+
+def test_multiple_repeat_regions_keep_exact_identity_and_copy_count(tmp_path):
+    payload=_v9_feedback_payload()
+    second=deepcopy(payload['labels'][0])
+    second.update(id='v9_0001',score_event_indices=[8,9],extra_copies=2,start_time=9.,end_time=12.)
+    payload['labels'].append(second)
+    doc=build_agent_label_document_from_alignment_payload(tmp_path,payload,maximum_per_type=1)
+    assert doc['labels']==payload['labels']
+    assert doc['agent_labeling']['kept_counts_by_type']=={'repetition':2}
+
+
+def test_relabel_http_route_serves_v9_repetition_with_reference_note_ids(tmp_path):
+    from fastapi.testclient import TestClient
+
+    from datacreate.config import PipelineConfig
+    from datacreate.web.app import create_app
+
+    sample = tmp_path / "095"
+    _write_sample(sample, [60, 62, 64, 65, 67], [60, 62, 64, 65, 60, 62, 64, 65, 67])
+    payload = _v9_feedback_payload()
+    (sample / "note_alignment_v2.json").write_text(json.dumps(payload), encoding="utf-8")
+    client = TestClient(create_app(PipelineConfig(
+        paths={"samples_root": str(tmp_path)}, taxonomy=["repetition"],
+    )))
+
+    response = client.post("/api/samples/095/re-label")
+    assert response.status_code == 200, response.text
+    assert response.json()["counts_by_type"] == {"repetition": 1}
+    response = client.get("/api/samples/095?label_source=agent")
+    assert response.status_code == 200, response.text
+    assert response.json()["labels"] == payload["labels"]

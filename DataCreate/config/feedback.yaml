@@ -1,0 +1,13 @@
+# Separate from default.yaml. Secrets belong in environment variables, not here.
+llm_base_url: https://api.302.ai/v1
+llm_model: gpt-4o-mini  # Change to a chat-completions model enabled in your account.
+llm_api_key_env: API_302_KEY
+fish_base_url: https://api.fish.audio
+fish_model: s2.1-pro   # s2.1-pro-free is also documented; account limits apply.
+fish_api_key_env: FISH_AUDIO_API_KEY
+fish_reference_id_env: FISH_AUDIO_REFERENCE_ID
+language: English
+instrument: B-flat clarinet
+timeout_seconds: 120
+max_input_chars: 100000
+max_speech_chars: 5000

@@ -1,0 +1,3420 @@
+{
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-stack-v2\\v3-c-fast\\best.pt",
+  "split": "val",
+  "seed": 20261001,
+  "limit": 160,
+  "device": "cuda",
+  "datasets": {
+    "realistic92": {
+      "clips": 160,
+      "scored_clips": 160,
+      "exceptions": {},
+      "lineage_pitch_mismatches": 0,
+      "transcription": {
+        "precision": 0.9869505494505495,
+        "recall": 0.9678271681691016,
+        "f1": 0.9772953178132356,
+        "predicted": 18928,
+        "gold": 19302
+      },
+      "combined_note_wise": {
+        "f1": 0.9652566799096363,
+        "precision": 0.9762842735581468,
+        "recall": 0.9544754275150208,
+        "per_type_f1": {
+          "match": {
+            "f1": 0.9837794405664643,
+            "precision": 0.9894938882715426,
+            "recall": 0.9781306171360096,
+            "gold": 10014,
+            "predicted": 9899
+          },
+          "copy": {
+            "f1": 0.9659099423091332,
+            "precision": 0.9725407362703682,
+            "recall": 0.9593689537133502,
+            "gold": 6719,
+            "predicted": 6628
+          },
+          "substitute": {
+            "f1": 0.8265895953757225,
+            "precision": 0.8033707865168539,
+            "recall": 0.8511904761904762,
+            "gold": 168,
+            "predicted": 178
+          },
+          "extra": {
+            "f1": 0.8883037085802062,
+            "precision": 0.9387755102040817,
+            "recall": 0.8429820907955019,
+            "gold": 2401,
+            "predicted": 2156
+          },
+          "missed_note": {
+            "f1": 0.6781609195402298,
+            "precision": 0.6666666666666666,
+            "recall": 0.6900584795321637,
+            "gold": 171,
+            "predicted": 177
+          }
+        }
+      },
+      "deletion_rates": {
+        "all": {
+          "support": 19302,
+          "count": 580,
+          "rate": 0.03
+        },
+        "dur_120to200": {
+          "support": 7818,
+          "count": 215,
+          "rate": 0.0275
+        },
+        "dur_50to80": {
+          "support": 490,
+          "count": 50,
+          "rate": 0.102
+        },
+        "dur_80to120": {
+          "support": 3144,
+          "count": 98,
+          "rate": 0.0312
+        },
+        "dur_ge200": {
+          "support": 7131,
+          "count": 154,
+          "rate": 0.0216
+        },
+        "dur_lt50": {
+          "support": 719,
+          "count": 63,
+          "rate": 0.0876
+        },
+        "ioi_next_lt80": {
+          "support": 2118,
+          "count": 170,
+          "rate": 0.0803
+        },
+        "ioi_prev_lt80": {
+          "support": 2118,
+          "count": 149,
+          "rate": 0.0703
+        },
+        "ornament_renderer_only": {
+          "support": 4065,
+          "count": 329,
+          "rate": 0.0809
+        },
+        "pitch_change": {
+          "support": 15798,
+          "count": 359,
+          "rate": 0.0227
+        },
+        "reg_clarion_B4_C6": {
+          "support": 8610,
+          "count": 293,
+          "rate": 0.034
+        },
+        "reg_high_gt_C6": {
+          "support": 1594,
+          "count": 31,
+          "rate": 0.0194
+        },
+        "reg_low_lt_G4": {
+          "support": 7171,
+          "count": 234,
+          "rate": 0.0326
+        },
+        "reg_throat_G4_Bb4": {
+          "support": 1927,
+          "count": 22,
+          "rate": 0.0114
+        },
+        "rel_copy": {
+          "support": 6719,
+          "count": 146,
+          "rate": 0.0217
+        },
+        "rel_extra": {
+          "support": 2401,
+          "count": 282,
+          "rate": 0.1175
+        },
+        "rel_match": {
+          "support": 10014,
+          "count": 146,
+          "rate": 0.0146
+        },
+        "rel_substitute": {
+          "support": 168,
+          "count": 6,
+          "rate": 0.0357
+        },
+        "same_pitch_neighbor": {
+          "support": 3504,
+          "count": 221,
+          "rate": 0.0631
+        }
+      },
+      "substitution_rates": {
+        "all": {
+          "support": 19302,
+          "count": 41,
+          "rate": 0.0021
+        },
+        "dur_120to200": {
+          "support": 7818,
+          "count": 14,
+          "rate": 0.0018
+        },
+        "dur_50to80": {
+          "support": 490,
+          "count": 8,
+          "rate": 0.0163
+        },
+        "dur_80to120": {
+          "support": 3144,
+          "count": 8,
+          "rate": 0.0025
+        },
+        "dur_ge200": {
+          "support": 7131,
+          "count": 10,
+          "rate": 0.0014
+        },
+        "dur_lt50": {
+          "support": 719,
+          "count": 1,
+          "rate": 0.0014
+        },
+        "ioi_next_lt80": {
+          "support": 2118,
+          "count": 10,
+          "rate": 0.0047
+        },
+        "ioi_prev_lt80": {
+          "support": 2118,
+          "count": 10,
+          "rate": 0.0047
+        },
+        "ornament_renderer_only": {
+          "support": 4065,
+          "count": 21,
+          "rate": 0.0052
+        },
+        "pitch_change": {
+          "support": 15798,
+          "count": 36,
+          "rate": 0.0023
+        },
+        "reg_clarion_B4_C6": {
+          "support": 8610,
+          "count": 21,
+          "rate": 0.0024
+        },
+        "reg_high_gt_C6": {
+          "support": 1594,
+          "count": 7,
+          "rate": 0.0044
+        },
+        "reg_low_lt_G4": {
+          "support": 7171,
+          "count": 11,
+          "rate": 0.0015
+        },
+        "reg_throat_G4_Bb4": {
+          "support": 1927,
+          "count": 2,
+          "rate": 0.001
+        },
+        "rel_copy": {
+          "support": 6719,
+          "count": 6,
+          "rate": 0.0009
+        },
+        "rel_extra": {
+          "support": 2401,
+          "count": 19,
+          "rate": 0.0079
+        },
+        "rel_match": {
+          "support": 10014,
+          "count": 16,
+          "rate": 0.0016
+        },
+        "rel_substitute": {
+          "support": 168,
+          "count": 0,
+          "rate": 0.0
+        },
+        "same_pitch_neighbor": {
+          "support": 3504,
+          "count": 5,
+          "rate": 0.0014
+        }
+      },
+      "insertion_counts": {
+        "other_insertion": 59,
+        "flicker_ABA": 53,
+        "split_same_pitch": 91,
+        "octave_of_neighbor": 3
+      },
+      "insertion_confidence": {
+        "other_insertion": {
+          "n": 59,
+          "mean": 0.916,
+          "p50": 0.996,
+          "frac_below_drop_0.85": 0.186
+        },
+        "flicker_ABA": {
+          "n": 53,
+          "mean": 0.802,
+          "p50": 0.874,
+          "frac_below_drop_0.85": 0.453
+        },
+        "split_same_pitch": {
+          "n": 91,
+          "mean": 0.965,
+          "p50": 1.0,
+          "frac_below_drop_0.85": 0.077
+        },
+        "octave_of_neighbor": {
+          "n": 3,
+          "mean": 1.0,
+          "p50": 1.0,
+          "frac_below_drop_0.85": 0.0
+        }
+      },
+      "matched_confidence": {
+        "n": 18681,
+        "mean": 0.993,
+        "p50": 1.0,
+        "frac_below_drop_0.85": 0.013
+      },
+      "substitution_kinds": {
+        "neighbor_bleed": 11,
+        "whole_tone": 2,
+        "sounding_pitch": 3,
+        "other_interval": 5,
+        "semitone": 2
+      },
+      "deletion_mechanisms": {
+        "absorbed_into_neighbor": 113,
+        "short_lt80:absorbed_into_neighbor": 16,
+        "not_a_single_gap": 291,
+        "short_lt80:not_a_single_gap": 87,
+        "same_pitch_merge:not_a_single_gap": 32,
+        "same_pitch_merge:absorbed_into_neighbor": 134,
+        "short_lt80:same_pitch_merge:absorbed_into_neighbor": 3,
+        "same_pitch_merge:weak_peak_left_blank": 2,
+        "short_lt80:same_pitch_merge:weak_peak_left_blank": 1,
+        "weak_peak_left_blank": 8,
+        "short_lt80:same_pitch_merge:not_a_single_gap": 6
+      },
+      "recall_loss": {
+        "total": 886.5,
+        "by_cause": {
+          "aligner_wrong_score_location": {
+            "notes": 329,
+            "lost_credit": 329.0,
+            "share": 0.3711
+          },
+          "tx_miss_ornament": {
+            "notes": 248,
+            "lost_credit": 244.0,
+            "share": 0.2752
+          },
+          "tx_merge_same_pitch": {
+            "notes": 173,
+            "lost_credit": 169.0,
+            "share": 0.1906
+          },
+          "tx_miss_other": {
+            "notes": 59,
+            "lost_credit": 45.0,
+            "share": 0.0508
+          },
+          "aligner_missed_a_score_deletion": {
+            "notes": 53,
+            "lost_credit": 40.5,
+            "share": 0.0457
+          },
+          "aligner_type_mismatch": {
+            "notes": 39,
+            "lost_credit": 19.5,
+            "share": 0.022
+          },
+          "tx_miss_50to80": {
+            "notes": 11,
+            "lost_credit": 9.5,
+            "share": 0.0107
+          },
+          "tx_sub_neighbor_bleed": {
+            "notes": 11,
+            "lost_credit": 7.5,
+            "share": 0.0085
+          },
+          "aligner_dropped_correct_note": {
+            "notes": 6,
+            "lost_credit": 5.5,
+            "share": 0.0062
+          },
+          "tx_sub_other_interval": {
+            "notes": 5,
+            "lost_credit": 4.5,
+            "share": 0.0051
+          },
+          "aligner_extra_identity": {
+            "notes": 3,
+            "lost_credit": 3.0,
+            "share": 0.0034
+          },
+          "tx_sub_sounding_pitch": {
+            "notes": 3,
+            "lost_credit": 3.0,
+            "share": 0.0034
+          },
+          "tx_miss_lt50": {
+            "notes": 3,
+            "lost_credit": 2.5,
+            "share": 0.0028
+          },
+          "tx_sub_whole_tone": {
+            "notes": 2,
+            "lost_credit": 2.0,
+            "share": 0.0023
+          },
+          "tx_sub_semitone": {
+            "notes": 2,
+            "lost_credit": 2.0,
+            "share": 0.0023
+          }
+        }
+      },
+      "score_deletion_labels": {
+        "gold": 171,
+        "gold_full": 118,
+        "predicted": 177,
+        "predicted_full": 118
+      },
+      "aligner_type_confusion_on_correct_pitch": {
+        "substitute->missed_note": 10,
+        "copy->extra": 9,
+        "match->substitute": 7,
+        "match->missed_note": 6,
+        "substitute->match": 4,
+        "extra->copy": 3
+      },
+      "examples": {
+        "tx_sub_neighbor_bleed": [
+          {
+            "clip": "synth_Weber1_26007",
+            "index": 13,
+            "gold_pitch": 68,
+            "sounding": 66,
+            "pred_pitch": 70,
+            "duration_ms": 163.0,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              68,
+              69,
+              70,
+              68,
+              67,
+              62,
+              58
+            ],
+            "pred_context": [
+              69,
+              70,
+              69,
+              70,
+              67,
+              62,
+              58
+            ]
+          },
+          {
+            "clip": "synth_gen_24158",
+            "index": 30,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": 55,
+            "duration_ms": 40.7,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              55,
+              53,
+              52,
+              53,
+              55,
+              57,
+              55
+            ],
+            "pred_context": [
+              59,
+              57,
+              55,
+              55,
+              55,
+              57,
+              55
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28600",
+            "index": 120,
+            "gold_pitch": 73,
+            "sounding": 71,
+            "pred_pitch": 74,
+            "duration_ms": 68.2,
+            "relationship": "match",
+            "ornament": true,
+            "gold_context": [
+              81,
+              85,
+              74,
+              73,
+              72,
+              71,
+              72
+            ],
+            "pred_context": [
+              81,
+              85,
+              74,
+              74,
+              72,
+              71,
+              73
+            ]
+          },
+          {
+            "clip": "synth_Weber1_27237",
+            "index": 149,
+            "gold_pitch": 73,
+            "sounding": 71,
+            "pred_pitch": 74,
+            "duration_ms": 81.5,
+            "relationship": "match",
+            "ornament": true,
+            "gold_context": [
+              81,
+              86,
+              74,
+              73,
+              72,
+              71,
+              72
+            ],
+            "pred_context": [
+              81,
+              86,
+              74,
+              74,
+              72,
+              71,
+              74
+            ]
+          }
+        ],
+        "aligner_dropped_correct_note": [
+          {
+            "clip": "synth_Weber1_26007",
+            "index": 73,
+            "gold_pitch": 68,
+            "sounding": 66,
+            "pred_pitch": 68,
+            "duration_ms": 163.0,
+            "relationship": "copy",
+            "ornament": true,
+            "gold_context": [
+              68,
+              69,
+              70,
+              68,
+              67,
+              62,
+              58
+            ],
+            "pred_context": [
+              70,
+              69,
+              70,
+              68,
+              67,
+              62,
+              58
+            ]
+          },
+          {
+            "clip": "synth_gen_23944",
+            "index": 167,
+            "gold_pitch": 58,
+            "sounding": 56,
+            "pred_pitch": 58,
+            "duration_ms": 1483.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              57,
+              56,
+              57,
+              58,
+              59,
+              57
+            ],
+            "pred_context": [
+              56,
+              57,
+              57,
+              58,
+              59,
+              57
+            ]
+          },
+          {
+            "clip": "synth_Weber1_26655",
+            "index": 17,
+            "gold_pitch": 82,
+            "sounding": 80,
+            "pred_pitch": 82,
+            "duration_ms": 163.0,
+            "relationship": "substitute",
+            "ornament": false,
+            "gold_context": [
+              81,
+              80,
+              83,
+              82,
+              78,
+              77,
+              79
+            ],
+            "pred_context": [
+              81,
+              80,
+              83,
+              82,
+              77,
+              79,
+              78
+            ]
+          },
+          {
+            "clip": "synth_gen_22241",
+            "index": 63,
+            "gold_pitch": 67,
+            "sounding": 65,
+            "pred_pitch": 67,
+            "duration_ms": 2800.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              67,
+              69,
+              74,
+              67,
+              70,
+              69,
+              74
+            ],
+            "pred_context": [
+              67,
+              69,
+              74,
+              67,
+              70,
+              69,
+              74
+            ]
+          }
+        ],
+        "tx_miss_50to80": [
+          {
+            "clip": "synth_Weber1_26007",
+            "index": 88,
+            "gold_pitch": 73,
+            "sounding": 71,
+            "pred_pitch": null,
+            "duration_ms": 72.5,
+            "relationship": "copy",
+            "ornament": false,
+            "gold_context": [
+              70,
+              71,
+              72,
+              73,
+              74,
+              67,
+              62
+            ],
+            "pred_context": [
+              55,
+              57,
+              56,
+              58
+            ]
+          },
+          {
+            "clip": "synth_Weber1_26007",
+            "index": 119,
+            "gold_pitch": 85,
+            "sounding": 83,
+            "pred_pitch": null,
+            "duration_ms": 72.5,
+            "relationship": "copy",
+            "ornament": false,
+            "gold_context": [
+              82,
+              83,
+              84,
+              85,
+              86,
+              84,
+              82
+            ],
+            "pred_context": [
+              55,
+              57,
+              56,
+              58
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28600",
+            "index": 241,
+            "gold_pitch": 72,
+            "sounding": 70,
+            "pred_pitch": null,
+            "duration_ms": 68.2,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              73,
+              72,
+              71,
+              72,
+              73,
+              74,
+              74
+            ],
+            "pred_context": [
+              55,
+              58,
+              62,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_21296",
+            "index": 56,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": null,
+            "duration_ms": 50.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              52,
+              52,
+              52,
+              53,
+              52,
+              53,
+              57
+            ],
+            "pred_context": [
+              77,
+              76,
+              71,
+              72
+            ]
+          }
+        ],
+        "tx_miss_lt50": [
+          {
+            "clip": "synth_gen_24158",
+            "index": 28,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": null,
+            "duration_ms": 40.7,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              59,
+              57,
+              55,
+              53,
+              52,
+              53,
+              55
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_21296",
+            "index": 125,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": null,
+            "duration_ms": 50.0,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              52,
+              53,
+              52,
+              53,
+              57,
+              55,
+              59
+            ],
+            "pred_context": [
+              77,
+              76,
+              71,
+              72
+            ]
+          },
+          {
+            "clip": "synth_gen_20292",
+            "index": 37,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 36.5,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              54,
+              52,
+              51,
+              52,
+              55,
+              54,
+              55
+            ],
+            "pred_context": [
+              67,
+              62,
+              62,
+              60
+            ]
+          }
+        ],
+        "tx_miss_ornament": [
+          {
+            "clip": "synth_gen_24158",
+            "index": 29,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 40.7,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              57,
+              55,
+              53,
+              52,
+              53,
+              55,
+              57
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_24158",
+            "index": 49,
+            "gold_pitch": 51,
+            "sounding": 49,
+            "pred_pitch": null,
+            "duration_ms": 40.7,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              52,
+              52,
+              52,
+              51,
+              52,
+              52,
+              55
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_24158",
+            "index": 107,
+            "gold_pitch": 61,
+            "sounding": 59,
+            "pred_pitch": null,
+            "duration_ms": 2800.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              67,
+              62,
+              62,
+              61,
+              62,
+              60,
+              60
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_22829",
+            "index": 183,
+            "gold_pitch": 83,
+            "sounding": 81,
+            "pred_pitch": null,
+            "duration_ms": 112.8,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              84,
+              83,
+              84,
+              83,
+              84,
+              83,
+              81
+            ],
+            "pred_context": [
+              72,
+              71,
+              72,
+              69
+            ]
+          }
+        ],
+        "tx_merge_same_pitch": [
+          {
+            "clip": "synth_gen_24158",
+            "index": 44,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 122.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              53,
+              55,
+              53,
+              52,
+              52,
+              52,
+              52
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_24158",
+            "index": 45,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 122.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              55,
+              53,
+              52,
+              52,
+              52,
+              52,
+              52
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_24158",
+            "index": 46,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 122.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              53,
+              52,
+              52,
+              52,
+              52,
+              52,
+              51
+            ],
+            "pred_context": [
+              69,
+              67,
+              66,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_22829",
+            "index": 166,
+            "gold_pitch": 81,
+            "sounding": 79,
+            "pred_pitch": null,
+            "duration_ms": 37.6,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              86,
+              81,
+              80,
+              81,
+              81,
+              81,
+              83
+            ],
+            "pred_context": [
+              72,
+              71,
+              72,
+              69
+            ]
+          }
+        ],
+        "aligner_wrong_score_location": [
+          {
+            "clip": "synth_gen_24158",
+            "index": 47,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": 52,
+            "duration_ms": 122.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              52,
+              52,
+              52,
+              52,
+              52,
+              51,
+              52
+            ],
+            "pred_context": [
+              53,
+              55,
+              53,
+              52,
+              52,
+              52,
+              52
+            ]
+          },
+          {
+            "clip": "synth_gen_20408",
+            "index": 23,
+            "gold_pitch": 64,
+            "sounding": 62,
+            "pred_pitch": 64,
+            "duration_ms": 306.1,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              64,
+              63,
+              62,
+              64,
+              64,
+              65,
+              70
+            ],
+            "pred_context": [
+              64,
+              63,
+              62,
+              64,
+              64,
+              65,
+              70
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28600",
+            "index": 125,
+            "gold_pitch": 74,
+            "sounding": 72,
+            "pred_pitch": 74,
+            "duration_ms": 545.5,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              71,
+              72,
+              73,
+              74,
+              74,
+              76,
+              77
+            ],
+            "pred_context": [
+              72,
+              71,
+              73,
+              74,
+              74,
+              76,
+              77
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28600",
+            "index": 243,
+            "gold_pitch": 74,
+            "sounding": 72,
+            "pred_pitch": 74,
+            "duration_ms": 545.5,
+            "relationship": "copy",
+            "ornament": false,
+            "gold_context": [
+              71,
+              72,
+              73,
+              74,
+              74,
+              76,
+              77
+            ],
+            "pred_context": [
+              72,
+              71,
+              73,
+              74,
+              74,
+              76,
+              77
+            ]
+          }
+        ],
+        "aligner_type_mismatch": [
+          {
+            "clip": "synth_gen_24158",
+            "index": 106,
+            "gold_pitch": 62,
+            "sounding": 60,
+            "pred_pitch": 62,
+            "duration_ms": 122.0,
+            "relationship": "substitute",
+            "ornament": false,
+            "gold_context": [
+              65,
+              67,
+              62,
+              62,
+              61,
+              62,
+              60
+            ],
+            "pred_context": [
+              65,
+              67,
+              62,
+              62,
+              62,
+              60,
+              60
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28600",
+            "index": 242,
+            "gold_pitch": 73,
+            "sounding": 71,
+            "pred_pitch": 73,
+            "duration_ms": 272.7,
+            "relationship": "copy",
+            "ornament": false,
+            "gold_context": [
+              72,
+              71,
+              72,
+              73,
+              74,
+              74,
+              76
+            ],
+            "pred_context": [
+              74,
+              72,
+              71,
+              73,
+              74,
+              74,
+              76
+            ]
+          },
+          {
+            "clip": "synth_Weber1_27752",
+            "index": 49,
+            "gold_pitch": 83,
+            "sounding": 81,
+            "pred_pitch": 83,
+            "duration_ms": 1304.3,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              78,
+              79,
+              83,
+              83
+            ],
+            "pred_context": [
+              78,
+              79,
+              83,
+              83
+            ]
+          },
+          {
+            "clip": "synth_Weber1_26904",
+            "index": 111,
+            "gold_pitch": 83,
+            "sounding": 81,
+            "pred_pitch": 83,
+            "duration_ms": 978.3,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              79,
+              81,
+              82,
+              83,
+              82,
+              79,
+              76
+            ],
+            "pred_context": [
+              81,
+              82,
+              82,
+              83,
+              82,
+              79,
+              76
+            ]
+          }
+        ],
+        "tx_miss_other": [
+          {
+            "clip": "synth_gen_22829",
+            "index": 56,
+            "gold_pitch": 83,
+            "sounding": 81,
+            "pred_pitch": null,
+            "duration_ms": 112.8,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              84,
+              83,
+              84,
+              83,
+              84,
+              83,
+              81
+            ],
+            "pred_context": [
+              72,
+              71,
+              72,
+              69
+            ]
+          },
+          {
+            "clip": "synth_gen_24257",
+            "index": 8,
+            "gold_pitch": 57,
+            "sounding": 55,
+            "pred_pitch": null,
+            "duration_ms": 105.6,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              53,
+              58,
+              58,
+              57,
+              53,
+              55,
+              53
+            ],
+            "pred_context": [
+              63,
+              58,
+              57,
+              55
+            ]
+          },
+          {
+            "clip": "synth_Weber1_27237",
+            "index": 0,
+            "gold_pitch": 78,
+            "sounding": 76,
+            "pred_pitch": null,
+            "duration_ms": 1956.5,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              78,
+              76,
+              75,
+              76
+            ],
+            "pred_context": [
+              76,
+              75,
+              76,
+              86
+            ]
+          },
+          {
+            "clip": "synth_gen_23186",
+            "index": 101,
+            "gold_pitch": 83,
+            "sounding": 81,
+            "pred_pitch": null,
+            "duration_ms": 93.2,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              88,
+              83,
+              79,
+              83,
+              81,
+              80,
+              81
+            ],
+            "pred_context": [
+              67,
+              69,
+              71,
+              70
+            ]
+          }
+        ],
+        "tx_sub_whole_tone": [
+          {
+            "clip": "synth_Weber1_28218",
+            "index": 65,
+            "gold_pitch": 84,
+            "sounding": 82,
+            "pred_pitch": 86,
+            "duration_ms": 81.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              81,
+              84,
+              85,
+              84,
+              85,
+              84,
+              85
+            ],
+            "pred_context": [
+              78,
+              81,
+              84,
+              86,
+              85,
+              86,
+              86
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28218",
+            "index": 67,
+            "gold_pitch": 84,
+            "sounding": 82,
+            "pred_pitch": 86,
+            "duration_ms": 81.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              85,
+              84,
+              85,
+              84,
+              85,
+              84,
+              85
+            ],
+            "pred_context": [
+              84,
+              86,
+              85,
+              86,
+              86,
+              84,
+              83
+            ]
+          }
+        ],
+        "aligner_extra_identity": [
+          {
+            "clip": "synth_Weber1_28218",
+            "index": 66,
+            "gold_pitch": 85,
+            "sounding": 83,
+            "pred_pitch": 85,
+            "duration_ms": 81.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              84,
+              85,
+              84,
+              85,
+              84,
+              85,
+              84
+            ],
+            "pred_context": [
+              81,
+              84,
+              86,
+              85,
+              86,
+              86,
+              84
+            ]
+          },
+          {
+            "clip": "synth_Weber1_28337",
+            "index": 36,
+            "gold_pitch": 80,
+            "sounding": 78,
+            "pred_pitch": 80,
+            "duration_ms": 81.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              79,
+              78,
+              79,
+              80,
+              79,
+              80,
+              79
+            ],
+            "pred_context": [
+              79,
+              78,
+              79,
+              80,
+              81,
+              79,
+              80
+            ]
+          },
+          {
+            "clip": "synth_gen_23985",
+            "index": 97,
+            "gold_pitch": 60,
+            "sounding": 58,
+            "pred_pitch": 60,
+            "duration_ms": 67.0,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              60,
+              59,
+              59,
+              60,
+              60,
+              66,
+              68
+            ],
+            "pred_context": [
+              60,
+              59,
+              59,
+              60,
+              66,
+              66,
+              68
+            ]
+          }
+        ],
+        "tx_sub_sounding_pitch": [
+          {
+            "clip": "synth_Weber1_26536",
+            "index": 36,
+            "gold_pitch": 90,
+            "sounding": 88,
+            "pred_pitch": 88,
+            "duration_ms": 163.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              88,
+              90,
+              91,
+              90,
+              91,
+              90,
+              91
+            ],
+            "pred_context": [
+              85,
+              86,
+              88,
+              88,
+              89,
+              90,
+              91
+            ]
+          },
+          {
+            "clip": "synth_Weber1_26536",
+            "index": 37,
+            "gold_pitch": 91,
+            "sounding": 89,
+            "pred_pitch": 89,
+            "duration_ms": 163.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              90,
+              91,
+              90,
+              91,
+              90,
+              91,
+              90
+            ],
+            "pred_context": [
+              86,
+              88,
+              88,
+              89,
+              90,
+              91,
+              90
+            ]
+          },
+          {
+            "clip": "synth_Weber1_26536",
+            "index": 61,
+            "gold_pitch": 91,
+            "sounding": 89,
+            "pred_pitch": 89,
+            "duration_ms": 123.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              86,
+              88,
+              90,
+              91,
+              90,
+              91,
+              90
+            ],
+            "pred_context": [
+              86,
+              88,
+              88,
+              89,
+              90,
+              91,
+              90
+            ]
+          }
+        ],
+        "tx_sub_other_interval": [
+          {
+            "clip": "synth_Weber1_28253",
+            "index": 5,
+            "gold_pitch": 76,
+            "sounding": 74,
+            "pred_pitch": 73,
+            "duration_ms": 163.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              81,
+              80,
+              77,
+              76,
+              74,
+              71,
+              76
+            ],
+            "pred_context": [
+              80,
+              77,
+              74,
+              73,
+              74,
+              71,
+              76
+            ]
+          },
+          {
+            "clip": "synth_Weber1_27675",
+            "index": 27,
+            "gold_pitch": 78,
+            "sounding": 76,
+            "pred_pitch": 86,
+            "duration_ms": 57.7,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              79,
+              78,
+              79,
+              78,
+              79,
+              79,
+              81
+            ],
+            "pred_context": [
+              81,
+              86,
+              84,
+              86,
+              87,
+              79,
+              81
+            ]
+          },
+          {
+            "clip": "synth_Weber1_27675",
+            "index": 28,
+            "gold_pitch": 79,
+            "sounding": 77,
+            "pred_pitch": 87,
+            "duration_ms": 57.7,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              78,
+              79,
+              78,
+              79,
+              79,
+              81,
+              82
+            ],
+            "pred_context": [
+              86,
+              84,
+              86,
+              87,
+              79,
+              81,
+              82
+            ]
+          },
+          {
+            "clip": "synth_Weber1_27209",
+            "index": 79,
+            "gold_pitch": 78,
+            "sounding": 76,
+            "pred_pitch": 86,
+            "duration_ms": 57.7,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              79,
+              78,
+              79,
+              78,
+              79,
+              79,
+              81
+            ],
+            "pred_context": [
+              85,
+              86,
+              84,
+              86,
+              87,
+              79,
+              81
+            ]
+          }
+        ],
+        "tx_sub_semitone": [
+          {
+            "clip": "synth_Weber1_26736",
+            "index": 64,
+            "gold_pitch": 85,
+            "sounding": 83,
+            "pred_pitch": 86,
+            "duration_ms": 81.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              84,
+              85,
+              84,
+              85,
+              84,
+              85,
+              84
+            ],
+            "pred_context": [
+              78,
+              81,
+              84,
+              86,
+              84,
+              86,
+              84
+            ]
+          },
+          {
+            "clip": "synth_Weber1_26736",
+            "index": 66,
+            "gold_pitch": 85,
+            "sounding": 83,
+            "pred_pitch": 86,
+            "duration_ms": 81.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              84,
+              85,
+              84,
+              85,
+              84,
+              85,
+              83
+            ],
+            "pred_context": [
+              84,
+              86,
+              84,
+              86,
+              84,
+              83,
+              84
+            ]
+          }
+        ]
+      }
+    },
+    "fast102": {
+      "clips": 160,
+      "scored_clips": 160,
+      "exceptions": {},
+      "lineage_pitch_mismatches": 0,
+      "transcription": {
+        "precision": 0.9971264367816092,
+        "recall": 0.9789669250883068,
+        "f1": 0.98796324159163,
+        "predicted": 42804,
+        "gold": 43598
+      },
+      "combined_note_wise": {
+        "f1": 0.9887464616942444,
+        "precision": 0.9959433459282784,
+        "recall": 0.9816528434665387,
+        "per_type_f1": {
+          "match": {
+            "f1": 0.9969738127576429,
+            "precision": 0.999331231489443,
+            "recall": 0.9946274901345504,
+            "gold": 21033,
+            "predicted": 20934
+          },
+          "copy": {
+            "f1": 0.9952130996005415,
+            "precision": 0.9976833465713529,
+            "recall": 0.9927550549957189,
+            "gold": 15183,
+            "predicted": 15108
+          },
+          "substitute": {
+            "f1": 0.9329758713136729,
+            "precision": 0.9329758713136729,
+            "recall": 0.9329758713136729,
+            "gold": 373,
+            "predicted": 373
+          },
+          "extra": {
+            "f1": 0.9495729669513554,
+            "precision": 0.9902416356877324,
+            "recall": 0.912112997574547,
+            "gold": 7009,
+            "predicted": 6456
+          },
+          "missed_note": {
+            "f1": 0.6864988558352403,
+            "precision": 0.5597014925373134,
+            "recall": 0.8875739644970414,
+            "gold": 169,
+            "predicted": 268
+          }
+        }
+      },
+      "deletion_rates": {
+        "all": {
+          "support": 43598,
+          "count": 879,
+          "rate": 0.0202
+        },
+        "dur_120to200": {
+          "support": 31907,
+          "count": 124,
+          "rate": 0.0039
+        },
+        "dur_50to80": {
+          "support": 699,
+          "count": 63,
+          "rate": 0.0901
+        },
+        "dur_80to120": {
+          "support": 2691,
+          "count": 25,
+          "rate": 0.0093
+        },
+        "dur_ge200": {
+          "support": 3392,
+          "count": 100,
+          "rate": 0.0295
+        },
+        "dur_lt50": {
+          "support": 4909,
+          "count": 567,
+          "rate": 0.1155
+        },
+        "ioi_next_lt80": {
+          "support": 8904,
+          "count": 723,
+          "rate": 0.0812
+        },
+        "ioi_prev_lt80": {
+          "support": 8904,
+          "count": 463,
+          "rate": 0.052
+        },
+        "ornament_renderer_only": {
+          "support": 9286,
+          "count": 521,
+          "rate": 0.0561
+        },
+        "pitch_change": {
+          "support": 42953,
+          "count": 826,
+          "rate": 0.0192
+        },
+        "reg_clarion_B4_C6": {
+          "support": 7641,
+          "count": 40,
+          "rate": 0.0052
+        },
+        "reg_high_gt_C6": {
+          "support": 795,
+          "count": 4,
+          "rate": 0.005
+        },
+        "reg_low_lt_G4": {
+          "support": 29473,
+          "count": 779,
+          "rate": 0.0264
+        },
+        "reg_throat_G4_Bb4": {
+          "support": 5689,
+          "count": 56,
+          "rate": 0.0098
+        },
+        "rel_copy": {
+          "support": 15183,
+          "count": 162,
+          "rate": 0.0107
+        },
+        "rel_extra": {
+          "support": 7009,
+          "count": 510,
+          "rate": 0.0728
+        },
+        "rel_match": {
+          "support": 21033,
+          "count": 204,
+          "rate": 0.0097
+        },
+        "rel_substitute": {
+          "support": 373,
+          "count": 3,
+          "rate": 0.008
+        },
+        "same_pitch_neighbor": {
+          "support": 645,
+          "count": 53,
+          "rate": 0.0822
+        }
+      },
+      "substitution_rates": {
+        "all": {
+          "support": 43598,
+          "count": 38,
+          "rate": 0.0009
+        },
+        "dur_120to200": {
+          "support": 31907,
+          "count": 13,
+          "rate": 0.0004
+        },
+        "dur_50to80": {
+          "support": 699,
+          "count": 7,
+          "rate": 0.01
+        },
+        "dur_80to120": {
+          "support": 2691,
+          "count": 8,
+          "rate": 0.003
+        },
+        "dur_ge200": {
+          "support": 3392,
+          "count": 3,
+          "rate": 0.0009
+        },
+        "dur_lt50": {
+          "support": 4909,
+          "count": 7,
+          "rate": 0.0014
+        },
+        "ioi_next_lt80": {
+          "support": 8904,
+          "count": 14,
+          "rate": 0.0016
+        },
+        "ioi_prev_lt80": {
+          "support": 8904,
+          "count": 17,
+          "rate": 0.0019
+        },
+        "ornament_renderer_only": {
+          "support": 9286,
+          "count": 11,
+          "rate": 0.0012
+        },
+        "pitch_change": {
+          "support": 42953,
+          "count": 35,
+          "rate": 0.0008
+        },
+        "reg_clarion_B4_C6": {
+          "support": 7641,
+          "count": 11,
+          "rate": 0.0014
+        },
+        "reg_high_gt_C6": {
+          "support": 795,
+          "count": 0,
+          "rate": 0.0
+        },
+        "reg_low_lt_G4": {
+          "support": 29473,
+          "count": 23,
+          "rate": 0.0008
+        },
+        "reg_throat_G4_Bb4": {
+          "support": 5689,
+          "count": 4,
+          "rate": 0.0007
+        },
+        "rel_copy": {
+          "support": 15183,
+          "count": 10,
+          "rate": 0.0007
+        },
+        "rel_extra": {
+          "support": 7009,
+          "count": 13,
+          "rate": 0.0019
+        },
+        "rel_match": {
+          "support": 21033,
+          "count": 14,
+          "rate": 0.0007
+        },
+        "rel_substitute": {
+          "support": 373,
+          "count": 1,
+          "rate": 0.0027
+        },
+        "same_pitch_neighbor": {
+          "support": 645,
+          "count": 3,
+          "rate": 0.0047
+        }
+      },
+      "insertion_counts": {
+        "split_same_pitch": 13,
+        "other_insertion": 56,
+        "flicker_ABA": 9,
+        "octave_of_neighbor": 7
+      },
+      "insertion_confidence": {
+        "split_same_pitch": {
+          "n": 13,
+          "mean": 0.921,
+          "p50": 1.0,
+          "frac_below_drop_0.85": 0.154
+        },
+        "other_insertion": {
+          "n": 56,
+          "mean": 0.674,
+          "p50": 0.668,
+          "frac_below_drop_0.85": 0.732
+        },
+        "flicker_ABA": {
+          "n": 9,
+          "mean": 0.775,
+          "p50": 0.798,
+          "frac_below_drop_0.85": 0.556
+        },
+        "octave_of_neighbor": {
+          "n": 7,
+          "mean": 0.641,
+          "p50": 0.596,
+          "frac_below_drop_0.85": 0.714
+        }
+      },
+      "matched_confidence": {
+        "n": 42681,
+        "mean": 0.993,
+        "p50": 1.0,
+        "frac_below_drop_0.85": 0.014
+      },
+      "substitution_kinds": {
+        "semitone": 3,
+        "neighbor_bleed": 3,
+        "other_interval": 8,
+        "sounding_pitch": 7,
+        "whole_tone": 1
+      },
+      "deletion_mechanisms": {
+        "not_a_single_gap": 607,
+        "short_lt80:not_a_single_gap": 560,
+        "absorbed_into_neighbor": 174,
+        "weak_peak_left_blank": 47,
+        "short_lt80:absorbed_into_neighbor": 31,
+        "same_pitch_merge:absorbed_into_neighbor": 49,
+        "short_lt80:same_pitch_merge:absorbed_into_neighbor": 34,
+        "short_lt80:weak_peak_left_blank": 3,
+        "same_pitch_merge:not_a_single_gap": 2,
+        "short_lt80:same_pitch_merge:not_a_single_gap": 2
+      },
+      "recall_loss": {
+        "total": 803.0,
+        "by_cause": {
+          "tx_miss_ornament": {
+            "notes": 406,
+            "lost_credit": 397.0,
+            "share": 0.4944
+          },
+          "aligner_wrong_score_location": {
+            "notes": 132,
+            "lost_credit": 132.0,
+            "share": 0.1644
+          },
+          "tx_miss_lt50": {
+            "notes": 112,
+            "lost_credit": 89.5,
+            "share": 0.1115
+          },
+          "tx_miss_other": {
+            "notes": 87,
+            "lost_credit": 74.0,
+            "share": 0.0922
+          },
+          "tx_merge_same_pitch": {
+            "notes": 42,
+            "lost_credit": 42.0,
+            "share": 0.0523
+          },
+          "tx_miss_50to80": {
+            "notes": 28,
+            "lost_credit": 22.0,
+            "share": 0.0274
+          },
+          "aligner_type_mismatch": {
+            "notes": 31,
+            "lost_credit": 15.5,
+            "share": 0.0193
+          },
+          "aligner_missed_a_score_deletion": {
+            "notes": 19,
+            "lost_credit": 9.5,
+            "share": 0.0118
+          },
+          "tx_sub_sounding_pitch": {
+            "notes": 7,
+            "lost_credit": 6.0,
+            "share": 0.0075
+          },
+          "tx_sub_other_interval": {
+            "notes": 8,
+            "lost_credit": 5.5,
+            "share": 0.0068
+          },
+          "tx_sub_semitone": {
+            "notes": 3,
+            "lost_credit": 3.0,
+            "share": 0.0037
+          },
+          "tx_sub_neighbor_bleed": {
+            "notes": 3,
+            "lost_credit": 2.5,
+            "share": 0.0031
+          },
+          "aligner_dropped_correct_note": {
+            "notes": 2,
+            "lost_credit": 2.0,
+            "share": 0.0025
+          },
+          "aligner_extra_identity": {
+            "notes": 2,
+            "lost_credit": 2.0,
+            "share": 0.0025
+          },
+          "tx_sub_whole_tone": {
+            "notes": 1,
+            "lost_credit": 0.5,
+            "share": 0.0006
+          }
+        }
+      },
+      "score_deletion_labels": {
+        "gold": 169,
+        "gold_full": 150,
+        "predicted": 268,
+        "predicted_full": 150
+      },
+      "aligner_type_confusion_on_correct_pitch": {
+        "substitute->missed_note": 20,
+        "match->substitute": 5,
+        "extra->copy": 3,
+        "substitute->match": 2,
+        "match->missed_note": 1
+      },
+      "examples": {
+        "tx_miss_ornament": [
+          {
+            "clip": "synth_gen_30645",
+            "index": 0,
+            "gold_pitch": 68,
+            "sounding": 66,
+            "pred_pitch": null,
+            "duration_ms": 2800.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              68,
+              70,
+              65,
+              79
+            ],
+            "pred_context": [
+              70,
+              65,
+              79,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_30645",
+            "index": 130,
+            "gold_pitch": 66,
+            "sounding": 64,
+            "pred_pitch": null,
+            "duration_ms": 43.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              58,
+              89,
+              67,
+              66,
+              67,
+              88,
+              60
+            ],
+            "pred_context": [
+              70,
+              65,
+              79,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_33902",
+            "index": 34,
+            "gold_pitch": 51,
+            "sounding": 49,
+            "pred_pitch": null,
+            "duration_ms": 44.6,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              62,
+              64,
+              52,
+              51,
+              52,
+              62,
+              55
+            ],
+            "pred_context": [
+              69,
+              59,
+              55,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_33902",
+            "index": 35,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 44.6,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              64,
+              52,
+              51,
+              52,
+              62,
+              55,
+              54
+            ],
+            "pred_context": [
+              69,
+              59,
+              55,
+              67
+            ]
+          }
+        ],
+        "aligner_wrong_score_location": [
+          {
+            "clip": "synth_gen_30645",
+            "index": 131,
+            "gold_pitch": 67,
+            "sounding": 65,
+            "pred_pitch": 67,
+            "duration_ms": 43.5,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              89,
+              67,
+              66,
+              67,
+              88,
+              60,
+              69
+            ],
+            "pred_context": [
+              69,
+              58,
+              89,
+              67,
+              88,
+              60,
+              69
+            ]
+          },
+          {
+            "clip": "synth_gen_33902",
+            "index": 96,
+            "gold_pitch": 57,
+            "sounding": 55,
+            "pred_pitch": 57,
+            "duration_ms": 57.5,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              62,
+              57,
+              56,
+              57,
+              55,
+              57,
+              55
+            ],
+            "pred_context": [
+              80,
+              81,
+              62,
+              57,
+              55,
+              57,
+              55
+            ]
+          },
+          {
+            "clip": "synth_gen_31129",
+            "index": 141,
+            "gold_pitch": 62,
+            "sounding": 60,
+            "pred_pitch": 62,
+            "duration_ms": 58.8,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              89,
+              62,
+              61,
+              62,
+              74,
+              75,
+              63
+            ],
+            "pred_context": [
+              67,
+              65,
+              89,
+              62,
+              74,
+              75,
+              63
+            ]
+          },
+          {
+            "clip": "synth_gen_31129",
+            "index": 154,
+            "gold_pitch": 63,
+            "sounding": 61,
+            "pred_pitch": 63,
+            "duration_ms": 58.8,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              87,
+              63,
+              62,
+              63,
+              53,
+              60,
+              70
+            ],
+            "pred_context": [
+              63,
+              62,
+              87,
+              63,
+              53,
+              60,
+              70
+            ]
+          }
+        ],
+        "tx_miss_lt50": [
+          {
+            "clip": "synth_gen_33902",
+            "index": 33,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 44.6,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              69,
+              62,
+              64,
+              52,
+              51,
+              52,
+              62
+            ],
+            "pred_context": [
+              69,
+              59,
+              55,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_33902",
+            "index": 200,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 44.6,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              62,
+              69,
+              62,
+              52,
+              51,
+              52,
+              61
+            ],
+            "pred_context": [
+              69,
+              59,
+              55,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_32527",
+            "index": 3,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 42.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              53,
+              52,
+              63,
+              52,
+              51,
+              52,
+              65
+            ],
+            "pred_context": [
+              53,
+              52,
+              63,
+              65
+            ]
+          },
+          {
+            "clip": "synth_gen_31294",
+            "index": 144,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": null,
+            "duration_ms": 42.4,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              60,
+              74,
+              65,
+              53,
+              52,
+              53,
+              65
+            ],
+            "pred_context": [
+              55,
+              65,
+              53,
+              55
+            ]
+          }
+        ],
+        "tx_miss_other": [
+          {
+            "clip": "synth_gen_33902",
+            "index": 163,
+            "gold_pitch": 61,
+            "sounding": 59,
+            "pred_pitch": null,
+            "duration_ms": 401.8,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              57,
+              66,
+              83,
+              61,
+              59,
+              52,
+              54
+            ],
+            "pred_context": [
+              69,
+              59,
+              55,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_33902",
+            "index": 193,
+            "gold_pitch": 76,
+            "sounding": 74,
+            "pred_pitch": null,
+            "duration_ms": 133.9,
+            "relationship": "substitute",
+            "ornament": false,
+            "gold_context": [
+              59,
+              85,
+              62,
+              76,
+              66,
+              52,
+              63
+            ],
+            "pred_context": [
+              69,
+              59,
+              55,
+              67
+            ]
+          },
+          {
+            "clip": "synth_gen_30111",
+            "index": 91,
+            "gold_pitch": 57,
+            "sounding": 55,
+            "pred_pitch": null,
+            "duration_ms": 584.1,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              67,
+              76,
+              77,
+              57,
+              59,
+              52,
+              62
+            ],
+            "pred_context": [
+              67,
+              76,
+              75,
+              76
+            ]
+          },
+          {
+            "clip": "synth_gen_30681",
+            "index": 209,
+            "gold_pitch": 67,
+            "sounding": 65,
+            "pred_pitch": null,
+            "duration_ms": 126.1,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              67,
+              66,
+              66,
+              67,
+              71,
+              66,
+              57
+            ],
+            "pred_context": [
+              52,
+              54,
+              52,
+              54
+            ]
+          }
+        ],
+        "tx_miss_50to80": [
+          {
+            "clip": "synth_gen_30715",
+            "index": 140,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 54.9,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              62,
+              74,
+              60,
+              52,
+              51,
+              52,
+              62
+            ],
+            "pred_context": [
+              55,
+              59,
+              71,
+              72
+            ]
+          },
+          {
+            "clip": "synth_gen_30715",
+            "index": 147,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 54.9,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              71,
+              69,
+              59,
+              52,
+              51,
+              52,
+              64
+            ],
+            "pred_context": [
+              55,
+              59,
+              71,
+              72
+            ]
+          },
+          {
+            "clip": "synth_gen_30715",
+            "index": 289,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 54.9,
+            "relationship": "copy",
+            "ornament": false,
+            "gold_context": [
+              71,
+              69,
+              59,
+              52,
+              51,
+              52,
+              64
+            ],
+            "pred_context": [
+              55,
+              59,
+              71,
+              72
+            ]
+          },
+          {
+            "clip": "synth_gen_30715",
+            "index": 291,
+            "gold_pitch": 52,
+            "sounding": 50,
+            "pred_pitch": null,
+            "duration_ms": 54.9,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              59,
+              52,
+              51,
+              52,
+              64,
+              69,
+              62
+            ],
+            "pred_context": [
+              55,
+              59,
+              71,
+              72
+            ]
+          }
+        ],
+        "tx_merge_same_pitch": [
+          {
+            "clip": "synth_gen_30376",
+            "index": 56,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": null,
+            "duration_ms": 30.0,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              67,
+              54,
+              66,
+              53,
+              53,
+              54,
+              67
+            ],
+            "pred_context": [
+              57,
+              64,
+              69,
+              68
+            ]
+          },
+          {
+            "clip": "synth_gen_30376",
+            "index": 293,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": null,
+            "duration_ms": 30.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              67,
+              54,
+              66,
+              53,
+              53,
+              54,
+              67
+            ],
+            "pred_context": [
+              57,
+              64,
+              69,
+              68
+            ]
+          },
+          {
+            "clip": "synth_gen_30219",
+            "index": 29,
+            "gold_pitch": 55,
+            "sounding": 53,
+            "pred_pitch": null,
+            "duration_ms": 30.0,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              77,
+              79,
+              62,
+              55,
+              55,
+              62,
+              72
+            ],
+            "pred_context": [
+              53,
+              55,
+              63,
+              65
+            ]
+          },
+          {
+            "clip": "synth_gen_30219",
+            "index": 233,
+            "gold_pitch": 55,
+            "sounding": 53,
+            "pred_pitch": null,
+            "duration_ms": 30.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              77,
+              79,
+              62,
+              55,
+              55,
+              62,
+              72
+            ],
+            "pred_context": [
+              53,
+              55,
+              63,
+              65
+            ]
+          }
+        ],
+        "aligner_type_mismatch": [
+          {
+            "clip": "synth_gen_30376",
+            "index": 57,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": 53,
+            "duration_ms": 126.1,
+            "relationship": "substitute",
+            "ornament": true,
+            "gold_context": [
+              54,
+              66,
+              53,
+              53,
+              54,
+              67,
+              66
+            ],
+            "pred_context": [
+              67,
+              54,
+              66,
+              53,
+              54,
+              67,
+              66
+            ]
+          },
+          {
+            "clip": "synth_gen_30219",
+            "index": 30,
+            "gold_pitch": 55,
+            "sounding": 53,
+            "pred_pitch": 55,
+            "duration_ms": 135.1,
+            "relationship": "substitute",
+            "ornament": true,
+            "gold_context": [
+              79,
+              62,
+              55,
+              55,
+              62,
+              72,
+              58
+            ],
+            "pred_context": [
+              77,
+              79,
+              62,
+              55,
+              62,
+              72,
+              58
+            ]
+          },
+          {
+            "clip": "synth_gen_30962",
+            "index": 119,
+            "gold_pitch": 60,
+            "sounding": 58,
+            "pred_pitch": 60,
+            "duration_ms": 130.4,
+            "relationship": "substitute",
+            "ornament": false,
+            "gold_context": [
+              53,
+              52,
+              53,
+              60,
+              60,
+              53,
+              60
+            ],
+            "pred_context": [
+              62,
+              57,
+              65,
+              60,
+              60,
+              53,
+              60
+            ]
+          },
+          {
+            "clip": "synth_gen_32232",
+            "index": 63,
+            "gold_pitch": 64,
+            "sounding": 62,
+            "pred_pitch": 64,
+            "duration_ms": 126.1,
+            "relationship": "substitute",
+            "ornament": true,
+            "gold_context": [
+              60,
+              79,
+              64,
+              64,
+              52,
+              53,
+              60
+            ],
+            "pred_context": [
+              53,
+              60,
+              79,
+              64,
+              52,
+              53,
+              60
+            ]
+          }
+        ],
+        "tx_sub_semitone": [
+          {
+            "clip": "synth_gen_30219",
+            "index": 197,
+            "gold_pitch": 79,
+            "sounding": 77,
+            "pred_pitch": 78,
+            "duration_ms": 55.6,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              72,
+              63,
+              80,
+              79,
+              80,
+              60,
+              69
+            ],
+            "pred_context": [
+              72,
+              63,
+              80,
+              78,
+              60,
+              68,
+              69
+            ]
+          },
+          {
+            "clip": "synth_gen_30219",
+            "index": 401,
+            "gold_pitch": 79,
+            "sounding": 77,
+            "pred_pitch": 78,
+            "duration_ms": 55.6,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              72,
+              63,
+              80,
+              79,
+              80,
+              60,
+              69
+            ],
+            "pred_context": [
+              72,
+              63,
+              80,
+              78,
+              60,
+              68,
+              69
+            ]
+          },
+          {
+            "clip": "synth_gen_34871",
+            "index": 64,
+            "gold_pitch": 65,
+            "sounding": 63,
+            "pred_pitch": 66,
+            "duration_ms": 2702.7,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              62,
+              55,
+              57,
+              65,
+              64,
+              52,
+              60
+            ],
+            "pred_context": [
+              62,
+              55,
+              57,
+              66,
+              64,
+              52,
+              60
+            ]
+          }
+        ],
+        "tx_sub_neighbor_bleed": [
+          {
+            "clip": "synth_gen_30219",
+            "index": 198,
+            "gold_pitch": 80,
+            "sounding": 78,
+            "pred_pitch": 60,
+            "duration_ms": 55.6,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              63,
+              80,
+              79,
+              80,
+              60,
+              69,
+              60
+            ],
+            "pred_context": [
+              63,
+              80,
+              78,
+              60,
+              68,
+              69,
+              60
+            ]
+          },
+          {
+            "clip": "synth_gen_30219",
+            "index": 402,
+            "gold_pitch": 80,
+            "sounding": 78,
+            "pred_pitch": 60,
+            "duration_ms": 55.6,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              63,
+              80,
+              79,
+              80,
+              60,
+              69,
+              60
+            ],
+            "pred_context": [
+              63,
+              80,
+              78,
+              60,
+              68,
+              69,
+              60
+            ]
+          },
+          {
+            "clip": "synth_gen_34428",
+            "index": 73,
+            "gold_pitch": 53,
+            "sounding": 51,
+            "pred_pitch": 52,
+            "duration_ms": 99.3,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              61,
+              62,
+              54,
+              53,
+              52,
+              67,
+              63
+            ],
+            "pred_context": [
+              69,
+              62,
+              54,
+              52,
+              70,
+              67,
+              63
+            ]
+          }
+        ],
+        "tx_sub_other_interval": [
+          {
+            "clip": "synth_gen_31855",
+            "index": 83,
+            "gold_pitch": 71,
+            "sounding": 69,
+            "pred_pitch": 52,
+            "duration_ms": 98.7,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              64,
+              53,
+              60,
+              71,
+              63,
+              64,
+              74
+            ],
+            "pred_context": [
+              64,
+              53,
+              60,
+              52,
+              63,
+              64,
+              74
+            ]
+          },
+          {
+            "clip": "synth_gen_34731",
+            "index": 0,
+            "gold_pitch": 69,
+            "sounding": 67,
+            "pred_pitch": 72,
+            "duration_ms": 1578.9,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              69,
+              71,
+              67,
+              57
+            ],
+            "pred_context": [
+              72,
+              71,
+              67,
+              57
+            ]
+          },
+          {
+            "clip": "synth_gen_34442",
+            "index": 205,
+            "gold_pitch": 74,
+            "sounding": 72,
+            "pred_pitch": 55,
+            "duration_ms": 125.0,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              76,
+              74,
+              58,
+              74,
+              67,
+              65,
+              70
+            ],
+            "pred_context": [
+              76,
+              74,
+              58,
+              55,
+              67,
+              65,
+              70
+            ]
+          },
+          {
+            "clip": "synth_gen_31663",
+            "index": 30,
+            "gold_pitch": 79,
+            "sounding": 77,
+            "pred_pitch": 65,
+            "duration_ms": 43.9,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              65,
+              79,
+              78,
+              79,
+              63,
+              71,
+              65
+            ],
+            "pred_context": [
+              55,
+              65,
+              79,
+              65,
+              63,
+              71,
+              65
+            ]
+          }
+        ],
+        "tx_sub_sounding_pitch": [
+          {
+            "clip": "synth_gen_33008",
+            "index": 96,
+            "gold_pitch": 67,
+            "sounding": 65,
+            "pred_pitch": 65,
+            "duration_ms": 130.4,
+            "relationship": "match",
+            "ornament": false,
+            "gold_context": [
+              89,
+              87,
+              86,
+              67,
+              75,
+              67,
+              53
+            ],
+            "pred_context": [
+              89,
+              87,
+              86,
+              65,
+              75,
+              67,
+              53
+            ]
+          },
+          {
+            "clip": "synth_gen_34579",
+            "index": 18,
+            "gold_pitch": 67,
+            "sounding": 65,
+            "pred_pitch": 65,
+            "duration_ms": 30.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              87,
+              67,
+              66,
+              67,
+              77,
+              65,
+              63
+            ],
+            "pred_context": [
+              86,
+              87,
+              67,
+              65,
+              77,
+              65,
+              63
+            ]
+          },
+          {
+            "clip": "synth_gen_32319",
+            "index": 162,
+            "gold_pitch": 59,
+            "sounding": 57,
+            "pred_pitch": 57,
+            "duration_ms": 30.0,
+            "relationship": "match",
+            "ornament": true,
+            "gold_context": [
+              67,
+              55,
+              54,
+              59,
+              58,
+              59,
+              81
+            ],
+            "pred_context": [
+              67,
+              55,
+              54,
+              57,
+              56,
+              57,
+              81
+            ]
+          },
+          {
+            "clip": "synth_gen_32319",
+            "index": 163,
+            "gold_pitch": 58,
+            "sounding": 56,
+            "pred_pitch": 56,
+            "duration_ms": 30.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              55,
+              54,
+              59,
+              58,
+              59,
+              81,
+              83
+            ],
+            "pred_context": [
+              55,
+              54,
+              57,
+              56,
+              57,
+              81,
+              83
+            ]
+          }
+        ],
+        "aligner_dropped_correct_note": [
+          {
+            "clip": "synth_gen_30344",
+            "index": 106,
+            "gold_pitch": 56,
+            "sounding": 54,
+            "pred_pitch": 56,
+            "duration_ms": 1025.6,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              55,
+              60,
+              55,
+              56,
+              62,
+              70,
+              72
+            ],
+            "pred_context": [
+              55,
+              60,
+              55,
+              56,
+              75,
+              62,
+              70
+            ]
+          },
+          {
+            "clip": "synth_gen_32572",
+            "index": 126,
+            "gold_pitch": 66,
+            "sounding": 64,
+            "pred_pitch": 66,
+            "duration_ms": 2800.0,
+            "relationship": "extra",
+            "ornament": true,
+            "gold_context": [
+              55,
+              65,
+              72,
+              66,
+              71,
+              65,
+              59
+            ],
+            "pred_context": [
+              55,
+              65,
+              72,
+              66,
+              71,
+              65,
+              59
+            ]
+          }
+        ],
+        "aligner_extra_identity": [
+          {
+            "clip": "synth_gen_33906",
+            "index": 194,
+            "gold_pitch": 64,
+            "sounding": 62,
+            "pred_pitch": 64,
+            "duration_ms": 540.5,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              64,
+              79,
+              86,
+              64,
+              65,
+              70,
+              60
+            ],
+            "pred_context": [
+              64,
+              79,
+              86,
+              64,
+              70,
+              60,
+              72
+            ]
+          },
+          {
+            "clip": "synth_gen_32296",
+            "index": 89,
+            "gold_pitch": 64,
+            "sounding": 62,
+            "pred_pitch": 64,
+            "duration_ms": 42.0,
+            "relationship": "extra",
+            "ornament": false,
+            "gold_context": [
+              83,
+              84,
+              65,
+              64,
+              65,
+              64,
+              53
+            ],
+            "pred_context": [
+              67,
+              83,
+              84,
+              64,
+              65,
+              64,
+              53
+            ]
+          }
+        ],
+        "tx_sub_whole_tone": [
+          {
+            "clip": "synth_gen_31663",
+            "index": 130,
+            "gold_pitch": 63,
+            "sounding": 61,
+            "pred_pitch": 65,
+            "duration_ms": 131.6,
+            "relationship": "match",
+            "ornament": true,
+            "gold_context": [
+              65,
+              74,
+              72,
+              63,
+              55,
+              62,
+              74
+            ],
+            "pred_context": [
+              65,
+              74,
+              72,
+              65,
+              55,
+              62,
+              74
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

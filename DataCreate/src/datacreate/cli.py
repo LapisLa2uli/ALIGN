@@ -190,6 +190,7 @@ def serve_main(config: PipelineConfig | None = None) -> None:
     app = create_app(config)
     print("Annotator     http://127.0.0.1:8765/")
     print("Gold vs model http://127.0.0.1:8765/compare")
+    print("Practice      http://127.0.0.1:8765/studio")
     uvicorn.run(app, host="127.0.0.1", port=8765, log_level="info")
 
 

@@ -118,6 +118,8 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
 
     app = FastAPI(title="MusicEval Annotator", version="0.1.0", lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    from datacreate.web.studio import studio_router
+    app.include_router(studio_router(config))
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> HTMLResponse:

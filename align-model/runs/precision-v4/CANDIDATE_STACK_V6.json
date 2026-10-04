@@ -1,0 +1,243 @@
+{
+  "schema_version": "align-stack-v4-candidate-v1",
+  "frozen_utc": "2026-10-02T01:57:33.293568+00:00",
+  "description": "stack v6: transcriber fine-tuned on 9.2 + 10.2 + 11.x train with realism augmentation; aligner v3 (timing 0.2, copy-after-replay labels); note-presence verifier; logistic gates refitted leave-one-score-out on 9.2/10.2/11.x val (missed features v3 incl. presence, extra features v2); thresholds: missed 0.96 (lowest with every held-out score group >= 0.97), extra 0.85 (highest worst-dataset held-out precision with recall > 0.3)",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\precision-v4\\v5-dclike\\best.pt",
+  "checkpoint_sha256": "35cf4d3e540c04c86270a966f7c2b6abdd7827d9643964cc6763bf7bd0ccec3b",
+  "decoder": {
+    "blank_scale": 0.5,
+    "candidate_threshold": 0.08
+  },
+  "aligner_costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.6,
+    "alternative_min_confidence": 0.1
+  },
+  "aligner_v3": {
+    "artifact_ioi": 0,
+    "timing_weight": 0.2,
+    "copy_after_replay": true
+  },
+  "gate": {
+    "enabled": true,
+    "missed_edge_runs": false,
+    "missed_features": "v3",
+    "extra_features": "v2",
+    "missed_never_ornamented": true,
+    "extra_model": {
+      "mean": [
+        -3.0168044927932356,
+        -2.715306573832153,
+        0.07630894912736724,
+        0.2703304864463424,
+        -7.7551509816675965,
+        0.6924757709921048,
+        0.019012253991830673,
+        0.26314828567888426,
+        0.20452098031934215,
+        0.9415521722985518,
+        0.05859636093575937,
+        0.58989974006684,
+        0.35150389899740064,
+        0.021834385443743037,
+        0.7959153360564426,
+        0.18225027849981434,
+        0.8484589676940215,
+        0.4549572966951355
+      ],
+      "scale": [
+        0.8336641315054002,
+        1.0213591917856841,
+        0.26549279537320647,
+        0.4441315152138078,
+        2.221976018410517,
+        0.12576213596880356,
+        0.13656888857556532,
+        0.2945200984690561,
+        0.23239800943754396,
+        0.2345893184185231,
+        0.23486868066474917,
+        0.49185264098130277,
+        0.47744095223171323,
+        0.14614355046376606,
+        0.4030321574638572,
+        0.3860516631085119,
+        0.35857644231803315,
+        0.49796802187893996
+      ],
+      "coef": [
+        -0.08235544508630817,
+        -0.30308808701516604,
+        0.09678804880507735,
+        -0.40302623016295697,
+        -0.6664575697303528,
+        -0.1438784943665455,
+        -0.19401151504281008,
+        0.13739834681310925,
+        0.013466397753023046,
+        0.7269176390659653,
+        -0.3314326356632867,
+        0.448608607215769,
+        -0.29910752668177004,
+        -0.2370340191790361,
+        0.013421924314989005,
+        0.07571920761572834,
+        0.6194767843388284,
+        -0.4124528245140386
+      ],
+      "intercept": 4.6663990627383445
+    },
+    "extra_threshold": 0.85,
+    "missed_model": {
+      "mean": [
+        -8.37616410249166,
+        0.7480343092650219,
+        0.624089451296183,
+        0.6127389743386062,
+        0.657665997633797,
+        -1.754810452608286,
+        1.068533529845247,
+        0.0,
+        0.0,
+        0.017686072218128224,
+        0.04200442151805453,
+        1.220348907975493,
+        0.0,
+        0.6462785556374355,
+        0.6904937361827561,
+        0.22169000245639842,
+        0.19138333474690986,
+        -4.032805808140529
+      ],
+      "scale": [
+        2.0731194404112503,
+        0.23937715177643168,
+        0.3461228336987703,
+        0.7377780477426528,
+        0.1338948305512934,
+        0.6451109558386035,
+        0.26126370913915653,
+        1e-06,
+        1e-06,
+        0.13728579310956007,
+        0.21133383735737696,
+        0.6916245572345597,
+        1e-06,
+        0.47812502591861616,
+        0.46229109991036754,
+        0.20991442691318352,
+        0.3471926384460937,
+        4.350530811649482
+      ],
+      "coef": [
+        -1.0488151035093987,
+        -0.37781765609375406,
+        -0.46526017998293345,
+        0.1813476821789523,
+        0.2122081906318322,
+        -0.4421627017797305,
+        -0.3770941047626568,
+        0.0,
+        0.0,
+        -0.055403243718114295,
+        -0.08266266233253135,
+        -0.2374178279305705,
+        0.0,
+        0.20402950004210818,
+        -0.41313295405217326,
+        -0.10750479012420228,
+        0.4120508911995263,
+        -2.6355503193478924
+      ],
+      "intercept": 2.4603177696147425
+    },
+    "missed_threshold": 0.96
+  },
+  "datasets": {
+    "realistic92": {
+      "root": "E:\\outputRaw_realistic_10k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-aligner-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "c660525a5710068af10bc7fa57d63a31d4521ee2498545b8ec1546af6628a00d"
+    },
+    "fast102": {
+      "root": "E:\\outputRaw_fast16_focus_5k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\fast102-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "058ef8c73238210c87d0d717aab7d0bb23596ce92b8de9b5d643bd5207ff91fc"
+    },
+    "dclike11": {
+      "root": "E:\\\\outputRaw_dclike_11",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\dclike11-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "82763b6327f088f7ed6d45833cca5ea62f2b8d945e2be990f00d3e920648e00a"
+    }
+  },
+  "code_sha256": {
+    "src/alignmodel/joint/robust_dp_aligner_v3.py": "223f86b77c8233d545346695e8729a702bece3a5a9a436a50bb451801f7df739",
+    "src/alignmodel/joint/robust_dp_aligner_v2.py": "7fbee0364ec81ec2e325467a0d0d8c93ea7e632932c0d774b3f661a5568bc304",
+    "src/alignmodel/joint/perfect_dp_aligner_v1.py": "58d71391c92624f395ef78803d553682f2a0e7205bcec3112fb1e4d30b99ad57",
+    "src/alignmodel/joint/grammar_mapper_v2.py": "4fcdd698d7a77e76aedbccea6da7352857d3e71ce93e3acde775c199f48bcd9c",
+    "src/alignmodel/joint/ornament_mapper_v1.py": "cfe56ad0d082fe465c0c9068113ef8a30479669defba2248478035cea1726354",
+    "src/alignmodel/joint/index.py": "bbd9c45ad63a18ab37531f3e475830c015fd6e817a54a5b1c4da88ea48a2e5c8",
+    "src/alignmodel/joint/metrics.py": "9c81cb612cdc9c98d17ce70ac18ebe0749df6cc8b955704f83483e3f60baa164",
+    "src/alignmodel/transcription/mel_ctc_v3.py": "96e3678f93f63a40db7e455639e0f50b51868c80f42c90acc3e90d916b4cdd1b",
+    "src/alignmodel/transcription/ctc_decode_v2.py": "487a7c5210853783354eebd6d1a00b8900f77e1e740a1af88e41cecdf6dea4f8",
+    "src/alignmodel/transcription/mel_v1.py": "ee5c19468912d9b4f14304913ef5022fd273459a7bf2f191549461487c18655e",
+    "scripts/eval_stack_v4_test.py": "b464102949b560a1055e02fbfd5fe53414e4900b3786c5b4518d5ae9edd7e76f",
+    "scripts/precision_harness_v4.py": "44bdd03002e40df1be27cb79dbd556efad31be61d2783adc11ed764a09a03d5a",
+    "scripts/audit_stack_v3_val_errors.py": "ee195434bb4f2d51dad4786047e5cbb171989898307bf774cb1fbf29b2f2a2bc",
+    "scripts/realistic92_aligner_common.py": "9179e132120099124b872ad6753ea1d8e21d2a743a3dd09495041ca54b5d3342",
+    "src/alignmodel/joint/presence_verifier_v1.py": "913157277ce712cb7c902acfada4f00bf3676287daeb8f146d2010eb38acb5b0"
+  },
+  "val_evidence": {
+    "leave_one_score_out": {
+      "missed_at_0.96": {
+        "dclike11": {
+          "precision": 0.9783,
+          "recall": 0.4412,
+          "kept": 92
+        },
+        "fast102": {
+          "precision": 1.0,
+          "recall": 0.4806,
+          "kept": 198
+        },
+        "realistic92": {
+          "precision": 0.983,
+          "recall": 0.4508,
+          "kept": 471
+        }
+      },
+      "extra_at_0.85": {
+        "dclike11": {
+          "precision": 0.8548,
+          "recall": 0.4092,
+          "kept": 124
+        },
+        "fast102": {
+          "precision": 0.9967,
+          "recall": 0.8941,
+          "kept": 15503
+        },
+        "realistic92": {
+          "precision": 0.9618,
+          "recall": 0.7793,
+          "kept": 9589
+        }
+      }
+    }
+  },
+  "selection": "gate thresholds: lowest threshold reaching 0.97 per-type precision on the even val halves of both datasets; odd halves read only",
+  "test_read_before_freeze": "v4/v5 test results were read; v6 transcriber, verifier, features and thresholds were chosen on val only (no DataCreate tuning)",
+  "previous_candidate": "CANDIDATE_STACK_V5.json (9.2 test missed precision 0.902)",
+  "verifier": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\precision-v4\\presence\\verifier-v1.pt",
+  "verifier_sha256": "464d81072a4a9f30c5ef884da65af080134a8d2c62baf5e3d139dadc2711625f"
+}

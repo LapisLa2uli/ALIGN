@@ -1,0 +1,18 @@
+# Dataset family 11 (DataCreate-like pilot): generate -> Muse Sounds -> degrade.
+$ErrorActionPreference = "Continue"
+$py = "D:\stuff\Audio Evaluation\ALIGN\align-model\.venv-amt-bench\Scripts\python.exe"
+$env:PYTHONPATH = "D:\stuff\Audio Evaluation\ALIGN\synth-pipeline\src;D:\stuff\Audio Evaluation\ALIGN\DataCreate\src"
+$env:OMP_NUM_THREADS = "2"
+Set-Location "D:\stuff\Audio Evaluation\ALIGN\synth-pipeline"
+$out = "E:/outputRaw_dclike_11"
+Write-Output "$(Get-Date -Format s) generate procedural"
+& $py -u -m synthpipeline.cli --config config/dclike_11_random.yaml generate --count 1500 --workers 6 --soundfont freepats --seed 110000 --output $out 2>&1 | Select-String -Pattern "Wall|ERROR|Traceback|Skipping"
+Write-Output "$(Get-Date -Format s) generate rawdata"
+& $py -u -m synthpipeline.cli --config config/dclike_11_rawdata.yaml generate --count 1500 --workers 6 --soundfont freepats --seed 115000 --output $out 2>&1 | Select-String -Pattern "Wall|ERROR|Traceback|Skipping"
+Write-Output "$(Get-Date -Format s) generate dev"
+& $py -u -m synthpipeline.cli --config config/dclike_11_dev.yaml generate --count 300 --workers 6 --soundfont freepats --seed 119000 --output $out 2>&1 | Select-String -Pattern "Wall|ERROR|Traceback|Skipping"
+Write-Output "$(Get-Date -Format s) musesounds"
+& $py -u -m synthpipeline.cli --config config/dclike_11_random.yaml regenerate-audio --root $out --backend musesounds --workers 8 2>&1 | Select-String -Pattern "00/|failed|ERROR|Traceback"
+Write-Output "$(Get-Date -Format s) degrade"
+& $py -u -m synthpipeline.cli --config config/dclike_11_random.yaml degrade-audio --root $out --workers 6 2>&1 | Select-Object -Last 20
+Write-Output "$(Get-Date -Format s) done"

@@ -30,6 +30,33 @@ class FakeSounding:
     measure: int | None = 1
 
 
+def test_inference_reports_progress_at_real_stage_boundaries(tmp_path, monkeypatch):
+    import sys
+    from types import SimpleNamespace
+    from alignmodel.joint import infer
+
+    (tmp_path / "performance_audio.wav").touch()
+    (tmp_path / "verified_score.musicxml").touch()
+    progress = []
+    def extract(*args, **kwargs):
+        assert progress == ["transcriber"]
+        return object()
+    monkeypatch.setitem(sys.modules, "alignmodel.transcription.basic_pitch",
+                        SimpleNamespace(extract_sample_basic_pitch_features=extract))
+    monkeypatch.setattr(infer.ScoreEventIndex, "from_musicxml", lambda _: SimpleNamespace(events=[]))
+    monkeypatch.setattr(infer, "load_joint_model", lambda *a, **kw: (None, None, {}))
+    monkeypatch.setattr(infer, "basic_pitch_candidate_union", lambda *a, **kw: [])
+    monkeypatch.setattr(infer, "add_score_repeat_hints", lambda notes, events: notes)
+    class Lattice:
+        def __init__(self, *args): pass
+        def decode(self, *args):
+            assert progress == ["transcriber", "aligner"]
+            return SimpleNamespace(joint_events=lambda _: [])
+    monkeypatch.setattr(infer, "SparseJointLattice", Lattice)
+    result = infer.infer_joint_sample(tmp_path, tmp_path / "model.pt", progress=progress.append)
+    assert result.sample_id == tmp_path.name
+
+
 def _result(events: tuple[JointEvent, ...]) -> JointSampleResult:
     return JointSampleResult(
         sample_id="demo",

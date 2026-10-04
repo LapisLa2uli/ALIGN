@@ -1,0 +1,6582 @@
+{
+ "gate": {
+  "enabled": true,
+  "missed_edge_runs": false,
+  "missed_features": "v2",
+  "missed_never_ornamented": true,
+  "extra_model": {
+   "mean": [
+    -3.019805861281889,
+    -2.708490397675403,
+    0.07382776013450401,
+    0.2722211843825892,
+    -7.892006138735116,
+    0.6945299442874902,
+    0.017336073229964506,
+    0.26414782987729535,
+    0.20323805965501687,
+    0.950681860638894
+   ],
+   "scale": [
+    0.7962841395336557,
+    1.0003622250944426,
+    0.26149138599542426,
+    0.44510414664810294,
+    2.1980013776968397,
+    0.12116057953928028,
+    0.13052124285503536,
+    0.29514620602007263,
+    0.23160077404008272,
+    0.21653243072319792
+   ],
+   "coef": [
+    -0.5003053663707372,
+    -0.16635580962378774,
+    -0.31584824031307407,
+    -0.20186504408315048,
+    -0.6695883148228845,
+    -0.035013432992380196,
+    -0.18199969250658493,
+    -0.03638246042425571,
+    0.22769740450241233,
+    0.6327215897195427
+   ],
+   "intercept": 4.473643058477065
+  },
+  "extra_threshold": 0.93,
+  "missed_model": {
+   "mean": [
+    -8.644199372845506,
+    0.7243993897638266,
+    0.5801811764092931,
+    0.637342989582812,
+    0.6605488987042637,
+    -1.6852114464427093,
+    1.0472972972972974,
+    0.0,
+    0.0,
+    0.019305019305019305,
+    0.0472972972972973,
+    1.204966878874567,
+    0.0,
+    0.7808880308880309,
+    0.6785714285714286,
+    0.23970398970398987
+   ],
+   "scale": [
+    1.6835799675692749,
+    0.23209229340206444,
+    0.3426397720714127,
+    0.7172727456144513,
+    0.12826272561418853,
+    0.5723123722995663,
+    0.2122750280054719,
+    1e-06,
+    1e-06,
+    0.13759582379309263,
+    0.2211825246051798,
+    0.6637272256904467,
+    1e-06,
+    0.41364567131082886,
+    0.4670258868079256,
+    0.22719113269362998
+   ],
+   "coef": [
+    -1.3480818927541178,
+    -0.4454644714811567,
+    -1.138701179579763,
+    0.39026249092762755,
+    0.09743712754983345,
+    -0.2393564657843292,
+    -0.4392699483259738,
+    0.0,
+    0.0,
+    -0.19208974549974914,
+    -0.12586944186105725,
+    -0.05782953926596818,
+    0.0,
+    0.2841350669954372,
+    -0.9796702798100968,
+    -0.5282458326552012
+   ],
+   "intercept": 2.923767968117807
+  },
+  "missed_threshold": 0.93
+ },
+ "report": {
+  "extra": {
+   "chosen": {
+    "threshold": 0.93,
+    "per_dataset": {
+     "fast102": {
+      "precision": 0.9961,
+      "recall": 0.9078,
+      "kept": 15750
+     },
+     "realistic92": {
+      "precision": 0.9708,
+      "recall": 0.7123,
+      "kept": 8684
+     }
+    },
+    "per_group": {
+     "fast102:synth_gen": {
+      "precision_gated_rows": 0.9961,
+      "kept": 15750,
+      "withheld": 230
+     },
+     "realistic92:synth_Weber1": {
+      "precision_gated_rows": 0.7548,
+      "kept": 526,
+      "withheld": 1036
+     },
+     "realistic92:synth_gen": {
+      "precision_gated_rows": 0.9887,
+      "kept": 8158,
+      "withheld": 1065
+     }
+    }
+   },
+   "curve": [
+    {
+     "threshold": 0.0,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9268,
+       "recall": 0.8445,
+       "kept": 10785
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6594,
+       "kept": 1562,
+       "withheld": 0
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.01,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9268,
+       "recall": 0.8445,
+       "kept": 10785
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6594,
+       "kept": 1562,
+       "withheld": 0
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.02,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9268,
+       "recall": 0.8445,
+       "kept": 10785
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6594,
+       "kept": 1562,
+       "withheld": 0
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.03,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.927,
+       "recall": 0.8445,
+       "kept": 10782
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6607,
+       "kept": 1559,
+       "withheld": 3
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.04,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9271,
+       "recall": 0.8445,
+       "kept": 10781
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6611,
+       "kept": 1558,
+       "withheld": 4
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.05,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9275,
+       "recall": 0.8445,
+       "kept": 10777
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6628,
+       "kept": 1554,
+       "withheld": 8
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.06,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9275,
+       "recall": 0.8445,
+       "kept": 10776
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6632,
+       "kept": 1553,
+       "withheld": 9
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.07,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9278,
+       "recall": 0.8445,
+       "kept": 10772
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6643,
+       "kept": 1549,
+       "withheld": 13
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.972,
+       "kept": 9223,
+       "withheld": 0
+      }
+     }
+    },
+    {
+     "threshold": 0.08,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.928,
+       "recall": 0.8445,
+       "kept": 10769
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6647,
+       "kept": 1548,
+       "withheld": 14
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9722,
+       "kept": 9221,
+       "withheld": 2
+      }
+     }
+    },
+    {
+     "threshold": 0.09,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9282,
+       "recall": 0.8444,
+       "kept": 10766
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6656,
+       "kept": 1546,
+       "withheld": 16
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9722,
+       "kept": 9220,
+       "withheld": 3
+      }
+     }
+    },
+    {
+     "threshold": 0.1,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9286,
+       "recall": 0.8444,
+       "kept": 10762
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6669,
+       "kept": 1543,
+       "withheld": 19
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9723,
+       "kept": 9219,
+       "withheld": 4
+      }
+     }
+    },
+    {
+     "threshold": 0.11,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9291,
+       "recall": 0.8444,
+       "kept": 10756
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6686,
+       "kept": 1539,
+       "withheld": 23
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9726,
+       "kept": 9217,
+       "withheld": 6
+      }
+     }
+    },
+    {
+     "threshold": 0.12,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9294,
+       "recall": 0.8444,
+       "kept": 10752
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6695,
+       "kept": 1537,
+       "withheld": 25
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9728,
+       "kept": 9215,
+       "withheld": 8
+      }
+     }
+    },
+    {
+     "threshold": 0.13,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9298,
+       "recall": 0.844,
+       "kept": 10743
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6697,
+       "kept": 1532,
+       "withheld": 30
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9731,
+       "kept": 9211,
+       "withheld": 12
+      }
+     }
+    },
+    {
+     "threshold": 0.14,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9302,
+       "recall": 0.8439,
+       "kept": 10736
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6706,
+       "kept": 1527,
+       "withheld": 35
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9733,
+       "kept": 9209,
+       "withheld": 14
+      }
+     }
+    },
+    {
+     "threshold": 0.15,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9303,
+       "recall": 0.8435,
+       "kept": 10731
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6704,
+       "kept": 1523,
+       "withheld": 39
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9733,
+       "kept": 9208,
+       "withheld": 15
+      }
+     }
+    },
+    {
+     "threshold": 0.16,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9305,
+       "recall": 0.8433,
+       "kept": 10726
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6708,
+       "kept": 1519,
+       "withheld": 43
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9733,
+       "kept": 9207,
+       "withheld": 16
+      }
+     }
+    },
+    {
+     "threshold": 0.17,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9312,
+       "recall": 0.8432,
+       "kept": 10716
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6737,
+       "kept": 1511,
+       "withheld": 51
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9735,
+       "kept": 9205,
+       "withheld": 18
+      }
+     }
+    },
+    {
+     "threshold": 0.18,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9317,
+       "recall": 0.8432,
+       "kept": 10711
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.676,
+       "kept": 1506,
+       "withheld": 56
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9735,
+       "kept": 9205,
+       "withheld": 18
+      }
+     }
+    },
+    {
+     "threshold": 0.19,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9319,
+       "recall": 0.8431,
+       "kept": 10707
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6762,
+       "kept": 1504,
+       "withheld": 58
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9737,
+       "kept": 9203,
+       "withheld": 20
+      }
+     }
+    },
+    {
+     "threshold": 0.2,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9321,
+       "recall": 0.8428,
+       "kept": 10701
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6765,
+       "kept": 1499,
+       "withheld": 63
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9737,
+       "kept": 9202,
+       "withheld": 21
+      }
+     }
+    },
+    {
+     "threshold": 0.21,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9323,
+       "recall": 0.8426,
+       "kept": 10696
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6769,
+       "kept": 1495,
+       "withheld": 67
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9738,
+       "kept": 9201,
+       "withheld": 22
+      }
+     }
+    },
+    {
+     "threshold": 0.22,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9325,
+       "recall": 0.8426,
+       "kept": 10694
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6769,
+       "kept": 1495,
+       "withheld": 67
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.974,
+       "kept": 9199,
+       "withheld": 24
+      }
+     }
+    },
+    {
+     "threshold": 0.23,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.933,
+       "recall": 0.8425,
+       "kept": 10687
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6785,
+       "kept": 1490,
+       "withheld": 72
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9742,
+       "kept": 9197,
+       "withheld": 26
+      }
+     }
+    },
+    {
+     "threshold": 0.24,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9334,
+       "recall": 0.8423,
+       "kept": 10681
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6797,
+       "kept": 1486,
+       "withheld": 76
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9743,
+       "kept": 9195,
+       "withheld": 28
+      }
+     }
+    },
+    {
+     "threshold": 0.25,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9338,
+       "recall": 0.8421,
+       "kept": 10673
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6815,
+       "kept": 1479,
+       "withheld": 83
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9743,
+       "kept": 9194,
+       "withheld": 29
+      }
+     }
+    },
+    {
+     "threshold": 0.26,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9189,
+       "kept": 15980
+      },
+      "realistic92": {
+       "precision": 0.9341,
+       "recall": 0.8421,
+       "kept": 10669
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15980,
+       "withheld": 0
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6834,
+       "kept": 1475,
+       "withheld": 87
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9743,
+       "kept": 9194,
+       "withheld": 29
+      }
+     }
+    },
+    {
+     "threshold": 0.27,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9937,
+       "recall": 0.9189,
+       "kept": 15979
+      },
+      "realistic92": {
+       "precision": 0.9347,
+       "recall": 0.8419,
+       "kept": 10660
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15979,
+       "withheld": 1
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6858,
+       "kept": 1467,
+       "withheld": 95
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9744,
+       "kept": 9193,
+       "withheld": 30
+      }
+     }
+    },
+    {
+     "threshold": 0.28,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9937,
+       "recall": 0.9189,
+       "kept": 15979
+      },
+      "realistic92": {
+       "precision": 0.9348,
+       "recall": 0.8418,
+       "kept": 10657
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15979,
+       "withheld": 1
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.686,
+       "kept": 1465,
+       "withheld": 97
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9745,
+       "kept": 9192,
+       "withheld": 31
+      }
+     }
+    },
+    {
+     "threshold": 0.29,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9937,
+       "recall": 0.9189,
+       "kept": 15979
+      },
+      "realistic92": {
+       "precision": 0.9349,
+       "recall": 0.8416,
+       "kept": 10654
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15979,
+       "withheld": 1
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6858,
+       "kept": 1464,
+       "withheld": 98
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9746,
+       "kept": 9190,
+       "withheld": 33
+      }
+     }
+    },
+    {
+     "threshold": 0.3,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9937,
+       "recall": 0.9188,
+       "kept": 15978
+      },
+      "realistic92": {
+       "precision": 0.9352,
+       "recall": 0.8415,
+       "kept": 10649
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15978,
+       "withheld": 2
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6865,
+       "kept": 1461,
+       "withheld": 101
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9747,
+       "kept": 9188,
+       "withheld": 35
+      }
+     }
+    },
+    {
+     "threshold": 0.31,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9937,
+       "recall": 0.9188,
+       "kept": 15977
+      },
+      "realistic92": {
+       "precision": 0.9354,
+       "recall": 0.8413,
+       "kept": 10645
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9937,
+       "kept": 15977,
+       "withheld": 3
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.687,
+       "kept": 1460,
+       "withheld": 102
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.975,
+       "kept": 9185,
+       "withheld": 38
+      }
+     }
+    },
+    {
+     "threshold": 0.32,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9938,
+       "recall": 0.9188,
+       "kept": 15976
+      },
+      "realistic92": {
+       "precision": 0.9356,
+       "recall": 0.841,
+       "kept": 10638
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9938,
+       "kept": 15976,
+       "withheld": 4
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6875,
+       "kept": 1453,
+       "withheld": 109
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.975,
+       "kept": 9185,
+       "withheld": 38
+      }
+     }
+    },
+    {
+     "threshold": 0.33,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9359,
+       "recall": 0.8407,
+       "kept": 10630
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.689,
+       "kept": 1447,
+       "withheld": 115
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.975,
+       "kept": 9183,
+       "withheld": 40
+      }
+     }
+    },
+    {
+     "threshold": 0.34,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9362,
+       "recall": 0.84,
+       "kept": 10619
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6889,
+       "kept": 1440,
+       "withheld": 122
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9751,
+       "kept": 9179,
+       "withheld": 44
+      }
+     }
+    },
+    {
+     "threshold": 0.35,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9366,
+       "recall": 0.8397,
+       "kept": 10611
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6909,
+       "kept": 1433,
+       "withheld": 129
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.975,
+       "kept": 9178,
+       "withheld": 45
+      }
+     }
+    },
+    {
+     "threshold": 0.36,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.937,
+       "recall": 0.8396,
+       "kept": 10605
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6926,
+       "kept": 1428,
+       "withheld": 134
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9752,
+       "kept": 9177,
+       "withheld": 46
+      }
+     }
+    },
+    {
+     "threshold": 0.37,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9372,
+       "recall": 0.8396,
+       "kept": 10602
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6935,
+       "kept": 1426,
+       "withheld": 136
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9752,
+       "kept": 9176,
+       "withheld": 47
+      }
+     }
+    },
+    {
+     "threshold": 0.38,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9377,
+       "recall": 0.8393,
+       "kept": 10594
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.696,
+       "kept": 1421,
+       "withheld": 141
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9753,
+       "kept": 9173,
+       "withheld": 50
+      }
+     }
+    },
+    {
+     "threshold": 0.39,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9379,
+       "recall": 0.839,
+       "kept": 10587
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6968,
+       "kept": 1415,
+       "withheld": 147
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9753,
+       "kept": 9172,
+       "withheld": 51
+      }
+     }
+    },
+    {
+     "threshold": 0.4,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9384,
+       "recall": 0.8388,
+       "kept": 10579
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6988,
+       "kept": 1411,
+       "withheld": 151
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9756,
+       "kept": 9168,
+       "withheld": 55
+      }
+     }
+    },
+    {
+     "threshold": 0.41,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9387,
+       "recall": 0.8382,
+       "kept": 10567
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.6997,
+       "kept": 1402,
+       "withheld": 160
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9756,
+       "kept": 9165,
+       "withheld": 58
+      }
+     }
+    },
+    {
+     "threshold": 0.42,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9389,
+       "recall": 0.8377,
+       "kept": 10559
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7001,
+       "kept": 1397,
+       "withheld": 165
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9756,
+       "kept": 9162,
+       "withheld": 61
+      }
+     }
+    },
+    {
+     "threshold": 0.43,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9389,
+       "recall": 0.8371,
+       "kept": 10552
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7004,
+       "kept": 1395,
+       "withheld": 167
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9755,
+       "kept": 9157,
+       "withheld": 66
+      }
+     }
+    },
+    {
+     "threshold": 0.44,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.939,
+       "recall": 0.8369,
+       "kept": 10548
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7006,
+       "kept": 1393,
+       "withheld": 169
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9755,
+       "kept": 9155,
+       "withheld": 68
+      }
+     }
+    },
+    {
+     "threshold": 0.45,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15975
+      },
+      "realistic92": {
+       "precision": 0.9395,
+       "recall": 0.8363,
+       "kept": 10535
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15975,
+       "withheld": 5
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7009,
+       "kept": 1384,
+       "withheld": 178
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.976,
+       "kept": 9151,
+       "withheld": 72
+      }
+     }
+    },
+    {
+     "threshold": 0.46,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15974
+      },
+      "realistic92": {
+       "precision": 0.9398,
+       "recall": 0.8358,
+       "kept": 10526
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15974,
+       "withheld": 6
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7017,
+       "kept": 1378,
+       "withheld": 184
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.976,
+       "kept": 9148,
+       "withheld": 75
+      }
+     }
+    },
+    {
+     "threshold": 0.47,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15974
+      },
+      "realistic92": {
+       "precision": 0.9402,
+       "recall": 0.8355,
+       "kept": 10517
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15974,
+       "withheld": 6
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7041,
+       "kept": 1372,
+       "withheld": 190
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9759,
+       "kept": 9145,
+       "withheld": 78
+      }
+     }
+    },
+    {
+     "threshold": 0.48,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15974
+      },
+      "realistic92": {
+       "precision": 0.9406,
+       "recall": 0.8348,
+       "kept": 10503
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15974,
+       "withheld": 6
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7058,
+       "kept": 1363,
+       "withheld": 199
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.976,
+       "kept": 9140,
+       "withheld": 83
+      }
+     }
+    },
+    {
+     "threshold": 0.49,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9939,
+       "recall": 0.9188,
+       "kept": 15974
+      },
+      "realistic92": {
+       "precision": 0.9411,
+       "recall": 0.8344,
+       "kept": 10493
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9939,
+       "kept": 15974,
+       "withheld": 6
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7071,
+       "kept": 1359,
+       "withheld": 203
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9762,
+       "kept": 9134,
+       "withheld": 89
+      }
+     }
+    },
+    {
+     "threshold": 0.5,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.994,
+       "recall": 0.9188,
+       "kept": 15973
+      },
+      "realistic92": {
+       "precision": 0.9412,
+       "recall": 0.8337,
+       "kept": 10483
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.994,
+       "kept": 15973,
+       "withheld": 7
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.707,
+       "kept": 1355,
+       "withheld": 207
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9763,
+       "kept": 9128,
+       "withheld": 95
+      }
+     }
+    },
+    {
+     "threshold": 0.51,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9941,
+       "recall": 0.9188,
+       "kept": 15972
+      },
+      "realistic92": {
+       "precision": 0.9413,
+       "recall": 0.8332,
+       "kept": 10476
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9941,
+       "kept": 15972,
+       "withheld": 8
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7067,
+       "kept": 1350,
+       "withheld": 212
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9763,
+       "kept": 9126,
+       "withheld": 97
+      }
+     }
+    },
+    {
+     "threshold": 0.52,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9941,
+       "recall": 0.9188,
+       "kept": 15971
+      },
+      "realistic92": {
+       "precision": 0.9414,
+       "recall": 0.8326,
+       "kept": 10467
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9941,
+       "kept": 15971,
+       "withheld": 9
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7076,
+       "kept": 1344,
+       "withheld": 218
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9763,
+       "kept": 9123,
+       "withheld": 100
+      }
+     }
+    },
+    {
+     "threshold": 0.53,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9942,
+       "recall": 0.9187,
+       "kept": 15969
+      },
+      "realistic92": {
+       "precision": 0.9416,
+       "recall": 0.8315,
+       "kept": 10452
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9942,
+       "kept": 15969,
+       "withheld": 11
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7068,
+       "kept": 1337,
+       "withheld": 225
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9764,
+       "kept": 9115,
+       "withheld": 108
+      }
+     }
+    },
+    {
+     "threshold": 0.54,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9942,
+       "recall": 0.9187,
+       "kept": 15969
+      },
+      "realistic92": {
+       "precision": 0.9421,
+       "recall": 0.8303,
+       "kept": 10431
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9942,
+       "kept": 15969,
+       "withheld": 11
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7067,
+       "kept": 1323,
+       "withheld": 239
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9767,
+       "kept": 9108,
+       "withheld": 115
+      }
+     }
+    },
+    {
+     "threshold": 0.55,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9942,
+       "recall": 0.9187,
+       "kept": 15968
+      },
+      "realistic92": {
+       "precision": 0.9425,
+       "recall": 0.8298,
+       "kept": 10420
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9942,
+       "kept": 15968,
+       "withheld": 12
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7064,
+       "kept": 1318,
+       "withheld": 244
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9771,
+       "kept": 9102,
+       "withheld": 121
+      }
+     }
+    },
+    {
+     "threshold": 0.56,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9942,
+       "recall": 0.9187,
+       "kept": 15968
+      },
+      "realistic92": {
+       "precision": 0.9427,
+       "recall": 0.829,
+       "kept": 10407
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9942,
+       "kept": 15968,
+       "withheld": 12
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7071,
+       "kept": 1311,
+       "withheld": 251
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9772,
+       "kept": 9096,
+       "withheld": 127
+      }
+     }
+    },
+    {
+     "threshold": 0.57,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9942,
+       "recall": 0.9187,
+       "kept": 15968
+      },
+      "realistic92": {
+       "precision": 0.9434,
+       "recall": 0.8281,
+       "kept": 10389
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9942,
+       "kept": 15968,
+       "withheld": 12
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.71,
+       "kept": 1300,
+       "withheld": 262
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9773,
+       "kept": 9089,
+       "withheld": 134
+      }
+     }
+    },
+    {
+     "threshold": 0.58,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9943,
+       "recall": 0.9187,
+       "kept": 15967
+      },
+      "realistic92": {
+       "precision": 0.9441,
+       "recall": 0.8271,
+       "kept": 10368
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9943,
+       "kept": 15967,
+       "withheld": 13
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7124,
+       "kept": 1290,
+       "withheld": 272
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9777,
+       "kept": 9078,
+       "withheld": 145
+      }
+     }
+    },
+    {
+     "threshold": 0.59,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9943,
+       "recall": 0.9187,
+       "kept": 15967
+      },
+      "realistic92": {
+       "precision": 0.9447,
+       "recall": 0.8261,
+       "kept": 10349
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9943,
+       "kept": 15967,
+       "withheld": 13
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.715,
+       "kept": 1277,
+       "withheld": 285
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9778,
+       "kept": 9072,
+       "withheld": 151
+      }
+     }
+    },
+    {
+     "threshold": 0.6,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9944,
+       "recall": 0.9186,
+       "kept": 15965
+      },
+      "realistic92": {
+       "precision": 0.9451,
+       "recall": 0.8256,
+       "kept": 10338
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9944,
+       "kept": 15965,
+       "withheld": 15
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7165,
+       "kept": 1270,
+       "withheld": 292
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9781,
+       "kept": 9068,
+       "withheld": 155
+      }
+     }
+    },
+    {
+     "threshold": 0.61,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9944,
+       "recall": 0.9186,
+       "kept": 15964
+      },
+      "realistic92": {
+       "precision": 0.9458,
+       "recall": 0.8251,
+       "kept": 10324
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9944,
+       "kept": 15964,
+       "withheld": 16
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7196,
+       "kept": 1259,
+       "withheld": 303
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9783,
+       "kept": 9065,
+       "withheld": 158
+      }
+     }
+    },
+    {
+     "threshold": 0.62,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9944,
+       "recall": 0.9185,
+       "kept": 15962
+      },
+      "realistic92": {
+       "precision": 0.9462,
+       "recall": 0.8244,
+       "kept": 10311
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9944,
+       "kept": 15962,
+       "withheld": 18
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7218,
+       "kept": 1251,
+       "withheld": 311
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9783,
+       "kept": 9060,
+       "withheld": 163
+      }
+     }
+    },
+    {
+     "threshold": 0.63,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9944,
+       "recall": 0.9185,
+       "kept": 15962
+      },
+      "realistic92": {
+       "precision": 0.947,
+       "recall": 0.8236,
+       "kept": 10293
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9944,
+       "kept": 15962,
+       "withheld": 18
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7254,
+       "kept": 1238,
+       "withheld": 324
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9784,
+       "kept": 9055,
+       "withheld": 168
+      }
+     }
+    },
+    {
+     "threshold": 0.64,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9946,
+       "recall": 0.9184,
+       "kept": 15956
+      },
+      "realistic92": {
+       "precision": 0.9476,
+       "recall": 0.8221,
+       "kept": 10268
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9946,
+       "kept": 15956,
+       "withheld": 24
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7273,
+       "kept": 1225,
+       "withheld": 337
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9787,
+       "kept": 9043,
+       "withheld": 180
+      }
+     }
+    },
+    {
+     "threshold": 0.65,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9946,
+       "recall": 0.9181,
+       "kept": 15951
+      },
+      "realistic92": {
+       "precision": 0.9482,
+       "recall": 0.8207,
+       "kept": 10243
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9946,
+       "kept": 15951,
+       "withheld": 29
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7295,
+       "kept": 1209,
+       "withheld": 353
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9787,
+       "kept": 9034,
+       "withheld": 189
+      }
+     }
+    },
+    {
+     "threshold": 0.66,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9946,
+       "recall": 0.9178,
+       "kept": 15947
+      },
+      "realistic92": {
+       "precision": 0.9487,
+       "recall": 0.819,
+       "kept": 10217
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9946,
+       "kept": 15947,
+       "withheld": 33
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7316,
+       "kept": 1196,
+       "withheld": 366
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9789,
+       "kept": 9021,
+       "withheld": 202
+      }
+     }
+    },
+    {
+     "threshold": 0.67,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9946,
+       "recall": 0.9177,
+       "kept": 15944
+      },
+      "realistic92": {
+       "precision": 0.9497,
+       "recall": 0.8174,
+       "kept": 10187
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9946,
+       "kept": 15944,
+       "withheld": 36
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7359,
+       "kept": 1174,
+       "withheld": 388
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.979,
+       "kept": 9013,
+       "withheld": 210
+      }
+     }
+    },
+    {
+     "threshold": 0.68,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9947,
+       "recall": 0.9176,
+       "kept": 15942
+      },
+      "realistic92": {
+       "precision": 0.9501,
+       "recall": 0.816,
+       "kept": 10164
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9947,
+       "kept": 15942,
+       "withheld": 38
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7351,
+       "kept": 1159,
+       "withheld": 403
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9793,
+       "kept": 9005,
+       "withheld": 218
+      }
+     }
+    },
+    {
+     "threshold": 0.69,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9947,
+       "recall": 0.9175,
+       "kept": 15939
+      },
+      "realistic92": {
+       "precision": 0.9507,
+       "recall": 0.8145,
+       "kept": 10140
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9947,
+       "kept": 15939,
+       "withheld": 41
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7358,
+       "kept": 1147,
+       "withheld": 415
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9798,
+       "kept": 8993,
+       "withheld": 230
+      }
+     }
+    },
+    {
+     "threshold": 0.7,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9949,
+       "recall": 0.9175,
+       "kept": 15937
+      },
+      "realistic92": {
+       "precision": 0.9513,
+       "recall": 0.8124,
+       "kept": 10107
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9949,
+       "kept": 15937,
+       "withheld": 43
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7358,
+       "kept": 1124,
+       "withheld": 438
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.98,
+       "kept": 8983,
+       "withheld": 240
+      }
+     }
+    },
+    {
+     "threshold": 0.71,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9949,
+       "recall": 0.9174,
+       "kept": 15935
+      },
+      "realistic92": {
+       "precision": 0.9521,
+       "recall": 0.8107,
+       "kept": 10077
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9949,
+       "kept": 15935,
+       "withheld": 45
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7378,
+       "kept": 1106,
+       "withheld": 456
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9804,
+       "kept": 8971,
+       "withheld": 252
+      }
+     }
+    },
+    {
+     "threshold": 0.72,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9949,
+       "recall": 0.9174,
+       "kept": 15935
+      },
+      "realistic92": {
+       "precision": 0.9529,
+       "recall": 0.8085,
+       "kept": 10041
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9949,
+       "kept": 15935,
+       "withheld": 45
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7389,
+       "kept": 1084,
+       "withheld": 478
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9807,
+       "kept": 8957,
+       "withheld": 266
+      }
+     }
+    },
+    {
+     "threshold": 0.73,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9949,
+       "recall": 0.9174,
+       "kept": 15935
+      },
+      "realistic92": {
+       "precision": 0.9534,
+       "recall": 0.8063,
+       "kept": 10009
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9949,
+       "kept": 15935,
+       "withheld": 45
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7397,
+       "kept": 1068,
+       "withheld": 494
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9809,
+       "kept": 8941,
+       "withheld": 282
+      }
+     }
+    },
+    {
+     "threshold": 0.74,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.995,
+       "recall": 0.9173,
+       "kept": 15932
+      },
+      "realistic92": {
+       "precision": 0.9536,
+       "recall": 0.8043,
+       "kept": 9982
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.995,
+       "kept": 15932,
+       "withheld": 48
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7395,
+       "kept": 1052,
+       "withheld": 510
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9809,
+       "kept": 8930,
+       "withheld": 293
+      }
+     }
+    },
+    {
+     "threshold": 0.75,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.995,
+       "recall": 0.9171,
+       "kept": 15928
+      },
+      "realistic92": {
+       "precision": 0.9541,
+       "recall": 0.8018,
+       "kept": 9946
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.995,
+       "kept": 15928,
+       "withheld": 52
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7403,
+       "kept": 1036,
+       "withheld": 526
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9811,
+       "kept": 8910,
+       "withheld": 313
+      }
+     }
+    },
+    {
+     "threshold": 0.76,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.995,
+       "recall": 0.917,
+       "kept": 15925
+      },
+      "realistic92": {
+       "precision": 0.9545,
+       "recall": 0.7998,
+       "kept": 9916
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.995,
+       "kept": 15925,
+       "withheld": 55
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7404,
+       "kept": 1017,
+       "withheld": 545
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9812,
+       "kept": 8899,
+       "withheld": 324
+      }
+     }
+    },
+    {
+     "threshold": 0.77,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.995,
+       "recall": 0.9168,
+       "kept": 15922
+      },
+      "realistic92": {
+       "precision": 0.9555,
+       "recall": 0.7977,
+       "kept": 9881
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.995,
+       "kept": 15922,
+       "withheld": 58
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7445,
+       "kept": 998,
+       "withheld": 564
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9814,
+       "kept": 8883,
+       "withheld": 340
+      }
+     }
+    },
+    {
+     "threshold": 0.78,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9951,
+       "recall": 0.9166,
+       "kept": 15918
+      },
+      "realistic92": {
+       "precision": 0.9564,
+       "recall": 0.7939,
+       "kept": 9824
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9951,
+       "kept": 15918,
+       "withheld": 62
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7428,
+       "kept": 972,
+       "withheld": 590
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9822,
+       "kept": 8852,
+       "withheld": 371
+      }
+     }
+    },
+    {
+     "threshold": 0.79,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9951,
+       "recall": 0.9165,
+       "kept": 15916
+      },
+      "realistic92": {
+       "precision": 0.9577,
+       "recall": 0.7901,
+       "kept": 9764
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9951,
+       "kept": 15916,
+       "withheld": 64
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7479,
+       "kept": 944,
+       "withheld": 618
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9825,
+       "kept": 8820,
+       "withheld": 403
+      }
+     }
+    },
+    {
+     "threshold": 0.8,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9951,
+       "recall": 0.9162,
+       "kept": 15911
+      },
+      "realistic92": {
+       "precision": 0.9585,
+       "recall": 0.7863,
+       "kept": 9709
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9951,
+       "kept": 15911,
+       "withheld": 69
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7495,
+       "kept": 914,
+       "withheld": 648
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9828,
+       "kept": 8795,
+       "withheld": 428
+      }
+     }
+    },
+    {
+     "threshold": 0.81,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9951,
+       "recall": 0.9159,
+       "kept": 15906
+      },
+      "realistic92": {
+       "precision": 0.9592,
+       "recall": 0.7822,
+       "kept": 9651
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9951,
+       "kept": 15906,
+       "withheld": 74
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7489,
+       "kept": 888,
+       "withheld": 674
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9835,
+       "kept": 8763,
+       "withheld": 460
+      }
+     }
+    },
+    {
+     "threshold": 0.82,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9952,
+       "recall": 0.9158,
+       "kept": 15903
+      },
+      "realistic92": {
+       "precision": 0.9604,
+       "recall": 0.7791,
+       "kept": 9601
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9952,
+       "kept": 15903,
+       "withheld": 77
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7564,
+       "kept": 858,
+       "withheld": 704
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9835,
+       "kept": 8743,
+       "withheld": 480
+      }
+     }
+    },
+    {
+     "threshold": 0.83,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9953,
+       "recall": 0.9154,
+       "kept": 15894
+      },
+      "realistic92": {
+       "precision": 0.9611,
+       "recall": 0.775,
+       "kept": 9544
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9953,
+       "kept": 15894,
+       "withheld": 86
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7578,
+       "kept": 830,
+       "withheld": 732
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9837,
+       "kept": 8714,
+       "withheld": 509
+      }
+     }
+    },
+    {
+     "threshold": 0.84,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9953,
+       "recall": 0.915,
+       "kept": 15886
+      },
+      "realistic92": {
+       "precision": 0.962,
+       "recall": 0.7704,
+       "kept": 9478
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9953,
+       "kept": 15886,
+       "withheld": 94
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7572,
+       "kept": 803,
+       "withheld": 759
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9843,
+       "kept": 8675,
+       "withheld": 548
+      }
+     }
+    },
+    {
+     "threshold": 0.85,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9954,
+       "recall": 0.9144,
+       "kept": 15875
+      },
+      "realistic92": {
+       "precision": 0.9622,
+       "recall": 0.765,
+       "kept": 9409
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9954,
+       "kept": 15875,
+       "withheld": 105
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7523,
+       "kept": 767,
+       "withheld": 795
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9843,
+       "kept": 8642,
+       "withheld": 581
+      }
+     }
+    },
+    {
+     "threshold": 0.86,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9955,
+       "recall": 0.9142,
+       "kept": 15870
+      },
+      "realistic92": {
+       "precision": 0.9633,
+       "recall": 0.7595,
+       "kept": 9331
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9955,
+       "kept": 15870,
+       "withheld": 110
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.754,
+       "kept": 744,
+       "withheld": 818
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9849,
+       "kept": 8587,
+       "withheld": 636
+      }
+     }
+    },
+    {
+     "threshold": 0.87,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9955,
+       "recall": 0.9138,
+       "kept": 15862
+      },
+      "realistic92": {
+       "precision": 0.9638,
+       "recall": 0.7526,
+       "kept": 9242
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9955,
+       "kept": 15862,
+       "withheld": 118
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7496,
+       "kept": 703,
+       "withheld": 859
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9849,
+       "kept": 8539,
+       "withheld": 684
+      }
+     }
+    },
+    {
+     "threshold": 0.88,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9957,
+       "recall": 0.9131,
+       "kept": 15849
+      },
+      "realistic92": {
+       "precision": 0.965,
+       "recall": 0.7473,
+       "kept": 9165
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9956,
+       "kept": 15849,
+       "withheld": 131
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7522,
+       "kept": 678,
+       "withheld": 884
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9856,
+       "kept": 8487,
+       "withheld": 736
+      }
+     }
+    },
+    {
+     "threshold": 0.89,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9957,
+       "recall": 0.9123,
+       "kept": 15834
+      },
+      "realistic92": {
+       "precision": 0.9657,
+       "recall": 0.7422,
+       "kept": 9096
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9956,
+       "kept": 15834,
+       "withheld": 146
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7504,
+       "kept": 653,
+       "withheld": 909
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.986,
+       "kept": 8443,
+       "withheld": 780
+      }
+     }
+    },
+    {
+     "threshold": 0.9,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9958,
+       "recall": 0.9117,
+       "kept": 15822
+      },
+      "realistic92": {
+       "precision": 0.9668,
+       "recall": 0.7359,
+       "kept": 9009
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9958,
+       "kept": 15822,
+       "withheld": 158
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7564,
+       "kept": 624,
+       "withheld": 938
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9862,
+       "kept": 8385,
+       "withheld": 838
+      }
+     }
+    },
+    {
+     "threshold": 0.91,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.996,
+       "recall": 0.9105,
+       "kept": 15799
+      },
+      "realistic92": {
+       "precision": 0.9671,
+       "recall": 0.7281,
+       "kept": 8910
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9959,
+       "kept": 15799,
+       "withheld": 181
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.75,
+       "kept": 600,
+       "withheld": 962
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9865,
+       "kept": 8310,
+       "withheld": 913
+      }
+     }
+    },
+    {
+     "threshold": 0.92,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.996,
+       "recall": 0.9091,
+       "kept": 15773
+      },
+      "realistic92": {
+       "precision": 0.9687,
+       "recall": 0.7214,
+       "kept": 8814
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.996,
+       "kept": 15773,
+       "withheld": 207
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7544,
+       "kept": 570,
+       "withheld": 992
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9874,
+       "kept": 8244,
+       "withheld": 979
+      }
+     }
+    },
+    {
+     "threshold": 0.93,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9961,
+       "recall": 0.9078,
+       "kept": 15750
+      },
+      "realistic92": {
+       "precision": 0.9708,
+       "recall": 0.7123,
+       "kept": 8684
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9961,
+       "kept": 15750,
+       "withheld": 230
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7548,
+       "kept": 526,
+       "withheld": 1036
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9887,
+       "kept": 8158,
+       "withheld": 1065
+      }
+     }
+    },
+    {
+     "threshold": 0.94,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9964,
+       "recall": 0.9055,
+       "kept": 15704
+      },
+      "realistic92": {
+       "precision": 0.9719,
+       "recall": 0.7023,
+       "kept": 8551
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9964,
+       "kept": 15704,
+       "withheld": 276
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7531,
+       "kept": 490,
+       "withheld": 1072
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9893,
+       "kept": 8061,
+       "withheld": 1162
+      }
+     }
+    },
+    {
+     "threshold": 0.95,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9965,
+       "recall": 0.9011,
+       "kept": 15627
+      },
+      "realistic92": {
+       "precision": 0.9732,
+       "recall": 0.6883,
+       "kept": 8370
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9965,
+       "kept": 15627,
+       "withheld": 353
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7495,
+       "kept": 459,
+       "withheld": 1103
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9904,
+       "kept": 7911,
+       "withheld": 1312
+      }
+     }
+    },
+    {
+     "threshold": 0.96,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9966,
+       "recall": 0.8921,
+       "kept": 15469
+      },
+      "realistic92": {
+       "precision": 0.9765,
+       "recall": 0.6676,
+       "kept": 8091
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9966,
+       "kept": 15469,
+       "withheld": 511
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7646,
+       "kept": 412,
+       "withheld": 1150
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9923,
+       "kept": 7679,
+       "withheld": 1544
+      }
+     }
+    },
+    {
+     "threshold": 0.97,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9972,
+       "recall": 0.8719,
+       "kept": 15110
+      },
+      "realistic92": {
+       "precision": 0.9801,
+       "recall": 0.6347,
+       "kept": 7665
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9972,
+       "kept": 15110,
+       "withheld": 870
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.7811,
+       "kept": 338,
+       "withheld": 1224
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9941,
+       "kept": 7327,
+       "withheld": 1896
+      }
+     }
+    },
+    {
+     "threshold": 0.98,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9979,
+       "recall": 0.8336,
+       "kept": 14437
+      },
+      "realistic92": {
+       "precision": 0.984,
+       "recall": 0.5697,
+       "kept": 6852
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9979,
+       "kept": 14437,
+       "withheld": 1543
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.8189,
+       "kept": 254,
+       "withheld": 1308
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9959,
+       "kept": 6598,
+       "withheld": 2625
+      }
+     }
+    },
+    {
+     "threshold": 0.99,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9992,
+       "recall": 0.7146,
+       "kept": 12359
+      },
+      "realistic92": {
+       "precision": 0.9882,
+       "recall": 0.4063,
+       "kept": 4866
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision_gated_rows": 0.9992,
+       "kept": 12359,
+       "withheld": 3621
+      },
+      "realistic92:synth_Weber1": {
+       "precision_gated_rows": 0.9402,
+       "kept": 117,
+       "withheld": 1445
+      },
+      "realistic92:synth_gen": {
+       "precision_gated_rows": 0.9975,
+       "kept": 4749,
+       "withheld": 4474
+      }
+     }
+    }
+   ],
+   "rows": 26765
+  },
+  "missed": {
+   "chosen": {
+    "threshold": 0.93,
+    "per_dataset": {
+     "fast102": {
+      "precision": 0.9953,
+      "recall": 0.5097,
+      "kept": 211
+     },
+     "realistic92": {
+      "precision": 0.98,
+      "recall": 0.3817,
+      "kept": 400
+     }
+    },
+    "per_group": {
+     "fast102:synth_gen": {
+      "precision": 0.9953,
+      "kept": 211,
+      "positives_kept": 210
+     },
+     "realistic92:synth_Weber1": {
+      "precision": 0.972,
+      "kept": 286,
+      "positives_kept": 278
+     },
+     "realistic92:synth_gen": {
+      "precision": 1.0,
+      "kept": 114,
+      "positives_kept": 114
+     }
+    }
+   },
+   "curve": [
+    {
+     "threshold": 0.0,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.8824,
+       "recall": 0.6189,
+       "kept": 289
+      },
+      "realistic92": {
+       "precision": 0.8273,
+       "recall": 0.6018,
+       "kept": 747
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.8824,
+       "kept": 289,
+       "positives_kept": 255
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8058,
+       "kept": 556,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.8901,
+       "kept": 191,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.01,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.8947,
+       "recall": 0.6189,
+       "kept": 285
+      },
+      "realistic92": {
+       "precision": 0.8385,
+       "recall": 0.6018,
+       "kept": 737
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.8947,
+       "kept": 285,
+       "positives_kept": 255
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.816,
+       "kept": 549,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9043,
+       "kept": 188,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.02,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.8979,
+       "recall": 0.6189,
+       "kept": 284
+      },
+      "realistic92": {
+       "precision": 0.8477,
+       "recall": 0.6018,
+       "kept": 729
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.8979,
+       "kept": 284,
+       "positives_kept": 255
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.825,
+       "kept": 543,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.914,
+       "kept": 186,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.03,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9107,
+       "recall": 0.6189,
+       "kept": 280
+      },
+      "realistic92": {
+       "precision": 0.8536,
+       "recall": 0.6018,
+       "kept": 724
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9107,
+       "kept": 280,
+       "positives_kept": 255
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8312,
+       "kept": 539,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9189,
+       "kept": 185,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.04,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9137,
+       "recall": 0.6165,
+       "kept": 278
+      },
+      "realistic92": {
+       "precision": 0.856,
+       "recall": 0.6018,
+       "kept": 722
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9137,
+       "kept": 278,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8343,
+       "kept": 537,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9189,
+       "kept": 185,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.05,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9236,
+       "recall": 0.6165,
+       "kept": 275
+      },
+      "realistic92": {
+       "precision": 0.8607,
+       "recall": 0.6018,
+       "kept": 718
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9236,
+       "kept": 275,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.839,
+       "kept": 534,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9239,
+       "kept": 184,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.06,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9304,
+       "recall": 0.6165,
+       "kept": 273
+      },
+      "realistic92": {
+       "precision": 0.8643,
+       "recall": 0.6018,
+       "kept": 715
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9304,
+       "kept": 273,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8421,
+       "kept": 532,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.929,
+       "kept": 183,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.07,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9338,
+       "recall": 0.6165,
+       "kept": 272
+      },
+      "realistic92": {
+       "precision": 0.8655,
+       "recall": 0.6018,
+       "kept": 714
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9338,
+       "kept": 272,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8437,
+       "kept": 531,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.929,
+       "kept": 183,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.08,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9338,
+       "recall": 0.6165,
+       "kept": 272
+      },
+      "realistic92": {
+       "precision": 0.8668,
+       "recall": 0.6018,
+       "kept": 713
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9338,
+       "kept": 272,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8453,
+       "kept": 530,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.929,
+       "kept": 183,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.09,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9373,
+       "recall": 0.6165,
+       "kept": 271
+      },
+      "realistic92": {
+       "precision": 0.868,
+       "recall": 0.6018,
+       "kept": 712
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9373,
+       "kept": 271,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8453,
+       "kept": 530,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9341,
+       "kept": 182,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.1,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9373,
+       "recall": 0.6165,
+       "kept": 271
+      },
+      "realistic92": {
+       "precision": 0.868,
+       "recall": 0.6018,
+       "kept": 712
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9373,
+       "kept": 271,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8453,
+       "kept": 530,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9341,
+       "kept": 182,
+       "positives_kept": 170
+      }
+     }
+    },
+    {
+     "threshold": 0.11,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9373,
+       "recall": 0.6165,
+       "kept": 271
+      },
+      "realistic92": {
+       "precision": 0.8702,
+       "recall": 0.6008,
+       "kept": 709
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9373,
+       "kept": 271,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8469,
+       "kept": 529,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9389,
+       "kept": 180,
+       "positives_kept": 169
+      }
+     }
+    },
+    {
+     "threshold": 0.12,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9373,
+       "recall": 0.6165,
+       "kept": 271
+      },
+      "realistic92": {
+       "precision": 0.8701,
+       "recall": 0.5998,
+       "kept": 708
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9373,
+       "kept": 271,
+       "positives_kept": 254
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8469,
+       "kept": 529,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9385,
+       "kept": 179,
+       "positives_kept": 168
+      }
+     }
+    },
+    {
+     "threshold": 0.13,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9405,
+       "recall": 0.6141,
+       "kept": 269
+      },
+      "realistic92": {
+       "precision": 0.8701,
+       "recall": 0.5998,
+       "kept": 708
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9405,
+       "kept": 269,
+       "positives_kept": 253
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8469,
+       "kept": 529,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9385,
+       "kept": 179,
+       "positives_kept": 168
+      }
+     }
+    },
+    {
+     "threshold": 0.14,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9438,
+       "recall": 0.6117,
+       "kept": 267
+      },
+      "realistic92": {
+       "precision": 0.8713,
+       "recall": 0.5998,
+       "kept": 707
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9438,
+       "kept": 267,
+       "positives_kept": 252
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8485,
+       "kept": 528,
+       "positives_kept": 448
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9385,
+       "kept": 179,
+       "positives_kept": 168
+      }
+     }
+    },
+    {
+     "threshold": 0.15,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9472,
+       "recall": 0.6092,
+       "kept": 265
+      },
+      "realistic92": {
+       "precision": 0.8711,
+       "recall": 0.5988,
+       "kept": 706
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9472,
+       "kept": 265,
+       "positives_kept": 251
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8482,
+       "kept": 527,
+       "positives_kept": 447
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9385,
+       "kept": 179,
+       "positives_kept": 168
+      }
+     }
+    },
+    {
+     "threshold": 0.16,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.947,
+       "recall": 0.6068,
+       "kept": 264
+      },
+      "realistic92": {
+       "precision": 0.8711,
+       "recall": 0.5988,
+       "kept": 706
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.947,
+       "kept": 264,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8482,
+       "kept": 527,
+       "positives_kept": 447
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9385,
+       "kept": 179,
+       "positives_kept": 168
+      }
+     }
+    },
+    {
+     "threshold": 0.17,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.947,
+       "recall": 0.6068,
+       "kept": 264
+      },
+      "realistic92": {
+       "precision": 0.8722,
+       "recall": 0.5979,
+       "kept": 704
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.947,
+       "kept": 264,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8498,
+       "kept": 526,
+       "positives_kept": 447
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.18,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.947,
+       "recall": 0.6068,
+       "kept": 264
+      },
+      "realistic92": {
+       "precision": 0.8722,
+       "recall": 0.5979,
+       "kept": 704
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.947,
+       "kept": 264,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8498,
+       "kept": 526,
+       "positives_kept": 447
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.19,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.947,
+       "recall": 0.6068,
+       "kept": 264
+      },
+      "realistic92": {
+       "precision": 0.8722,
+       "recall": 0.5979,
+       "kept": 704
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.947,
+       "kept": 264,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8498,
+       "kept": 526,
+       "positives_kept": 447
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.2,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9506,
+       "recall": 0.6068,
+       "kept": 263
+      },
+      "realistic92": {
+       "precision": 0.872,
+       "recall": 0.5969,
+       "kept": 703
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9506,
+       "kept": 263,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8495,
+       "kept": 525,
+       "positives_kept": 446
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.21,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9506,
+       "recall": 0.6068,
+       "kept": 263
+      },
+      "realistic92": {
+       "precision": 0.8732,
+       "recall": 0.5969,
+       "kept": 702
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9506,
+       "kept": 263,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8511,
+       "kept": 524,
+       "positives_kept": 446
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.22,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9506,
+       "recall": 0.6068,
+       "kept": 263
+      },
+      "realistic92": {
+       "precision": 0.8745,
+       "recall": 0.5969,
+       "kept": 701
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9506,
+       "kept": 263,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8528,
+       "kept": 523,
+       "positives_kept": 446
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.23,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9506,
+       "recall": 0.6068,
+       "kept": 263
+      },
+      "realistic92": {
+       "precision": 0.8743,
+       "recall": 0.5959,
+       "kept": 700
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9506,
+       "kept": 263,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8525,
+       "kept": 522,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.24,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9506,
+       "recall": 0.6068,
+       "kept": 263
+      },
+      "realistic92": {
+       "precision": 0.8743,
+       "recall": 0.5959,
+       "kept": 700
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9506,
+       "kept": 263,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8525,
+       "kept": 522,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.25,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9542,
+       "recall": 0.6068,
+       "kept": 262
+      },
+      "realistic92": {
+       "precision": 0.8755,
+       "recall": 0.5959,
+       "kept": 699
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9542,
+       "kept": 262,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8541,
+       "kept": 521,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.26,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8755,
+       "recall": 0.5959,
+       "kept": 699
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8541,
+       "kept": 521,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.27,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8755,
+       "recall": 0.5959,
+       "kept": 699
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8541,
+       "kept": 521,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.28,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8755,
+       "recall": 0.5959,
+       "kept": 699
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8541,
+       "kept": 521,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9382,
+       "kept": 178,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.29,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8793,
+       "recall": 0.5959,
+       "kept": 696
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8574,
+       "kept": 519,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9435,
+       "kept": 177,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.3,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8793,
+       "recall": 0.5959,
+       "kept": 696
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8574,
+       "kept": 519,
+       "positives_kept": 445
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9435,
+       "kept": 177,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.31,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8804,
+       "recall": 0.5949,
+       "kept": 694
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8588,
+       "kept": 517,
+       "positives_kept": 444
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9435,
+       "kept": 177,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.32,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9579,
+       "recall": 0.6068,
+       "kept": 261
+      },
+      "realistic92": {
+       "precision": 0.8817,
+       "recall": 0.5949,
+       "kept": 693
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9579,
+       "kept": 261,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8588,
+       "kept": 517,
+       "positives_kept": 444
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.33,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9615,
+       "recall": 0.6068,
+       "kept": 260
+      },
+      "realistic92": {
+       "precision": 0.8829,
+       "recall": 0.5949,
+       "kept": 692
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9615,
+       "kept": 260,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8605,
+       "kept": 516,
+       "positives_kept": 444
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.34,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9615,
+       "recall": 0.6068,
+       "kept": 260
+      },
+      "realistic92": {
+       "precision": 0.8842,
+       "recall": 0.5949,
+       "kept": 691
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9615,
+       "kept": 260,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8621,
+       "kept": 515,
+       "positives_kept": 444
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.35,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9615,
+       "recall": 0.6068,
+       "kept": 260
+      },
+      "realistic92": {
+       "precision": 0.8853,
+       "recall": 0.594,
+       "kept": 689
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9615,
+       "kept": 260,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8635,
+       "kept": 513,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.36,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9615,
+       "recall": 0.6068,
+       "kept": 260
+      },
+      "realistic92": {
+       "precision": 0.8853,
+       "recall": 0.594,
+       "kept": 689
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9615,
+       "kept": 260,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8635,
+       "kept": 513,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.37,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9615,
+       "recall": 0.6068,
+       "kept": 260
+      },
+      "realistic92": {
+       "precision": 0.8853,
+       "recall": 0.594,
+       "kept": 689
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9615,
+       "kept": 260,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8635,
+       "kept": 513,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.38,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8853,
+       "recall": 0.594,
+       "kept": 689
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8635,
+       "kept": 513,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.39,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8866,
+       "recall": 0.594,
+       "kept": 688
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8652,
+       "kept": 512,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.4,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8866,
+       "recall": 0.594,
+       "kept": 688
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8652,
+       "kept": 512,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.41,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8892,
+       "recall": 0.594,
+       "kept": 686
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8686,
+       "kept": 510,
+       "positives_kept": 443
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9489,
+       "kept": 176,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.42,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8904,
+       "recall": 0.593,
+       "kept": 684
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8684,
+       "kept": 509,
+       "positives_kept": 442
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9543,
+       "kept": 175,
+       "positives_kept": 167
+      }
+     }
+    },
+    {
+     "threshold": 0.43,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8899,
+       "recall": 0.5901,
+       "kept": 681
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8679,
+       "kept": 507,
+       "positives_kept": 440
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.954,
+       "kept": 174,
+       "positives_kept": 166
+      }
+     }
+    },
+    {
+     "threshold": 0.44,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8899,
+       "recall": 0.5901,
+       "kept": 681
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8679,
+       "kept": 507,
+       "positives_kept": 440
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.954,
+       "kept": 174,
+       "positives_kept": 166
+      }
+     }
+    },
+    {
+     "threshold": 0.45,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8899,
+       "recall": 0.5901,
+       "kept": 681
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8679,
+       "kept": 507,
+       "positives_kept": 440
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.954,
+       "kept": 174,
+       "positives_kept": 166
+      }
+     }
+    },
+    {
+     "threshold": 0.46,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.891,
+       "recall": 0.5891,
+       "kept": 679
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8693,
+       "kept": 505,
+       "positives_kept": 439
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.954,
+       "kept": 174,
+       "positives_kept": 166
+      }
+     }
+    },
+    {
+     "threshold": 0.47,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8922,
+       "recall": 0.5881,
+       "kept": 677
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.869,
+       "kept": 504,
+       "positives_kept": 438
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9595,
+       "kept": 173,
+       "positives_kept": 166
+      }
+     }
+    },
+    {
+     "threshold": 0.48,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8922,
+       "recall": 0.5881,
+       "kept": 677
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.869,
+       "kept": 504,
+       "positives_kept": 438
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9595,
+       "kept": 173,
+       "positives_kept": 166
+      }
+     }
+    },
+    {
+     "threshold": 0.49,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9653,
+       "recall": 0.6068,
+       "kept": 259
+      },
+      "realistic92": {
+       "precision": 0.8933,
+       "recall": 0.5871,
+       "kept": 675
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9653,
+       "kept": 259,
+       "positives_kept": 250
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8708,
+       "kept": 503,
+       "positives_kept": 438
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9593,
+       "kept": 172,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.5,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9651,
+       "recall": 0.6044,
+       "kept": 258
+      },
+      "realistic92": {
+       "precision": 0.893,
+       "recall": 0.5852,
+       "kept": 673
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9651,
+       "kept": 258,
+       "positives_kept": 249
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8703,
+       "kept": 501,
+       "positives_kept": 436
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9593,
+       "kept": 172,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.51,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.965,
+       "recall": 0.6019,
+       "kept": 257
+      },
+      "realistic92": {
+       "precision": 0.893,
+       "recall": 0.5852,
+       "kept": 673
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.965,
+       "kept": 257,
+       "positives_kept": 248
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8703,
+       "kept": 501,
+       "positives_kept": 436
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9593,
+       "kept": 172,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.52,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.894,
+       "recall": 0.5833,
+       "kept": 670
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8715,
+       "kept": 498,
+       "positives_kept": 434
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9593,
+       "kept": 172,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.53,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.8939,
+       "recall": 0.5823,
+       "kept": 669
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8712,
+       "kept": 497,
+       "positives_kept": 433
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9593,
+       "kept": 172,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.54,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.8939,
+       "recall": 0.5823,
+       "kept": 669
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8712,
+       "kept": 497,
+       "positives_kept": 433
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9593,
+       "kept": 172,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.55,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.8966,
+       "recall": 0.5823,
+       "kept": 667
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.873,
+       "kept": 496,
+       "positives_kept": 433
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9649,
+       "kept": 171,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.56,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.8966,
+       "recall": 0.5823,
+       "kept": 667
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.873,
+       "kept": 496,
+       "positives_kept": 433
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9649,
+       "kept": 171,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.57,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.8964,
+       "recall": 0.5813,
+       "kept": 666
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8727,
+       "kept": 495,
+       "positives_kept": 432
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9649,
+       "kept": 171,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.58,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9686,
+       "recall": 0.5995,
+       "kept": 255
+      },
+      "realistic92": {
+       "precision": 0.8977,
+       "recall": 0.5813,
+       "kept": 665
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9686,
+       "kept": 255,
+       "positives_kept": 247
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8745,
+       "kept": 494,
+       "positives_kept": 432
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9649,
+       "kept": 171,
+       "positives_kept": 165
+      }
+     }
+    },
+    {
+     "threshold": 0.59,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9685,
+       "recall": 0.5971,
+       "kept": 254
+      },
+      "realistic92": {
+       "precision": 0.8976,
+       "recall": 0.5803,
+       "kept": 664
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9685,
+       "kept": 254,
+       "positives_kept": 246
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8745,
+       "kept": 494,
+       "positives_kept": 432
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9647,
+       "kept": 170,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.6,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9762,
+       "recall": 0.5971,
+       "kept": 252
+      },
+      "realistic92": {
+       "precision": 0.8976,
+       "recall": 0.5803,
+       "kept": 664
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9762,
+       "kept": 252,
+       "positives_kept": 246
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8745,
+       "kept": 494,
+       "positives_kept": 432
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9647,
+       "kept": 170,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.61,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9761,
+       "recall": 0.5947,
+       "kept": 251
+      },
+      "realistic92": {
+       "precision": 0.8988,
+       "recall": 0.5794,
+       "kept": 662
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9761,
+       "kept": 251,
+       "positives_kept": 245
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8742,
+       "kept": 493,
+       "positives_kept": 431
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9704,
+       "kept": 169,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.62,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.976,
+       "recall": 0.5922,
+       "kept": 250
+      },
+      "realistic92": {
+       "precision": 0.8998,
+       "recall": 0.5774,
+       "kept": 659
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.976,
+       "kept": 250,
+       "positives_kept": 244
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8755,
+       "kept": 490,
+       "positives_kept": 429
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9704,
+       "kept": 169,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.63,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.976,
+       "recall": 0.5922,
+       "kept": 250
+      },
+      "realistic92": {
+       "precision": 0.9024,
+       "recall": 0.5764,
+       "kept": 656
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.976,
+       "kept": 250,
+       "positives_kept": 244
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8789,
+       "kept": 487,
+       "positives_kept": 428
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9704,
+       "kept": 169,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.64,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.976,
+       "recall": 0.5922,
+       "kept": 250
+      },
+      "realistic92": {
+       "precision": 0.9051,
+       "recall": 0.5755,
+       "kept": 653
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.976,
+       "kept": 250,
+       "positives_kept": 244
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8822,
+       "kept": 484,
+       "positives_kept": 427
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9704,
+       "kept": 169,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.65,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9798,
+       "recall": 0.5898,
+       "kept": 248
+      },
+      "realistic92": {
+       "precision": 0.9091,
+       "recall": 0.5745,
+       "kept": 649
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9798,
+       "kept": 248,
+       "positives_kept": 243
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8875,
+       "kept": 480,
+       "positives_kept": 426
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9704,
+       "kept": 169,
+       "positives_kept": 164
+      }
+     }
+    },
+    {
+     "threshold": 0.66,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9797,
+       "recall": 0.585,
+       "kept": 246
+      },
+      "realistic92": {
+       "precision": 0.9115,
+       "recall": 0.5716,
+       "kept": 644
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9797,
+       "kept": 246,
+       "positives_kept": 241
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8908,
+       "kept": 476,
+       "positives_kept": 424
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9702,
+       "kept": 168,
+       "positives_kept": 163
+      }
+     }
+    },
+    {
+     "threshold": 0.67,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9796,
+       "recall": 0.5825,
+       "kept": 245
+      },
+      "realistic92": {
+       "precision": 0.9115,
+       "recall": 0.5716,
+       "kept": 644
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9796,
+       "kept": 245,
+       "positives_kept": 240
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8908,
+       "kept": 476,
+       "positives_kept": 424
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9702,
+       "kept": 168,
+       "positives_kept": 163
+      }
+     }
+    },
+    {
+     "threshold": 0.68,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9796,
+       "recall": 0.5825,
+       "kept": 245
+      },
+      "realistic92": {
+       "precision": 0.9114,
+       "recall": 0.5706,
+       "kept": 643
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9796,
+       "kept": 245,
+       "positives_kept": 240
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8905,
+       "kept": 475,
+       "positives_kept": 423
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9702,
+       "kept": 168,
+       "positives_kept": 163
+      }
+     }
+    },
+    {
+     "threshold": 0.69,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9796,
+       "recall": 0.5825,
+       "kept": 245
+      },
+      "realistic92": {
+       "precision": 0.9152,
+       "recall": 0.5677,
+       "kept": 637
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9796,
+       "kept": 245,
+       "positives_kept": 240
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8955,
+       "kept": 469,
+       "positives_kept": 420
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9702,
+       "kept": 168,
+       "positives_kept": 163
+      }
+     }
+    },
+    {
+     "threshold": 0.7,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9795,
+       "recall": 0.5801,
+       "kept": 244
+      },
+      "realistic92": {
+       "precision": 0.9161,
+       "recall": 0.5638,
+       "kept": 632
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9795,
+       "kept": 244,
+       "positives_kept": 239
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8968,
+       "kept": 465,
+       "positives_kept": 417
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9701,
+       "kept": 167,
+       "positives_kept": 162
+      }
+     }
+    },
+    {
+     "threshold": 0.71,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9795,
+       "recall": 0.5801,
+       "kept": 244
+      },
+      "realistic92": {
+       "precision": 0.9157,
+       "recall": 0.5609,
+       "kept": 629
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9795,
+       "kept": 244,
+       "positives_kept": 239
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8963,
+       "kept": 463,
+       "positives_kept": 415
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9699,
+       "kept": 166,
+       "positives_kept": 161
+      }
+     }
+    },
+    {
+     "threshold": 0.72,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9795,
+       "recall": 0.5801,
+       "kept": 244
+      },
+      "realistic92": {
+       "precision": 0.9183,
+       "recall": 0.5579,
+       "kept": 624
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9795,
+       "kept": 244,
+       "positives_kept": 239
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.8996,
+       "kept": 458,
+       "positives_kept": 412
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9699,
+       "kept": 166,
+       "positives_kept": 161
+      }
+     }
+    },
+    {
+     "threshold": 0.73,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9795,
+       "recall": 0.5801,
+       "kept": 244
+      },
+      "realistic92": {
+       "precision": 0.9194,
+       "recall": 0.555,
+       "kept": 620
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9795,
+       "kept": 244,
+       "positives_kept": 239
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9009,
+       "kept": 454,
+       "positives_kept": 409
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9699,
+       "kept": 166,
+       "positives_kept": 161
+      }
+     }
+    },
+    {
+     "threshold": 0.74,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9835,
+       "recall": 0.5801,
+       "kept": 243
+      },
+      "realistic92": {
+       "precision": 0.9232,
+       "recall": 0.5501,
+       "kept": 612
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9835,
+       "kept": 243,
+       "positives_kept": 239
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9062,
+       "kept": 448,
+       "positives_kept": 406
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9695,
+       "kept": 164,
+       "positives_kept": 159
+      }
+     }
+    },
+    {
+     "threshold": 0.75,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9835,
+       "recall": 0.5801,
+       "kept": 243
+      },
+      "realistic92": {
+       "precision": 0.9275,
+       "recall": 0.5482,
+       "kept": 607
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9835,
+       "kept": 243,
+       "positives_kept": 239
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.912,
+       "kept": 443,
+       "positives_kept": 404
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9695,
+       "kept": 164,
+       "positives_kept": 159
+      }
+     }
+    },
+    {
+     "threshold": 0.76,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9834,
+       "recall": 0.5752,
+       "kept": 241
+      },
+      "realistic92": {
+       "precision": 0.9282,
+       "recall": 0.5414,
+       "kept": 599
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9834,
+       "kept": 241,
+       "positives_kept": 237
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.911,
+       "kept": 438,
+       "positives_kept": 399
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9752,
+       "kept": 161,
+       "positives_kept": 157
+      }
+     }
+    },
+    {
+     "threshold": 0.77,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9834,
+       "recall": 0.5752,
+       "kept": 241
+      },
+      "realistic92": {
+       "precision": 0.9305,
+       "recall": 0.5346,
+       "kept": 590
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9834,
+       "kept": 241,
+       "positives_kept": 237
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.914,
+       "kept": 430,
+       "positives_kept": 393
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.975,
+       "kept": 160,
+       "positives_kept": 156
+      }
+     }
+    },
+    {
+     "threshold": 0.78,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9833,
+       "recall": 0.5728,
+       "kept": 240
+      },
+      "realistic92": {
+       "precision": 0.933,
+       "recall": 0.5287,
+       "kept": 582
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9833,
+       "kept": 240,
+       "positives_kept": 236
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9173,
+       "kept": 423,
+       "positives_kept": 388
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9748,
+       "kept": 159,
+       "positives_kept": 155
+      }
+     }
+    },
+    {
+     "threshold": 0.79,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9833,
+       "recall": 0.5704,
+       "kept": 239
+      },
+      "realistic92": {
+       "precision": 0.9371,
+       "recall": 0.5219,
+       "kept": 572
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9833,
+       "kept": 239,
+       "positives_kept": 235
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9229,
+       "kept": 415,
+       "positives_kept": 383
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9745,
+       "kept": 157,
+       "positives_kept": 153
+      }
+     }
+    },
+    {
+     "threshold": 0.8,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9832,
+       "recall": 0.568,
+       "kept": 238
+      },
+      "realistic92": {
+       "precision": 0.9445,
+       "recall": 0.5141,
+       "kept": 559
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9832,
+       "kept": 238,
+       "positives_kept": 234
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.931,
+       "kept": 406,
+       "positives_kept": 378
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9804,
+       "kept": 153,
+       "positives_kept": 150
+      }
+     }
+    },
+    {
+     "threshold": 0.81,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9831,
+       "recall": 0.5655,
+       "kept": 237
+      },
+      "realistic92": {
+       "precision": 0.9474,
+       "recall": 0.5083,
+       "kept": 551
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9831,
+       "kept": 237,
+       "positives_kept": 233
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9325,
+       "kept": 400,
+       "positives_kept": 373
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9868,
+       "kept": 151,
+       "positives_kept": 149
+      }
+     }
+    },
+    {
+     "threshold": 0.82,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9831,
+       "recall": 0.5631,
+       "kept": 236
+      },
+      "realistic92": {
+       "precision": 0.9514,
+       "recall": 0.4956,
+       "kept": 535
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9831,
+       "kept": 236,
+       "positives_kept": 232
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9377,
+       "kept": 385,
+       "positives_kept": 361
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9867,
+       "kept": 150,
+       "positives_kept": 148
+      }
+     }
+    },
+    {
+     "threshold": 0.83,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9829,
+       "recall": 0.5583,
+       "kept": 234
+      },
+      "realistic92": {
+       "precision": 0.9502,
+       "recall": 0.483,
+       "kept": 522
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9829,
+       "kept": 234,
+       "positives_kept": 230
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9363,
+       "kept": 377,
+       "positives_kept": 353
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9862,
+       "kept": 145,
+       "positives_kept": 143
+      }
+     }
+    },
+    {
+     "threshold": 0.84,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9829,
+       "recall": 0.5583,
+       "kept": 234
+      },
+      "realistic92": {
+       "precision": 0.955,
+       "recall": 0.4752,
+       "kept": 511
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9829,
+       "kept": 234,
+       "positives_kept": 230
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9428,
+       "kept": 367,
+       "positives_kept": 346
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9861,
+       "kept": 144,
+       "positives_kept": 142
+      }
+     }
+    },
+    {
+     "threshold": 0.85,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9871,
+       "recall": 0.5558,
+       "kept": 232
+      },
+      "realistic92": {
+       "precision": 0.9582,
+       "recall": 0.4684,
+       "kept": 502
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9871,
+       "kept": 232,
+       "positives_kept": 229
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9471,
+       "kept": 359,
+       "positives_kept": 340
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.986,
+       "kept": 143,
+       "positives_kept": 141
+      }
+     }
+    },
+    {
+     "threshold": 0.86,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.987,
+       "recall": 0.551,
+       "kept": 230
+      },
+      "realistic92": {
+       "precision": 0.9614,
+       "recall": 0.4606,
+       "kept": 492
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.987,
+       "kept": 230,
+       "positives_kept": 227
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9516,
+       "kept": 351,
+       "positives_kept": 334
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9858,
+       "kept": 141,
+       "positives_kept": 139
+      }
+     }
+    },
+    {
+     "threshold": 0.87,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9912,
+       "recall": 0.5461,
+       "kept": 227
+      },
+      "realistic92": {
+       "precision": 0.9626,
+       "recall": 0.4508,
+       "kept": 481
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9912,
+       "kept": 227,
+       "positives_kept": 225
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9534,
+       "kept": 343,
+       "positives_kept": 327
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9855,
+       "kept": 138,
+       "positives_kept": 136
+      }
+     }
+    },
+    {
+     "threshold": 0.88,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9912,
+       "recall": 0.5437,
+       "kept": 226
+      },
+      "realistic92": {
+       "precision": 0.9656,
+       "recall": 0.4372,
+       "kept": 465
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9912,
+       "kept": 226,
+       "positives_kept": 224
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9576,
+       "kept": 330,
+       "positives_kept": 316
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9852,
+       "kept": 135,
+       "positives_kept": 133
+      }
+     }
+    },
+    {
+     "threshold": 0.89,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9912,
+       "recall": 0.5437,
+       "kept": 226
+      },
+      "realistic92": {
+       "precision": 0.9688,
+       "recall": 0.4236,
+       "kept": 449
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9912,
+       "kept": 226,
+       "positives_kept": 224
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9623,
+       "kept": 318,
+       "positives_kept": 306
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9847,
+       "kept": 131,
+       "positives_kept": 129
+      }
+     }
+    },
+    {
+     "threshold": 0.9,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9911,
+       "recall": 0.5413,
+       "kept": 225
+      },
+      "realistic92": {
+       "precision": 0.9724,
+       "recall": 0.4119,
+       "kept": 435
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9911,
+       "kept": 225,
+       "positives_kept": 223
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9674,
+       "kept": 307,
+       "positives_kept": 297
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9844,
+       "kept": 128,
+       "positives_kept": 126
+      }
+     }
+    },
+    {
+     "threshold": 0.91,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9911,
+       "recall": 0.5388,
+       "kept": 224
+      },
+      "realistic92": {
+       "precision": 0.9742,
+       "recall": 0.4041,
+       "kept": 426
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9911,
+       "kept": 224,
+       "positives_kept": 222
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9669,
+       "kept": 302,
+       "positives_kept": 292
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9919,
+       "kept": 124,
+       "positives_kept": 123
+      }
+     }
+    },
+    {
+     "threshold": 0.92,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9909,
+       "recall": 0.5291,
+       "kept": 220
+      },
+      "realistic92": {
+       "precision": 0.9759,
+       "recall": 0.3944,
+       "kept": 415
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9909,
+       "kept": 220,
+       "positives_kept": 218
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9696,
+       "kept": 296,
+       "positives_kept": 287
+      },
+      "realistic92:synth_gen": {
+       "precision": 0.9916,
+       "kept": 119,
+       "positives_kept": 118
+      }
+     }
+    },
+    {
+     "threshold": 0.93,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9953,
+       "recall": 0.5097,
+       "kept": 211
+      },
+      "realistic92": {
+       "precision": 0.98,
+       "recall": 0.3817,
+       "kept": 400
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9953,
+       "kept": 211,
+       "positives_kept": 210
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.972,
+       "kept": 286,
+       "positives_kept": 278
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 114,
+       "positives_kept": 114
+      }
+     }
+    },
+    {
+     "threshold": 0.94,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9951,
+       "recall": 0.4976,
+       "kept": 206
+      },
+      "realistic92": {
+       "precision": 0.979,
+       "recall": 0.3632,
+       "kept": 381
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9951,
+       "kept": 206,
+       "positives_kept": 205
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9707,
+       "kept": 273,
+       "positives_kept": 265
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 108,
+       "positives_kept": 108
+      }
+     }
+    },
+    {
+     "threshold": 0.95,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.995,
+       "recall": 0.4806,
+       "kept": 199
+      },
+      "realistic92": {
+       "precision": 0.9807,
+       "recall": 0.3466,
+       "kept": 363
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.995,
+       "kept": 199,
+       "positives_kept": 198
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9731,
+       "kept": 260,
+       "positives_kept": 253
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 103,
+       "positives_kept": 103
+      }
+     }
+    },
+    {
+     "threshold": 0.96,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9948,
+       "recall": 0.4612,
+       "kept": 191
+      },
+      "realistic92": {
+       "precision": 0.9789,
+       "recall": 0.3155,
+       "kept": 331
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9948,
+       "kept": 191,
+       "positives_kept": 190
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9696,
+       "kept": 230,
+       "positives_kept": 223
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 101,
+       "positives_kept": 101
+      }
+     }
+    },
+    {
+     "threshold": 0.97,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9945,
+       "recall": 0.4369,
+       "kept": 181
+      },
+      "realistic92": {
+       "precision": 0.9832,
+       "recall": 0.2843,
+       "kept": 297
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9945,
+       "kept": 181,
+       "positives_kept": 180
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9755,
+       "kept": 204,
+       "positives_kept": 199
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 93,
+       "positives_kept": 93
+      }
+     }
+    },
+    {
+     "threshold": 0.98,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.994,
+       "recall": 0.4005,
+       "kept": 166
+      },
+      "realistic92": {
+       "precision": 0.9838,
+       "recall": 0.2366,
+       "kept": 247
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.994,
+       "kept": 166,
+       "positives_kept": 165
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9766,
+       "kept": 171,
+       "positives_kept": 167
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 76,
+       "positives_kept": 76
+      }
+     }
+    },
+    {
+     "threshold": 0.99,
+     "per_dataset": {
+      "fast102": {
+       "precision": 0.9923,
+       "recall": 0.3131,
+       "kept": 130
+      },
+      "realistic92": {
+       "precision": 0.9827,
+       "recall": 0.1655,
+       "kept": 173
+      }
+     },
+     "per_group": {
+      "fast102:synth_gen": {
+       "precision": 0.9923,
+       "kept": 130,
+       "positives_kept": 129
+      },
+      "realistic92:synth_Weber1": {
+       "precision": 0.9744,
+       "kept": 117,
+       "positives_kept": 114
+      },
+      "realistic92:synth_gen": {
+       "precision": 1.0,
+       "kept": 56,
+       "positives_kept": 56
+      }
+     }
+    }
+   ],
+   "rows": 1036
+  }
+ }
+}

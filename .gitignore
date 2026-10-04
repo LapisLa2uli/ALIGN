@@ -9,6 +9,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+pytest-*/
 .mypy_cache/
 .ruff_cache/
 .ipynb_checkpoints/
@@ -19,6 +20,9 @@ __pycache__/
 .coverage.*
 htmlcov/
 .cache/
+.local/
+# Generated LLM requests, narrations, and audio manifests may contain private labels.
+feedback/
 ~$*
 
 # Local toolchains and packed training corpora
@@ -26,8 +30,9 @@ align-model/data-packed/
 align-model/wheels/
 align-model/.venv-amt-bench/
 **/synth_*
+!**/synth_*.py
 
-# Feature caches, packed arrays, and media — keep weights/eval JSON
+# Feature caches, packed arrays, and media — keep evaluation summaries
 *.bin
 *.npz
 *.npy
@@ -47,7 +52,7 @@ align-model/.venv-amt-bench/
 *.aes256gcm
 *.tmp
 
-# Intermediate run artifacts (weights and summary JSON stay tracked)
+# Intermediate run artifacts (summary JSON stays tracked)
 frozen/
 lockbox/
 feature-freeze/
@@ -85,3 +90,56 @@ previous-score-artifacts/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local credentials and machine-specific configuration
+llmauth.txt
+.env
+.env.*
+!.env.example
+!.env.template
+*.local.yaml
+DataCreate/config/feedback.ssstoken.*.yaml
+
+# Virtual environments, build products, and tool caches
+.venv/
+.venv-*/
+venv/
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+.parcel-cache/
+.svelte-kit/
+coverage/
+*.tsbuildinfo
+*.swp
+*.swo
+*.bak
+
+# Downloaded archives and generated model weights (retain local copies)
+*.zip
+*.7z
+*.rar
+*.tar
+*.tgz
+*.xz
+*.pt
+*.pth
+*.safetensors
+*.onnx
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.sf2
+
+# Bulky, reproducible training histories and per-example feature dumps
+align-model/runs/**/history.json
+align-model/runs/**/emission-analysis.json
+align-model/runs/**/all-dclike-features*.json
+align-model/runs/**/*features*.json
+reports/**/alignments/
+align-model/runs/**/alignments/
+align-model/runs/**/ui-review-*/

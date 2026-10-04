@@ -1,0 +1,56 @@
+{
+  "protocol": "Fit relaxed bounds to all 316 old positive controls, then audit negative controls.\n\nPositive controls are calibration data, NOT a held-out accuracy claim. No\nDataCreate inputs/labels select parameters. Keep a separate 18 dB gap guard.\n",
+  "configs": {
+    "guarded": {
+      "context_sec": 0.09,
+      "neighbor_margin_sec": 0.005,
+      "energy_range_db": 54,
+      "spectral_step_max": 0.35,
+      "spectral_drift_max": 0.65,
+      "merge_attack_max": 1.0,
+      "voiced_min": 0.0,
+      "silence_db": -120.0,
+      "gap_depth_db": 18.0,
+      "gap_min_sec": 0.01,
+      "envelope_window_sec": 0.004,
+      "envelope_hop_sec": 0.001
+    },
+    "all-pass": {
+      "context_sec": 0.09,
+      "neighbor_margin_sec": 0.005,
+      "energy_range_db": 54,
+      "spectral_step_max": 0.35,
+      "spectral_drift_max": 0.65,
+      "merge_attack_max": 1.0,
+      "voiced_min": 0.0,
+      "silence_db": -120.0,
+      "gap_depth_db": 18.0,
+      "gap_min_sec": 0.01,
+      "envelope_window_sec": 0.004,
+      "envelope_hop_sec": 0.001
+    }
+  },
+  "summary": {
+    "guarded": {
+      "injected_split": {
+        "count": 316,
+        "merged": 316
+      },
+      "genuine_repeat": {
+        "count": 543,
+        "merged": 457
+      }
+    },
+    "all-pass": {
+      "injected_split": {
+        "count": 316,
+        "merged": 316
+      },
+      "genuine_repeat": {
+        "count": 543,
+        "merged": 457
+      }
+    }
+  },
+  "positive_max_gap_depth_db": 6.96814055258093
+}

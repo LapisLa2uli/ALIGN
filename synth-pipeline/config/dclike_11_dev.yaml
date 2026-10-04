@@ -1,0 +1,206 @@
+﻿schema_version: "1.2"
+
+# Dataset family 11 in datasets.yaml ("DataCreate-like pilot"); each step stamps
+# metadata.dataset_version. development part: snippets of a score no model has seen
+# (introduction-theme-and-variations, converted from .mscz to RawData/ScoreDev). Differences from 9.x, all toward
+# what the DataCreate takes and their human labels show:
+# - ornaments and grace notes are written out as ordinary notes (labels match
+#   the Muse Sounds audio; auxiliaries stay in range);
+# - register centred near written E5/F5 (DataCreate median 75) instead of G4;
+# - 1-3 errors per clip with more wrong notes, fewer missed notes, fewer
+#   replays (7 of 33 inspected takes have a repetition);
+# - half of the missed notes are skipped by holding the previous note, not by
+#   a rest;
+# - degrade realistic_v3: v2 (no room reverb) plus tonguing dips only at
+#   strong onsets and more breath noise.
+dataset:
+  versions: {generate: "11.0", musesounds: "11.1", degrade: "11.2"}
+
+paths:
+  musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
+  output_root: E:/outputRaw_dclike_11
+  datacreate_config: ../DataCreate/config/default.yaml
+  score_root: ../RawData/ScoreDev
+
+audio:
+  sample_rate: 22050
+  mono: true
+
+musescore:
+  min_version: "4.2.0"
+  synthesizer_gain_db: -6
+  tail_seconds: 2.0
+  render_chunk_size: 4096
+
+render:
+  midi_backend: music21
+  soundfont: freepats
+  sounding_transpose: -2
+
+generation:
+  keep_ornaments: true
+  ornament_mode: written_out
+  ornament_prob: 0.0
+  use_snippets: true
+  snippet_measures_min: 8
+  snippet_measures_max: 16
+  snippet_min_notes: 12
+  require_playable_range: true
+  measures_min: 8
+  measures_max: 16
+  meters:
+    - [4, 4]
+    - [3, 4]
+    - [2, 4]
+    - [6, 8]
+  keys:
+    - {tonic: C, mode: major}
+    - {tonic: G, mode: major}
+    - {tonic: F, mode: major}
+    - {tonic: D, mode: major}
+    - {tonic: Bb, mode: major}
+    - {tonic: Eb, mode: major}
+    - {tonic: A, mode: minor}
+    - {tonic: E, mode: minor}
+    - {tonic: D, mode: minor}
+    - {tonic: G, mode: minor}
+  beat_cells:
+    4:
+      - [2, [4]]
+      - [4, [2, 2]]
+      - [4, [1, 1, 1, 1]]
+      - [3, [2, 1, 1]]
+      - [3, [1, 1, 2]]
+      - [1, [3, 1]]
+      - [0.5, [8]]
+    6:
+      - [1.5, [6]]
+      - [4, [2, 2, 2]]
+      - [2, [4, 2]]
+      - [3, [1, 1, 1, 1, 2]]
+      - [2, [2, 1, 1, 2]]
+      - [0.5, [12]]
+  tempo_min: 72
+  tempo_max: 120
+  pitch_min: E3
+  pitch_max: G6
+  rest_probability: 0.06
+  syncopation_prob: 0.12
+
+errors:
+  weights:
+    wrong_note: 1.5
+    missed_note: 0.7
+    extra_note: 1.0
+    rhythm_error: 0.5
+    intonation_error: 0.0
+  per_clip_min: 1
+  per_clip_max: 3
+  repetition_prob: 0.30
+  standalone_repetition_prob: 0.10
+  repeat_gap_seconds: [0.2, 1.0]
+  repeat_extra_copies_weights:
+    1: 0.8
+    2: 0.2
+  melody_pad_notes: [1, 2]
+  repeat_window: measure
+  missed_note_modes:
+    rest: 0.5
+    extend_previous: 0.5
+  squeak:
+    prob: 0.0
+    pitch_min: C6
+    pitch_max: A7
+  rhythm_kinds:
+    - late_start
+    - early_start
+    - late_end
+    - early_end
+    - tempo_change
+    - uneven
+  intonation:
+    cents_min: 40
+    cents_max: 80
+    group_prob: 0.45
+    group_max: 4
+
+degrade:
+  version: realistic_v3
+  seed: 11
+  dereverb:
+    prob: 1.0
+    t60: [1.0, 2.0]
+    strength: [0.8, 0.95]
+    floor_db: [-14, -8]
+    delay_ms: 50
+  sharpen:
+    prob: 1.0
+    gamma: [1.0769, 1.1923]
+    low_hz: 600
+    high_hz: 4000
+  tonguing:
+    prob: 0.85
+    depth_db: [15.0, 21.0]
+    width_ms: [25.35, 61.49]
+    share: [0.35, 0.8]
+    onset_delta: 0.25
+  micro:
+    prob: 1.0
+    pitch_cents: [4.116, 10.0]
+    pitch_rate_hz: [3, 8]
+    shimmer_db: [0.5612, 1.2245]
+    shimmer_rate_hz: [5, 15]
+  breath:
+    prob: 0.3
+    low_hz: [1000, 1600]
+    high_hz: [5000, 8000]
+    level_db: [-25.0, -15.0]
+  reverb:
+    prob: 0.0
+    rt60: [0.192, 0.576]
+    wet_db: [-18.0, -6.0]
+    predelay_ms: [2, 12]
+    hf_rt60_ratio: [0.35, 0.7]
+    lf_rt60_ratio: [1.0, 1.3]
+    early_taps: 6
+  eq:
+    anchors_hz: [60, 150, 250, 350, 550, 1000, 1500, 2250, 3000, 4200, 5200, 6400, 8000, 10000]
+    gains_db: [-27.8, -18.68, -1.47, 1.47, 15.52, 13.13, 12.58, 15.97, 16.41, 15.13, 10.85, 11.04, 5.89, 4.03]
+    jitter_db: 1.5
+    tilt_jitter_db: 1.0
+  noise:
+    prob: 1.0
+    snr_db: [36.51, 64.51]
+    anchors_hz: [60, 150, 250, 350, 550, 1000, 1500, 2250, 3000, 4200, 5200, 6400, 8000, 10000]
+    color_db: [11.82, 16.89, 9.03, 2.65, -5.85, -8.01, -7.81, -2.67, -2.85, -5.63, -7.17, -6.19, -12.83, -21.93]
+    color_jitter_db: 2.0
+    tilt_jitter_db: 1.0
+    modulation_db: [0, 3]
+    modulation_rate_hz: [0.1, 0.5]
+    hum:
+      prob: 0.15
+      freq_hz: 50
+      harmonics: 4
+      level_db: [-66, -52]
+    events:
+      rate_per_min: [0, 1.5]
+      level_db: [-38, -22]
+  gain_wobble:
+    prob: 0.5
+    depth_db: [0.5, 2.0]
+    rate_hz: [0.05, 0.3]
+  compressor:
+    prob: 0.7
+    threshold_db: [-24.0, -12.0]
+    ratio: [1.5625, 1.92]
+    attack_ms: [5, 20]
+    release_ms: [100, 400]
+  codec:
+    prob: 1.0
+    bitrate_k: [32.0, 40.0]
+    sample_rate: 48000
+  clip:
+    prob: 0.03
+    drive_db: [2, 6]
+  peak: [0.4, 0.95]

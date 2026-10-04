@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Callable
 
 from alignmodel.audio import extract_chroma, load_mono, set_audio_device
 from alignmodel.device import device_label
@@ -44,7 +45,10 @@ def run_pipeline(
     device: str | None = None,
     weights_dir: Path | str | None = None,
     alignment_weights_dir: Path | str | None = None,
+    progress: Callable[[str], None] | None = None,
 ) -> PipelineState:
+    if progress:
+        progress("transcriber")
     sample_dir = Path(sample_dir)
     cfg = config or PipelineConfig()
     if device:
@@ -101,6 +105,8 @@ def run_pipeline(
     if wanted & {1, 2, 3} and getattr(learned, "transcriber", None) is not None:
         transcribe_pipeline_state(state, learned)
 
+    if progress:
+        progress("aligner")
     if 1 in wanted:
         if not state.transcribed_notes:
             apply_boundaries(state, audio, chroma)
@@ -143,6 +149,8 @@ def run_pipeline(
         state.labels = [
             label for label in state.labels if label.type != "intonation_error"
         ]
+    if progress:
+        progress("labels")
     attach_schema12_fields(state)
     return state
 

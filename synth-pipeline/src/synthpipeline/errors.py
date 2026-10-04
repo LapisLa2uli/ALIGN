@@ -161,7 +161,7 @@ def _apply_error(
     if error_type == "wrong_note":
         return _wrong_note(score, rng, bpm, config, clean_notes, used)
     if error_type == "missed_note":
-        return _missed_note(score, rng, bpm, clean_notes, used)
+        return _missed_note(score, rng, bpm, clean_notes, used, config)
     if error_type == "extra_note":
         return _extra_note(score, rng, bpm, config, clean_notes, used)
     if error_type == "rhythm_error":
@@ -223,6 +223,7 @@ def _missed_note(
     bpm: float,
     clean_notes=None,
     used_spans: list[tuple[float, float]] | None = None,
+    config: SynthConfig | None = None,
 ) -> ErrorResult:
     target = _pick_note(score, rng, min_ql=0.0, used_spans=used_spans)
     parent = target.activeSite
@@ -233,9 +234,22 @@ def _missed_note(
     orig_midi = target.pitch.midi
     off = float(target.offset)
     dur = float(target.duration.quarterLength)
+    modes = dict(((config.errors.get("missed_note_modes") if config is not None else None) or {"rest": 1.0}))
+    mode = rng.choices(list(modes), weights=list(modes.values()))[0] if len(modes) > 1 else next(iter(modes))
+    previous = None
+    if mode == "extend_previous":
+        for candidate in parent.getElementsByClass(note.Note):
+            if abs(float(candidate.offset) + float(candidate.quarterLength) - off) < 1e-6 and not candidate.tie:
+                previous = candidate
     parent.remove(target)
-    rest = note.Rest(quarterLength=dur)
-    parent.insert(off, rest)
+    if previous is not None:
+        start = float(previous.offset)
+        parent.remove(previous)
+        previous.quarterLength = float(previous.quarterLength) + dur
+        parent.insert(start, previous)
+    else:
+        rest = note.Rest(quarterLength=dur)
+        parent.insert(off, rest)
     label = PlannedLabel(
         type="missed_note",
         ql_start=ql_start,

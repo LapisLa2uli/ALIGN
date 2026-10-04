@@ -202,15 +202,31 @@ def attach_rendered_events(
         else []
     )
     if len(timed_rows) == len(performed):
+        # The MIDI can hold pauses the score timeline lacks (repeat gaps), so
+        # score times are shifted by the local MIDI-minus-score offset of the
+        # pitch-sequence alignment before matching by time.
+        raw_offsets = [
+            (float(midi[midi_i][1]) - float(timed_rows[score_i]["start_sec"]))
+            if score_i is not None else None
+            for midi_i, score_i in enumerate(mapping)
+        ]
+        local_offsets = []
+        for midi_i in range(len(midi)):
+            window = sorted(value for value in raw_offsets[max(0, midi_i - 4):midi_i + 5] if value is not None)
+            local_offsets.append(window[len(window) // 2] if window else 0.0)
         claimed: set[int] = set()
         for midi_i, (raw_pitch, start, end) in enumerate(midi):
             pitch = int(raw_pitch) + written_shift
+            start = float(start) - local_offsets[midi_i]
+            end = float(end) - local_offsets[midi_i]
+            # A tie continuation starts inside the event; a repeated same-pitch
+            # note starts where the event ends and must not be folded into it.
             overlapping = [
                 score_i
                 for score_i, row in enumerate(timed_rows)
                 if score_i not in claimed
                 and int(row["pitch_midi"]) == pitch
-                and float(row["start_sec"]) < float(end) + 0.04
+                and float(row["start_sec"]) < float(end) - 0.02
                 and float(start) < float(row["end_sec"]) + 0.04
             ]
             if not overlapping:

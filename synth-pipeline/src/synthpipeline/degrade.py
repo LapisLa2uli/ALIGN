@@ -219,7 +219,8 @@ def tonguing(rng: np.random.Generator, x: np.ndarray, sr: int, stage: dict) -> t
     width = _u(rng, stage.get("width_ms"), 25.0) / 1000.0
     share = _u(rng, stage.get("share"), 0.8)
     onsets = librosa.onset.onset_detect(
-        y=x.astype(np.float32), sr=sr, hop_length=256, units="samples", backtrack=True
+        y=x.astype(np.float32), sr=sr, hop_length=256, units="samples", backtrack=True,
+        delta=float(stage.get("onset_delta", 0.07)),
     )
     gain_db = np.zeros(x.size)
     w = max(8, int(width * sr))

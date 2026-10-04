@@ -36,6 +36,7 @@ from alignmodel.transcription.mel_ctc_v3 import (
     save_dual_checkpoint,
 )
 from alignmodel.transcription.mel_v1 import load_audio_mono, mel_transcriber_loss
+from alignmodel.transcription.realism_augment_v4 import augment_realism_v4
 from alignmodel.transcription.mel_v1_data import MelPackedCache
 from realistic92_transcriber_breakdown import Breakdown, load_gold
 from train_mel_ctc_realistic92 import CTCCropDataset
@@ -89,6 +90,8 @@ def main() -> None:
     parser.add_argument("--extra-val-split", type=Path)
     parser.add_argument("--extra-val-stride", type=int, default=2)
     parser.add_argument("--seed", type=int, default=20260927)
+    parser.add_argument("--realism-v4", action="store_true",
+                        help="add transition blips, attack scoops and mid-note dips (labels unchanged)")
     args = parser.parse_args()
 
     random.seed(args.seed)
@@ -178,6 +181,8 @@ def main() -> None:
                     batch["mel"], batch["onset"], long_mels=config.long_mels,
                     probability=args.augmentation_probability,
                 )
+                if args.realism_v4:
+                    batch["mel"] = augment_realism_v4(batch["mel"], batch["onset"], long_mels=config.long_mels)
                 with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
                     output = model(batch["mel"])
                     frame_loss, _parts = mel_transcriber_loss(output, batch)

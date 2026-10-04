@@ -1,0 +1,7150 @@
+{
+  "population": 25,
+  "identity": "exact affected score-event set plus type; excludes context padding; no timestamp matching",
+  "summary": {
+    "extra_note": {
+      "status": "available",
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "credit": 2.0,
+      "predicted": 32,
+      "gold": 12,
+      "precision": 0.0625,
+      "recall": 0.16666666666666666,
+      "f1": 0.09090909090909091
+    },
+    "missed_note": {
+      "status": "available",
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "credit": 2.0,
+      "predicted": 11,
+      "gold": 8,
+      "precision": 0.18181818181818182,
+      "recall": 0.25,
+      "f1": 0.2105263157894737
+    },
+    "wrong_note": {
+      "status": "available",
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "credit": 1.0,
+      "predicted": 22,
+      "gold": 22,
+      "precision": 0.045454545454545456,
+      "recall": 0.045454545454545456,
+      "f1": 0.045454545454545456
+    },
+    "repetition": {
+      "status": "available",
+      "schema_version": "align-note-wise-score-event-metric-v1",
+      "credit": 0.0,
+      "predicted": 9,
+      "gold": 4,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "per_sample": [
+    {
+      "sample": "001",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1789916836250_0cbsv",
+          "source": "manual",
+          "start_time": 6.2492,
+          "end_time": 8.4116,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 2,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 20,
+            "end_note_index": 25,
+            "pad_notes": 2,
+            "start_measure": 2,
+            "end_measure": 2,
+            "core_start_note_index": 22,
+            "core_end_note_index": 23
+          },
+          "pitches": [
+            90,
+            91,
+            90,
+            88,
+            86,
+            84
+          ],
+          "note_ids": [
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025"
+          ],
+          "core_note_ids": [
+            "note_0022",
+            "note_0023"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            22,
+            23
+          ]
+        }
+      ],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "002",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788681981162_6lyg0",
+          "source": "manual",
+          "start_time": 67.6397,
+          "end_time": 67.660091,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 19,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 103,
+            "end_note_index": 107,
+            "pad_notes": 2,
+            "start_measure": 19,
+            "end_measure": 19,
+            "core_start_note_index": 105,
+            "core_end_note_index": 105
+          },
+          "pitches": [
+            72,
+            84,
+            79,
+            76,
+            72
+          ],
+          "note_ids": [
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107"
+          ],
+          "core_note_ids": [
+            "note_0124"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            105
+          ]
+        },
+        {
+          "id": "lbl_1788681981481_35azn",
+          "source": "manual",
+          "start_time": 67.6397,
+          "end_time": 67.660091,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 19,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 103,
+            "end_note_index": 107,
+            "pad_notes": 2,
+            "start_measure": 19,
+            "end_measure": 19,
+            "core_start_note_index": 105,
+            "core_end_note_index": 105
+          },
+          "pitches": [
+            72,
+            84,
+            79,
+            76,
+            72
+          ],
+          "note_ids": [
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107"
+          ],
+          "core_note_ids": [
+            "note_0124"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            105
+          ]
+        },
+        {
+          "id": "lbl_1788697953110_2amu7",
+          "source": "manual",
+          "start_time": 61.852773158438104,
+          "end_time": 62.208158840971784,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 19,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 103,
+            "end_note_index": 107,
+            "pad_notes": 2,
+            "start_measure": 19,
+            "end_measure": 19,
+            "core_start_note_index": 105,
+            "core_end_note_index": 105
+          },
+          "pitches": [
+            72,
+            84,
+            79,
+            76,
+            72
+          ],
+          "note_ids": [
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107"
+          ],
+          "core_note_ids": [
+            "note_0124"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            105
+          ]
+        }
+      ],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 3,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "003",
+      "status": "ok",
+      "gold": [],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "004",
+      "status": "ok",
+      "gold": [],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            22,
+            23
+          ],
+          "note_ids": [
+            "note_0022",
+            "note_0023"
+          ],
+          "score_part": {
+            "start_note_index": 22,
+            "end_note_index": 23,
+            "core_start_note_index": 22,
+            "core_end_note_index": 23,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            20,
+            21,
+            22,
+            23,
+            24,
+            25
+          ],
+          "start_time": 8.382403628117913,
+          "end_time": 8.394013605442177,
+          "heard_pitches": [
+            79
+          ]
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "005",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788699230698_tcv2n",
+          "source": "manual",
+          "start_time": 8.4089,
+          "end_time": 8.6378,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 69,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 23,
+            "end_note_index": 27,
+            "pad_notes": 2,
+            "start_measure": 68,
+            "end_measure": 69,
+            "core_start_note_index": 25,
+            "core_end_note_index": 25
+          },
+          "pitches": [
+            79,
+            74,
+            76,
+            79,
+            83
+          ],
+          "note_ids": [
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027"
+          ],
+          "core_note_ids": [
+            "note_0026"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            25
+          ]
+        },
+        {
+          "id": "lbl_1788699237004_9ecme",
+          "source": "manual",
+          "start_time": 9.4273,
+          "end_time": 9.7475,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 69,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 29,
+            "end_note_index": 34,
+            "pad_notes": 2,
+            "start_measure": 69,
+            "end_measure": 69,
+            "core_start_note_index": 31,
+            "core_end_note_index": 32
+          },
+          "pitches": [
+            79,
+            76,
+            74,
+            81,
+            80,
+            81
+          ],
+          "note_ids": [
+            "note_0029",
+            "note_0030",
+            "note_0031",
+            "note_0032",
+            "note_0033",
+            "note_0034"
+          ],
+          "core_note_ids": [
+            "note_0032",
+            "note_0033"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            31,
+            32
+          ]
+        },
+        {
+          "id": "lbl_1788699240050_m38d9",
+          "source": "manual",
+          "start_time": 13.5414,
+          "end_time": 13.8932,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 70,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 37,
+            "end_note_index": 41,
+            "pad_notes": 2,
+            "start_measure": 70,
+            "end_measure": 70,
+            "core_start_note_index": 39,
+            "core_end_note_index": 39
+          },
+          "pitches": [
+            72,
+            74,
+            72,
+            71,
+            72
+          ],
+          "note_ids": [
+            "note_0037",
+            "note_0038",
+            "note_0039",
+            "note_0040",
+            "note_0041"
+          ],
+          "core_note_ids": [
+            "note_0040"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            39
+          ]
+        },
+        {
+          "id": "lbl_1788699245934_zb1pz",
+          "source": "manual",
+          "start_time": 14.7751,
+          "end_time": 14.9662,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 70,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 43,
+            "end_note_index": 47,
+            "pad_notes": 2,
+            "start_measure": 70,
+            "end_measure": 71,
+            "core_start_note_index": 45,
+            "core_end_note_index": 45
+          },
+          "pitches": [
+            74,
+            72,
+            71,
+            55,
+            60
+          ],
+          "note_ids": [
+            "note_0043",
+            "note_0044",
+            "note_0045",
+            "note_0046",
+            "note_0047"
+          ],
+          "core_note_ids": [
+            "note_0046"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            45
+          ]
+        },
+        {
+          "id": "lbl_1788699254262_t3l1h",
+          "source": "manual",
+          "start_time": 13.5414,
+          "end_time": 14.9662,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 70,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 37,
+            "end_note_index": 47,
+            "pad_notes": 2,
+            "start_measure": 70,
+            "end_measure": 71,
+            "core_start_note_index": 39,
+            "core_end_note_index": 45
+          },
+          "pitches": [
+            72,
+            74,
+            72,
+            71,
+            72,
+            75,
+            74,
+            72,
+            71,
+            55,
+            60
+          ],
+          "note_ids": [
+            "note_0037",
+            "note_0038",
+            "note_0039",
+            "note_0040",
+            "note_0041",
+            "note_0042",
+            "note_0043",
+            "note_0044",
+            "note_0045",
+            "note_0046",
+            "note_0047"
+          ],
+          "core_note_ids": [
+            "note_0040",
+            "note_0041",
+            "note_0042",
+            "note_0043",
+            "note_0044",
+            "note_0045",
+            "note_0046"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ]
+        },
+        {
+          "id": "lbl_1788699300723_1g6r9",
+          "source": "manual",
+          "start_time": 31.2739,
+          "end_time": 31.6024,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 79,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 131,
+            "end_note_index": 136,
+            "pad_notes": 2,
+            "start_measure": 78,
+            "end_measure": 79,
+            "core_start_note_index": 133,
+            "core_end_note_index": 134
+          },
+          "pitches": [
+            79,
+            55,
+            60,
+            64,
+            67,
+            64
+          ],
+          "note_ids": [
+            "note_0131",
+            "note_0132",
+            "note_0133",
+            "note_0134",
+            "note_0135",
+            "note_0136"
+          ],
+          "core_note_ids": [
+            "note_0137",
+            "note_0138"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            133,
+            134
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            24,
+            25
+          ],
+          "note_ids": [
+            "note_0024",
+            "note_0025"
+          ],
+          "score_part": {
+            "start_note_index": 24,
+            "end_note_index": 25,
+            "core_start_note_index": 24,
+            "core_end_note_index": 25,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            22,
+            23,
+            24,
+            25,
+            26,
+            27
+          ],
+          "start_time": 4.458231292517007,
+          "end_time": 4.562721088435374,
+          "heard_pitches": [
+            72
+          ]
+        },
+        {
+          "id": "v7_0001",
+          "type": "extra_note",
+          "score_event_indices": [
+            36,
+            37
+          ],
+          "note_ids": [
+            "note_0036",
+            "note_0037"
+          ],
+          "score_part": {
+            "start_note_index": 36,
+            "end_note_index": 37,
+            "core_start_note_index": 36,
+            "core_end_note_index": 37,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            34,
+            35,
+            36,
+            37,
+            38,
+            39
+          ],
+          "start_time": 10.00780045351474,
+          "end_time": 10.832108843537416,
+          "heard_pitches": [
+            72,
+            72,
+            74
+          ]
+        },
+        {
+          "id": "v7_0002",
+          "type": "extra_note",
+          "score_event_indices": [
+            42,
+            43
+          ],
+          "note_ids": [
+            "note_0042",
+            "note_0043"
+          ],
+          "score_part": {
+            "start_note_index": 42,
+            "end_note_index": 43,
+            "core_start_note_index": 42,
+            "core_end_note_index": 43,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ],
+          "start_time": 12.34140589569161,
+          "end_time": 12.422675736961452,
+          "heard_pitches": [
+            74
+          ]
+        },
+        {
+          "id": "v7_0003",
+          "type": "extra_note",
+          "score_event_indices": [
+            43,
+            44
+          ],
+          "note_ids": [
+            "note_0043",
+            "note_0044"
+          ],
+          "score_part": {
+            "start_note_index": 43,
+            "end_note_index": 44,
+            "core_start_note_index": 43,
+            "core_end_note_index": 44,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            41,
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "start_time": 13.14249433106576,
+          "end_time": 13.316643990929705,
+          "heard_pitches": [
+            72,
+            74
+          ]
+        },
+        {
+          "id": "v7_0004",
+          "type": "missed_note",
+          "score_event_indices": [
+            44
+          ],
+          "note_ids": [
+            "note_0044"
+          ],
+          "score_part": {
+            "start_note_index": 44,
+            "end_note_index": 44,
+            "core_start_note_index": 44,
+            "core_end_note_index": 44,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "start_time": 12.869659863945579,
+          "end_time": 13.357278911564627,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0005",
+          "type": "repetition",
+          "score_event_indices": [
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44
+          ],
+          "note_ids": [
+            "note_0037",
+            "note_0038",
+            "note_0039",
+            "note_0040",
+            "note_0041",
+            "note_0042",
+            "note_0043",
+            "note_0044"
+          ],
+          "score_part": {
+            "start_note_index": 37,
+            "end_note_index": 44,
+            "core_start_note_index": 37,
+            "core_end_note_index": 44,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "start_time": 13.316643990929705,
+          "end_time": 15.255510204081633,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 10.832108843537416,
+            "end_time": 13.14249433106576
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 4,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 6,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "006",
+      "status": "ok",
+      "gold": [],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "008",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788700025230_mlr3j",
+          "source": "manual",
+          "start_time": 16.7348,
+          "end_time": 16.9017,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 145,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 29,
+            "end_note_index": 33,
+            "pad_notes": 2,
+            "start_measure": 145,
+            "end_measure": 146,
+            "core_start_note_index": 31,
+            "core_end_note_index": 31
+          },
+          "pitches": [
+            76,
+            77,
+            71,
+            74,
+            72
+          ],
+          "note_ids": [
+            "note_0029",
+            "note_0030",
+            "note_0031",
+            "note_0032",
+            "note_0033"
+          ],
+          "core_note_ids": [
+            "note_0034"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            31
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            11,
+            12
+          ],
+          "note_ids": [
+            "note_0011",
+            "note_0012"
+          ],
+          "score_part": {
+            "start_note_index": 11,
+            "end_note_index": 12,
+            "core_start_note_index": 11,
+            "core_end_note_index": 12,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "start_time": 13.038004535147392,
+          "end_time": 13.165714285714285,
+          "heard_pitches": [
+            83
+          ]
+        },
+        {
+          "id": "v7_0001",
+          "type": "extra_note",
+          "score_event_indices": [
+            24,
+            25
+          ],
+          "note_ids": [
+            "note_0024",
+            "note_0025"
+          ],
+          "score_part": {
+            "start_note_index": 24,
+            "end_note_index": 25,
+            "core_start_note_index": 24,
+            "core_end_note_index": 25,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            22,
+            23,
+            24,
+            25,
+            26,
+            27
+          ],
+          "start_time": 16.16108843537415,
+          "end_time": 16.24235827664399,
+          "heard_pitches": [
+            79
+          ]
+        },
+        {
+          "id": "v7_0002",
+          "type": "missed_note",
+          "score_event_indices": [
+            4
+          ],
+          "note_ids": [
+            "note_0004"
+          ],
+          "score_part": {
+            "start_note_index": 4,
+            "end_note_index": 4,
+            "core_start_note_index": 4,
+            "core_end_note_index": 4,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "start_time": 8.798427815570673,
+          "end_time": 9.425366591080877,
+          "timing_status": "estimated"
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 2,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  11,
+                  12
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "010",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788701292388_kvntb",
+          "source": "manual",
+          "start_time": 0.2554,
+          "end_time": 1.1569,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 165,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 7,
+            "pad_notes": 2,
+            "start_measure": 165,
+            "end_measure": 165,
+            "core_start_note_index": 0,
+            "core_end_note_index": 5
+          },
+          "pitches": [
+            81,
+            79,
+            76,
+            72,
+            76,
+            67,
+            81,
+            79
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005",
+            "note_0006",
+            "note_0007"
+          ],
+          "core_note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002",
+            "note_0003",
+            "note_0004",
+            "note_0005"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "id": "lbl_1788701339619_3l9yi",
+          "source": "manual",
+          "start_time": 20.6425,
+          "end_time": 20.6925,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 179,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 163,
+            "end_note_index": 168,
+            "pad_notes": 2,
+            "start_measure": 179,
+            "end_measure": 179,
+            "core_start_note_index": 165,
+            "core_end_note_index": 166
+          },
+          "pitches": [
+            76,
+            74,
+            77,
+            80,
+            81,
+            77
+          ],
+          "note_ids": [
+            "note_0163",
+            "note_0164",
+            "note_0165",
+            "note_0166",
+            "note_0167",
+            "note_0168"
+          ],
+          "core_note_ids": [
+            "note_0167",
+            "note_0168"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            165,
+            166
+          ]
+        }
+      ],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "011",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1789746931507_y3vfw",
+          "source": "manual",
+          "start_time": 6.6417,
+          "end_time": 7.2216,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 192,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 37,
+            "end_note_index": 41,
+            "pad_notes": 2,
+            "start_measure": 192,
+            "end_measure": 192,
+            "core_start_note_index": 39,
+            "core_end_note_index": 39
+          },
+          "pitches": [
+            74,
+            72,
+            71,
+            76,
+            77
+          ],
+          "note_ids": [
+            "note_0037",
+            "note_0038",
+            "note_0039",
+            "note_0040",
+            "note_0041"
+          ],
+          "core_note_ids": [
+            "note_0040"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            39
+          ]
+        }
+      ],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "012",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788701487198_13g85",
+          "source": "manual",
+          "start_time": 0.20086344679733956,
+          "end_time": 1.3847,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 196,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 2,
+            "pad_notes": 2,
+            "start_measure": 196,
+            "end_measure": 196,
+            "core_start_note_index": null,
+            "core_end_note_index": null
+          },
+          "pitches": [
+            72,
+            71,
+            72
+          ],
+          "note_ids": [
+            "note_0000",
+            "note_0001",
+            "note_0002"
+          ],
+          "core_note_ids": [
+            "note_0001"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            2
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            0
+          ],
+          "note_ids": [
+            "note_0000"
+          ],
+          "score_part": {
+            "start_note_index": 0,
+            "end_note_index": 0,
+            "core_start_note_index": 0,
+            "core_end_note_index": 0,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            0,
+            1,
+            2
+          ],
+          "start_time": 0.18575963718820862,
+          "end_time": 0.37151927437641724,
+          "heard_pitch": 52
+        },
+        {
+          "id": "v7_0001",
+          "type": "repetition",
+          "score_event_indices": [
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "note_ids": [
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028",
+            "note_0029",
+            "note_0030"
+          ],
+          "score_part": {
+            "start_note_index": 25,
+            "end_note_index": 30,
+            "core_start_note_index": 25,
+            "core_end_note_index": 30,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ],
+          "start_time": 6.489977324263038,
+          "end_time": 7.848344671201814,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 5.537959183673469,
+            "end_time": 6.489977324263038
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "013",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788701589031_hzo63",
+          "source": "manual",
+          "start_time": 19.0848,
+          "end_time": 20.101,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 218,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 92,
+            "end_note_index": 97,
+            "pad_notes": 2,
+            "start_measure": 218,
+            "end_measure": 218,
+            "core_start_note_index": 94,
+            "core_end_note_index": 95
+          },
+          "pitches": [
+            74,
+            77,
+            74,
+            71,
+            74,
+            76
+          ],
+          "note_ids": [
+            "note_0092",
+            "note_0093",
+            "note_0094",
+            "note_0095",
+            "note_0096",
+            "note_0097"
+          ],
+          "core_note_ids": [
+            "note_0096",
+            "note_0097"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            94,
+            95
+          ]
+        },
+        {
+          "id": "lbl_1788701606708_0asc2",
+          "source": "manual",
+          "start_time": 22.6765,
+          "end_time": 25.9343,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 219,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 99,
+            "end_note_index": 108,
+            "pad_notes": 2,
+            "start_measure": 218,
+            "end_measure": 219,
+            "core_start_note_index": 101,
+            "core_end_note_index": 106
+          },
+          "pitches": [
+            79,
+            76,
+            72,
+            76,
+            77,
+            79,
+            81,
+            77,
+            74,
+            78
+          ],
+          "note_ids": [
+            "note_0099",
+            "note_0100",
+            "note_0101",
+            "note_0102",
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107",
+            "note_0108"
+          ],
+          "core_note_ids": [
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107",
+            "note_0108"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            101,
+            102,
+            103,
+            104,
+            105,
+            106
+          ]
+        },
+        {
+          "id": "lbl_1788701616585_d4i9p",
+          "source": "manual",
+          "start_time": 25.9343,
+          "end_time": 27.322,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 219,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 105,
+            "end_note_index": 110,
+            "pad_notes": 2,
+            "start_measure": 219,
+            "end_measure": 219,
+            "core_start_note_index": 107,
+            "core_end_note_index": 108
+          },
+          "pitches": [
+            81,
+            77,
+            74,
+            78,
+            81,
+            79
+          ],
+          "note_ids": [
+            "note_0105",
+            "note_0106",
+            "note_0107",
+            "note_0108",
+            "note_0109",
+            "note_0110"
+          ],
+          "core_note_ids": [
+            "note_0109",
+            "note_0110"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            107,
+            108
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            93
+          ],
+          "note_ids": [
+            "note_0093"
+          ],
+          "score_part": {
+            "start_note_index": 93,
+            "end_note_index": 93,
+            "core_start_note_index": 93,
+            "core_end_note_index": 93,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            91,
+            92,
+            93,
+            94,
+            95
+          ],
+          "start_time": 18.877823129251702,
+          "end_time": 19.02875283446712,
+          "heard_pitch": 76
+        },
+        {
+          "id": "v7_0001",
+          "type": "wrong_note",
+          "score_event_indices": [
+            94
+          ],
+          "note_ids": [
+            "note_0094"
+          ],
+          "score_part": {
+            "start_note_index": 94,
+            "end_note_index": 94,
+            "core_start_note_index": 94,
+            "core_end_note_index": 94,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            92,
+            93,
+            94,
+            95,
+            96
+          ],
+          "start_time": 19.02875283446712,
+          "end_time": 19.202902494331067,
+          "heard_pitch": 77
+        },
+        {
+          "id": "v7_0002",
+          "type": "wrong_note",
+          "score_event_indices": [
+            96
+          ],
+          "note_ids": [
+            "note_0096"
+          ],
+          "score_part": {
+            "start_note_index": 96,
+            "end_note_index": 96,
+            "core_start_note_index": 96,
+            "core_end_note_index": 96,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            94,
+            95,
+            96,
+            97,
+            98
+          ],
+          "start_time": 19.43510204081633,
+          "end_time": 19.59764172335601,
+          "heard_pitch": 72
+        },
+        {
+          "id": "v7_0003",
+          "type": "wrong_note",
+          "score_event_indices": [
+            98
+          ],
+          "note_ids": [
+            "note_0098"
+          ],
+          "score_part": {
+            "start_note_index": 98,
+            "end_note_index": 98,
+            "core_start_note_index": 98,
+            "core_end_note_index": 98,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            96,
+            97,
+            98,
+            99,
+            100
+          ],
+          "start_time": 19.59764172335601,
+          "end_time": 20.17814058956916,
+          "heard_pitch": 71
+        },
+        {
+          "id": "v7_0004",
+          "type": "wrong_note",
+          "score_event_indices": [
+            130
+          ],
+          "note_ids": [
+            "note_0130"
+          ],
+          "score_part": {
+            "start_note_index": 130,
+            "end_note_index": 130,
+            "core_start_note_index": 130,
+            "core_end_note_index": 130,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            128,
+            129,
+            130,
+            131,
+            132
+          ],
+          "start_time": 30.661950113378687,
+          "end_time": 30.812879818594105,
+          "heard_pitch": 79
+        },
+        {
+          "id": "v7_0005",
+          "type": "extra_note",
+          "score_event_indices": [
+            173,
+            174
+          ],
+          "note_ids": [
+            "note_0173",
+            "note_0174"
+          ],
+          "score_part": {
+            "start_note_index": 173,
+            "end_note_index": 174,
+            "core_start_note_index": 173,
+            "core_end_note_index": 174,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            171,
+            172,
+            173,
+            174
+          ],
+          "start_time": 38.76571428571429,
+          "end_time": 40.63492063492063,
+          "heard_pitches": [
+            76,
+            74,
+            75,
+            76,
+            74,
+            74
+          ]
+        },
+        {
+          "id": "v7_0006",
+          "type": "missed_note",
+          "score_event_indices": [
+            97
+          ],
+          "note_ids": [
+            "note_0097"
+          ],
+          "score_part": {
+            "start_note_index": 97,
+            "end_note_index": 97,
+            "core_start_note_index": 97,
+            "core_end_note_index": 97,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "start_time": 19.51637188208617,
+          "end_time": 19.667301587301587,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0007",
+          "type": "missed_note",
+          "score_event_indices": [
+            99
+          ],
+          "note_ids": [
+            "note_0099"
+          ],
+          "score_part": {
+            "start_note_index": 99,
+            "end_note_index": 99,
+            "core_start_note_index": 99,
+            "core_end_note_index": 99,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            97,
+            98,
+            99,
+            100,
+            101
+          ],
+          "start_time": 19.887891156462587,
+          "end_time": 20.038820861678005,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0008",
+          "type": "repetition",
+          "score_event_indices": [
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "note_ids": [
+            "note_0088",
+            "note_0089",
+            "note_0090",
+            "note_0091",
+            "note_0092",
+            "note_0093",
+            "note_0094",
+            "note_0095",
+            "note_0096",
+            "note_0097",
+            "note_0098",
+            "note_0099"
+          ],
+          "score_part": {
+            "start_note_index": 88,
+            "end_note_index": 99,
+            "core_start_note_index": 88,
+            "core_end_note_index": 99,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101
+          ],
+          "start_time": 20.17814058956916,
+          "end_time": 24.740861678004535,
+          "extra_copies": 2,
+          "repeats_label_range": {
+            "start_time": 18.18122448979592,
+            "end_time": 20.17814058956916
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  173,
+                  174
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 2,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 5,
+          "gold": 2,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 2
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  93
+                ],
+                0
+              ],
+              "type_match": true
+            },
+            {
+              "prediction_index": 1,
+              "gold_index": 1,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  94
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "014",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788701681315_5u684",
+          "source": "manual",
+          "start_time": 7.775,
+          "end_time": 7.8583,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 234,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 32,
+            "end_note_index": 36,
+            "pad_notes": 2,
+            "start_measure": 234,
+            "end_measure": 235,
+            "core_start_note_index": 34,
+            "core_end_note_index": 34
+          },
+          "pitches": [
+            69,
+            74,
+            77,
+            81,
+            67
+          ],
+          "note_ids": [
+            "note_0032",
+            "note_0033",
+            "note_0034",
+            "note_0035",
+            "note_0036"
+          ],
+          "core_note_ids": [
+            "note_0035"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            34
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            31
+          ],
+          "note_ids": [
+            "note_0031"
+          ],
+          "score_part": {
+            "start_note_index": 31,
+            "end_note_index": 31,
+            "core_start_note_index": 31,
+            "core_end_note_index": 31,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            29,
+            30,
+            31,
+            32,
+            33
+          ],
+          "start_time": 12.770975056689343,
+          "end_time": 12.817414965986394,
+          "heard_pitch": 80
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "016",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788701796068_e4t73",
+          "source": "manual",
+          "start_time": 17.4562,
+          "end_time": 18.1282,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 30,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 43,
+            "end_note_index": 47,
+            "pad_notes": 2,
+            "start_measure": 30,
+            "end_measure": 31,
+            "core_start_note_index": 45,
+            "core_end_note_index": 45
+          },
+          "pitches": [
+            72,
+            76,
+            81,
+            79,
+            78
+          ],
+          "note_ids": [
+            "note_0043",
+            "note_0044",
+            "note_0045",
+            "note_0046",
+            "note_0047"
+          ],
+          "core_note_ids": [
+            "note_0058"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            45
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            11,
+            12
+          ],
+          "note_ids": [
+            "note_0011",
+            "note_0012"
+          ],
+          "score_part": {
+            "start_note_index": 11,
+            "end_note_index": 12,
+            "core_start_note_index": 11,
+            "core_end_note_index": 12,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14
+          ],
+          "start_time": 8.78875283446712,
+          "end_time": 8.800362811791384,
+          "heard_pitches": [
+            79
+          ]
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  11,
+                  12
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "017",
+      "status": "ok",
+      "gold": [],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            23,
+            24
+          ],
+          "note_ids": [
+            "note_0023",
+            "note_0024"
+          ],
+          "score_part": {
+            "start_note_index": 23,
+            "end_note_index": 24,
+            "core_start_note_index": 23,
+            "core_end_note_index": 24,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            21,
+            22,
+            23,
+            24,
+            25,
+            26
+          ],
+          "start_time": 5.27092970521542,
+          "end_time": 5.305759637188209,
+          "heard_pitches": [
+            76
+          ]
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "019",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788701947696_ns4ro",
+          "source": "manual",
+          "start_time": 21.3402,
+          "end_time": 21.436,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 102,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 107,
+            "end_note_index": 111,
+            "pad_notes": 2,
+            "start_measure": 102,
+            "end_measure": 102,
+            "core_start_note_index": 109,
+            "core_end_note_index": 109
+          },
+          "pitches": [
+            79,
+            74,
+            71,
+            79,
+            74
+          ],
+          "note_ids": [
+            "note_0107",
+            "note_0108",
+            "note_0109",
+            "note_0110",
+            "note_0111"
+          ],
+          "core_note_ids": [
+            "note_0115"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            109
+          ]
+        }
+      ],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "020",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788702014748_vohge",
+          "source": "manual",
+          "start_time": 12.558,
+          "end_time": 12.6651,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 119,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 77,
+            "end_note_index": 81,
+            "pad_notes": 2,
+            "start_measure": 119,
+            "end_measure": 120,
+            "core_start_note_index": 79,
+            "core_end_note_index": 79
+          },
+          "pitches": [
+            74,
+            67,
+            72,
+            67,
+            71
+          ],
+          "note_ids": [
+            "note_0077",
+            "note_0078",
+            "note_0079",
+            "note_0080",
+            "note_0081"
+          ],
+          "core_note_ids": [
+            "note_0080"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            79
+          ]
+        },
+        {
+          "id": "lbl_1788702064388_22nyd",
+          "source": "manual",
+          "start_time": 28.635,
+          "end_time": 28.8351,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 128,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 204,
+            "end_note_index": 208,
+            "pad_notes": 2,
+            "start_measure": 128,
+            "end_measure": 128,
+            "core_start_note_index": 206,
+            "core_end_note_index": 206
+          },
+          "pitches": [
+            67,
+            77,
+            67,
+            74,
+            67
+          ],
+          "note_ids": [
+            "note_0204",
+            "note_0205",
+            "note_0206",
+            "note_0207",
+            "note_0208"
+          ],
+          "core_note_ids": [
+            "note_0209"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            206
+          ]
+        },
+        {
+          "id": "lbl_1788702074388_aanyc",
+          "source": "manual",
+          "start_time": 31.1172,
+          "end_time": 31.5405,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 129,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 225,
+            "end_note_index": 230,
+            "pad_notes": 2,
+            "start_measure": 129,
+            "end_measure": 130,
+            "core_start_note_index": 227,
+            "core_end_note_index": 228
+          },
+          "pitches": [
+            59,
+            67,
+            62,
+            67,
+            60,
+            64
+          ],
+          "note_ids": [
+            "note_0225",
+            "note_0226",
+            "note_0227",
+            "note_0228",
+            "note_0229",
+            "note_0230"
+          ],
+          "core_note_ids": [
+            "note_0230",
+            "note_0231"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            227,
+            228
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            144
+          ],
+          "note_ids": [
+            "note_0144"
+          ],
+          "score_part": {
+            "start_note_index": 144,
+            "end_note_index": 144,
+            "core_start_note_index": 144,
+            "core_end_note_index": 144,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            142,
+            143,
+            144,
+            145,
+            146
+          ],
+          "start_time": 20.375510204081632,
+          "end_time": 20.456780045351476,
+          "heard_pitch": 66
+        },
+        {
+          "id": "v7_0001",
+          "type": "extra_note",
+          "score_event_indices": [
+            72,
+            73
+          ],
+          "note_ids": [
+            "note_0072",
+            "note_0073"
+          ],
+          "score_part": {
+            "start_note_index": 72,
+            "end_note_index": 73,
+            "core_start_note_index": 72,
+            "core_end_note_index": 73,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            70,
+            71,
+            72,
+            73,
+            74,
+            75
+          ],
+          "start_time": 11.145578231292518,
+          "end_time": 11.23845804988662,
+          "heard_pitches": [
+            67
+          ]
+        },
+        {
+          "id": "v7_0002",
+          "type": "extra_note",
+          "score_event_indices": [
+            227,
+            228
+          ],
+          "note_ids": [
+            "note_0227",
+            "note_0228"
+          ],
+          "score_part": {
+            "start_note_index": 227,
+            "end_note_index": 228,
+            "core_start_note_index": 227,
+            "core_end_note_index": 228,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            225,
+            226,
+            227,
+            228,
+            229,
+            230
+          ],
+          "start_time": 31.114739229024945,
+          "end_time": 31.230839002267576,
+          "heard_pitches": [
+            64
+          ]
+        },
+        {
+          "id": "v7_0003",
+          "type": "missed_note",
+          "score_event_indices": [
+            206
+          ],
+          "note_ids": [
+            "note_0206"
+          ],
+          "score_part": {
+            "start_note_index": 206,
+            "end_note_index": 206,
+            "core_start_note_index": 206,
+            "core_end_note_index": 206,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            204,
+            205,
+            206,
+            207,
+            208
+          ],
+          "start_time": 28.322539682539684,
+          "end_time": 28.438639455782315,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0004",
+          "type": "repetition",
+          "score_event_indices": [
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            219,
+            220,
+            221,
+            222,
+            223,
+            224,
+            225,
+            226,
+            227,
+            228
+          ],
+          "note_ids": [
+            "note_0213",
+            "note_0214",
+            "note_0215",
+            "note_0216",
+            "note_0217",
+            "note_0218",
+            "note_0219",
+            "note_0220",
+            "note_0221",
+            "note_0222",
+            "note_0223",
+            "note_0224",
+            "note_0225",
+            "note_0226",
+            "note_0227",
+            "note_0228"
+          ],
+          "score_part": {
+            "start_note_index": 213,
+            "end_note_index": 228,
+            "core_start_note_index": 213,
+            "core_end_note_index": 228,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            211,
+            212,
+            213,
+            214,
+            215,
+            216,
+            217,
+            218,
+            219,
+            220,
+            221,
+            222,
+            223,
+            224,
+            225,
+            226,
+            227,
+            228,
+            229,
+            230
+          ],
+          "start_time": 31.764897959183674,
+          "end_time": 33.62249433106576,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 29.1178231292517,
+            "end_time": 31.764897959183674
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "credit": 1.0,
+          "predicted": 2,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 1,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 1,
+              "gold_index": 0,
+              "credit": 1.0,
+              "location": [
+                "score_events",
+                [
+                  227,
+                  228
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 1.0,
+          "predicted": 1,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 1,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 1.0,
+              "location": [
+                "score_events",
+                [
+                  206
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  144
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "029",
+      "status": "ok",
+      "gold": [],
+      "predicted": [],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "030",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788703446685_nsd82",
+          "source": "manual",
+          "start_time": 6.1451,
+          "end_time": 6.1951,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 70,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 36,
+            "end_note_index": 40,
+            "pad_notes": 2,
+            "start_measure": 69,
+            "end_measure": 70,
+            "core_start_note_index": 38,
+            "core_end_note_index": 38
+          },
+          "pitches": [
+            74,
+            72,
+            74,
+            72,
+            71
+          ],
+          "note_ids": [
+            "note_0036",
+            "note_0037",
+            "note_0038",
+            "note_0039",
+            "note_0040"
+          ],
+          "core_note_ids": [
+            "note_0039"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            38
+          ]
+        },
+        {
+          "id": "lbl_1788703462767_h8xri",
+          "source": "manual",
+          "start_time": 6.5858,
+          "end_time": 6.8796,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 70,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 40,
+            "end_note_index": 45,
+            "pad_notes": 2,
+            "start_measure": 70,
+            "end_measure": 70,
+            "core_start_note_index": 42,
+            "core_end_note_index": 43
+          },
+          "pitches": [
+            71,
+            72,
+            75,
+            74,
+            72,
+            71
+          ],
+          "note_ids": [
+            "note_0040",
+            "note_0041",
+            "note_0042",
+            "note_0043",
+            "note_0044",
+            "note_0045"
+          ],
+          "core_note_ids": [
+            "note_0043",
+            "note_0044"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            42,
+            43
+          ]
+        },
+        {
+          "id": "lbl_1788703494797_8wou9",
+          "source": "manual",
+          "start_time": 19.3655,
+          "end_time": 19.5124,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 77,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 117,
+            "end_note_index": 121,
+            "pad_notes": 2,
+            "start_measure": 77,
+            "end_measure": 77,
+            "core_start_note_index": 119,
+            "core_end_note_index": 119
+          },
+          "pitches": [
+            81,
+            78,
+            72,
+            74,
+            78
+          ],
+          "note_ids": [
+            "note_0117",
+            "note_0118",
+            "note_0119",
+            "note_0120",
+            "note_0121"
+          ],
+          "core_note_ids": [
+            "note_0122"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            119
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            36,
+            37
+          ],
+          "note_ids": [
+            "note_0036",
+            "note_0037"
+          ],
+          "score_part": {
+            "start_note_index": 36,
+            "end_note_index": 37,
+            "core_start_note_index": 36,
+            "core_end_note_index": 37,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            34,
+            35,
+            36,
+            37,
+            38,
+            39
+          ],
+          "start_time": 5.88625850340136,
+          "end_time": 6.130068027210885,
+          "heard_pitches": [
+            72
+          ]
+        },
+        {
+          "id": "v7_0001",
+          "type": "extra_note",
+          "score_event_indices": [
+            39,
+            40
+          ],
+          "note_ids": [
+            "note_0039",
+            "note_0040"
+          ],
+          "score_part": {
+            "start_note_index": 39,
+            "end_note_index": 40,
+            "core_start_note_index": 39,
+            "core_end_note_index": 40,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            37,
+            38,
+            39,
+            40,
+            41,
+            42
+          ],
+          "start_time": 6.431927437641724,
+          "end_time": 6.466757369614513,
+          "heard_pitches": [
+            74
+          ]
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 2,
+          "gold": 2,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 2
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  36,
+                  37
+                ],
+                0
+              ],
+              "type_match": true
+            },
+            {
+              "prediction_index": 1,
+              "gold_index": 1,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  39,
+                  40
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "033",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788703836808_ux9rh",
+          "source": "manual",
+          "start_time": 15.4854,
+          "end_time": 15.6996,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 100,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 89,
+            "end_note_index": 93,
+            "pad_notes": 2,
+            "start_measure": 100,
+            "end_measure": 100,
+            "core_start_note_index": 91,
+            "core_end_note_index": 91
+          },
+          "pitches": [
+            76,
+            79,
+            84,
+            88,
+            91
+          ],
+          "note_ids": [
+            "note_0089",
+            "note_0090",
+            "note_0091",
+            "note_0092",
+            "note_0093"
+          ],
+          "core_note_ids": [
+            "note_0096"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            91
+          ]
+        },
+        {
+          "id": "lbl_1788703850349_v60p3",
+          "source": "manual",
+          "start_time": 21.0618,
+          "end_time": 21.197,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 104,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 124,
+            "end_note_index": 129,
+            "pad_notes": 2,
+            "start_measure": 103,
+            "end_measure": 104,
+            "core_start_note_index": 126,
+            "core_end_note_index": 127
+          },
+          "pitches": [
+            72,
+            55,
+            59,
+            62,
+            67,
+            71
+          ],
+          "note_ids": [
+            "note_0124",
+            "note_0125",
+            "note_0126",
+            "note_0127",
+            "note_0128",
+            "note_0129"
+          ],
+          "core_note_ids": [
+            "note_0133",
+            "note_0134"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            126,
+            127
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "missed_note",
+          "score_event_indices": [
+            91
+          ],
+          "note_ids": [
+            "note_0091"
+          ],
+          "score_part": {
+            "start_note_index": 91,
+            "end_note_index": 91,
+            "core_start_note_index": 91,
+            "core_end_note_index": 91,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            89,
+            90,
+            91,
+            92,
+            93
+          ],
+          "start_time": 17.96450491307634,
+          "end_time": 18.196704459561598,
+          "timing_status": "estimated"
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 1.0,
+          "predicted": 1,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 1,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 1.0,
+              "location": [
+                "score_events",
+                [
+                  91
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "034",
+      "status": "ok",
+      "gold": [],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            90
+          ],
+          "note_ids": [
+            "note_0090"
+          ],
+          "score_part": {
+            "start_note_index": 90,
+            "end_note_index": 90,
+            "core_start_note_index": 90,
+            "core_end_note_index": 90,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            88,
+            89,
+            90,
+            91,
+            92
+          ],
+          "start_time": 11.15718820861678,
+          "end_time": 11.215238095238096,
+          "heard_pitch": 66
+        },
+        {
+          "id": "v7_0001",
+          "type": "wrong_note",
+          "score_event_indices": [
+            210
+          ],
+          "note_ids": [
+            "note_0210"
+          ],
+          "score_part": {
+            "start_note_index": 210,
+            "end_note_index": 210,
+            "core_start_note_index": 210,
+            "core_end_note_index": 210,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            208,
+            209,
+            210,
+            211,
+            212
+          ],
+          "start_time": 26.691337868480726,
+          "end_time": 26.760997732426304,
+          "heard_pitch": 68
+        },
+        {
+          "id": "v7_0002",
+          "type": "extra_note",
+          "score_event_indices": [
+            107,
+            108
+          ],
+          "note_ids": [
+            "note_0107",
+            "note_0108"
+          ],
+          "score_part": {
+            "start_note_index": 107,
+            "end_note_index": 108,
+            "core_start_note_index": 107,
+            "core_end_note_index": 108,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            105,
+            106,
+            107,
+            108,
+            109,
+            110
+          ],
+          "start_time": 13.14249433106576,
+          "end_time": 13.154104308390023,
+          "heard_pitches": [
+            64
+          ]
+        },
+        {
+          "id": "v7_0003",
+          "type": "extra_note",
+          "score_event_indices": [
+            223,
+            224
+          ],
+          "note_ids": [
+            "note_0223",
+            "note_0224"
+          ],
+          "score_part": {
+            "start_note_index": 223,
+            "end_note_index": 224,
+            "core_start_note_index": 223,
+            "core_end_note_index": 224,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            221,
+            222,
+            223,
+            224,
+            225,
+            226
+          ],
+          "start_time": 28.212244897959184,
+          "end_time": 28.23546485260771,
+          "heard_pitches": [
+            64
+          ]
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 2,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 2,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "035",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1788704677023_p17ly",
+          "source": "manual",
+          "start_time": 5.8475,
+          "end_time": 6.0335,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 118,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 55,
+            "end_note_index": 60,
+            "pad_notes": 2,
+            "start_measure": 118,
+            "end_measure": 118,
+            "core_start_note_index": 57,
+            "core_end_note_index": 58
+          },
+          "pitches": [
+            60,
+            64,
+            62,
+            67,
+            71,
+            74
+          ],
+          "note_ids": [
+            "note_0055",
+            "note_0056",
+            "note_0057",
+            "note_0058",
+            "note_0059",
+            "note_0060"
+          ],
+          "core_note_ids": [
+            "note_0060",
+            "note_0061"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            57,
+            58
+          ]
+        },
+        {
+          "id": "lbl_1788704719518_il94s",
+          "source": "manual",
+          "start_time": 8.0795,
+          "end_time": 9.5675,
+          "type": "repetition",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 120,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 79,
+            "end_note_index": 98,
+            "pad_notes": 2,
+            "start_measure": 119,
+            "end_measure": 121,
+            "core_start_note_index": 81,
+            "core_end_note_index": 96
+          },
+          "pitches": [
+            72,
+            67,
+            71,
+            67,
+            62,
+            67,
+            71,
+            67,
+            74,
+            67,
+            77,
+            67,
+            74,
+            67,
+            72,
+            67,
+            71,
+            67,
+            72,
+            67
+          ],
+          "note_ids": [
+            "note_0079",
+            "note_0080",
+            "note_0081",
+            "note_0082",
+            "note_0083",
+            "note_0084",
+            "note_0085",
+            "note_0086",
+            "note_0087",
+            "note_0088",
+            "note_0089",
+            "note_0090",
+            "note_0091",
+            "note_0092",
+            "note_0093",
+            "note_0094",
+            "note_0095",
+            "note_0096",
+            "note_0097",
+            "note_0098"
+          ],
+          "core_note_ids": [
+            "note_0084",
+            "note_0085",
+            "note_0086",
+            "note_0087",
+            "note_0088",
+            "note_0089",
+            "note_0090",
+            "note_0091",
+            "note_0092",
+            "note_0093",
+            "note_0094",
+            "note_0095",
+            "note_0096",
+            "note_0097",
+            "note_0098",
+            "note_0099"
+          ],
+          "extra_copies": 1,
+          "score_event_indices": [
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96
+          ]
+        },
+        {
+          "id": "lbl_1788704756233_xxmou",
+          "source": "manual",
+          "start_time": 13.8221,
+          "end_time": 13.9012,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 123,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 133,
+            "end_note_index": 137,
+            "pad_notes": 2,
+            "start_measure": 123,
+            "end_measure": 123,
+            "core_start_note_index": 135,
+            "core_end_note_index": 135
+          },
+          "pitches": [
+            74,
+            67,
+            72,
+            67,
+            71
+          ],
+          "note_ids": [
+            "note_0133",
+            "note_0134",
+            "note_0135",
+            "note_0136",
+            "note_0137"
+          ],
+          "core_note_ids": [
+            "note_0139"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            135
+          ]
+        },
+        {
+          "id": "lbl_1788704770058_uycaj",
+          "source": "manual",
+          "start_time": 12.5565,
+          "end_time": 13.9012,
+          "type": "repetition",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 122,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 120,
+            "end_note_index": 137,
+            "pad_notes": 2,
+            "start_measure": 122,
+            "end_measure": 123,
+            "core_start_note_index": 122,
+            "core_end_note_index": 135
+          },
+          "pitches": [
+            64,
+            60,
+            67,
+            71,
+            67,
+            62,
+            67,
+            71,
+            67,
+            74,
+            67,
+            77,
+            67,
+            74,
+            67,
+            72,
+            67,
+            71
+          ],
+          "note_ids": [
+            "note_0120",
+            "note_0121",
+            "note_0122",
+            "note_0123",
+            "note_0124",
+            "note_0125",
+            "note_0126",
+            "note_0127",
+            "note_0128",
+            "note_0129",
+            "note_0130",
+            "note_0131",
+            "note_0132",
+            "note_0133",
+            "note_0134",
+            "note_0135",
+            "note_0136",
+            "note_0137"
+          ],
+          "core_note_ids": [
+            "note_0126",
+            "note_0127",
+            "note_0128",
+            "note_0129",
+            "note_0130",
+            "note_0131",
+            "note_0132",
+            "note_0133",
+            "note_0134",
+            "note_0135",
+            "note_0136",
+            "note_0137",
+            "note_0138",
+            "note_0139"
+          ],
+          "extra_copies": 1,
+          "score_event_indices": [
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            59
+          ],
+          "note_ids": [
+            "note_0059"
+          ],
+          "score_part": {
+            "start_note_index": 59,
+            "end_note_index": 59,
+            "core_start_note_index": 59,
+            "core_end_note_index": 59,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            57,
+            58,
+            59,
+            60,
+            61
+          ],
+          "start_time": 7.592925170068027,
+          "end_time": 7.662585034013605,
+          "heard_pitch": 72
+        },
+        {
+          "id": "v7_0001",
+          "type": "wrong_note",
+          "score_event_indices": [
+            75
+          ],
+          "note_ids": [
+            "note_0075"
+          ],
+          "score_part": {
+            "start_note_index": 75,
+            "end_note_index": 75,
+            "core_start_note_index": 75,
+            "core_end_note_index": 75,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            73,
+            74,
+            75,
+            76,
+            77
+          ],
+          "start_time": 10.054240362811791,
+          "end_time": 10.147120181405896,
+          "heard_pitch": 67
+        },
+        {
+          "id": "v7_0002",
+          "type": "wrong_note",
+          "score_event_indices": [
+            92
+          ],
+          "note_ids": [
+            "note_0092"
+          ],
+          "score_part": {
+            "start_note_index": 92,
+            "end_note_index": 92,
+            "core_start_note_index": 92,
+            "core_end_note_index": 92,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            90,
+            91,
+            92,
+            93,
+            94
+          ],
+          "start_time": 13.873922902494332,
+          "end_time": 13.94358276643991,
+          "heard_pitch": 69
+        },
+        {
+          "id": "v7_0003",
+          "type": "wrong_note",
+          "score_event_indices": [
+            210
+          ],
+          "note_ids": [
+            "note_0210"
+          ],
+          "score_part": {
+            "start_note_index": 210,
+            "end_note_index": 210,
+            "core_start_note_index": 210,
+            "core_end_note_index": 210,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            208,
+            209,
+            210,
+            211,
+            212
+          ],
+          "start_time": 34.73705215419501,
+          "end_time": 34.76027210884354,
+          "heard_pitch": 68
+        },
+        {
+          "id": "v7_0004",
+          "type": "wrong_note",
+          "score_event_indices": [
+            221
+          ],
+          "note_ids": [
+            "note_0221"
+          ],
+          "score_part": {
+            "start_note_index": 221,
+            "end_note_index": 221,
+            "core_start_note_index": 221,
+            "core_end_note_index": 221,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            219,
+            220,
+            221,
+            222,
+            223
+          ],
+          "start_time": 36.07219954648526,
+          "end_time": 36.21151927437642,
+          "heard_pitch": 76
+        },
+        {
+          "id": "v7_0005",
+          "type": "extra_note",
+          "score_event_indices": [
+            57,
+            58
+          ],
+          "note_ids": [
+            "note_0057",
+            "note_0058"
+          ],
+          "score_part": {
+            "start_note_index": 57,
+            "end_note_index": 58,
+            "core_start_note_index": 57,
+            "core_end_note_index": 58,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            55,
+            56,
+            57,
+            58,
+            59,
+            60
+          ],
+          "start_time": 7.349115646258504,
+          "end_time": 7.4071655328798185,
+          "heard_pitches": [
+            64
+          ]
+        },
+        {
+          "id": "v7_0006",
+          "type": "extra_note",
+          "score_event_indices": [
+            73,
+            74
+          ],
+          "note_ids": [
+            "note_0073",
+            "note_0074"
+          ],
+          "score_part": {
+            "start_note_index": 73,
+            "end_note_index": 74,
+            "core_start_note_index": 73,
+            "core_end_note_index": 74,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            71,
+            72,
+            73,
+            74,
+            75,
+            76
+          ],
+          "start_time": 9.671111111111111,
+          "end_time": 9.822040816326531,
+          "heard_pitches": [
+            74
+          ]
+        },
+        {
+          "id": "v7_0007",
+          "type": "extra_note",
+          "score_event_indices": [
+            75,
+            76
+          ],
+          "note_ids": [
+            "note_0075",
+            "note_0076"
+          ],
+          "score_part": {
+            "start_note_index": 75,
+            "end_note_index": 76,
+            "core_start_note_index": 75,
+            "core_end_note_index": 76,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            73,
+            74,
+            75,
+            76,
+            77,
+            78
+          ],
+          "start_time": 10.298049886621316,
+          "end_time": 10.39092970521542,
+          "heard_pitches": [
+            67
+          ]
+        },
+        {
+          "id": "v7_0008",
+          "type": "extra_note",
+          "score_event_indices": [
+            78,
+            79
+          ],
+          "note_ids": [
+            "note_0078",
+            "note_0079"
+          ],
+          "score_part": {
+            "start_note_index": 78,
+            "end_note_index": 79,
+            "core_start_note_index": 78,
+            "core_end_note_index": 79,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            76,
+            77,
+            78,
+            79,
+            80,
+            81
+          ],
+          "start_time": 11.470657596371883,
+          "end_time": 11.563537414965987,
+          "heard_pitches": [
+            67
+          ]
+        },
+        {
+          "id": "v7_0009",
+          "type": "extra_note",
+          "score_event_indices": [
+            98,
+            99
+          ],
+          "note_ids": [
+            "note_0098",
+            "note_0099"
+          ],
+          "score_part": {
+            "start_note_index": 98,
+            "end_note_index": 99,
+            "core_start_note_index": 98,
+            "core_end_note_index": 99,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            96,
+            97,
+            98,
+            99,
+            100,
+            101
+          ],
+          "start_time": 14.605351473922903,
+          "end_time": 14.640181405895692,
+          "heard_pitches": [
+            66
+          ]
+        },
+        {
+          "id": "v7_0010",
+          "type": "extra_note",
+          "score_event_indices": [
+            102,
+            103
+          ],
+          "note_ids": [
+            "note_0102",
+            "note_0103"
+          ],
+          "score_part": {
+            "start_note_index": 102,
+            "end_note_index": 103,
+            "core_start_note_index": 102,
+            "core_end_note_index": 103,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            100,
+            101,
+            102,
+            103,
+            104,
+            105
+          ],
+          "start_time": 15.069750566893424,
+          "end_time": 15.104580498866213,
+          "heard_pitches": [
+            66
+          ]
+        },
+        {
+          "id": "v7_0011",
+          "type": "extra_note",
+          "score_event_indices": [
+            106,
+            107
+          ],
+          "note_ids": [
+            "note_0106",
+            "note_0107"
+          ],
+          "score_part": {
+            "start_note_index": 106,
+            "end_note_index": 107,
+            "core_start_note_index": 106,
+            "core_end_note_index": 107,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            104,
+            105,
+            106,
+            107,
+            108,
+            109
+          ],
+          "start_time": 15.499319727891157,
+          "end_time": 15.592199546485261,
+          "heard_pitches": [
+            65
+          ]
+        },
+        {
+          "id": "v7_0012",
+          "type": "extra_note",
+          "score_event_indices": [
+            155,
+            156
+          ],
+          "note_ids": [
+            "note_0155",
+            "note_0156"
+          ],
+          "score_part": {
+            "start_note_index": 155,
+            "end_note_index": 156,
+            "core_start_note_index": 155,
+            "core_end_note_index": 156,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            153,
+            154,
+            155,
+            156,
+            157,
+            158
+          ],
+          "start_time": 27.341496598639456,
+          "end_time": 27.39954648526077,
+          "heard_pitches": [
+            64
+          ]
+        },
+        {
+          "id": "v7_0013",
+          "type": "extra_note",
+          "score_event_indices": [
+            214,
+            215
+          ],
+          "note_ids": [
+            "note_0214",
+            "note_0215"
+          ],
+          "score_part": {
+            "start_note_index": 214,
+            "end_note_index": 215,
+            "core_start_note_index": 214,
+            "core_end_note_index": 215,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            212,
+            213,
+            214,
+            215,
+            216,
+            217
+          ],
+          "start_time": 35.247891156462586,
+          "end_time": 35.31755102040817,
+          "heard_pitches": [
+            66
+          ]
+        },
+        {
+          "id": "v7_0014",
+          "type": "repetition",
+          "score_event_indices": [
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138
+          ],
+          "note_ids": [
+            "note_0123",
+            "note_0124",
+            "note_0125",
+            "note_0126",
+            "note_0127",
+            "note_0128",
+            "note_0129",
+            "note_0130",
+            "note_0131",
+            "note_0132",
+            "note_0133",
+            "note_0134",
+            "note_0135",
+            "note_0136",
+            "note_0137",
+            "note_0138"
+          ],
+          "score_part": {
+            "start_note_index": 123,
+            "end_note_index": 138,
+            "core_start_note_index": 123,
+            "core_end_note_index": 138,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138,
+            139,
+            140
+          ],
+          "start_time": 20.154920634920636,
+          "end_time": 25.460680272108846,
+          "extra_copies": 2,
+          "repeats_label_range": {
+            "start_time": 18.250884353741498,
+            "end_time": 20.154920634920636
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.1111111111111111,
+          "recall": 1.0,
+          "f1": 0.19999999999999998,
+          "credit": 1.0,
+          "predicted": 9,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 1,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 1.0,
+              "location": [
+                "score_events",
+                [
+                  57,
+                  58
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 5,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  59
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 2,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events_with_copies",
+                [
+                  123,
+                  124,
+                  125,
+                  126,
+                  127,
+                  128,
+                  129,
+                  130,
+                  131,
+                  132,
+                  133,
+                  134,
+                  135,
+                  136,
+                  137,
+                  138
+                ],
+                2
+              ],
+              "type_match": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sample": "036",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1789738436106_2l3dx",
+          "source": "manual",
+          "start_time": 5.3435,
+          "end_time": 5.4794,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 117,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 32,
+            "end_note_index": 36,
+            "pad_notes": 2,
+            "start_measure": 116,
+            "end_measure": 117,
+            "core_start_note_index": 34,
+            "core_end_note_index": 34
+          },
+          "pitches": [
+            67,
+            72,
+            67,
+            64,
+            67
+          ],
+          "note_ids": [
+            "note_0032",
+            "note_0033",
+            "note_0034",
+            "note_0035",
+            "note_0036"
+          ],
+          "core_note_ids": [
+            "note_0035"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            34
+          ]
+        },
+        {
+          "id": "lbl_1789738438594_owvdg",
+          "source": "manual",
+          "start_time": 5.4794,
+          "end_time": 5.6153,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 117,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 33,
+            "end_note_index": 37,
+            "pad_notes": 2,
+            "start_measure": 117,
+            "end_measure": 117,
+            "core_start_note_index": 35,
+            "core_end_note_index": 35
+          },
+          "pitches": [
+            72,
+            67,
+            64,
+            67,
+            60
+          ],
+          "note_ids": [
+            "note_0033",
+            "note_0034",
+            "note_0035",
+            "note_0036",
+            "note_0037"
+          ],
+          "core_note_ids": [
+            "note_0036"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            35
+          ]
+        },
+        {
+          "id": "lbl_1789738466906_vge7s",
+          "source": "manual",
+          "start_time": 5.2076,
+          "end_time": 5.3435,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 117,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 31,
+            "end_note_index": 35,
+            "pad_notes": 2,
+            "start_measure": 116,
+            "end_measure": 117,
+            "core_start_note_index": 33,
+            "core_end_note_index": 33
+          },
+          "pitches": [
+            71,
+            67,
+            72,
+            67,
+            64
+          ],
+          "note_ids": [
+            "note_0031",
+            "note_0032",
+            "note_0033",
+            "note_0034",
+            "note_0035"
+          ],
+          "core_note_ids": [
+            "note_0034"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            33
+          ]
+        },
+        {
+          "id": "lbl_1789738486207_d0hf7",
+          "source": "manual",
+          "start_time": 14.9921,
+          "end_time": 15.128,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 121,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 103,
+            "end_note_index": 107,
+            "pad_notes": 2,
+            "start_measure": 121,
+            "end_measure": 121,
+            "core_start_note_index": 105,
+            "core_end_note_index": 105
+          },
+          "pitches": [
+            64,
+            67,
+            57,
+            65,
+            62
+          ],
+          "note_ids": [
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107"
+          ],
+          "core_note_ids": [
+            "note_0106"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            105
+          ]
+        },
+        {
+          "id": "lbl_1789738487376_ixacz",
+          "source": "manual",
+          "start_time": 15.128,
+          "end_time": 15.2639,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 121,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 104,
+            "end_note_index": 108,
+            "pad_notes": 2,
+            "start_measure": 121,
+            "end_measure": 121,
+            "core_start_note_index": 106,
+            "core_end_note_index": 106
+          },
+          "pitches": [
+            67,
+            57,
+            65,
+            62,
+            65
+          ],
+          "note_ids": [
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107",
+            "note_0108"
+          ],
+          "core_note_ids": [
+            "note_0107"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            106
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            74
+          ],
+          "note_ids": [
+            "note_0074"
+          ],
+          "score_part": {
+            "start_note_index": 74,
+            "end_note_index": 74,
+            "core_start_note_index": 74,
+            "core_end_note_index": 74,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            72,
+            73,
+            74,
+            75,
+            76
+          ],
+          "start_time": 12.573605442176872,
+          "end_time": 12.654875283446712,
+          "heard_pitch": 65
+        },
+        {
+          "id": "v7_0001",
+          "type": "wrong_note",
+          "score_event_indices": [
+            106
+          ],
+          "note_ids": [
+            "note_0106"
+          ],
+          "score_part": {
+            "start_note_index": 106,
+            "end_note_index": 106,
+            "core_start_note_index": 106,
+            "core_end_note_index": 106,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            104,
+            105,
+            106,
+            107,
+            108
+          ],
+          "start_time": 17.03183673469388,
+          "end_time": 17.171156462585035,
+          "heard_pitch": 62
+        },
+        {
+          "id": "v7_0002",
+          "type": "wrong_note",
+          "score_event_indices": [
+            107
+          ],
+          "note_ids": [
+            "note_0107"
+          ],
+          "score_part": {
+            "start_note_index": 107,
+            "end_note_index": 107,
+            "core_start_note_index": 107,
+            "core_end_note_index": 107,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            105,
+            106,
+            107,
+            108,
+            109
+          ],
+          "start_time": 17.171156462585035,
+          "end_time": 17.240816326530613,
+          "heard_pitch": 64
+        },
+        {
+          "id": "v7_0003",
+          "type": "wrong_note",
+          "score_event_indices": [
+            136
+          ],
+          "note_ids": [
+            "note_0136"
+          ],
+          "score_part": {
+            "start_note_index": 136,
+            "end_note_index": 136,
+            "core_start_note_index": 136,
+            "core_end_note_index": 136,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            134,
+            135,
+            136,
+            137,
+            138
+          ],
+          "start_time": 23.138684807256237,
+          "end_time": 23.18512471655329,
+          "heard_pitch": 68
+        },
+        {
+          "id": "v7_0004",
+          "type": "wrong_note",
+          "score_event_indices": [
+            210
+          ],
+          "note_ids": [
+            "note_0210"
+          ],
+          "score_part": {
+            "start_note_index": 210,
+            "end_note_index": 210,
+            "core_start_note_index": 210,
+            "core_end_note_index": 210,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            208,
+            209,
+            210,
+            211,
+            212
+          ],
+          "start_time": 32.41505668934241,
+          "end_time": 32.496326530612244,
+          "heard_pitch": 69
+        },
+        {
+          "id": "v7_0005",
+          "type": "extra_note",
+          "score_event_indices": [
+            2,
+            3
+          ],
+          "note_ids": [
+            "note_0002",
+            "note_0003"
+          ],
+          "score_part": {
+            "start_note_index": 2,
+            "end_note_index": 3,
+            "core_start_note_index": 2,
+            "core_end_note_index": 3,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "start_time": 0.9287981859410431,
+          "end_time": 0.9520181405895691,
+          "heard_pitches": [
+            66
+          ]
+        },
+        {
+          "id": "v7_0006",
+          "type": "extra_note",
+          "score_event_indices": [
+            37,
+            38
+          ],
+          "note_ids": [
+            "note_0037",
+            "note_0038"
+          ],
+          "score_part": {
+            "start_note_index": 37,
+            "end_note_index": 38,
+            "core_start_note_index": 37,
+            "core_end_note_index": 38,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            35,
+            36,
+            37,
+            38,
+            39,
+            40
+          ],
+          "start_time": 6.501587301587302,
+          "end_time": 6.594467120181406,
+          "heard_pitches": [
+            67
+          ]
+        },
+        {
+          "id": "v7_0007",
+          "type": "extra_note",
+          "score_event_indices": [
+            57,
+            58
+          ],
+          "note_ids": [
+            "note_0057",
+            "note_0058"
+          ],
+          "score_part": {
+            "start_note_index": 57,
+            "end_note_index": 58,
+            "core_start_note_index": 57,
+            "core_end_note_index": 58,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            55,
+            56,
+            57,
+            58,
+            59,
+            60
+          ],
+          "start_time": 10.565079365079365,
+          "end_time": 10.62312925170068,
+          "heard_pitches": [
+            64
+          ]
+        },
+        {
+          "id": "v7_0008",
+          "type": "extra_note",
+          "score_event_indices": [
+            223,
+            224
+          ],
+          "note_ids": [
+            "note_0223",
+            "note_0224"
+          ],
+          "score_part": {
+            "start_note_index": 223,
+            "end_note_index": 224,
+            "core_start_note_index": 223,
+            "core_end_note_index": 224,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            221,
+            222,
+            223,
+            224,
+            225,
+            226
+          ],
+          "start_time": 34.0172335600907,
+          "end_time": 34.04045351473923,
+          "heard_pitches": [
+            64
+          ]
+        },
+        {
+          "id": "v7_0009",
+          "type": "missed_note",
+          "score_event_indices": [
+            77
+          ],
+          "note_ids": [
+            "note_0077"
+          ],
+          "score_part": {
+            "start_note_index": 77,
+            "end_note_index": 77,
+            "core_start_note_index": 77,
+            "core_end_note_index": 77,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            75,
+            76,
+            77,
+            78,
+            79
+          ],
+          "start_time": 12.898684807256236,
+          "end_time": 13.014784580498867,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0010",
+          "type": "missed_note",
+          "score_event_indices": [
+            109
+          ],
+          "note_ids": [
+            "note_0109"
+          ],
+          "score_part": {
+            "start_note_index": 109,
+            "end_note_index": 109,
+            "core_start_note_index": 109,
+            "core_end_note_index": 109,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            107,
+            108,
+            109,
+            110,
+            111
+          ],
+          "start_time": 17.35227210884354,
+          "end_time": 17.46837188208617,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0011",
+          "type": "missed_note",
+          "score_event_indices": [
+            110
+          ],
+          "note_ids": [
+            "note_0110"
+          ],
+          "score_part": {
+            "start_note_index": 110,
+            "end_note_index": 110,
+            "core_start_note_index": 110,
+            "core_end_note_index": 110,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            108,
+            109,
+            110,
+            111,
+            112
+          ],
+          "start_time": 17.463727891156463,
+          "end_time": 17.579827664399094,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0012",
+          "type": "missed_note",
+          "score_event_indices": [
+            111
+          ],
+          "note_ids": [
+            "note_0111"
+          ],
+          "score_part": {
+            "start_note_index": 111,
+            "end_note_index": 111,
+            "core_start_note_index": 111,
+            "core_end_note_index": 111,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            109,
+            110,
+            111,
+            112,
+            113
+          ],
+          "start_time": 17.57518367346939,
+          "end_time": 17.69128344671202,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0013",
+          "type": "missed_note",
+          "score_event_indices": [
+            206
+          ],
+          "note_ids": [
+            "note_0206"
+          ],
+          "score_part": {
+            "start_note_index": 206,
+            "end_note_index": 206,
+            "core_start_note_index": 206,
+            "core_end_note_index": 206,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            204,
+            205,
+            206,
+            207,
+            208
+          ],
+          "start_time": 31.93904761904762,
+          "end_time": 32.05514739229025,
+          "timing_status": "estimated"
+        },
+        {
+          "id": "v7_0014",
+          "type": "repetition",
+          "score_event_indices": [
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112
+          ],
+          "note_ids": [
+            "note_0097",
+            "note_0098",
+            "note_0099",
+            "note_0100",
+            "note_0101",
+            "note_0102",
+            "note_0103",
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107",
+            "note_0108",
+            "note_0109",
+            "note_0110",
+            "note_0111",
+            "note_0112"
+          ],
+          "score_part": {
+            "start_note_index": 97,
+            "end_note_index": 112,
+            "core_start_note_index": 97,
+            "core_end_note_index": 112,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114
+          ],
+          "start_time": 17.79809523809524,
+          "end_time": 19.71374149659864,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 15.313560090702948,
+            "end_time": 17.79809523809524
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 4,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 5,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.2,
+          "recall": 0.2,
+          "f1": 0.20000000000000004,
+          "credit": 1.0,
+          "predicted": 5,
+          "gold": 5,
+          "pair_counts": {
+            "full_credit": 1,
+            "half_credit": 0,
+            "zero_credit": 4
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  74
+                ],
+                0
+              ],
+              "type_match": true
+            },
+            {
+              "prediction_index": 1,
+              "gold_index": 4,
+              "credit": 1.0,
+              "location": [
+                "score_events",
+                [
+                  106
+                ],
+                0
+              ],
+              "type_match": true
+            },
+            {
+              "prediction_index": 2,
+              "gold_index": 1,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  107
+                ],
+                0
+              ],
+              "type_match": true
+            },
+            {
+              "prediction_index": 3,
+              "gold_index": 2,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  136
+                ],
+                0
+              ],
+              "type_match": true
+            },
+            {
+              "prediction_index": 4,
+              "gold_index": 3,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  210
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "039",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1789738535033_4gzfx",
+          "source": "manual",
+          "start_time": 2.4552,
+          "end_time": 2.5671,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 166,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 14,
+            "end_note_index": 18,
+            "pad_notes": 2,
+            "start_measure": 166,
+            "end_measure": 166,
+            "core_start_note_index": 16,
+            "core_end_note_index": 16
+          },
+          "pitches": [
+            77,
+            74,
+            77,
+            67,
+            81
+          ],
+          "note_ids": [
+            "note_0014",
+            "note_0015",
+            "note_0016",
+            "note_0017",
+            "note_0018"
+          ],
+          "core_note_ids": [
+            "note_0016"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            16
+          ]
+        },
+        {
+          "id": "lbl_1789738560880_0p7rd",
+          "source": "manual",
+          "start_time": 17.4765,
+          "end_time": 17.6419,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 174,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 96,
+            "end_note_index": 100,
+            "pad_notes": 2,
+            "start_measure": 173,
+            "end_measure": 174,
+            "core_start_note_index": 98,
+            "core_end_note_index": 98
+          },
+          "pitches": [
+            77,
+            67,
+            81,
+            79,
+            76
+          ],
+          "note_ids": [
+            "note_0096",
+            "note_0097",
+            "note_0098",
+            "note_0099",
+            "note_0100"
+          ],
+          "core_note_ids": [
+            "note_0100"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            98
+          ]
+        },
+        {
+          "id": "lbl_1789738565336_ag5sj",
+          "source": "manual",
+          "start_time": 15.4907,
+          "end_time": 15.9879,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 172,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 84,
+            "end_note_index": 90,
+            "pad_notes": 2,
+            "start_measure": 172,
+            "end_measure": 173,
+            "core_start_note_index": 86,
+            "core_end_note_index": 88
+          },
+          "pitches": [
+            74,
+            72,
+            81,
+            79,
+            77,
+            74,
+            77
+          ],
+          "note_ids": [
+            "note_0084",
+            "note_0085",
+            "note_0086",
+            "note_0087",
+            "note_0088",
+            "note_0089",
+            "note_0090"
+          ],
+          "core_note_ids": [
+            "note_0087",
+            "note_0088",
+            "note_0089",
+            "note_0090"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            86,
+            87,
+            88
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            17
+          ],
+          "note_ids": [
+            "note_0017"
+          ],
+          "score_part": {
+            "start_note_index": 17,
+            "end_note_index": 17,
+            "core_start_note_index": 17,
+            "core_end_note_index": 17,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            15,
+            16,
+            17,
+            18,
+            19
+          ],
+          "start_time": 2.589024943310658,
+          "end_time": 2.63546485260771,
+          "heard_pitch": 85
+        },
+        {
+          "id": "v7_0001",
+          "type": "repetition",
+          "score_event_indices": [
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97
+          ],
+          "note_ids": [
+            "note_0079",
+            "note_0080",
+            "note_0081",
+            "note_0082",
+            "note_0083",
+            "note_0084",
+            "note_0085",
+            "note_0086",
+            "note_0087",
+            "note_0088",
+            "note_0089",
+            "note_0090",
+            "note_0091",
+            "note_0092",
+            "note_0093",
+            "note_0094",
+            "note_0095",
+            "note_0096",
+            "note_0097"
+          ],
+          "score_part": {
+            "start_note_index": 79,
+            "end_note_index": 97,
+            "core_start_note_index": 79,
+            "core_end_note_index": 97,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99
+          ],
+          "start_time": 15.545759637188208,
+          "end_time": 18.68045351473923,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 11.981496598639456,
+            "end_time": 15.487709750566895
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 3,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  17
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    },
+    {
+      "sample": "041",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1789819184312_koxmj",
+          "source": "manual",
+          "start_time": 3.6533,
+          "end_time": 3.8468,
+          "type": "wrong_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 198,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 21,
+            "end_note_index": 25,
+            "pad_notes": 2,
+            "start_measure": 198,
+            "end_measure": 198,
+            "core_start_note_index": 23,
+            "core_end_note_index": 23
+          },
+          "pitches": [
+            76,
+            72,
+            71,
+            72,
+            76
+          ],
+          "note_ids": [
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025"
+          ],
+          "core_note_ids": [
+            "note_0024"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            23
+          ]
+        },
+        {
+          "id": "lbl_1789819198840_tb34f",
+          "source": "manual",
+          "start_time": 3.2663,
+          "end_time": 3.6533,
+          "type": "repetition",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 198,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 19,
+            "end_note_index": 24,
+            "pad_notes": 2,
+            "start_measure": 197,
+            "end_measure": 198,
+            "core_start_note_index": 21,
+            "core_end_note_index": 22
+          },
+          "pitches": [
+            77,
+            74,
+            76,
+            72,
+            71,
+            72
+          ],
+          "note_ids": [
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024"
+          ],
+          "core_note_ids": [
+            "note_0022",
+            "note_0023"
+          ],
+          "extra_copies": 1,
+          "score_event_indices": [
+            21,
+            22
+          ]
+        },
+        {
+          "id": "lbl_1789819247872_kak88",
+          "source": "manual",
+          "start_time": 5.0078,
+          "end_time": 5.3948,
+          "type": "missed_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 198,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 28,
+            "end_note_index": 33,
+            "pad_notes": 2,
+            "start_measure": 198,
+            "end_measure": 199,
+            "core_start_note_index": 30,
+            "core_end_note_index": 31
+          },
+          "pitches": [
+            76,
+            84,
+            83,
+            81,
+            79,
+            78
+          ],
+          "note_ids": [
+            "note_0028",
+            "note_0029",
+            "note_0030",
+            "note_0031",
+            "note_0032",
+            "note_0033"
+          ],
+          "core_note_ids": [
+            "note_0031",
+            "note_0032"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            30,
+            31
+          ]
+        },
+        {
+          "id": "lbl_1789819264472_q8o1r",
+          "source": "manual",
+          "start_time": 3.2663,
+          "end_time": 5.0078,
+          "type": "repetition",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 198,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 19,
+            "end_note_index": 31,
+            "pad_notes": 2,
+            "start_measure": 197,
+            "end_measure": 198,
+            "core_start_note_index": 21,
+            "core_end_note_index": 29
+          },
+          "pitches": [
+            77,
+            74,
+            76,
+            72,
+            71,
+            72,
+            76,
+            72,
+            79,
+            76,
+            84,
+            83,
+            81
+          ],
+          "note_ids": [
+            "note_0019",
+            "note_0020",
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028",
+            "note_0029",
+            "note_0030",
+            "note_0031"
+          ],
+          "core_note_ids": [
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028",
+            "note_0029",
+            "note_0030"
+          ],
+          "extra_copies": 1,
+          "score_event_indices": [
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "wrong_note",
+          "score_event_indices": [
+            30
+          ],
+          "note_ids": [
+            "note_0030"
+          ],
+          "score_part": {
+            "start_note_index": 30,
+            "end_note_index": 30,
+            "core_start_note_index": 30,
+            "core_end_note_index": 30,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            28,
+            29,
+            30,
+            31,
+            32
+          ],
+          "start_time": 5.828208616780046,
+          "end_time": 6.5364172335600905,
+          "heard_pitch": 79
+        },
+        {
+          "id": "v7_0001",
+          "type": "extra_note",
+          "score_event_indices": [
+            42,
+            43
+          ],
+          "note_ids": [
+            "note_0042",
+            "note_0043"
+          ],
+          "score_part": {
+            "start_note_index": 42,
+            "end_note_index": 43,
+            "core_start_note_index": 42,
+            "core_end_note_index": 43,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ],
+          "start_time": 9.729160997732427,
+          "end_time": 9.752380952380953,
+          "heard_pitches": [
+            79
+          ]
+        },
+        {
+          "id": "v7_0002",
+          "type": "repetition",
+          "score_event_indices": [
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "note_ids": [
+            "note_0021",
+            "note_0022",
+            "note_0023",
+            "note_0024",
+            "note_0025",
+            "note_0026",
+            "note_0027",
+            "note_0028",
+            "note_0029",
+            "note_0030"
+          ],
+          "score_part": {
+            "start_note_index": 21,
+            "end_note_index": 30,
+            "core_start_note_index": 21,
+            "core_end_note_index": 30,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32
+          ],
+          "start_time": 6.5364172335600905,
+          "end_time": 8.02249433106576,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 2.3568253968253967,
+            "end_time": 6.5364172335600905
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  30
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 2,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events_with_copies",
+                [
+                  21,
+                  22,
+                  23,
+                  24,
+                  25,
+                  26,
+                  27,
+                  28,
+                  29,
+                  30
+                ],
+                1
+              ],
+              "type_match": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sample": "043",
+      "status": "ok",
+      "gold": [
+        {
+          "id": "lbl_1789819366961_cbenr",
+          "source": "manual",
+          "start_time": 18.5866,
+          "end_time": 18.7282,
+          "type": "extra_note",
+          "severity": 3,
+          "deviation_cents": null,
+          "deviation_ms": null,
+          "measure_number": 219,
+          "note_id": null,
+          "comment": null,
+          "repeats_label_range": null,
+          "score_part": {
+            "start_note_index": 104,
+            "end_note_index": 108,
+            "pad_notes": 2,
+            "start_measure": 219,
+            "end_measure": 219,
+            "core_start_note_index": 106,
+            "core_end_note_index": 106
+          },
+          "pitches": [
+            77,
+            74,
+            78,
+            81,
+            79
+          ],
+          "note_ids": [
+            "note_0104",
+            "note_0105",
+            "note_0106",
+            "note_0107",
+            "note_0108"
+          ],
+          "core_note_ids": [
+            "note_0106"
+          ],
+          "extra_copies": null,
+          "score_event_indices": [
+            106
+          ]
+        }
+      ],
+      "predicted": [
+        {
+          "id": "v7_0000",
+          "type": "extra_note",
+          "score_event_indices": [
+            82,
+            83
+          ],
+          "note_ids": [
+            "note_0082",
+            "note_0083"
+          ],
+          "score_part": {
+            "start_note_index": 82,
+            "end_note_index": 83,
+            "core_start_note_index": 82,
+            "core_end_note_index": 83,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            80,
+            81,
+            82,
+            83,
+            84,
+            85
+          ],
+          "start_time": 15.000090702947846,
+          "end_time": 15.01170068027211,
+          "heard_pitches": [
+            69
+          ]
+        },
+        {
+          "id": "v7_0001",
+          "type": "extra_note",
+          "score_event_indices": [
+            172
+          ],
+          "note_ids": [
+            "note_0172"
+          ],
+          "score_part": {
+            "start_note_index": 172,
+            "end_note_index": 172,
+            "core_start_note_index": 172,
+            "core_end_note_index": 172,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            170,
+            171,
+            172
+          ],
+          "start_time": 29.059773242630385,
+          "end_time": 30.878049886621316,
+          "heard_pitches": [
+            76,
+            74,
+            75,
+            74,
+            75,
+            75,
+            74,
+            75,
+            75,
+            74,
+            72,
+            74,
+            72
+          ]
+        },
+        {
+          "id": "v7_0002",
+          "type": "repetition",
+          "score_event_indices": [
+            172
+          ],
+          "note_ids": [
+            "note_0172"
+          ],
+          "score_part": {
+            "start_note_index": 172,
+            "end_note_index": 172,
+            "core_start_note_index": 172,
+            "core_end_note_index": 172,
+            "pad_notes": 0
+          },
+          "context_score_event_indices": [
+            170,
+            171,
+            172
+          ],
+          "start_time": 30.25560090702948,
+          "end_time": 30.33687074829932,
+          "extra_copies": 1,
+          "repeats_label_range": {
+            "start_time": 28.95528344671202,
+            "end_time": 29.059773242630385
+          }
+        }
+      ],
+      "metrics": {
+        "extra_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 2,
+          "gold": 1,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 1
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": [
+            {
+              "prediction_index": 0,
+              "gold_index": 0,
+              "credit": 0.0,
+              "location": [
+                "score_events",
+                [
+                  82,
+                  83
+                ],
+                0
+              ],
+              "type_match": true
+            }
+          ]
+        },
+        "missed_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "wrong_note": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "credit": 0.0,
+          "predicted": 0,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "pairs": []
+        },
+        "repetition": {
+          "schema_version": "align-note-wise-score-event-metric-v1",
+          "status": "available",
+          "type_mismatch_credit": 0.5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "credit": 0.0,
+          "predicted": 1,
+          "gold": 0,
+          "pair_counts": {
+            "full_credit": 0,
+            "half_credit": 0,
+            "zero_credit": 0
+          },
+          "unevaluable_prediction_indices": [],
+          "pairs": []
+        }
+      }
+    }
+  ]
+}

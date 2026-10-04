@@ -1,0 +1,1278 @@
+{
+  "python_environment": "C:\\Users\\Hank\\.conda\\envs\\MusicEval\\python.exe",
+  "restored_sample": "095",
+  "before_counts": {
+    "rhythm_error": 2,
+    "missed_note": 1,
+    "extra_note": 3,
+    "wrong_note": 2
+  },
+  "after_counts": {
+    "wrong_note": 2,
+    "repetition": 2
+  },
+  "http_relabel_response": {
+    "status": "ok",
+    "label_source": "agent",
+    "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\095\\labels_agent.json",
+    "source": "note_alignment_v2.json",
+    "label_count": 4,
+    "counts_by_type": {
+      "repetition": 2,
+      "wrong_note": 2
+    },
+    "dismissed_types": [],
+    "method": "align_stack_v9"
+  },
+  "http_get_matches_model_feedback": true,
+  "protected_files_unchanged": true,
+  "protected_sha256": {
+    "labels.json": "87e375b097239e7d72df786923a72211689045704d1ee0cba5476653def6356e",
+    "verified_score.musicxml": "4856779e1d081d4fa6beec74914b2491a7bd2f07d9a2d58c132329537a0d3dee",
+    "full_score.musicxml": "6742bffa664a2ab074b902e4297267a34edee3a1401dffdaef2a5b83fe562691",
+    "performance_audio.wav": "ad6f482830416f7ae8ff99d2f71db246152aad020ac8c7b1490aeafc9b899dc4",
+    "note_alignment_v2.json": "7a8661f8d8638e1bd5d125debd6558b7e03f38f9ed446da58f95fea7edf77007",
+    "note_alignment_v9.json": "7a8661f8d8638e1bd5d125debd6558b7e03f38f9ed446da58f95fea7edf77007",
+    "transcription_notes.json": "0d315ef94c0e0e4bc08af35ecb69af1e6cb022786ccb073fb9153df68bee8b18",
+    "transcription_v9.json": "9e015a0653dbeece14ae3c2616b50c662d1ed2c72437faacf9e91dc2a52e3533",
+    "feedback_v9.json": "8359e3fdeaa2bc6de62a8aef6c457da1bccd879f73f668325c70bfc218f45c67",
+    "alignment.npz": "baa56618f3c46772f0de997f3422fcdfa3bb85c158279d23846746a1bcd9e28b",
+    "candidates.json": "5be6538a25b560f032a89203bc5872b90e90927aca91c72d5cafb739abc00886"
+  },
+  "backup_sha256": {
+    "labels_agent.json": "51774084e40b9545fc0e3fa2630b08d4b93cee3f8dda3f92d588a75215ed9fb2",
+    "transcription_notes.json": "0d315ef94c0e0e4bc08af35ecb69af1e6cb022786ccb073fb9153df68bee8b18"
+  },
+  "repetitions": [
+    {
+      "id": "v9_0002",
+      "type": "repetition",
+      "score_event_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "score_part": {
+        "start_note_index": 0,
+        "end_note_index": 17,
+        "core_start_note_index": 0,
+        "core_end_note_index": 17,
+        "pad_notes": 0,
+        "start_measure": 1,
+        "end_measure": 3
+      },
+      "context_score_event_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "start_time": 9.85687074829932,
+      "end_time": 14.616961451247166,
+      "extra_copies": 1,
+      "repeats_label_range": {
+        "start_time": 3.7035827664399092,
+        "end_time": 9.85687074829932
+      },
+      "source": "agent",
+      "severity": 2,
+      "note_id": "note_0000",
+      "core_note_ids": [
+        "note_0000",
+        "note_0001",
+        "note_0002",
+        "note_0003",
+        "note_0004",
+        "note_0005",
+        "note_0006",
+        "note_0007",
+        "note_0008",
+        "note_0009",
+        "note_0010",
+        "note_0011",
+        "note_0012",
+        "note_0013",
+        "note_0014",
+        "note_0015",
+        "note_0016",
+        "note_0017"
+      ],
+      "pitches": [
+        76,
+        77,
+        76,
+        77,
+        76,
+        77,
+        74,
+        76,
+        74,
+        76,
+        74,
+        76,
+        72,
+        74,
+        72,
+        74,
+        72,
+        74
+      ],
+      "measure_number": 1,
+      "comment": "ALIGN v9 experimental: relaxed same-pitch repair; reference-note identity is primary."
+    },
+    {
+      "id": "v9_0003",
+      "type": "repetition",
+      "score_event_indices": [
+        44,
+        45,
+        46,
+        47
+      ],
+      "note_ids": [
+        "note_0044",
+        "note_0045",
+        "note_0046",
+        "note_0047"
+      ],
+      "score_part": {
+        "start_note_index": 44,
+        "end_note_index": 47,
+        "core_start_note_index": 44,
+        "core_end_note_index": 47,
+        "pad_notes": 0,
+        "start_measure": 15,
+        "end_measure": 16
+      },
+      "context_score_event_indices": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49
+      ],
+      "start_time": 41.586938775510205,
+      "end_time": 44.33850340136055,
+      "extra_copies": 1,
+      "repeats_label_range": {
+        "start_time": 37.918185941043085,
+        "end_time": 41.586938775510205
+      },
+      "source": "agent",
+      "severity": 2,
+      "note_id": "note_0044",
+      "core_note_ids": [
+        "note_0044",
+        "note_0045",
+        "note_0046",
+        "note_0047"
+      ],
+      "pitches": [
+        71,
+        76,
+        79,
+        83
+      ],
+      "measure_number": 15,
+      "comment": "ALIGN v9 experimental: relaxed same-pitch repair; reference-note identity is primary."
+    }
+  ],
+  "audit_count": 124,
+  "other_samples_modified": false,
+  "audit_before_restore": [
+    {
+      "sample_id": "001",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "002",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "003",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "004",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "005",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 4,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "006",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "008",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "009",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "010",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "011",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "012",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "013",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 4,
+        "extra_note": 1,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "014",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "015",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "016",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "017",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "018",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "019",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "020",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 2,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "021",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "022",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "023",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "024",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "025",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "missed_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "026",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 5
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "027",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "028",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "029",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "030",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "031",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "032",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "033",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "034",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "extra_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "035",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 5,
+        "extra_note": 9,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "036",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 5,
+        "extra_note": 4,
+        "missed_note": 4,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "037",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 3
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "038",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 5,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "039",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "040",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "041",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "042",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 4
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "043",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "044",
+      "status": "ok",
+      "model_counts": {
+        "missed_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "045",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "046",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "047",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 43,
+        "extra_note": 2,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "048",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "049",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "050",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "051",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 4,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "052",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 9,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "053",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "054",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 9,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "055",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 12,
+        "missed_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "056",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 17
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "057",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 16,
+        "missed_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "058",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "059",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "060",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "061",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "062",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "063",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "064",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "065",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "066",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "067",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "068",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 3,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "069",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "070",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "071",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 15,
+        "extra_note": 4,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "072",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 15,
+        "extra_note": 5,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "073",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 12,
+        "extra_note": 5,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "074",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 16,
+        "extra_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "075",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 24,
+        "extra_note": 9,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "076",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 21,
+        "extra_note": 6,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "077",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 23,
+        "extra_note": 9,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "078",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 4,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "079",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 8,
+        "extra_note": 3,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "080",
+      "status": "ok",
+      "model_counts": {
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "081",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "082",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "083",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 3,
+        "extra_note": 2,
+        "missed_note": 3,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "084",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 7,
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "085",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "086",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 3
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "087",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "088",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "089",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 10,
+        "extra_note": 6,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "090",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "091",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "092",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 20,
+        "extra_note": 6,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "093",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "094",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 23,
+        "extra_note": 1,
+        "missed_note": 4,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "095",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "repetition": 2
+      },
+      "current_labels_match_model": false
+    },
+    {
+      "sample_id": "096",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "097",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "098",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "099",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "100",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "101",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "102",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "103",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 12,
+        "missed_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "104",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 4,
+        "missed_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "105",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 19,
+        "extra_note": 2,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "106",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 10,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "107",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "extra_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "108",
+      "status": "ok",
+      "model_counts": {
+        "extra_note": 1,
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "109",
+      "status": "ok",
+      "model_counts": {
+        "repetition": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "110",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "111",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "112",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "113",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "114",
+      "status": "alignment_uncertain",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "115",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "116",
+      "status": "ok",
+      "model_counts": {
+        "missed_note": 2,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "117",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 3,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "118",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 3,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "119",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 2
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "120",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "121",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 3,
+        "missed_note": 3
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "122",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 1,
+        "repetition": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "123",
+      "status": "ok",
+      "model_counts": {
+        "wrong_note": 6,
+        "missed_note": 1
+      },
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "124",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    },
+    {
+      "sample_id": "demo_001",
+      "status": "ok",
+      "model_counts": {},
+      "current_labels_match_model": true
+    }
+  ]
+}

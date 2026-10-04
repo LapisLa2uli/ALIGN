@@ -9,7 +9,13 @@
 # version-named junctions under alias_root that point at them.
 #
 # status: on_disk | missing | superseded_in_place (audio overwritten by the next
-# minor) | in_progress | planned (configured, not generated yet)
+# minor) | in_progress | planned (configured, not generated yet) | pruned (only a
+# few sample bundles, _config/ with the generation config and logs, and
+# PRUNED.json listing removed bundles are kept; scripts/prune_outdated_datasets.py)
+#
+# Pruned 2026-10-02 to free E: (about 1 TB): 3.1, 5.x, 6.0, 7.x, 8.x. Frozen
+# manifests under align-model/runs/ that reference these bundles can no longer
+# be re-run from audio.
 
 alias_root: E:/ALIGN_datasets
 
@@ -46,7 +52,7 @@ datasets:
   "3.1":
     name: rawdata_2k_bare
     path: E:/output_2k_rawdata
-    status: on_disk
+    status: pruned
     derived_from: "3.0"
     bundles: 2104
     render: oscillator_v1_bare (FreePats), ornaments stripped from scores and audio
@@ -74,7 +80,7 @@ datasets:
   "5.1":
     name: rawdata_20k_bare
     path: E:/outputRaw_2
-    status: on_disk
+    status: pruned
     derived_from: "5.0"
     bundles: 20000
     render: oscillator_v1_bare (FreePats), ornaments stripped
@@ -83,7 +89,7 @@ datasets:
   "6.0":
     name: rawdata_sf_10k
     path: E:/outputRaw_sf_10k
-    status: on_disk
+    status: pruned
     bundles: 10000
     recipe: config/rawdata_sf_10k.yaml; RawData/Score snippets, score 001 excluded
     render: soundfont_v1 (FreePats clarinet SoundFont), sounding -2
@@ -103,7 +109,7 @@ datasets:
   "7.1":
     name: mixed_orn_10k_musesounds
     path: E:/outputRaw_orn_10k
-    status: on_disk
+    status: pruned
     derived_from: "7.0"
     bundles: 10000
     render: musesounds_v1 (MuseScore Muse Woodwinds Bb clarinet)
@@ -119,7 +125,7 @@ datasets:
   "8.1":
     name: fast_1k_musesounds
     path: E:/outputRaw_fast_1k
-    status: on_disk
+    status: pruned
     derived_from: "8.0"
     bundles: 1000
     render: musesounds_v1
@@ -195,3 +201,51 @@ datasets:
       already decays slowly (598 ms) and v1 added room reverb. v2 drops the room
       stage and dereverbs harder (414 ms). Mel-statistics classifier AUC 0.996 vs
       0.988 for v1. Awaiting listening sign-off; not yet evaluated for training.
+
+  "11.0":
+    name: dclike_pilot_3k
+    path: E:/outputRaw_dclike_11
+    status: superseded_in_place
+    bundles: 3300
+    recipe: >-
+      config/dclike_11_random.yaml (1,500 procedural, seed 110000) +
+      config/dclike_11_rawdata.yaml (1,500 snippets of the 9.2 training scores
+      001 / howls / Mozart / spirited-away, seed 115000) +
+      config/dclike_11_dev.yaml (300 snippets of the unseen score
+      introduction-theme-and-variations, RawData/ScoreDev, seed 119000)
+    render: soundfont_v1 (FreePats)
+    why: >-
+      Toward the DataCreate takes and their human labels: ornaments and grace
+      notes written out as ordinary notes so labels match the Muse Sounds audio
+      (9.x/10.x labels used a MIDI ornament expansion Muse Sounds does not play);
+      procedural register centred near written E5/F5 (DataCreate median 75);
+      1-3 errors per clip with more wrong notes and fewer replays; half of the
+      missed notes held over by the previous note instead of a rest. Lineage
+      fixes in note_map: repeated same-pitch notes are no longer folded as ties,
+      and repeat gaps no longer shift the timed matching (both produced
+      renderer-only "extra" notes in 9.x/10.x).
+  "11.1":
+    name: dclike_pilot_3k_musesounds
+    path: E:/outputRaw_dclike_11
+    status: superseded_in_place
+    derived_from: "11.0"
+    bundles: 3300
+    render: musesounds_v1; kept per bundle as performance_audio_clean.wav once 11.2 is applied
+  "11.2":
+    name: dclike_pilot_3k_degraded
+    path: E:/outputRaw_dclike_11
+    status: on_disk
+    derived_from: "11.1"
+    bundles: 3300
+    render: musesounds_v1 + audio_degrade realistic_v3
+    why: >-
+      realistic_v2 plus tonguing dips only at strong onsets (onset_delta 0.25;
+      weak mid-note onsets had produced dips the transcriber split notes on) and
+      breath noise on 30% of clips.
+    use: >-
+      Split align-model/runs/dclike11-v1/split.json (2,400 / 600 / 300; every
+      introduction-theme clip is val). Lineage repair keeps 2,875 clips
+      (2,071 / 544 / 260). Trains stack v6 (with 9.2 and 10.2) and its gates.
+      Mel-statistics classifier AUC vs DataCreate 0.998: quiet passages carry
+      7-9 dB less 150 Hz-1.5 kHz noise than the phone recordings, the next
+      degrade change to make.

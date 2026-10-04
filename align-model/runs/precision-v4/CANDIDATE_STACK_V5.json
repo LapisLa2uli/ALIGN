@@ -1,0 +1,233 @@
+{
+  "schema_version": "align-stack-v4-candidate-v1",
+  "frozen_utc": "2026-10-01T20:12:56.283021+00:00",
+  "description": "stack v5: v3 transcriber (unchanged) + aligner v3 timing pass (0.2) + logistic gates refitted on all val with clip-grouped 5-fold CV (missed features v2: ornamented neighbour, repeat span, heard-neighbour pitch distance); no missed calls on ornamented notes or their neighbours; thresholds = lowest reaching 0.97 out-of-fold precision per dataset (and per source group for missed)",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-stack-v2\\v3-c-fast\\best.pt",
+  "checkpoint_sha256": "60663218eba3a43b35691ec95c116f50eafbc2fd749428af35e566891c50cad9",
+  "decoder": {
+    "blank_scale": 0.5,
+    "candidate_threshold": 0.08
+  },
+  "aligner_costs": {
+    "substitute": 1.1,
+    "insert": 1.2,
+    "delete": 1.0,
+    "ornament_skip": 0.35,
+    "ornament_near": 0.3,
+    "merge": 0.15,
+    "copy": 1.0,
+    "length_slack": 24,
+    "drop_confidence": 0.85,
+    "drop_cost": 0.8,
+    "optional_match": 0.15,
+    "alternative_match": 0.6,
+    "alternative_min_confidence": 0.1
+  },
+  "aligner_v3": {
+    "artifact_ioi": 0,
+    "timing_weight": 0.2
+  },
+  "gate": {
+    "enabled": true,
+    "missed_edge_runs": false,
+    "missed_features": "v2",
+    "missed_never_ornamented": true,
+    "extra_model": {
+      "mean": [
+        -3.019805861281889,
+        -2.708490397675403,
+        0.07382776013450401,
+        0.2722211843825892,
+        -7.892006138735116,
+        0.6945299442874902,
+        0.017336073229964506,
+        0.26414782987729535,
+        0.20323805965501687,
+        0.950681860638894
+      ],
+      "scale": [
+        0.7962841395336557,
+        1.0003622250944426,
+        0.26149138599542426,
+        0.44510414664810294,
+        2.1980013776968397,
+        0.12116057953928028,
+        0.13052124285503536,
+        0.29514620602007263,
+        0.23160077404008272,
+        0.21653243072319792
+      ],
+      "coef": [
+        -0.5003053663707372,
+        -0.16635580962378774,
+        -0.31584824031307407,
+        -0.20186504408315048,
+        -0.6695883148228845,
+        -0.035013432992380196,
+        -0.18199969250658493,
+        -0.03638246042425571,
+        0.22769740450241233,
+        0.6327215897195427
+      ],
+      "intercept": 4.473643058477065
+    },
+    "extra_threshold": 0.93,
+    "missed_model": {
+      "mean": [
+        -8.644199372845506,
+        0.7243993897638266,
+        0.5801811764092931,
+        0.637342989582812,
+        0.6605488987042637,
+        -1.6852114464427093,
+        1.0472972972972974,
+        0.0,
+        0.0,
+        0.019305019305019305,
+        0.0472972972972973,
+        1.204966878874567,
+        0.0,
+        0.7808880308880309,
+        0.6785714285714286,
+        0.23970398970398987
+      ],
+      "scale": [
+        1.6835799675692749,
+        0.23209229340206444,
+        0.3426397720714127,
+        0.7172727456144513,
+        0.12826272561418853,
+        0.5723123722995663,
+        0.2122750280054719,
+        1e-06,
+        1e-06,
+        0.13759582379309263,
+        0.2211825246051798,
+        0.6637272256904467,
+        1e-06,
+        0.41364567131082886,
+        0.4670258868079256,
+        0.22719113269362998
+      ],
+      "coef": [
+        -1.3480818927541178,
+        -0.4454644714811567,
+        -1.138701179579763,
+        0.39026249092762755,
+        0.09743712754983345,
+        -0.2393564657843292,
+        -0.4392699483259738,
+        0.0,
+        0.0,
+        -0.19208974549974914,
+        -0.12586944186105725,
+        -0.05782953926596818,
+        0.0,
+        0.2841350669954372,
+        -0.9796702798100968,
+        -0.5282458326552012
+      ],
+      "intercept": 2.923767968117807
+    },
+    "missed_threshold": 0.93
+  },
+  "datasets": {
+    "realistic92": {
+      "root": "E:\\outputRaw_realistic_10k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\realistic92-aligner-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "c660525a5710068af10bc7fa57d63a31d4521ee2498545b8ec1546af6628a00d"
+    },
+    "fast102": {
+      "root": "E:\\outputRaw_fast16_focus_5k",
+      "aligner_freeze": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\fast102-v1\\ALIGNER_FREEZE.json",
+      "aligner_freeze_sha256": "058ef8c73238210c87d0d717aab7d0bb23596ce92b8de9b5d643bd5207ff91fc"
+    }
+  },
+  "code_sha256": {
+    "src/alignmodel/joint/robust_dp_aligner_v3.py": "4014b0bca729dbd28560d4971605bc0b8d2751696b5612b4da0c122fd1b46a8b",
+    "src/alignmodel/joint/robust_dp_aligner_v2.py": "7fbee0364ec81ec2e325467a0d0d8c93ea7e632932c0d774b3f661a5568bc304",
+    "src/alignmodel/joint/perfect_dp_aligner_v1.py": "58d71391c92624f395ef78803d553682f2a0e7205bcec3112fb1e4d30b99ad57",
+    "src/alignmodel/joint/grammar_mapper_v2.py": "4fcdd698d7a77e76aedbccea6da7352857d3e71ce93e3acde775c199f48bcd9c",
+    "src/alignmodel/joint/ornament_mapper_v1.py": "cfe56ad0d082fe465c0c9068113ef8a30479669defba2248478035cea1726354",
+    "src/alignmodel/joint/index.py": "bbd9c45ad63a18ab37531f3e475830c015fd6e817a54a5b1c4da88ea48a2e5c8",
+    "src/alignmodel/joint/metrics.py": "9c81cb612cdc9c98d17ce70ac18ebe0749df6cc8b955704f83483e3f60baa164",
+    "src/alignmodel/transcription/mel_ctc_v3.py": "96e3678f93f63a40db7e455639e0f50b51868c80f42c90acc3e90d916b4cdd1b",
+    "src/alignmodel/transcription/ctc_decode_v2.py": "487a7c5210853783354eebd6d1a00b8900f77e1e740a1af88e41cecdf6dea4f8",
+    "src/alignmodel/transcription/mel_v1.py": "ee5c19468912d9b4f14304913ef5022fd273459a7bf2f191549461487c18655e",
+    "scripts/eval_stack_v4_test.py": "7f134733c8d731d75fa42590ec28a59f331564e5b234a1f4d4723bf6dde0913e",
+    "scripts/precision_harness_v4.py": "a69e25f8586ece292f8e00c75e4939f72d2a4fbfa644412056499165ca78ddef",
+    "scripts/audit_stack_v3_val_errors.py": "ee195434bb4f2d51dad4786047e5cbb171989898307bf774cb1fbf29b2f2a2bc",
+    "scripts/realistic92_aligner_common.py": "9179e132120099124b872ad6753ea1d8e21d2a743a3dd09495041ca54b5d3342"
+  },
+  "val_evidence": {
+    "out_of_fold": {
+      "extra": {
+        "threshold": 0.93,
+        "per_dataset": {
+          "fast102": {
+            "precision": 0.9961,
+            "recall": 0.9078,
+            "kept": 15750
+          },
+          "realistic92": {
+            "precision": 0.9708,
+            "recall": 0.7123,
+            "kept": 8684
+          }
+        },
+        "per_group": {
+          "fast102:synth_gen": {
+            "precision_gated_rows": 0.9961,
+            "kept": 15750,
+            "withheld": 230
+          },
+          "realistic92:synth_Weber1": {
+            "precision_gated_rows": 0.7548,
+            "kept": 526,
+            "withheld": 1036
+          },
+          "realistic92:synth_gen": {
+            "precision_gated_rows": 0.9887,
+            "kept": 8158,
+            "withheld": 1065
+          }
+        }
+      },
+      "missed": {
+        "threshold": 0.93,
+        "per_dataset": {
+          "fast102": {
+            "precision": 0.9953,
+            "recall": 0.5097,
+            "kept": 211
+          },
+          "realistic92": {
+            "precision": 0.98,
+            "recall": 0.3817,
+            "kept": 400
+          }
+        },
+        "per_group": {
+          "fast102:synth_gen": {
+            "precision": 0.9953,
+            "kept": 211,
+            "positives_kept": 210
+          },
+          "realistic92:synth_Weber1": {
+            "precision": 0.972,
+            "kept": 286,
+            "positives_kept": 278
+          },
+          "realistic92:synth_gen": {
+            "precision": 1.0,
+            "kept": 114,
+            "positives_kept": 114
+          }
+        }
+      }
+    }
+  },
+  "selection": "gate thresholds: lowest threshold reaching 0.97 per-type precision on the even val halves of both datasets; odd halves read only",
+  "test_read_before_freeze": "v4 test results were read; v5 thresholds and features were chosen on val only",
+  "previous_candidate": "CANDIDATE_STACK_V4.json (9.2 test missed precision 0.932 < 0.95)"
+}

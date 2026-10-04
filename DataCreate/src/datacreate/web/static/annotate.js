@@ -1818,10 +1818,16 @@ function referenceByScoreIndex(events = getScoreEvents()) {
   return byIndex;
 }
 
+function transcribedScoreIndices(note) {
+  if (note.ignored) return [];
+  if (Array.isArray(note.score_event_indices)) return note.score_event_indices;
+  return note.score_index != null ? [note.score_index] : [];
+}
+
 function mappedScoreIndices(transcribed = getTranscribedNotes()) {
   const mapped = new Set();
   transcribed.forEach((note) => {
-    if (note.score_index != null) mapped.add(note.score_index);
+    transcribedScoreIndices(note).forEach((index) => mapped.add(index));
   });
   return mapped;
 }
@@ -1929,17 +1935,18 @@ function renderScoreAlignOverlay() {
     `<rect width="100%" height="100%" fill="#1a1a1a"/>`,
   ];
   transcribed.forEach((note, i) => {
-    if (note.score_index == null) return;
+    transcribedScoreIndices(note).forEach((scoreIndex) => {
     const x1 = transXs[i];
-    const x2 = refXByScore.get(note.score_index);
+    const x2 = refXByScore.get(scoreIndex);
     if (x1 == null || x2 == null) return;
     const kind = transcribedAlignKind(note, refByIndex);
     const mid = height / 2;
     parts.push(
       `<path class="pair-link ${kind}" data-trans-index="${note.index ?? i}" ` +
-        `data-score-index="${note.score_index}" ` +
+        `data-score-index="${scoreIndex}" ` +
         `d="M${x1.toFixed(1)} 0 C${x1.toFixed(1)} ${mid.toFixed(1)}, ${x2.toFixed(1)} ${mid.toFixed(1)}, ${x2.toFixed(1)} ${height}"/>`,
     );
+    });
   });
   parts.push("</svg>");
   container.innerHTML = parts.join("");
@@ -2157,7 +2164,7 @@ function paintMelodyHits(container, events) {
   const mapped = mappedScoreIndices();
   const transByScore = new Map();
   getTranscribedNotes().forEach((note) => {
-    if (note.score_index != null) transByScore.set(note.score_index, note.index);
+    transcribedScoreIndices(note).forEach((index) => transByScore.set(index, note.index));
   });
   container.querySelectorAll(".melody-hit").forEach((hit) => {
     const i = parseInt(hit.dataset.index, 10);
@@ -2219,7 +2226,7 @@ function renderMelodyStrip() {
   container.dataset.renderKey = renderKey;
   const transByScore = new Map();
   getTranscribedNotes().forEach((note) => {
-    if (note.score_index != null) transByScore.set(note.score_index, note.index);
+    transcribedScoreIndices(note).forEach((index) => transByScore.set(index, note.index));
   });
   events.forEach((ev, i) => {
     const hit = document.createElement("button");
@@ -2277,7 +2284,7 @@ function timesFromEventRange(events, lo, hi) {
   const timingEvents = slice.map((ev) => {
     const scoreIndex = ev.sounding_index ?? ev.score_index;
     if (scoreIndex == null) return ev;
-    const candidates = transcribed.filter((note) => note.score_index === scoreIndex);
+    const candidates = transcribed.filter((note) => transcribedScoreIndices(note).includes(scoreIndex));
     if (!candidates.length) return ev;
     const anchor = eventPerfStart(ev);
     return candidates.reduce((best, note) => (
@@ -2596,6 +2603,11 @@ function renderAlignmentInfo(data) {
   const version = s.candidate_generation
     ? ` · ${escapeXml(String(s.candidate_generation))}`
     : "";
+  const reviewNotice = s.review_notice
+    ? `<div class="summary" style="color:#b45309">${escapeXml(String(s.review_notice))}` +
+      (s.same_pitch_merged != null ? ` ${s.same_pitch_merged} same-pitch boundaries merged.` : "") +
+      `</div>`
+    : "";
   el.innerHTML =
     `<div class="summary">` +
     `${escapeXml(String(engine))}${version} · ` +
@@ -2603,6 +2615,7 @@ function renderAlignmentInfo(data) {
     `${s.mapped_note_count ?? "?"} mapped · ` +
     `${s.event_count ?? 0} aligned events` +
     `</div>` +
+    reviewNotice +
     orderWarn +
     `<table><thead><tr>` +
     `<th>m</th><th>note</th><th>perf start</th><th>perf end</th><th>dur</th><th>residual</th>` +
@@ -3521,7 +3534,7 @@ async function reAlignSample() {
 async function reLabelSample() {
   if (!currentSample) return;
   if (!confirm(
-    "Rebuild agent labels from the current alignment and transcription?\n\n"
+    "Restore agent labels from the current model feedback, or rebuild them from the alignment when no model feedback is available?\n\n"
     + "This overwrites labels_agent.json only. Your labels (labels.json) are unchanged.",
   )) return;
   const btn = document.getElementById("relabelBtn");

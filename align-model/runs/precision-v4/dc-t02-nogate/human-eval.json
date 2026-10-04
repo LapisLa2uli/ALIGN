@@ -1,0 +1,1152 @@
+{
+ "name": "dc-t02-nogate",
+ "population": 33,
+ "missing_alignments": [],
+ "summary": {
+  "extra_note": {
+   "official": {
+    "precision": 0.028037383177570093,
+    "recall": 0.15,
+    "f1": 0.047244094488188976,
+    "predicted": 107,
+    "gold": 20
+   },
+   "lenient": {
+    "predicted": 107,
+    "gold": 20,
+    "correct": 9,
+    "precision": 0.08411214953271028,
+    "recall": 0.45
+   }
+  },
+  "missed_note": {
+   "official": {
+    "precision": 0.03636363636363636,
+    "recall": 0.18181818181818182,
+    "f1": 0.0606060606060606,
+    "predicted": 55,
+    "gold": 11
+   },
+   "lenient": {
+    "predicted": 55,
+    "gold": 11,
+    "correct": 4,
+    "precision": 0.07272727272727272,
+    "recall": 0.36363636363636365
+   }
+  },
+  "wrong_note": {
+   "official": {
+    "precision": 0.03125,
+    "recall": 0.03571428571428571,
+    "f1": 0.03333333333333333,
+    "predicted": 32,
+    "gold": 28
+   },
+   "lenient": {
+    "predicted": 32,
+    "gold": 28,
+    "correct": 2,
+    "precision": 0.0625,
+    "recall": 0.07142857142857142
+   }
+  },
+  "repetition": {
+   "official": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "predicted": 0,
+    "gold": 15
+   },
+   "lenient": {
+    "predicted": 0,
+    "gold": 15,
+    "correct": 0,
+    "precision": null,
+    "recall": 0.0
+   }
+  }
+ },
+ "per_sample": [
+  {
+   "sample": "001",
+   "gold": {
+    "extra_note": 1
+   },
+   "predicted": {
+    "extra_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "002",
+   "gold": {
+    "missed_note": 3,
+    "bad_start": 1
+   },
+   "predicted": {
+    "extra_note": 1,
+    "missed_note": 2
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 2,
+     "gold": 3,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "003",
+   "gold": {
+    "bad_start": 1
+   },
+   "predicted": {},
+   "lenient": {
+    "extra_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "004",
+   "gold": {},
+   "predicted": {
+    "extra_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "005",
+   "gold": {
+    "wrong_note": 6
+   },
+   "predicted": {
+    "extra_note": 6,
+    "missed_note": 3
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 6,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 3,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 6,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "006",
+   "gold": {
+    "squeak": 1,
+    "sliding": 3
+   },
+   "predicted": {
+    "extra_note": 4,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 4,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "008",
+   "gold": {
+    "extra_note": 1,
+    "bad_timbre": 1
+   },
+   "predicted": {
+    "extra_note": 3,
+    "missed_note": 2
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 3,
+     "gold": 1,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 2,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "010",
+   "gold": {
+    "wrong_note": 1,
+    "extra_note": 1
+   },
+   "predicted": {
+    "extra_note": 3,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 3,
+     "gold": 1,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "011",
+   "gold": {
+    "wrong_note": 1
+   },
+   "predicted": {
+    "missed_note": 2
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 2,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "012",
+   "gold": {
+    "extra_note": 1,
+    "bad_start": 2
+   },
+   "predicted": {
+    "wrong_note": 1,
+    "extra_note": 1,
+    "missed_note": 5
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 5,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "013",
+   "gold": {
+    "bad_start": 1,
+    "sliding": 1,
+    "rhythm_error": 1,
+    "extra_note": 1,
+    "wrong_note": 2
+   },
+   "predicted": {
+    "wrong_note": 5,
+    "extra_note": 6,
+    "missed_note": 3
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 6,
+     "gold": 1,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 3,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 5,
+     "gold": 2,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "014",
+   "gold": {
+    "missed_note": 1
+   },
+   "predicted": {
+    "wrong_note": 1,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "016",
+   "gold": {
+    "extra_note": 1
+   },
+   "predicted": {
+    "extra_note": 2
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 2,
+     "gold": 1,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "017",
+   "gold": {
+    "bad_timbre": 1
+   },
+   "predicted": {
+    "extra_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "019",
+   "gold": {
+    "rhythm_error": 1,
+    "wrong_note": 1
+   },
+   "predicted": {
+    "extra_note": 1,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "020",
+   "gold": {
+    "wrong_note": 1,
+    "missed_note": 1,
+    "extra_note": 1
+   },
+   "predicted": {
+    "extra_note": 6,
+    "missed_note": 4
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 6,
+     "gold": 1,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 4,
+     "gold": 1,
+     "correct": 1
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "029",
+   "gold": {
+    "rhythm_error": 1
+   },
+   "predicted": {
+    "extra_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "030",
+   "gold": {
+    "squeak": 1,
+    "missed_note": 1,
+    "extra_note": 2
+   },
+   "predicted": {
+    "extra_note": 4
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 4,
+     "gold": 2,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "033",
+   "gold": {
+    "rhythm_error": 1,
+    "missed_note": 1,
+    "extra_note": 1
+   },
+   "predicted": {
+    "extra_note": 3,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 3,
+     "gold": 1,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 1
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "034",
+   "gold": {
+    "rhythm_error": 1,
+    "bad_timbre": 1
+   },
+   "predicted": {
+    "wrong_note": 2,
+    "extra_note": 5,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 5,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 2,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "035",
+   "gold": {
+    "extra_note": 1,
+    "bad_timbre": 1,
+    "repetition": 2,
+    "wrong_note": 1
+   },
+   "predicted": {
+    "wrong_note": 6,
+    "extra_note": 18,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 18,
+     "gold": 1,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 6,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 2,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "036",
+   "gold": {
+    "wrong_note": 5
+   },
+   "predicted": {
+    "wrong_note": 9,
+    "extra_note": 14,
+    "missed_note": 4
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 14,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 4,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 9,
+     "gold": 5,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "039",
+   "gold": {
+    "wrong_note": 3
+   },
+   "predicted": {
+    "wrong_note": 1,
+    "extra_note": 5
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 5,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 1,
+     "gold": 3,
+     "correct": 1
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "041",
+   "gold": {
+    "wrong_note": 1,
+    "repetition": 2,
+    "missed_note": 1
+   },
+   "predicted": {
+    "extra_note": 3,
+    "missed_note": 9
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 3,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 9,
+     "gold": 1,
+     "correct": 1
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 2,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "043",
+   "gold": {
+    "extra_note": 1
+   },
+   "predicted": {
+    "extra_note": 5
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 5,
+     "gold": 1,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "095",
+   "gold": {
+    "repetition": 3,
+    "wrong_note": 1
+   },
+   "predicted": {
+    "extra_note": 2
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 2,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 3,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "096",
+   "gold": {
+    "repetition": 4,
+    "wrong_note": 1,
+    "extra_note": 2
+   },
+   "predicted": {
+    "extra_note": 4,
+    "missed_note": 6
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 4,
+     "gold": 2,
+     "correct": 1
+    },
+    "missed_note": {
+     "predicted": 6,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 4,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "097",
+   "gold": {
+    "wrong_note": 1,
+    "extra_note": 2,
+    "repetition": 1
+   },
+   "predicted": {
+    "wrong_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 0,
+     "gold": 2,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 1
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "098",
+   "gold": {
+    "extra_note": 2,
+    "repetition": 2,
+    "wrong_note": 1,
+    "missed_note": 1
+   },
+   "predicted": {
+    "wrong_note": 2,
+    "extra_note": 4,
+    "missed_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 4,
+     "gold": 2,
+     "correct": 2
+    },
+    "missed_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 2,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 2,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "099",
+   "gold": {
+    "extra_note": 1,
+    "rhythm_error": 1
+   },
+   "predicted": {},
+   "lenient": {
+    "extra_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "100",
+   "gold": {
+    "wrong_note": 1,
+    "repetition": 1,
+    "missed_note": 1
+   },
+   "predicted": {
+    "wrong_note": 1,
+    "extra_note": 1,
+    "missed_note": 3
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 3,
+     "gold": 1,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "119",
+   "gold": {
+    "missed_note": 1,
+    "extra_note": 1
+   },
+   "predicted": {
+    "wrong_note": 3,
+    "extra_note": 1,
+    "missed_note": 4
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 1,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 4,
+     "gold": 1,
+     "correct": 1
+    },
+    "wrong_note": {
+     "predicted": 3,
+     "gold": 0,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  },
+  {
+   "sample": "demo_001",
+   "gold": {
+    "wrong_note": 1
+   },
+   "predicted": {
+    "extra_note": 1
+   },
+   "lenient": {
+    "extra_note": {
+     "predicted": 1,
+     "gold": 0,
+     "correct": 0
+    },
+    "missed_note": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    },
+    "wrong_note": {
+     "predicted": 0,
+     "gold": 1,
+     "correct": 0
+    },
+    "repetition": {
+     "predicted": 0,
+     "gold": 0,
+     "correct": 0
+    }
+   }
+  }
+ ]
+}

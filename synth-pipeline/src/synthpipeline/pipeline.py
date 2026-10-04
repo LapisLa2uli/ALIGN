@@ -132,6 +132,10 @@ def generate_samples(
                     if bool(config.generation.get("use_snippets", False)):
                         clean, snippet_meta = snippet_score(clean, rng, config)
                         snippet_meta["source_score"] = str(path)
+                if str(config.generation.get("ornament_mode", "marks")) == "written_out":
+                    from synthpipeline.scoregen import write_out_ornaments
+
+                    write_out_ornaments(clean, config)
                 if sounding_note_count(clean) > 0:
                     break
                 last_prep_error = InjectionError("Score has no notes")

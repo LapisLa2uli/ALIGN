@@ -169,7 +169,7 @@ def generate_score(rng: random.Random, config: SynthConfig) -> stream.Score:
     beat_units = 6 if beat_type == 8 else max(1, int(round(4 * 4 / beat_type)))
     focus = _pitch_focus(config, scale_pitches)
     leap = _leap_spec(config, scale_pitches)
-    center = leap.center if leap else focus[2] if focus else 67
+    center = leap.center if leap else focus[2] if focus else int(gen.get("pitch_center", 67))
     current_idx = _start_index(scale_pitches, k, around=center)
 
     score = stream.Score()
@@ -245,6 +245,84 @@ def add_decorative_notes(score: stream.Score, rng: random.Random, config: SynthC
             item.expressions.append(expressions.Mordent())
             added += 1
     return added
+
+
+def write_out_ornaments(score: stream.Score, config: SynthConfig) -> int:
+    """Replace grace notes and ornament marks with ordinary written notes.
+
+    Muse Sounds interprets ornament marks with its own playback rules (number
+    of trill notes, grace timing), so labels derived from a MIDI expansion do
+    not match the audio. Written-out notes are rendered as written, in both the
+    reference and the performance score. Auxiliary notes stay inside the
+    configured clarinet range (a mordent on the lowest note uses the upper
+    neighbour).
+    """
+
+    from music21 import pitch as m21pitch
+
+    lo, hi = clarinet_midi_bounds(config)
+    changed = 0
+    for item in list(score.recurse().getElementsByClass(note.Note)):
+        if not bool(getattr(item.duration, "isGrace", False)):
+            continue
+        site = item.activeSite
+        if site is None:
+            continue
+        following = None
+        for candidate in site.getElementsByOffset(item.offset, item.offset + 1e-6, includeEndBoundary=True,
+                                                  mustBeginInSpan=True):
+            if isinstance(candidate, note.Note) and not bool(getattr(candidate.duration, "isGrace", False)):
+                following = candidate
+                break
+        site.remove(item)
+        changed += 1
+        if following is None or float(following.quarterLength) < 0.5:
+            continue
+        steal = min(0.125, float(following.quarterLength) / 4.0)
+        written = note.Note(m21pitch.Pitch(midi=max(lo, min(hi, int(item.pitch.midi)))), quarterLength=steal)
+        start = float(following.offset)
+        site.remove(following)
+        following.quarterLength = float(following.quarterLength) - steal
+        site.insert(start, written)
+        site.insert(start + steal, following)
+    for item in list(score.recurse().getElementsByClass(note.Note)):
+        exprs = list(item.expressions or [])
+        names = [type(expr).__name__ for expr in exprs]
+        marks = [name for name in names if name in {"Trill", "Shake", "Mordent", "InvertedMordent", "Turn",
+                                                     "InvertedTurn", "Tremolo", "Schleifer"}]
+        if not marks:
+            continue
+        item.expressions = [expr for expr in exprs if type(expr).__name__ not in set(marks)]
+        changed += 1
+        site = item.activeSite
+        total = float(item.quarterLength)
+        if site is None or total < 0.25 or marks[0] in {"Tremolo", "Schleifer"}:
+            continue
+        principal = int(item.pitch.midi)
+        upper = principal + 1 if principal + 1 <= hi else principal - 1
+        lower = principal - 1 if principal - 1 >= lo else principal + 1
+        start = float(item.offset)
+        if marks[0] in {"Trill", "Shake"}:
+            steps = max(4, min(12, int(round(total / 0.125))))
+            steps += steps % 2
+            sequence = [principal if index % 2 == 0 else upper for index in range(steps)]
+        elif marks[0] in {"Mordent", "InvertedMordent"}:
+            auxiliary = lower if marks[0] == "Mordent" else upper
+            sequence = [principal, auxiliary, principal]
+        else:
+            sequence = ([upper, principal, lower, principal] if marks[0] == "Turn"
+                        else [lower, principal, upper, principal])
+        if marks[0] in {"Mordent", "InvertedMordent"}:
+            short = min(0.125, total / 4.0)
+            durations = [short, short, total - 2 * short]
+        else:
+            durations = [total / len(sequence)] * len(sequence)
+        site.remove(item)
+        offset = start
+        for midi, length in zip(sequence, durations):
+            site.insert(offset, note.Note(m21pitch.Pitch(midi=midi), quarterLength=length))
+            offset += length
+    return changed
 
 
 def load_score(path: Path, config: SynthConfig) -> stream.Score:

@@ -122,6 +122,12 @@ def _normalize_transcribed_notes(payload: dict[str, Any]) -> list[dict[str, Any]
             score_index = _optional_int(mapping[index])
         elif raw.get("score_index") is not None:
             score_index = _optional_int(raw.get("score_index"))
+        score_indices = [score_index] if score_index is not None else []
+        span = raw.get("score_span")
+        if isinstance(span, (list, tuple)) and len(span) == 2:
+            lo, hi = (_optional_int(value) for value in span)
+            if lo is not None and hi is not None and 0 <= lo < hi:
+                score_indices = list(range(lo, hi))
         notes.append(
             {
                 "id": f"trans_{index:04d}",
@@ -135,6 +141,7 @@ def _normalize_transcribed_notes(payload: dict[str, Any]) -> list[dict[str, Any]
                 "confidence": float(raw.get("confidence") or 1.0),
                 "cents": float(raw.get("cents") or 0.0),
                 "score_index": score_index,
+                "score_event_indices": score_indices,
                 "is_rest": False,
                 "duration_ql": round(max(0.0625, (end - start) * 2.0), 4),
                 "ignored": bool(raw.get("ignored")),

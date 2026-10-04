@@ -1,0 +1,30 @@
+{
+ "cache": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\precision-v4\\dc-cache",
+ "decoder": {
+  "blank_scale": 0.5,
+  "candidate_threshold": 0.08
+ },
+ "costs": {
+  "substitute": 1.1,
+  "insert": 1.2,
+  "delete": 1.0,
+  "ornament_skip": 0.35,
+  "ornament_near": 0.3,
+  "merge": 0.15,
+  "copy": 1.0,
+  "length_slack": 24,
+  "drop_confidence": 0.85,
+  "drop_cost": 0.8,
+  "optional_match": 0.15,
+  "alternative_match": 0.6,
+  "alternative_min_confidence": 0.1
+ },
+ "aligner": {
+  "artifact_ioi": 0,
+  "timing_weight": 0.2
+ },
+ "gate": {
+  "enabled": false
+ },
+ "errors": {}
+}

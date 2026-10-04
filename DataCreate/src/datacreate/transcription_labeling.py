@@ -1,14 +1,16 @@
-"""Conservative labels derived from Basic Pitch note transcriptions.
+"""Restore model feedback or derive conservative labels from transcriptions.
 
-This module deliberately does not call ALIGN's learned or deterministic
-aligners.  It compares the decoded pitch sequence with the verified score using
-an independent edit-distance implementation so the resulting annotations can
-be reviewed separately from ``labels.json``.
+Versioned model exports carry final feedback that is preserved when re-labeling.
+For legacy artifacts, this module compares the decoded pitch sequence with the
+verified score using an independent edit-distance implementation. It does not
+run ALIGN's learned or deterministic aligners. Agent annotations can be reviewed
+separately from ``labels.json``.
 """
 
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 import statistics
 import wave
 from collections import Counter
@@ -28,6 +30,71 @@ AGENT_ANNOTATOR_ID = "cursor_agent_transcription_review_v1"
 ALIGNMENT_AGENT_ANNOTATOR_ID = "cursor_agent_current_alignment_review_v1"
 MAX_LABELS_PER_TYPE = 10
 NOTE_ALIGNMENT_FILENAME = "note_alignment_v2.json"
+
+
+def _has_model_feedback(payload: Mapping[str, Any]) -> bool:
+    """Model feedback must not be reconstructed from a lossy scalar mapping.
+
+    Before this contract was explicit, v9 exports already carried final gated
+    labels, but `repetitions` contained labels rather than legacy note ranges.
+    Keep those installed exports readable without requiring another ML run.
+    Empty final labels are also authoritative (clean take or model abstention).
+    """
+    contract = payload.get("label_generation") or {}
+    if contract.get("schema_version") == "datacreate-model-feedback-v1":
+        if not isinstance(payload.get("labels"), list):
+            raise ValueError("Model feedback artifact must contain a labels list")
+        return True
+    summary = payload.get("summary") or {}
+    repair = (payload.get("diagnostics") or {}).get("same_pitch_repair") or {}
+    return (
+        payload.get("engine") == "align-joint"
+        and summary.get("backend") == "ALIGN v9 (experimental)"
+        and repair.get("schema_version") == "same-pitch-repair-v2"
+        and isinstance(payload.get("labels"), list)
+    )
+
+
+def _model_feedback_document(payload: dict[str, Any]) -> dict[str, Any]:
+    """Preserve canonical identities, copy counts, gates and playback ranges."""
+    from datacreate.models import LabelsDocument
+
+    contract = payload.get("label_generation") or {}
+    summary = payload.get("summary") or {}
+    diagnostics = payload.get("diagnostics") or {}
+    status = diagnostics.get("status", summary.get("status"))
+    if status is None:
+        raise ValueError("Model feedback artifact is missing its assessment status")
+    labels = deepcopy(payload["labels"]) if status == "ok" else []
+    for label in labels:
+        label["source"] = "agent"
+    counts = dict(sorted(Counter(label["type"] for label in labels).items()))
+    document = {
+        "schema_version": "1.2",
+        "audio_reference": "performance_audio.wav",
+        "annotator_id": contract.get("annotator_id", "align_stack_v9_review"),
+        "self_reported": [],
+        "labels": labels,
+        "agent_labeling": {
+            **deepcopy(payload.get("provenance") or {}),
+            "method": contract.get("method", "align_stack_v9"),
+            "status": status,
+            "alignment_artifact": NOTE_ALIGNMENT_FILENAME,
+            "alignment_engine": payload.get("engine"),
+            "label_source": "alignment_model_feedback",
+            "uses_project_alignment_or_error_models": True,
+            "training_performed": False,
+            "maximum_labels_per_type": None,
+            "raw_counts_by_type": counts,
+            "kept_counts_by_type": counts,
+            "dismissed_types": [],
+            "replaced_previous_agent_labels": True,
+        },
+    }
+    # Validate without serializing through the old Label model: it drops newer
+    # fields such as score_event_indices and timing_status.
+    LabelsDocument.model_validate(document)
+    return document
 
 
 @dataclass(frozen=True)
@@ -726,6 +793,22 @@ def build_agent_label_document_from_note_alignment(
     if not alignment_path.is_file():
         raise FileNotFoundError(alignment_path)
     payload = json.loads(alignment_path.read_text(encoding="utf-8"))
+    return build_agent_label_document_from_alignment_payload(
+        sample_dir, payload, maximum_per_type=maximum_per_type
+    )
+
+
+def build_agent_label_document_from_alignment_payload(
+    sample_dir: Path,
+    payload: dict[str, Any],
+    *,
+    maximum_per_type: int = MAX_LABELS_PER_TYPE,
+) -> dict[str, Any]:
+    """Build agent labels from a note-alignment payload (``note_alignment_v2`` schema)."""
+
+    if _has_model_feedback(payload):
+        return _model_feedback_document(payload)
+
     score = parse_sounding_notes(sample_dir / "verified_score.musicxml")
     transcription, mapping, old_to_new = _kept_notes_and_mapping_from_alignment(
         payload
@@ -963,13 +1046,14 @@ def relabel_sample_from_current_alignment(
 
     alignment_path = sample_dir / NOTE_ALIGNMENT_FILENAME
     if alignment_path.is_file():
-        document = build_agent_label_document_from_note_alignment(
-            sample_dir, maximum_per_type=maximum_per_type
+        payload = json.loads(alignment_path.read_text(encoding="utf-8"))
+        document = build_agent_label_document_from_alignment_payload(
+            sample_dir, payload, maximum_per_type=maximum_per_type
         )
-        transcription = notes_from_alignment_payload(
-            json.loads(alignment_path.read_text(encoding="utf-8"))
-        )
-        _sync_transcription_notes(sample_dir, transcription)
+        if not _has_model_feedback(payload):
+            # Legacy relabeling creates a normalized transcription. Versioned
+            # model exports already have one, with merge lineage and provenance.
+            _sync_transcription_notes(sample_dir, notes_from_alignment_payload(payload))
         source = NOTE_ALIGNMENT_FILENAME
     elif (sample_dir / "transcription_notes.json").is_file():
         document = build_agent_label_document(

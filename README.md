@@ -8,32 +8,16 @@ Clarinet performance-analysis workspace containing three cooperating Python proj
 | [`synth-pipeline/`](synth-pipeline/) | Generate reproducible synthetic clarinet performances with exact error labels and note lineage | [`synth-pipeline/README.md`](synth-pipeline/README.md) |
 | [`align-model/`](align-model/) | Transcribe notes, detect repetitions, align notes to the score, and classify note/rhythm errors | [`align-model/README.md`](align-model/README.md), [`align-model/TRAINING.md`](align-model/TRAINING.md), [`align-model/HYPERPARAMETERS.md`](align-model/HYPERPARAMETERS.md) |
 
-The shared data and evaluation rules are specified in [`methodology.md`](methodology.md). That document is normative for label schema and metrics; component READMEs describe implementation, datasets, model versions, and run-specific hyperparameters.
+Start with [`DOCUMENTATION.md`](DOCUMENTATION.md). It covers the sample layout, how to read `labels.json` and the other output files, the official note-wise score, dataset versions, and which model is which.
 
-## Current pipeline
+[`methodology.md`](methodology.md) is the specification for the label schema and the official score. Component READMEs describe implementation and historical runs. Where they still call the contextual aligner or pitch-list matching current, `DOCUMENTATION.md` and the code it cites take precedence.
 
-1. Convert the performance to 22,050 Hz mono audio.
-2. Transcribe written clarinet notes with Basic Pitch 0.4.0 and the repository's calibrated monophonic cleanup.
-3. Detect repeated phrases from the transcription (Layer 1).
-4. Align first-pass and repeated notes to the clean score with the contextual note aligner.
-5. Classify wrong, extra, and missed notes (Layer 2).
-6. Optionally detect conservative duration/rhythm errors from the same mapping (ALIGN Layer 3).
-7. Present automatic candidates in DataCreate for human review. The current DataCreate bridge runs Layers 1–2 only; Layer 3 remains available through ALIGN directly.
+Two systems are in use, and they are not the same:
 
-Intonation-error output is currently disabled. The synthetic corpus contains intonation labels, but an acoustic audit found that many historical WAVs did not preserve the corresponding pitch bends.
+- The annotation GUI aligns with the joint path CRF (`paths.note_alignment_checkpoint` in `DataCreate/config/default.yaml`) and shows `note_alignment_v2.json`.
+- Sealed experiments use stack v6, frozen in `align-model/runs/precision-v4/CANDIDATE_STACK_V6.json`. Those alignments are under `align-model/runs/precision-v4/dc-v6/` and are not what the GUI displays.
 
-## Production model bundle
-
-DataCreate currently points to:
-
-```text
-align-model/runs/contextual-aligner-outputRaw_sf-1k/weights/
-├── note_decoder.json                 # calibrated frozen Basic Pitch decoder
-├── note_repetition.pt                # Layer 1 repetition candidate scorer
-└── contextual_note_aligner.pt        # repetition-aware note-to-score aligner
-```
-
-These learned ALIGN-specific weights were trained only on `outputRaw_sf_10k`: 1,000 training bundles and 200 validation bundles. The frozen split contains 8,004 train, 999 validation, and 997 test-ID bundles; reported final comparisons use 200 held-out test bundles. See the complete registry and all historical model versions in [`align-model/README.md`](align-model/README.md).
+The contextual-aligner weights in `align-model/runs/contextual-aligner-outputRaw_sf-1k/weights/` remain the fallback if the joint checkpoint is missing. They were trained on dataset 6.0.
 
 ## Pitch convention
 
@@ -63,6 +47,16 @@ align-model\.venv-amt-bench\Scripts\pip install `
 ```
 
 ## Common commands
+
+The [practice studio](DataCreate/docs/practice_studio.md) is available at
+`http://127.0.0.1:8765/studio` after `datacreate serve`: select a MusicXML score,
+record with a live mel visual, then stop to run analysis and receive spoken MP3
+feedback. Configure narration and speech providers before recording.
+
+Spoken feedback from existing label results is available through
+`datacreate-feedback` (302.AI → Fish Audio MP3). See the
+[setup and usage guide](DataCreate/docs/spoken_feedback.md) and
+[feedback configuration](DataCreate/config/feedback.yaml).
 
 ```powershell
 # Generate synthetic bundles

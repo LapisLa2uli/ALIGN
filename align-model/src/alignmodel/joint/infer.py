@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Sequence, Callable
 
 from .candidates import (
     CANDIDATE_GENERATION_VERSION,
@@ -75,6 +75,7 @@ def infer_joint_sample(
     device: str = "cpu",
     cache_path: Path | str | None = None,
     minimum_candidate_confidence: float | None = None,
+    progress: Callable[[str], None] | None = None,
 ) -> JointSampleResult:
     """Transcribe with frozen Basic Pitch and decode a joint path CRF."""
 
@@ -94,6 +95,8 @@ def infer_joint_sample(
     cache = Path(cache_path) if cache_path is not None else (
         sample / "basic_pitch_cache.npz"
     )
+    if progress:
+        progress("transcriber")
     features = extract_sample_basic_pitch_features(sample, cache_path=cache)
     index = ScoreEventIndex.from_musicxml(score_path)
     model, lattice_config, payload = load_joint_model(ckpt, device=device)
@@ -113,6 +116,8 @@ def infer_joint_sample(
             index.events,
         )
     )
+    if progress:
+        progress("aligner")
     lattice = SparseJointLattice(model, lattice_config or LatticeConfig())
     path = lattice.decode(candidates, index.events)
     events = tuple(path.joint_events(candidates))

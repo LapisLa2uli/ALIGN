@@ -1,0 +1,42 @@
+{
+  "schema_version": "align-stack-v9-candidate-v1",
+  "checkpoint": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\precision-v4\\v5-dclike\\best.pt",
+  "checkpoint_sha256": "35cf4d3e540c04c86270a966f7c2b6abdd7827d9643964cc6763bf7bd0ccec3b",
+  "base_candidate": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\precision-v4\\CANDIDATE_STACK_V6.json",
+  "selected_variant": "all-pass",
+  "selection_metric": "exact canonical score-note content-error F1",
+  "decoder": {
+    "blank_scale": 0.5,
+    "candidate_threshold": 0.08
+  },
+  "gate": {
+    "missed_threshold": 0.8
+  },
+  "minimum_match_fraction": 0.45,
+  "code_sha256": {
+    "src/alignmodel/transcription/transition_v7.py": "0b0d2bd8c99ca9e9173dda8cf7b9a0a0615ea457d9a2619e6cc689c022980398",
+    "src/alignmodel/joint/restarts_v4.py": "30ff8e2b44d81a9ef8e598787e2f57e1bc64ee7f89ca1ddad881b55c62749020",
+    "src/alignmodel/joint/robust_dp_aligner_v4.py": "ef561fd72d82100fd58a4da43a39fb8294c366481591b00f3c25e36b3304e111",
+    "src/alignmodel/joint/stack_v7.py": "62f10c1c23b5e4099314ec3b4e6ea5de24de64aa800cbf0462bce8cbe52da91e",
+    "src/alignmodel/transcription/same_pitch_v1.py": "83418e969e192ee3f5a637cf93c51d5faad78da861c152f9c16b18f634520e22",
+    "src/alignmodel/transcription/same_pitch_v2.py": "650c7a98ae17dbf27130a9124e46467879456edc5cea00a79d8bd1cb69432419",
+    "src/alignmodel/joint/stack_v9.py": "419352c091cd64c8b2f861162fa7c89efad9d0c37b7cf009552d60413bf2fd8c"
+  },
+  "promoted": false,
+  "validation": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\stack-v9\\COMPLETED.json",
+  "same_pitch": {
+    "context_sec": 0.09,
+    "neighbor_margin_sec": 0.005,
+    "energy_range_db": 54,
+    "spectral_step_max": 0.35,
+    "spectral_drift_max": 0.65,
+    "merge_attack_max": 1.0,
+    "voiced_min": 0.0,
+    "silence_db": -120.0,
+    "gap_depth_db": 18.0,
+    "gap_min_sec": 0.01,
+    "envelope_window_sec": 0.004,
+    "envelope_hop_sec": 0.001
+  },
+  "calibration": "All 316 injected midpoint splits; not held out. DataCreate not used."
+}
