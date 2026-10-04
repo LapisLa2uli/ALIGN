@@ -152,7 +152,7 @@ def reprocess_alignment(
     config: PipelineConfig,
     logger: logging.Logger,
 ) -> dict[str, Any]:
-    """Re-run joint transcription and alignment without rewriting candidates."""
+    """Regenerate the configured transcription/alignment and its model feedback."""
     perf = sample_dir / "performance_audio.wav"
     ref = sample_dir / "reference_audio.wav"
     if not perf.exists() or not ref.exists():
@@ -162,6 +162,7 @@ def reprocess_alignment(
     )
     return {
         "alignment_path": str(result.alignment_path),
+        "model_version": result.model_version,
     }
 
 

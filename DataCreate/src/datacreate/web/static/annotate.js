@@ -3514,15 +3514,19 @@ async function applyScoreSegment() {
 
 async function reAlignSample() {
   if (!currentSample) return;
-  if (!confirm("Re-run Basic Pitch transcription and joint alignment on the current performance?")) return;
+  if (!confirm("Re-run the configured model on the current score and performance? This updates transcription, alignment, and agent feedback. Your labels stay unchanged.")) return;
   const btn = document.getElementById("realignBtn");
   btn.disabled = true;
   btn.textContent = "Aligning…";
   try {
     const res = await fetch(`/api/samples/${currentSample}/re-align`, { method: "POST" });
     if (!res.ok) throw new Error(await res.text());
+    const result = await res.json();
+    labelSource = "agent";
+    document.getElementById("labelSourceSelect").value = "agent";
     await loadSample(currentSample);
-    alert("Transcription and alignment updated.");
+    await loadSampleList();
+    alert(`Transcription and alignment updated using ${result.model_version || "the configured model"}.`);
   } catch (err) {
     alert(err.message || String(err));
   } finally {
@@ -3534,8 +3538,8 @@ async function reAlignSample() {
 async function reLabelSample() {
   if (!currentSample) return;
   if (!confirm(
-    "Restore agent labels from the current model feedback, or rebuild them from the alignment when no model feedback is available?\n\n"
-    + "This overwrites labels_agent.json only. Your labels (labels.json) are unchanged.",
+    "Regenerate agent labels using the configured model? Older or stale alignments will be regenerated first.\n\n"
+    + "Your labels (labels.json) stay unchanged.",
   )) return;
   const btn = document.getElementById("relabelBtn");
   btn.disabled = true;
@@ -3557,7 +3561,8 @@ async function reLabelSample() {
       ? `\nDismissed types (over cap): ${result.dismissed_types.join(", ")}`
       : "";
     alert(
-      `Agent labels updated from ${result.source || "current alignment"}.\n`
+      `Agent labels updated using ${result.method || "current alignment"}.\n`
+      + (result.regenerated_alignment ? "Transcription and alignment were regenerated first.\n" : "Used saved feedback for the current score and recording.\n")
       + `${result.label_count ?? 0} kept (${countText}).${dismissed}`,
     );
   } catch (err) {

@@ -4,8 +4,10 @@ The requested experiment is implemented as v9, preserving the v7/v8 candidates.
 It passes all 316 previous injected-split controls and detects all 316 inserted
 10 ms silences on the same recordings. It **does not solve the overall problem**:
 457/543 genuine repeat controls are incorrectly merged and synthetic reference
-note error F1 falls from 0.898968 to 0.839192. It remains experimental and has not
-replaced the GUI default.
+note error F1 falls from 0.898968 to 0.839192. It remains experimental. At the
+user's request, DataCreate's GUI now runs this candidate for Re-align and
+Re-label so review and regeneration use the same version. This does not promote
+its evaluation status or change the frozen candidate.
 
 ## Changes
 

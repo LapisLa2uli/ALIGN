@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import subprocess
+import sys
+import uuid
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,6 +26,7 @@ class NoteFirstAlignmentResult:
     alignment_path: Path
     warping_path: np.ndarray
     wp: np.ndarray
+    model_version: str = "legacy"
 
 
 def _configured_path(
@@ -167,7 +171,7 @@ def _bridge_command_env(config: PipelineConfig) -> tuple[Path, dict[str, str]]:
     python = _configured_path(
         config,
         "note_alignment_python",
-        ROOT / "align-model" / ".venv-amt-bench" / "Scripts" / "python.exe",
+        Path(sys.executable),
     )
     if not python.is_file():
         raise FileNotFoundError(f"Note alignment Python not found: {python}")
@@ -181,7 +185,86 @@ def _bridge_command_env(config: PipelineConfig) -> tuple[Path, dict[str, str]]:
     env["PYTHONPATH"] = os.pathsep.join(
         [*(str(path) for path in source_paths), *([existing] if existing else [])]
     )
+    env.setdefault("NUMBA_CACHE_DIR", str(ROOT / "align-model/runs/stack-v9/numba-cache"))
+    env["PYTHONNOUSERSITE"] = "1"
     return python, env
+
+
+def _v9_candidate(config: PipelineConfig) -> Path:
+    return _configured_path(
+        config, "note_alignment_candidate",
+        ROOT / "align-model/runs/stack-v9/CANDIDATE_STACK_V9.json",
+    )
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
+    """Only reuse feedback for this candidate and these exact score/audio inputs."""
+    from datacreate.transcription_labeling import _has_model_feedback
+
+    path = sample_dir / "note_alignment_v2.json"
+    if not path.is_file():
+        return False
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not _has_model_feedback(payload):
+        return False
+    provenance = payload.get("provenance") or {}
+    inputs = {
+        "candidate_sha256": _v9_candidate(config),
+        "audio_sha256": sample_dir / "performance_audio.wav",
+        "score_sha256": sample_dir / "verified_score.musicxml",
+    }
+    return all(path.is_file() and provenance.get(key) == _sha256(path)
+               for key, path in inputs.items())
+
+
+def ensure_current_model_feedback(sample_dir: Path, config: PipelineConfig, logger) -> bool:
+    """Upgrade legacy/stale UI artifacts before relabeling; never silently downgrade."""
+    if config.alignment.get("model_version", "legacy") != "stack-v9":
+        return False
+    if current_v9_feedback(sample_dir, config):
+        return False
+    run_preferred_alignment(
+        sample_dir / "performance_audio.wav", sample_dir / "reference_audio.wav",
+        sample_dir, config, logger,
+    )
+    if not current_v9_feedback(sample_dir, config):
+        raise RuntimeError("V9 regeneration did not produce current model feedback")
+    return True
+
+
+def _run_v9_alignment(sample_dir: Path, config: PipelineConfig, logger, *, detect_candidates: bool):
+    """Use the same validated publisher as the full v9 DataCreate inference run."""
+    python, env = _bridge_command_env(config)
+    work = config.resolved_path("work_dir") or ROOT / "DataCreate/work"
+    run = work / "v9-ui" / f"{sample_dir.name}-{uuid.uuid4().hex}"
+    command = [
+        str(python), str(ROOT / "align-model/scripts/publish_datacreate_v9.py"),
+        "--sample", str(sample_dir.resolve()), "--output", str(run),
+        "--candidate", str(_v9_candidate(config)),
+        "--device", str(config.alignment.get("note_alignment_device", "cuda")),
+        "--sample-rate", str(config.sample_rate()),
+        "--hop-length", str(config.mel.get("hop_length", 512)),
+    ]
+    logger.info("Running ALIGN v9: %s", subprocess.list2cmdline(command))
+    completed = subprocess.run(
+        command, cwd=ROOT, env=env, capture_output=True, text=True,
+        timeout=float(config.alignment.get("note_alignment_timeout_sec", 900)),
+    )
+    if completed.returncode:
+        raise RuntimeError("ALIGN v9 failed: " + (completed.stderr.strip() or completed.stdout.strip()))
+    if not current_v9_feedback(sample_dir, config):
+        raise RuntimeError("ALIGN v9 returned without matching score/audio/candidate provenance")
+    payload = json.loads((sample_dir / "note_alignment_v2.json").read_text(encoding="utf-8"))
+    alignment_path = sample_dir / "alignment.npz"
+    with np.load(alignment_path) as archive:
+        wp = archive["wp"].copy()
+    candidates = [Label(**{**raw, "source": "auto"}) for raw in payload["labels"]] if detect_candidates else []
+    logger.info("ALIGN v9 wrote %d feedback labels; backup/run: %s", len(payload["labels"]), run)
+    return NoteFirstAlignmentResult(candidates, alignment_path, wp, wp, "stack-v9")
 
 
 def dump_transcription(
@@ -304,8 +387,13 @@ def run_preferred_alignment(
     *,
     detect_candidates: bool = True,
 ) -> NoteFirstAlignmentResult:
-    """Run joint transcription/alignment; the reference WAV is retained for API parity."""
+    """Run the configured version; v9 regenerates alignment and agent feedback together."""
 
+    version = config.alignment.get("model_version", "legacy")
+    if version == "stack-v9":
+        return _run_v9_alignment(sample_dir, config, logger, detect_candidates=detect_candidates)
+    if version != "legacy":
+        raise ValueError(f"Unknown alignment model_version: {version}")
     if not performance_wav.is_file() or not reference_wav.is_file():
         raise FileNotFoundError("Both performance and reference audio required")
     python, env = _bridge_command_env(config)

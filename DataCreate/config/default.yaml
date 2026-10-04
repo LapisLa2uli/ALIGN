@@ -10,7 +10,9 @@ paths:
   work_dir: ./work
   raw_data_score: ../RawData/Score
   raw_data_audio: ../RawData/Audio
-  note_alignment_python: ../align-model/.venv-amt-bench/Scripts/python.exe
+  # Use the Python environment serving DataCreate (MusicEval); override only explicitly.
+  note_alignment_candidate: ../align-model/runs/stack-v9/CANDIDATE_STACK_V9.json
+  # These two paths are used only when model_version is explicitly set to legacy.
   note_alignment_checkpoint: ../align-model/runs/joint-audit-v2/end-to-end-v2/weak-note-continuation-optimized/joint_decoder.pt
   note_alignment_weights: ../align-model/runs/contextual-aligner-outputRaw_sf-1k/weights
 
@@ -27,6 +29,7 @@ mel:
 
 alignment:
   engine: joint
+  model_version: stack-v9
   note_alignment_device: cuda
   note_alignment_timeout_sec: 900
   feature: chroma          # chroma | cqt

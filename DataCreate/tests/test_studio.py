@@ -207,3 +207,108 @@ def test_analysis_progress_reads_live_model_stage_and_does_not_fake_completion(h
     jobs.save(job_id, status="complete", stage="complete")
     assert jobs.status(job_id)["analysis_progress"]["completed"] == 5
     assert all(s["state"] == "complete" for s in jobs.status(job_id)["analysis_progress"]["steps"])
+
+
+@pytest.mark.parametrize("with_reference", [False, True], ids=["performance", "reference-and-performance"])
+def test_studio_uses_real_feedback_pipeline_and_retries_saved_plan(harness, monkeypatch, with_reference):
+    """Only detection and provider HTTP are mocked; feedback/MP3 assembly are real."""
+    from functools import partial
+    import httpx
+    import numpy as np
+    import soundfile as sf
+    from datacreate.feedback import run_feedback
+
+    client, _, config, _ = harness
+    base_pipeline = studio.make_pipeline
+
+    class Pipeline(base_pipeline):
+        def run_stage1_2(self, job):
+            from music21 import stream, meter, note
+            score, part = stream.Score(), stream.Part()
+            measure = stream.Measure(number=2)
+            measure.append(meter.TimeSignature("4/4"))
+            for pitch in [60, 62, 64, 65]:
+                measure.append(note.Note(pitch, quarterLength=1))
+            part.append(measure)
+            score.append(part)
+            score.write("musicxml", fp=job / "verified_score.musicxml")
+
+        def run_stage3(self, job):
+            if not with_reference:
+                return
+            import mido
+            midi = mido.MidiFile(ticks_per_beat=480)
+            track = mido.MidiTrack()
+            midi.tracks.append(track)
+            for pitch in [60, 62, 64, 65]:
+                track.append(mido.Message("note_on", note=pitch, velocity=80))
+                track.append(mido.Message("note_off", note=pitch, time=480))
+            midi.save(job / "reference_audio.mid")
+            sf.write(job / "reference_audio.wav", .1 * np.sin(2 * np.pi * 330 * np.arange(48000) / 16000), 16000)
+
+        def run_stage4(self, job):
+            sf.write(job / "performance_audio.wav", .1 * np.sin(2 * np.pi * 220 * np.arange(48000) / 16000), 16000)
+
+        def run_stage5(self, job):
+            (job / "candidates.json").write_text(json.dumps({"labels": [{
+                "type": "wrong_note", "source": "auto", "start_time": 1.0, "end_time": 1.5,
+                "score_part": {"start_note_index": 1, "end_note_index": 2, "pad_notes": 0},
+            }]}))
+            # This must never be used as the prediction source.
+            (job / "labels.json").write_text('{"labels": []}')
+
+    monkeypatch.setattr(studio, "make_pipeline", Pipeline)
+    speech = BytesIO()
+    sf.write(speech, .1 * np.sin(2 * np.pi * 440 * np.arange(8000) / 16000), 16000, format="MP3")
+    requests = []
+    fail_speech = True
+    point = {"label_index": 0, "intro": "In bar two, listen to this passage.",
+             "feedback": "Check this possible wrong note and practise slowly."}
+    if with_reference:
+        point["performance_intro"] = "Now listen to your performance."
+
+    def handle(request):
+        requests.append(str(request.url))
+        body = json.loads(request.content)
+        if request.url.path.endswith("/chat/completions"):
+            assert str(request.url) == "https://api.ssstoken.net/v1/chat/completions"
+            assert body["model"] == "gpt-6-luna"
+            report = json.loads(body["messages"][1]["content"])["report"]
+            assert report["label_count"] == 1
+            assert report["labels"][0]["excerpt_available"] is True
+            assert bool(report["labels"][0].get("reference_available")) == with_reference
+            return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps({"points": [point]})}}]})
+        assert str(request.url) == "http://127.0.0.1:8081/v1/tts"
+        assert "authorization" not in request.headers
+        if fail_speech:
+            return httpx.Response(503)
+        return httpx.Response(200, headers={"content-type": "audio/mpeg"}, content=speech.getvalue())
+
+    with httpx.Client(transport=httpx.MockTransport(handle)) as provider:
+        monkeypatch.setattr(studio, "run_feedback", partial(run_feedback, client=provider))
+        response = submit(client)
+        assert response.status_code == 202
+        job_id = response.json()["id"]
+        state = client.get(f"/api/studio/takes/{job_id}").json()
+        assert state["status"] == "failed" and state["can_retry"]
+        assert state["analysis_progress"]["current"] == "speech"
+        output = studio.StudioJobs(config).directory(job_id) / "feedback"
+        assert (output / "playback_plan.json").is_file()
+        assert (output / "excerpt-000.wav").is_file()
+        fail_speech = False
+        assert client.post(f"/api/studio/takes/{job_id}/retry").status_code == 202
+
+    state = client.get(f"/api/studio/takes/{job_id}").json()
+    assert state["status"] == "complete"
+    assert sum(url.endswith("/chat/completions") for url in requests) == 1
+    manifest = json.loads((output / "feedback.json").read_text())
+    assert manifest["input_kind"] == "plan" and manifest["fish_local"]
+    assert manifest["performance_excerpts"] is True
+    assert manifest["reference_excerpts"] == with_reference
+    timeline = json.loads((output / "timeline.json").read_text())["segments"]
+    expected = ["speech", "reference", "speech", "performance", "speech"] if with_reference else ["speech", "performance", "speech"]
+    assert [segment["kind"] for segment in timeline] == expected
+    delivered = client.get(state["audio_url"])
+    assert delivered.content == (output / "feedback.mp3").read_bytes()
+    decoded, rate = sf.read(BytesIO(delivered.content), always_2d=True)
+    assert rate == 44100 and decoded.shape[1] == 2

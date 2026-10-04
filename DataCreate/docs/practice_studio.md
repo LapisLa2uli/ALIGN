@@ -37,6 +37,16 @@ It runs the configured GUI alignment pipeline, not experimental stack v9.
 Its predicted `candidates.json` is passed to the spoken-feedback service;
 the empty human label template is never used as the feedback source.
 
+The browser submits to `/api/studio/takes`; the worker calls the existing
+`datacreate.feedback.run_feedback` entry point used by `datacreate-feedback`.
+Report preparation, score locations, ssstoken narration, local Fish synthesis,
+and MP3 assembly all stay in that shared pipeline. Matching performance audio,
+reference audio, MusicXML, and reference MIDI are discovered in the generated
+sample directory, enabling the pipeline's reference/performance examples.
+Speech retries reuse `playback_plan.json` when present, preserving the excerpts;
+plain narration retries reuse `feedback.txt`. The page plays the resulting
+`feedback.mp3` directly.
+
 Configure the providers as described in [spoken_feedback.md](spoken_feedback.md).
 `ALIGN_FEEDBACK_CONFIG` optionally selects a feedback YAML file; without it,
 `DataCreate/config/feedback.local.yaml` is used (ssstoken narration with

@@ -8,7 +8,7 @@ import pytest
 import soundfile as sf
 
 from datacreate.feedback import FeedbackConfig, FeedbackError, run_feedback
-from datacreate.feedback_audio import checked_clip, compose_audio, extract_clip, locate_excerpts
+from datacreate.feedback_audio import checked_clip, compose_audio, extract_clip, locate_excerpts, measure_loudness
 
 
 @pytest.fixture
@@ -72,8 +72,8 @@ def test_full_excerpt_sequence_crop_and_offline_retry(performance_labels, tmp_pa
     assert [row["kind"] for row in timeline] == ["speech", "performance", "speech"]
     assert timeline[1]["source_start_time"] == 0.75
     assert timeline[1]["source_end_time"] == 1.75
-    assert timeline[1]["start_time"] == pytest.approx(timeline[0]["end_time"] + .3)
-    assert timeline[2]["start_time"] == pytest.approx(timeline[1]["end_time"] + .3)
+    assert timeline[1]["start_time"] == pytest.approx(timeline[0]["end_time"] + .5)
+    assert timeline[2]["start_time"] == pytest.approx(timeline[1]["end_time"] + .5)
     mixed, rate = sf.read(output / "feedback.mp3", always_2d=True)
     assert rate == 44100 and mixed.shape[1] == 2
     assert len(mixed) / rate == pytest.approx(timeline[-1]["end_time"], abs=.05)
@@ -194,3 +194,46 @@ def test_reference_then_performance_and_saved_plan_retry(performance_labels, tmp
                              client=client, output_dir=tmp_path / "retry-paired")
     assert calls == ["/v1/tts"] * 3
     assert (retry / "reference-000.wav").read_bytes() == (output / "reference-000.wav").read_bytes()
+
+
+def test_mix_matches_perceived_loudness_and_leaves_silence_after_reverb(tmp_path):
+    rate = 44100
+    time = np.arange(rate) / rate
+    entries = []
+    # Very different input levels and spectra, including a quiet high reference tone.
+    for kind, amplitude, frequency in [("speech", .015, 440), ("reference", .002, 2000),
+                                       ("speech", .09, 550), ("performance", .4, 330), ("speech", .04, 440)]:
+        path = tmp_path / f"input-{len(entries)}.wav"
+        sf.write(path, amplitude * np.sin(2 * np.pi * frequency * time), rate, subtype="FLOAT")
+        entries.append({"kind": kind, "path": path})
+    output = tmp_path / "mix.mp3"
+    timeline = compose_audio(entries, output)
+    audio, sr = sf.read(output, always_2d=True)
+    levels = []
+    for index, row in enumerate(timeline):
+        segment = audio[round(row["start_time"] * sr):round(row["end_time"] * sr)]
+        levels.append(measure_loudness(segment, sr))
+        if row["kind"] in {"reference", "performance"}:
+            assert row["start_time"] - timeline[index - 1]["end_time"] == pytest.approx(.5)
+            assert timeline[index + 1]["start_time"] - row["end_time"] == pytest.approx(.5)
+            assert row["end_time"] > row["dry_end_time"]
+            tail = audio[round(row["dry_end_time"] * sr):round((row["dry_end_time"] + .05) * sr)]
+            assert np.max(np.abs(tail)) > 1e-5
+            # MP3 can ring at an edge, but the body of the requested margin is silent.
+            gap = audio[round((row["end_time"] + .03) * sr):round((row["end_time"] + .47) * sr)]
+            assert np.max(np.abs(gap)) < 1e-5
+    assert max(levels) - min(levels) < 1.0
+    assert np.max(np.abs(audio)) < .9
+
+
+def test_short_or_silent_snippets_do_not_break_normalization(tmp_path):
+    rate = 16000
+    short = .08 * np.sin(2 * np.pi * 440 * np.arange(rate // 10) / rate)
+    sf.write(tmp_path / "short.wav", short, rate)
+    sf.write(tmp_path / "silent.wav", np.zeros(rate // 10), rate)
+    timeline = compose_audio([{"kind": "reference", "path": tmp_path / "short.wav"},
+                              {"kind": "performance", "path": tmp_path / "silent.wav"}], tmp_path / "mix.mp3")
+    audio, _ = sf.read(tmp_path / "mix.mp3")
+    assert np.isfinite(audio).all()
+    assert timeline[1]["input_lufs"] is None
+    assert timeline[1]["gain"] == 1

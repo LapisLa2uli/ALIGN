@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import logging
 import subprocess
+import sys
+import hashlib
 from pathlib import Path
 from unittest.mock import patch
 
@@ -243,3 +245,57 @@ def test_invalidation_removes_note_first_artifact(tmp_path):
         (tmp_path / name).exists()
         for name in ("alignment.npz", "note_alignment_v2.json", "candidates.json")
     )
+
+
+def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path):
+    candidate = tmp_path / "candidate.json"
+    candidate.write_text("v9")
+    sample = tmp_path / "095"
+    sample.mkdir()
+    (sample / "performance_audio.wav").write_bytes(b"audio")
+    (sample / "verified_score.musicxml").write_bytes(b"score")
+    seen = {}
+
+    def fake_run(command, **kwargs):
+        seen["command"], seen["env"] = command, kwargs["env"]
+        payload = {
+            "engine": "align-joint",
+            "label_generation": {"schema_version": "datacreate-model-feedback-v1"},
+            "labels": [], "events": [],
+            "provenance": {
+                key: hashlib.sha256(path.read_bytes()).hexdigest()
+                for key, path in {
+                    "candidate_sha256": candidate,
+                    "audio_sha256": sample / "performance_audio.wav",
+                    "score_sha256": sample / "verified_score.musicxml",
+                }.items()
+            },
+        }
+        (sample / "note_alignment_v2.json").write_text(json.dumps(payload))
+        from datacreate.align_bridge import _compatibility_alignment
+        _compatibility_alignment(payload, sample, config)
+        return subprocess.CompletedProcess(command, 0, "ok", "")
+
+    config = PipelineConfig(
+        paths={"note_alignment_candidate": str(candidate), "work_dir": str(tmp_path / "work"),
+               "note_alignment_checkpoint": "unused-legacy.pt"},
+        alignment={"model_version": "stack-v9", "note_alignment_device": "cpu"},
+    )
+    with patch("datacreate.align_bridge.subprocess.run", side_effect=fake_run):
+        result = run_preferred_alignment(
+            sample / "performance_audio.wav", sample / "reference_audio.wav",
+            sample, config, logging.getLogger("test"),
+        )
+    assert result.model_version == "stack-v9"
+    assert result.alignment_path.is_file()
+    assert seen["command"][0] == sys.executable
+    assert Path(seen["command"][1]).name == "publish_datacreate_v9.py"
+    assert "--sample" in seen["command"] and "--checkpoint" not in seen["command"]
+    assert seen["env"]["PYTHONNOUSERSITE"] == "1"
+
+
+def test_default_ui_configuration_selects_v9_in_serving_environment():
+    config = PipelineConfig.load()
+    assert config.alignment["model_version"] == "stack-v9"
+    assert config.resolved_path("note_alignment_candidate").name == "CANDIDATE_STACK_V9.json"
+    assert config.paths.get("note_alignment_python") is None

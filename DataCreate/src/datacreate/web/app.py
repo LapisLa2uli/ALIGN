@@ -384,7 +384,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         logger = setup_sample_logger(sample_dir, name="prep")
         try:
             info = reprocess_alignment(sample_dir, config, logger)
-        except (FileNotFoundError, RuntimeError) as exc:
+        except (FileNotFoundError, ValueError, RuntimeError) as exc:
             raise HTTPException(400, str(exc)) from exc
         return {"status": "ok", **info}
 
@@ -402,6 +402,9 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             raise HTTPException(404, "Sample not found")
         logger = setup_sample_logger(sample_dir, name="relabel")
         try:
+            from datacreate.align_bridge import ensure_current_model_feedback
+
+            regenerated = ensure_current_model_feedback(sample_dir, config, logger)
             info = relabel_sample_from_current_alignment(
                 sample_dir, maximum_per_type=MAX_LABELS_PER_TYPE
             )
@@ -423,7 +426,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             info.get("source"),
             info.get("label_count"),
         )
-        return {"status": "ok", "label_source": "agent", **info}
+        return {"status": "ok", "label_source": "agent", "regenerated_alignment": regenerated, **info}
 
     @app.post("/api/samples/{sample_id}/trim-performance")
     def trim_performance(sample_id: str, payload: PerformanceTrimPayload) -> dict[str, Any]:

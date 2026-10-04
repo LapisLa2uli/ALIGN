@@ -6,8 +6,42 @@ from pathlib import Path
 import hashlib
 
 import numpy as np
+import pyloudnorm as pyln
 import soundfile as sf
-from scipy.signal import resample_poly
+from scipy.signal import butter, fftconvolve, resample_poly, sosfilt
+
+
+MIX_TARGET_LUFS = -20.0
+SNIPPET_GAP_SECONDS = 0.5
+SNIPPET_REVERB_MIX = 0.08
+SNIPPET_REVERB_TAIL_SECONDS = 0.25
+
+
+def measure_loudness(audio: np.ndarray, rate: int) -> float | None:
+    """Gated K-weighted loudness; shorten the window for notes under 400 ms."""
+    if not len(audio) or not np.any(audio):
+        return None
+    meter = pyln.Meter(rate, block_size=min(0.4, len(audio) / rate))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        level = float(meter.integrated_loudness(audio))
+    return level if np.isfinite(level) else None
+
+
+def _small_room(audio: np.ndarray, rate: int) -> np.ndarray:
+    """Quiet, short reflections with a fully retained decay, on music only."""
+    frames = int(round(rate * SNIPPET_REVERB_TAIL_SECONDS))
+    time = np.arange(frames) / rate
+    output = np.pad(audio, ((0, frames), (0, 0))).astype(np.float64)
+    lowpass = butter(2, min(4500, rate * 0.4), fs=rate, output="sos")
+    for channel in range(audio.shape[1]):
+        rng = np.random.default_rng(1701 + channel)
+        impulse = sosfilt(lowpass, rng.standard_normal(frames)) * np.exp(-time / 0.036)
+        impulse[:int(rate * 0.014)] = 0  # Small room pre-delay; keep the direct attack.
+        impulse *= np.linspace(1, 0, frames)
+        impulse /= max(float(np.sqrt(np.sum(impulse ** 2))), 1e-12)
+        wet = fftconvolve(audio[:, channel], impulse)
+        output[:len(wet), channel] += SNIPPET_REVERB_MIX * wet
+    return output
 
 
 def resolve_performance(source: Path, document, explicit: Path | None) -> Path | None:
@@ -96,9 +130,11 @@ def checked_clip(plan_directory: Path, clip: dict) -> Path:
 
 
 def compose_audio(entries: list[dict], output: Path, rate: int = 44100) -> list[dict]:
-    """Resample to stereo, keep natural pauses, and encode a single final MP3."""
-    pieces, timeline = [], []
-    cursor = 0
+    """Match speech/music loudness, add subtle room tone and unhurried pauses."""
+    if not entries:
+        raise ValueError("Cannot assemble an empty playback plan.")
+    prepared = []
+    target = MIX_TARGET_LUFS
     for entry in entries:
         audio, source_rate = sf.read(entry["path"], dtype="float32", always_2d=True)
         if not len(audio) or not np.isfinite(audio).all():
@@ -110,29 +146,48 @@ def compose_audio(entries: list[dict], output: Path, rate: int = 44100) -> list[
         if source_rate != rate:
             factor = gcd(source_rate, rate)
             audio = resample_poly(audio, rate // factor, source_rate // factor, axis=0)
-        gain = 1.0
-        if entry["kind"] in {"performance", "reference"}:
-            # A single bounded gain preserves expressive dynamics inside the excerpt.
-            rms = float(np.sqrt(np.mean(audio ** 2)))
-            peak = float(np.max(np.abs(audio)))
-            if rms > 0.00001 and peak > 0:
-                gain = min(4.0, 0.075 / rms, 0.95 / peak)
-                audio *= gain
+        dry_frames = len(audio)
+        snippet = entry["kind"] in {"performance", "reference"}
+        if snippet:
             fade = min(int(rate * 0.008), len(audio) // 2)
             if fade:
                 audio[:fade] *= np.linspace(0, 1, fade)[:, None]
                 audio[-fade:] *= np.linspace(1, 0, fade)[:, None]
-        if pieces:
-            gap = np.zeros((int(rate * 0.3), 2), dtype="float32")
-            pieces.append(gap)
-            cursor += len(gap)
+            audio = _small_room(audio, rate)
+        level = measure_loudness(audio, rate)
+        # Fourfold oversampling estimates inter-sample peaks. Use one shared
+        # feasible target instead of peak-capping one clip and leaving it quieter.
+        peak = float(np.max(np.abs(resample_poly(audio, 4, 1, axis=0))))
+        if level is not None and peak > 0:
+            target = min(target, level - 2.0 - 20 * np.log10(peak), level + 30.0)
+        prepared.append((entry, audio, level, dry_frames, snippet))
+
+    pieces, timeline = [], []
+    cursor = 0
+    if prepared[0][4]:
+        pieces.append(np.zeros((round(rate * SNIPPET_GAP_SECONDS), 2)))
+        cursor += len(pieces[-1])
+    for index, (entry, audio, level, dry_frames, snippet) in enumerate(prepared):
+        gain = 10 ** ((target - level) / 20) if level is not None else 1.0
+        audio = audio * gain  # One constant gain preserves dynamics inside each segment.
+        has_next = index + 1 < len(prepared)
+        next_is_snippet = has_next and prepared[index + 1][4]
+        gap_after = SNIPPET_GAP_SECONDS if snippet or next_is_snippet else 0.3 if has_next else 0.0
         timeline.append({key: value for key, value in entry.items() if key != "path"} |
                         {"file": Path(entry["path"]).name, "start_time": cursor / rate,
-                         "end_time": (cursor + len(audio)) / rate, "gain": gain})
+                         "end_time": (cursor + len(audio)) / rate, "gain": gain,
+                         "input_lufs": level, "output_lufs": measure_loudness(audio, rate),
+                         "target_lufs": target, "dry_end_time": (cursor + dry_frames) / rate,
+                         "reverb_mix": SNIPPET_REVERB_MIX if snippet else 0.0,
+                         "reverb_tail_seconds": (len(audio) - dry_frames) / rate,
+                         "silence_after_seconds": gap_after})
         pieces.append(audio)
         cursor += len(audio)
+        if gap_after:
+            pieces.append(np.zeros((round(rate * gap_after), 2)))
+            cursor += len(pieces[-1])
     audio = np.concatenate(pieces)
-    # Attenuate the whole mix only if needed to avoid clipping; never time-stretch.
+    # Final numerical guard; loudness matching already reserves two dB of headroom.
     peak = float(np.max(np.abs(audio)))
     master_gain = min(1.0, 0.95 / peak) if peak else 1.0
     audio *= master_gain
@@ -144,4 +199,6 @@ def compose_audio(entries: list[dict], output: Path, rate: int = 44100) -> list[
         temporary.unlink(missing_ok=True)
     for item in timeline:
         item["master_gain"] = master_gain
+        if item["output_lufs"] is not None:
+            item["output_lufs"] += 20 * np.log10(master_gain)
     return timeline

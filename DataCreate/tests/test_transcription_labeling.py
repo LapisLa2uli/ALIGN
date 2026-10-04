@@ -264,3 +264,70 @@ def test_relabel_http_route_serves_v9_repetition_with_reference_note_ids(tmp_pat
     response = client.get("/api/samples/095?label_source=agent")
     assert response.status_code == 200, response.text
     assert response.json()["labels"] == payload["labels"]
+
+
+def test_v9_relabel_upgrades_legacy_and_refreshes_changed_inputs(tmp_path, monkeypatch):
+    import hashlib
+    from fastapi.testclient import TestClient
+    from datacreate import align_bridge
+    from datacreate.config import PipelineConfig
+    from datacreate.web.app import create_app
+
+    sample = tmp_path / "095"
+    _write_sample(sample, [60, 62, 64, 65, 67], [60, 62, 64, 65, 60, 62, 64, 65, 67])
+    candidate = tmp_path / "candidate.json"
+    candidate.write_text("candidate-v9")
+    alignment = sample / "note_alignment_v2.json"
+    alignment.write_text(json.dumps({"engine": "align-joint", "labels": []}))
+    human = sample / "labels.json"
+    human.write_text('{"labels": [], "annotator_id": "human"}')
+    protected = human.read_bytes()
+    config = PipelineConfig(
+        paths={"samples_root": str(tmp_path), "note_alignment_candidate": str(candidate)},
+        alignment={"model_version": "stack-v9"}, taxonomy=["repetition"],
+    )
+    calls = []
+
+    def fresh_run(*args, **kwargs):
+        calls.append(True)
+        payload = _v9_feedback_payload()
+        payload["provenance"] = {
+            key: hashlib.sha256(path.read_bytes()).hexdigest()
+            for key, path in {
+                "candidate_sha256": candidate,
+                "audio_sha256": sample / "performance_audio.wav",
+                "score_sha256": sample / "verified_score.musicxml",
+            }.items()
+        }
+        alignment.write_text(json.dumps(payload))
+
+    monkeypatch.setattr(align_bridge, "run_preferred_alignment", fresh_run)
+    client = TestClient(create_app(config))
+    response = client.post("/api/samples/095/re-label")
+    assert response.status_code == 200, response.text
+    assert response.json()["regenerated_alignment"] is True
+    assert response.json()["method"] == "align_stack_v9"
+    assert response.json()["counts_by_type"] == {"repetition": 1}
+    assert len(calls) == 1
+    response = client.post("/api/samples/095/re-label")
+    assert response.status_code == 200
+    assert response.json()["regenerated_alignment"] is False
+    assert len(calls) == 1
+    for path in [sample / "performance_audio.wav", sample / "verified_score.musicxml", candidate]:
+        path.write_bytes(path.read_bytes() + b"\n")
+        response = client.post("/api/samples/095/re-label")
+        assert response.status_code == 200, response.text
+        assert response.json()["regenerated_alignment"] is True
+    assert len(calls) == 4
+    assert human.read_bytes() == protected
+
+    # A failed upgrade must not overwrite labels with legacy output.
+    saved = (sample / "labels_agent.json").read_bytes()
+    alignment.write_text('{"engine":"align-joint","labels":[]}')
+    def failing_run(*args, **kwargs):
+        raise RuntimeError("v9 checkpoint unavailable")
+    monkeypatch.setattr(align_bridge, "run_preferred_alignment", failing_run)
+    response = client.post("/api/samples/095/re-label")
+    assert response.status_code == 400
+    assert "v9 checkpoint unavailable" in response.text
+    assert (sample / "labels_agent.json").read_bytes() == saved

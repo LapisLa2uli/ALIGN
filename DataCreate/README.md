@@ -101,20 +101,27 @@ datacreate serve
 
 Open http://127.0.0.1:8765 — zoomable waveform with draggable regions (wavesurfer.js), score view (OpenSheetMusicDisplay), candidate confirm/reject workflow.
 
-The annotation GUI now uses ALIGN's v2 joint decoder for every new/re-run
-alignment: the Basic Pitch v2 high-recall union with weak-short-note rescue,
-then the replay-continuation score-conditioned path CRF (`joint_decoder.pt`).
-The first request creates `note_alignment_v2.json`
-plus a small legacy-compatible `alignment.npz`; later GUI requests read the
-note alignment directly. Configure the isolated Python and checkpoint through
-`paths.note_alignment_python` and `paths.note_alignment_checkpoint`. The older
-contextual weights remain as a fallback via `paths.note_alignment_weights`.
+The annotation GUI defaults to the experimental **ALIGN v9** candidate through
+`alignment.model_version: stack-v9`. **Re-align** performs fresh waveform
+transcription, same-pitch repair, alignment, and agent feedback. **Re-label**
+restores that feedback when its candidate, score, and audio hashes match;
+otherwise it runs v9 first. It never silently falls back to legacy labeling
+when v9 is configured. Repetition identity stays on the reference-score notes.
+
+The runner uses the Python environment serving DataCreate (use MusicEval).
+`paths.note_alignment_candidate` selects the v9 candidate manifest;
+`paths.note_alignment_python` can explicitly override the interpreter.
+Each regeneration validates and backs up replaced model files under
+`work/v9-ui/`. Human `labels.json` is preserved. `note_alignment_v2.json` is
+the UI artifact filename, not the model version. To explicitly use the old
+pipeline, set `alignment.model_version: legacy`; only that mode reads
+`paths.note_alignment_checkpoint` or `paths.note_alignment_weights`.
 
 The **Label set** selector switches between the primary human annotation
 (`labels.json`) and the current frozen-model annotation
 (`labels_agent.json`). Saving writes only the selected file.
 
-The current agent set uses the repository-trained mel transcriber
+The older agent export command below uses the repository-trained mel transcriber
 (`candidate-epoch-018.pt`), followed by the frozen ALIGN joint aligner and
 error-heads v5. The all-sample inference run performs no training and stages
 and validates every document before committing any replacement:
@@ -191,10 +198,9 @@ The score-part melody is a contiguous run of notes on `verified_score.musicxml`:
 
 `source` values: `auto`, `auto_confirmed`, `auto_edited`, `auto_rejected`, `manual`, `synthetic`.
 
-The GUI alignment bridge currently runs the joint path CRF and emits
-transcribed notes plus a score mapping. It does not write automatic error
-candidates on Re-align. Legacy DTW code remains available for old artifact
-compatibility, but GUI alignment and re-alignment do not call it.
+The v9 GUI alignment bridge updates transcription, score mapping, automatic
+candidates and agent labels together. V9 remains experimental: its permissive
+same-pitch repair can merge genuine repeated notes (see `../align-model/STACK_V9.md`).
 
 ## Adding a new error type
 

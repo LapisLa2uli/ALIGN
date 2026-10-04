@@ -37,6 +37,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--samples',type=Path,default=ROOT/'DataCreate/samples')
+    parser.add_argument('--sample',type=Path,help='Regenerate just this sample (used by the annotation UI)')
+    parser.add_argument('--device',default='cuda' if torch.cuda.is_available() else 'cpu')
+    parser.add_argument('--sample-rate',type=int,default=22050,help='UI compatibility timing rate')
+    parser.add_argument('--hop-length',type=int,default=512,help='UI compatibility timing hop')
     parser.add_argument('--candidate',type=Path,default=ROOT/'align-model/runs/stack-v9/CANDIDATE_STACK_V9.json')
     args=parser.parse_args();out=args.output.resolve();samples_root=args.samples.resolve()
     if out.exists():raise FileExistsError(out)
@@ -44,7 +48,12 @@ def main():
     for relative,digest in c['code_sha256'].items():assert sha(ROOT/'align-model'/relative)==digest,relative
     assert sha(c['checkpoint'])==c['checkpoint_sha256']
     assert sha(base['verifier'])==base['verifier_sha256']
-    samples=sorted(p for p in samples_root.iterdir() if p.is_dir() and (p/'performance_audio.wav').is_file() and (p/'verified_score.musicxml').is_file())
+    if args.sample:
+        samples=[args.sample.resolve()];samples_root=samples[0].parent
+        for name in ('performance_audio.wav','verified_score.musicxml'):
+            if not (samples[0]/name).is_file():raise FileNotFoundError(samples[0]/name)
+    else:
+        samples=sorted(p for p in samples_root.iterdir() if p.is_dir() and (p/'performance_audio.wav').is_file() and (p/'verified_score.musicxml').is_file())
     out.mkdir(parents=True)
     protected={p.name:{f:sha(p/f) for f in ('labels.json','performance_audio.wav','verified_score.musicxml') if (p/f).is_file()} for p in samples}
     backup={}
@@ -61,9 +70,10 @@ def main():
         'candidate':str(args.candidate.resolve()),'candidate_sha256':sha(args.candidate),
         'backup':backup,'protected':protected,'files':FILES,'status':'staging','results':[]}
     write(out/'manifest.json',manifest)
-    torch.set_num_threads(4);device='cuda' if torch.cuda.is_available() else 'cpu'
+    torch.set_num_threads(4);device=args.device
     model,_=load_dual_checkpoint(Path(c['checkpoint']),device);model.eval()
     verifier=load_verifier(Path(base['verifier']),device);ui_config=PipelineConfig.load()
+    ui_config.audio['sample_rate']=args.sample_rate;ui_config.mel['hop_length']=args.hop_length
     cfg={k:c[k] for k in ('decoder','gate','minimum_match_fraction','same_pitch')}
     for pos,sample in enumerate(samples,1):
         stage=out/'staged'/sample.name;stage.mkdir(parents=True)
