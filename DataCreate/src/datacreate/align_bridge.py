@@ -212,6 +212,8 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
     if not _has_model_feedback(payload):
         return False
     provenance = payload.get("provenance") or {}
+    if provenance.get("pipeline_revision") != "v9-passage-v1":
+        return False
     inputs = {
         "candidate_sha256": _v9_candidate(config),
         "audio_sha256": sample_dir / "performance_audio.wav",

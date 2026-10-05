@@ -24,6 +24,8 @@ from uuid import uuid4
 import httpx
 import yaml
 
+from datacreate.credentials import credential_value
+
 
 class FeedbackError(ValueError):
     """An actionable input, configuration, or provider failure."""
@@ -133,6 +135,13 @@ cover a passage, not just one note. Treat stylistic_choice as intentional, not a
 error. Repetition is an unrequested replay; extra_copies counts additional plays.
 """
 
+PIPELINE_REVISION = "teacher-reference-performance-balanced-room-v1"
+EMPTY_REPORT_NARRATION = (
+    "No specific issues were marked by the automatic analysis of this take. "
+    "That does not mean the performance was error-free. "
+    "There are no marked passages to demonstrate with audio examples or give targeted corrections for."
+)
+
 
 def _number(value: Any, field: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
@@ -142,6 +151,9 @@ def _number(value: Any, field: str) -> float:
 
 def prepare_report(document: Any) -> dict[str, Any]:
     """Accept label documents or arrays; retain only teaching-relevant fields."""
+    from datacreate.analysis_status import document_status, UNCERTAIN_MESSAGE
+    if isinstance(document, dict) and document_status(document) == "alignment_uncertain":
+        raise FeedbackError(UNCERTAIN_MESSAGE)
     labels = document if isinstance(document, list) else document.get("labels") if isinstance(document, dict) else None
     if not isinstance(labels, list):
         raise FeedbackError("Expected a JSON object with a labels array, or a label array. Convert raw alignments to labels first.")
@@ -357,6 +369,10 @@ JSON object: {"points":[{"label_index":0,"intro":"...",
 Select one to three useful labels, without duplicates. label_index must be an
 index supplied in the report. Keep ALL spoken text together under 100 English
 words. Each intro and feedback must be complete, natural sentences.
+Prefer different passages and issue types. For neighboring wrong-note labels in
+the same bar, choose one representative example instead of repeating the same
+bar introduction and practice advice. Budget the introductions and listening
+cues too: two useful comparisons are better than three repetitive ones.
 If reference_available=true, all three spoken fields in that exact schema are
 required: intro, performance_intro, and feedback. Do not rename these keys.
 Use ONLY the full-score bar number to locate the passage: do not speak note
@@ -413,6 +429,29 @@ def validate_playback_plan(document: Any, config: FeedbackConfig,
         if report is None and paired and "clip" not in point:
             raise FeedbackError("A reference comparison requires its saved performance clip.")
         points.append(point)
+    if report is not None:
+        # Multiple note labels can describe the same local teaching point.
+        # Keep one example per issue type/bar range, preserving the provider's
+        # order and leaving the original detector report untouched.
+        distinct, locations = [], set()
+        for point in points:
+            label = report['labels'][point['label_index']]
+            bars = tuple(sorted({s['bar'] for s in label.get('score_location', {}).get('spans', [])}))
+            key = (label['type'], bars) if bars else (label['type'], point['label_index'])
+            if key not in locations:
+                distinct.append(point)
+                locations.add(key)
+        points = distinct
+    if config.language.strip().lower() in {"english", "en", "en-us", "en-gb"}:
+        def word_count(selected):
+            return sum(len(re.findall(r"\b\w+(?:['’-]\w+)*\b", p[key]))
+                       for p in selected for key in ("intro", "performance_intro", "feedback") if key in p)
+        # Providers do not always obey the spoken budget. Keep complete teaching
+        # points with their paired clips; never cut a sentence or request a paid retry.
+        while len(points) > 1 and word_count(points) > 100:
+            points.pop()
+        if word_count(points) > 100:
+            raise FeedbackError("A feedback point exceeds the 100-word spoken limit; no speech was requested.")
     if sum(len(p[key]) for p in points for key in ("intro", "performance_intro", "feedback") if key in p) > config.max_speech_chars:
         raise FeedbackError("Feedback plan exceeds max_speech_chars.")
     return {"schema_version": "align-playback-plan-v2", "points": points}
@@ -453,7 +492,7 @@ def render_playback_plan(plan: dict, output: Path, config: FeedbackConfig, clien
 
 
 def _secret(name: str) -> str:
-    value = os.environ.get(name, "").strip()
+    value = credential_value(name)
     if not value:
         raise FeedbackError(f"Set the {name} environment variable before making API requests.")
     return value
@@ -519,8 +558,18 @@ def synthesize_speech(text: str, output: Path, config: FeedbackConfig, client: h
             if size < 4 or not (header == b"ID3" or (header[0] == 0xFF and header[1] & 0xE0 == 0xE0)):
                 raise FeedbackError("Fish Audio did not return an MP3 header.")
         temporary.replace(output)
-    except httpx.HTTPError:
-        raise FeedbackError("Fish Audio network request failed; saved narration can be retried with --text.") from None
+    except httpx.HTTPError as error:
+        recovery = ("Use Retry spoken feedback in Studio; for CLI recovery use playback_plan.json "
+                    "with --plan when present, otherwise feedback.txt with --text.")
+        if config.fish_local and isinstance(error, httpx.ConnectError):
+            reason = ("Local Fish connection failed. Start the local speech service with "
+                      "DataCreate/scripts/start_fish_local.ps1 -Foreground and wait for it to be ready.")
+        elif config.fish_local and isinstance(error, httpx.TimeoutException):
+            reason = ("Local Fish speech request timed out. Check its terminal for progress or errors "
+                      "and wait for any active synthesis to finish before retrying.")
+        else:
+            reason = "Fish Audio network request failed. Check the configured speech service."
+        raise FeedbackError(f"{reason} Saved narration and audio snippets are preserved. {recovery}") from None
     finally:
         temporary.unlink(missing_ok=True)
 
@@ -554,6 +603,13 @@ def run_feedback(
         raise FeedbackError("This narration includes performance excerpts. Retry playback_plan.json with --plan.")
     if source.is_dir():
         raise FeedbackError("Select an explicit label JSON file (human, agent, or pipeline), not a sample directory.")
+    # candidates.json contains only labels; the model's abstention lives beside it.
+    # Human labels and explicit text/plan retries have independent provenance.
+    if not text_input and not plan_input and source.name == "candidates.json":
+        from datacreate.analysis_status import sample_assessment, UNCERTAIN_MESSAGE
+        assessment = sample_assessment(source.parent)
+        if assessment is not None and assessment["status"] != "ok":
+            raise FeedbackError(UNCERTAIN_MESSAGE)
     if source.stat().st_size > 2_000_000:
         raise FeedbackError("Input exceeds the 2 MB file limit.")
     raw = source.read_bytes()
@@ -602,10 +658,20 @@ def run_feedback(
         raise FeedbackError(f"Cannot prepare performance excerpts: {error}") from None
     messages = build_messages(report, config, set(excerpts), set(reference_excerpts)) if report is not None else None
     narration = prepare_speech_text(content.strip(), config.language) if text_input else None
+    empty_report = report is not None and report["label_count"] == 0
+    if empty_report:
+        if config.language.strip().lower() == "english":
+            narration = EMPTY_REPORT_NARRATION
+        else:
+            messages[0]["content"] += (
+                "\nThere are no labels. State explicitly that no specific issues were marked, "
+                "that this does not prove an error-free performance, and that no targeted "
+                "audio examples or corrections are available. Do not invent a marked passage."
+            )
     if text_input and (not narration or len(narration) > config.max_speech_chars):
         raise FeedbackError("Input narration must be nonempty and within max_speech_chars.")
     if not dry_run:
-        if not text_input and not plan_input:
+        if narration is None and not plan_input:
             _secret(config.llm_api_key_env)
         if not text_only and not config.fish_local:
             _secret(config.fish_api_key_env)
@@ -619,9 +685,15 @@ def run_feedback(
                 "created_utc": datetime.now(timezone.utc).isoformat(),
                 "input_sha256": hashlib.sha256(raw).hexdigest(), "input_kind": "plan" if plan_input else "text" if text_input else "labels",
                 "language": config.language, "instrument": config.instrument,
-                "llm_model": None if text_input or plan_input else config.llm_model,
+                "llm_model": None if narration is not None or plan_input else config.llm_model,
                 "fish_model": None if text_only or dry_run else config.fish_model,
                 "fish_local": config.fish_local,
+                "pipeline_revision": PIPELINE_REVISION,
+                "fish_reference_id": config.fish_local_reference_id if config.fish_local else None,
+                "label_count": report["label_count"] if report is not None else None,
+                "no_issues_marked": empty_report,
+                "excerpt_reason": ("no_marked_issues" if empty_report else "disabled" if not config.include_performance
+                                   else "available" if excerpts or plan else "no_timed_passages"),
                 "reference_excerpts": bool(reference_excerpts) or bool(plan and any(p.get("reference_clip") for p in plan["points"])),
                 "performance_excerpts": bool(excerpts) or bool(plan and any(p.get("clip") for p in plan["points"]))}
     if resolved_score is not None:

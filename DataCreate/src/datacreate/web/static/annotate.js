@@ -1832,6 +1832,10 @@ function mappedScoreIndices(transcribed = getTranscribedNotes()) {
   return mapped;
 }
 
+function scoreNoteUnassessed(index) {
+  return (noteAlignmentData?.unassessed_score_event_indices || []).includes(index);
+}
+
 function transcribedAlignKind(note, refByIndex) {
   if (note.ignored) return "ignored";
   if (note.score_index == null) return "extra";
@@ -2173,7 +2177,7 @@ function paintMelodyHits(container, events) {
     const inCore = !!(core && i >= core.lo && i <= core.hi);
     const inPad = !!(pad && i >= pad.lo && i <= pad.hi && !inCore);
     const scoreIndex = ev.sounding_index ?? ev.score_index;
-    const miss = !ev.is_rest && scoreIndex != null && mapped.size > 0 && !mapped.has(scoreIndex);
+    const miss = !ev.is_rest && scoreIndex != null && mapped.size > 0 && !mapped.has(scoreIndex) && !scoreNoteUnassessed(scoreIndex);
     hit.classList.toggle("core", inCore);
     hit.classList.toggle("pad", inPad);
     hit.classList.toggle("miss", miss && !inCore && !inPad);
@@ -2213,7 +2217,7 @@ function renderMelodyStrip() {
   const mapped = mappedScoreIndices();
   const staffEvents = events.map((ev) => {
     const scoreIndex = ev.sounding_index ?? ev.score_index;
-    const miss = !ev.is_rest && scoreIndex != null && mapped.size > 0 && !mapped.has(scoreIndex);
+    const miss = !ev.is_rest && scoreIndex != null && mapped.size > 0 && !mapped.has(scoreIndex) && !scoreNoteUnassessed(scoreIndex);
     return miss ? { ...ev, alignKind: "miss" } : ev;
   });
   const staff = buildStaffSvg(staffEvents, pxPerSec, width, {
@@ -2608,6 +2612,14 @@ function renderAlignmentInfo(data) {
       (s.same_pitch_merged != null ? ` ${s.same_pitch_merged} same-pitch boundaries merged.` : "") +
       `</div>`
     : "";
+  const location = s.passage_location;
+  const passageNotice = location
+    ? `<div class="summary">${location.status === "ambiguous"
+        ? "Passage location is ambiguous; labels withheld."
+        : location.start_measure != null
+          ? `Located passage: measures ${escapeXml(String(location.start_measure))}–${escapeXml(String(location.end_measure))}. Notes outside the passage are unassessed.`
+          : `Passage search: ${escapeXml(String(location.status))}.`}</div>`
+    : "";
   el.innerHTML =
     `<div class="summary">` +
     `${escapeXml(String(engine))}${version} · ` +
@@ -2616,6 +2628,7 @@ function renderAlignmentInfo(data) {
     `${s.event_count ?? 0} aligned events` +
     `</div>` +
     reviewNotice +
+    passageNotice +
     orderWarn +
     `<table><thead><tr>` +
     `<th>m</th><th>note</th><th>perf start</th><th>perf end</th><th>dur</th><th>residual</th>` +

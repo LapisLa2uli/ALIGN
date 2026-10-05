@@ -31,6 +31,22 @@ The model stays loaded on the GPU until the service exits. Stop it before large
 ALIGN training jobs if they need the same VRAM. Requests run one at a time;
 another concurrent synthesis gets HTTP 409. Long narration can take minutes.
 
+## Recover a stopped speech service
+
+If Studio reports a local Fish connection failure, check `/v1/health` using the
+command above. A refused connection means no service is listening; start Fish
+with `./DataCreate/scripts/start_fish_local.ps1 -Foreground` and wait for
+`Application startup complete`, then click **Retry spoken feedback** in Studio.
+Keep that terminal running while using Studio. Starting Studio alone does not
+start Fish.
+
+The retry reuses the saved playback plan and its reference/performance snippets.
+For command-line recovery, use `--plan path/to/playback_plan.json` when that file
+exists; use `--text path/to/feedback.txt` only for plain narration without a plan.
+For a timeout, check the Fish terminal first: synthesis may still be running,
+so wait for it to finish before retrying. These failures do not require another
+LLM request or re-uploading the recording.
+
 ## Produce an MP3
 
 Use the existing feedback environment/entry point:
@@ -84,7 +100,7 @@ datacreate-feedback --text path/to/feedback.txt `
 ```
 
 For label input, this trial config uses `gpt-6-luna` at
-`https://api.ssstoken.net/v1` and expects its key in `OPENAI_API_KEY`.
+`https://api.ssstoken.net/v1` and expects its key in `SSSTOKEN_API_KEY`.
 Reference assets are local and ignored by Git; another installation needs its
 own paired reference files before using this config.
 

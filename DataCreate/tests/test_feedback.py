@@ -82,6 +82,59 @@ def test_dry_run_requires_no_keys_and_makes_no_calls(labels, tmp_path, monkeypat
     assert not (output / "feedback.mp3").exists()
 
 
+@pytest.mark.parametrize("metadata", [
+    {"status": "alignment_uncertain"},
+    {"summary": {"status": "alignment_uncertain"}},
+    {"agent_labeling": {"status": "alignment_uncertain"}},
+])
+def test_uncertain_model_documents_cannot_become_empty_feedback(metadata):
+    with pytest.raises(FeedbackError, match="not a zero-error result"):
+        prepare_report({"labels": [], **metadata})
+
+
+def test_spoken_budget_keeps_whole_points_and_audio_pairs():
+    from datacreate.feedback import validate_playback_plan
+    points = [{"label_index": i, "intro": "In bar two, listen to the score.",
+               "performance_intro": "Now listen to your performance.",
+               "feedback": " ".join(["Practice"] * 28) + ".",
+               "reference_clip": {"file": f"reference-{i}.wav"},
+               "clip": {"file": f"excerpt-{i}.wav"}} for i in range(3)]
+    plan = validate_playback_plan({"points": points}, FeedbackConfig())
+    assert len(plan["points"]) == 2
+    assert plan["points"][1]["feedback"] == points[1]["feedback"]
+    assert plan["points"][1]["clip"] == points[1]["clip"]
+    assert plan["points"][1]["reference_clip"] == points[1]["reference_clip"]
+    points[0]["feedback"] = "Practice " * 101
+    with pytest.raises(FeedbackError, match="100-word"):
+        validate_playback_plan({"points": points[:1]}, FeedbackConfig())
+
+
+def test_audio_plan_prefers_distinct_passages_before_applying_word_budget():
+    from datacreate.feedback import validate_playback_plan
+    report = {"labels": [
+        {"type": "wrong_note", "score_location": {"spans": [{"bar": 12}]}},
+        {"type": "wrong_note", "score_location": {"spans": [{"bar": 12}]}},
+        {"type": "repetition", "score_location": {"spans": [{"bar": 1}, {"bar": 3}]}},
+    ]}
+    points = [{"label_index": i, "intro": "Listen to the score.",
+               "performance_intro": "Listen to your performance.",
+               "feedback": "Practice " * 30} for i in range(3)]
+    plan = validate_playback_plan({"points": points}, FeedbackConfig(), report, {0, 1, 2})
+    assert [p["label_index"] for p in plan["points"]] == [0, 2]
+    assert len(report["labels"]) == 3
+
+
+def test_candidates_check_alignment_status_before_narration(tmp_path):
+    source = tmp_path / "candidates.json"
+    source.write_text('{"labels": []}')
+    (tmp_path / "note_alignment_v2.json").write_text(json.dumps({
+        "summary": {"status": "alignment_uncertain"}, "labels": []}))
+    with httpx.Client(transport=httpx.MockTransport(lambda _: pytest.fail("Network call"))) as client:
+        with pytest.raises(FeedbackError, match="not a zero-error result"):
+            run_feedback(source, output_dir=tmp_path / "run", client=client)
+    assert not (tmp_path / "run").exists()
+
+
 def test_missing_tts_key_fails_before_paid_llm_call(labels, tmp_path, credentials, monkeypatch):
     monkeypatch.delenv("FISH_AUDIO_API_KEY")
     with httpx.Client(transport=httpx.MockTransport(lambda _: pytest.fail("Network call"))) as client:
@@ -165,6 +218,25 @@ def test_interrupted_audio_stream_is_cleaned(tmp_path, credentials):
     assert not list((tmp_path / "run").glob("*.part"))
 
 
+@pytest.mark.parametrize("exception, expected", [
+    (httpx.ConnectError, "Local Fish connection failed"),
+    (httpx.ReadTimeout, "Local Fish speech request timed out"),
+])
+def test_local_fish_transport_error_preserves_plan_recovery(tmp_path, exception, expected):
+    source = tmp_path / "speech.txt"
+    source.write_text("Try the passage slowly.")
+    config = replace(FeedbackConfig(), fish_local=True, fish_base_url="http://127.0.0.1:8081")
+    def fail(request):
+        raise exception("private connection details", request=request)
+    with httpx.Client(transport=httpx.MockTransport(fail)) as client:
+        with pytest.raises(FeedbackError, match=expected) as error:
+            run_feedback(source, text_input=True, config=config, output_dir=tmp_path / "run", client=client)
+    assert "playback_plan.json with --plan" in str(error.value)
+    assert "private connection details" not in str(error.value)
+    assert (tmp_path / "run" / "feedback.txt").exists()
+    assert not list((tmp_path / "run").glob("*.part"))
+
+
 def test_text_only_needs_no_fish_credentials(labels, tmp_path, monkeypatch):
     monkeypatch.setenv("API_302_KEY", "key")
     monkeypatch.delenv("FISH_AUDIO_API_KEY", raising=False)
@@ -182,6 +254,29 @@ def test_text_only_needs_no_fish_credentials(labels, tmp_path, monkeypatch):
 def test_invalid_reports_rejected(document):
     with pytest.raises(FeedbackError):
         prepare_report(document)
+
+
+def test_empty_report_is_explicit_and_does_not_invent_passages(tmp_path, monkeypatch):
+    from datacreate.feedback import EMPTY_REPORT_NARRATION, PIPELINE_REVISION
+    source = tmp_path / "candidates.json"
+    source.write_text('{"labels": []}')
+    monkeypatch.delenv("API_302_KEY", raising=False)
+    calls = []
+    config = FeedbackConfig(fish_local=True, fish_base_url="http://127.0.0.1:8081")
+    def handle(request):
+        calls.append(request.url.path)
+        assert request.url.path == "/v1/tts"
+        assert json.loads(request.content)["text"] == EMPTY_REPORT_NARRATION
+        return httpx.Response(200, headers={"content-type": "audio/mpeg"}, content=b"ID3test-audio")
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        output = run_feedback(source, config=config, client=client, output_dir=tmp_path / "run")
+    manifest = json.loads((output / "feedback.json").read_text())
+    assert calls == ["/v1/tts"]
+    assert manifest["label_count"] == 0 and manifest["no_issues_marked"]
+    assert manifest["excerpt_reason"] == "no_marked_issues"
+    assert manifest["llm_model"] is None
+    assert manifest["pipeline_revision"] == PIPELINE_REVISION
+    assert not manifest["performance_excerpts"] and not manifest["reference_excerpts"]
 
 
 def test_empty_unknown_source_and_repetition_semantics():

@@ -271,6 +271,7 @@ def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path
                 }.items()
             },
         }
+        payload["provenance"]["pipeline_revision"] = "v9-passage-v1"
         (sample / "note_alignment_v2.json").write_text(json.dumps(payload))
         from datacreate.align_bridge import _compatibility_alignment
         _compatibility_alignment(payload, sample, config)

@@ -3,7 +3,7 @@ import pytest
 from music21 import stream,note
 from alignmodel.joint.index import ScoreEventIndex,JointEvent
 from alignmodel.joint.datacreate_v9 import gui_documents
-from datacreate.note_alignment import _normalize_transcribed_notes
+from datacreate.note_alignment import _normalize_transcribed_notes, build_note_alignment
 
 
 def test_gui_keeps_multinote_identity_dropped_candidates_and_uncertain_state(tmp_path):
@@ -27,6 +27,9 @@ def test_gui_keeps_multinote_identity_dropped_candidates_and_uncertain_state(tmp
     assert normalized[1]['ignored'] and normalized[1]['score_event_indices']==[]
     assert [e['score_index'] for e in gui['events']]==[0,1,2]
     assert gui['summary']['status']=='alignment_uncertain' and not labels['labels']
+    import json
+    (tmp_path/'note_alignment_v2.json').write_text(json.dumps(gui))
+    assert build_note_alignment(tmp_path)['unassessed_score_event_indices']==[0,1,2]
 
 
 def test_gui_refuses_mismatched_score_identity(tmp_path):

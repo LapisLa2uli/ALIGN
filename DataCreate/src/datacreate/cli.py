@@ -43,10 +43,11 @@ def main() -> None:
     batch_range.add_argument("--id-width", type=int, default=3)
     batch_range.add_argument("--no-skip-existing", action="store_true")
 
-    sub.add_parser(
+    serve = sub.add_parser(
         "serve",
         help="Launch annotation web UI (also /compare for gold vs Model A)",
     )
+    serve.add_argument("--port", type=int, default=8765, help="Local GUI port (default: 8765)")
     realign = sub.add_parser(
         "realign-corpus",
         help="Re-align samples; relocate unlabeled score excerpts from RawData scores",
@@ -139,7 +140,7 @@ def main() -> None:
         if failed:
             raise SystemExit(1)
     elif args.command == "serve":
-        serve_main(config)
+        serve_main(config, port=args.port)
 
 
 def batch_main() -> None:
@@ -183,15 +184,27 @@ def validate_main() -> None:
     print("Validation passed.")
 
 
-def serve_main(config: PipelineConfig | None = None) -> None:
-    from datacreate.web.app import create_app
+def serve_main(config: PipelineConfig | None = None, *, port: int = 8765) -> None:
+    from datacreate.web.server import bind_gui_socket
 
-    config = config or PipelineConfig.load()
-    app = create_app(config)
-    print("Annotator     http://127.0.0.1:8765/")
-    print("Gold vs model http://127.0.0.1:8765/compare")
-    print("Practice      http://127.0.0.1:8765/studio")
-    uvicorn.run(app, host="127.0.0.1", port=8765, log_level="info")
+    if config is None:
+        parser = argparse.ArgumentParser(description="Launch the local MusicEval GUI")
+        parser.add_argument("--config", type=Path)
+        parser.add_argument("--port", type=int, default=port)
+        args = parser.parse_args()
+        config, port = PipelineConfig.load(args.config), args.port
+    try:
+        listener = bind_gui_socket(port)
+    except ValueError as error:
+        raise SystemExit(str(error)) from None
+    with listener:
+        from datacreate.web.app import create_app
+        app = create_app(config)
+        print(f"Annotator     http://127.0.0.1:{port}/")
+        print(f"Gold vs model http://127.0.0.1:{port}/compare")
+        print(f"Practice      http://127.0.0.1:{port}/studio")
+        server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="info"))
+        server.run(sockets=[listener])
 
 
 if __name__ == "__main__":

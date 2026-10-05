@@ -15,12 +15,33 @@ from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, Uploa
 from fastapi.responses import FileResponse, HTMLResponse
 
 from datacreate.config import PipelineConfig
-from datacreate.feedback import FeedbackConfig, run_feedback
+from datacreate.analysis_status import sample_assessment, UNCERTAIN_MESSAGE
+from datacreate.credentials import credential_value
+from datacreate.feedback import FeedbackConfig, PIPELINE_REVISION, run_feedback
+
+
+def feedback_failure_message(error):
+    """Expose actionable provider categories without leaking response text or paths."""
+    message = str(error)
+    if "LLM network request failed" in message:
+        return "The narration service could not be reached. Your analysis is saved. Check the server's network connection, then retry spoken feedback."
+    if "LLM returned HTTP 401" in message:
+        return "The narration service rejected its API key. Update SSSTOKEN_API_KEY for the server, then retry spoken feedback."
+    if "Each feedback point needs" in message or "playback JSON" in message:
+        return "The narration service returned an incomplete audio plan. Your analysis is saved; retry spoken feedback."
+    if "Local Fish connection failed" in message:
+        return "Cannot connect to local Fish Speech. Run DataCreate/scripts/start_fish_local.ps1 -Foreground, wait for startup to finish, then retry spoken feedback. Your narration and snippets are saved."
+    if "Local Fish speech request timed out" in message:
+        return "Local Fish Speech timed out. Check its terminal and wait for any active synthesis to finish, then retry spoken feedback. Your narration and snippets are saved."
+    if "Fish" in message or "Speech" in message or "speech" in message:
+        return "Speech audio could not be created. Check the local Fish service, then retry spoken feedback. Your saved feedback will be reused when available."
+    return "Creating spoken feedback failed. Your analysis is saved. Check the server log, then retry spoken feedback."
 
 WEB = Path(__file__).resolve().parent
 MAX_SECONDS = 300
 ANALYSIS_STEPS = [
     ("transcriber", "Transcriber", "Transcribing the notes in your performance"),
+    ("locator", "Score passage", "Finding the passage you played in the full score"),
     ("aligner", "Aligner", "Matching your performance to the score"),
     ("labels", "Label analysis", "Analyzing possible issues and score locations"),
     ("narration", "Narration", "Writing your spoken feedback"),
@@ -32,11 +53,11 @@ def analysis_progress(state, sample):
     """Stage milestones, never an estimate of elapsed time or model completion."""
     stage = state.get("stage")
     step = state.get("analysis_step")
-    if stage == "alignment":
+    if stage == "alignment" and not (state["status"] == "failed" and step):
         step = "transcriber"
         try:
             reported = json.loads((sample / "alignment_progress.json").read_text())["step"]
-            if reported in {"transcriber", "aligner", "labels"}:
+            if reported in {"transcriber", "locator", "aligner", "labels"}:
                 step = reported
         except (OSError, ValueError, KeyError):
             pass
@@ -86,7 +107,7 @@ class StudioJobs:
             required = [config.llm_api_key_env]
             if not config.fish_local:
                 required += [config.fish_api_key_env, config.fish_reference_id_env]
-            missing = [key for key in required if not os.environ.get(key, "").strip()]
+            missing = [key for key in required if not credential_value(key)]
             return {"ready": not missing, "message": "Missing server environment: " + ", ".join(missing) if missing else "Ready for your next take", "instrument": config.instrument}
         except (ValueError, OSError):
             return {"ready": False, "message": "Check the server's ALIGN_FEEDBACK_CONFIG file.", "instrument": "B-flat clarinet"}
@@ -114,12 +135,29 @@ class StudioJobs:
         if state["status"] == "processing" and self.active != job_id:
             state.update(status="failed", message="The server restarted. Start a new take, or retry feedback if analysis finished.")
         sample = self.root / "samples" / job_id
-        state["can_retry"] = state["status"] == "failed" and (sample / "candidates.json").exists()
+        assessment = sample_assessment(sample)
+        state["assessment"] = assessment
+        uncertain = assessment is not None and assessment["status"] != "ok"
+        # Also correct old completed jobs that narrated an abstention as an empty report.
+        if uncertain and state["status"] != "processing":
+            state.update(status="failed", stage="alignment", analysis_step="labels", message=assessment['message'])
+        state["can_retry"] = not uncertain and state["status"] == "failed" and (sample / "candidates.json").exists()
         state["analysis_progress"] = analysis_progress(state, sample)
         if state["status"] == "processing" and state["analysis_progress"]:
             state["message"] = state["analysis_progress"]["message"]
         text = directory / "feedback" / "feedback.txt"
-        if text.exists():
+        manifest_path = directory / "feedback" / "feedback.json"
+        if manifest_path.exists() and not uncertain:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            state["feedback_details"] = {key: manifest.get(key) for key in (
+                "pipeline_revision", "label_count", "no_issues_marked", "excerpt_reason",
+                "reference_excerpts", "performance_excerpts", "fish_reference_id")}
+            # Older runs lacked these fields; show the reason without rewriting saved output.
+            report_path = directory / "feedback" / "report.json"
+            if state["feedback_details"]["label_count"] is None and report_path.exists():
+                count = json.loads(report_path.read_text(encoding="utf-8")).get("label_count")
+                state["feedback_details"].update(label_count=count, no_issues_marked=count == 0)
+        if text.exists() and not uncertain:
             state["narration"] = text.read_text(encoding="utf-8")
         if state["status"] == "complete":
             state["audio_url"] = f"/api/studio/takes/{job_id}/audio"
@@ -153,6 +191,11 @@ class StudioJobs:
                     self.save(job_id, status="processing", stage=key, message=stage)
                     action(job)
             stage = "Creating spoken feedback"
+            assessment = sample_assessment(sample)
+            if assessment is not None and assessment["status"] != "ok":
+                self.save(job_id, status="failed", stage="alignment", analysis_step="labels",
+                          message=assessment['message'])
+                return
             self.save(job_id, status="processing", stage="feedback", analysis_step="labels", message=stage)
             output = directory / "feedback"
             # Preserve failed attempts; a speech retry reuses the saved narration.
@@ -171,9 +214,10 @@ class StudioJobs:
             run_feedback(source, config=config, output_dir=output, text_input=text_input,
                          plan_input=plan_input, progress=feedback_progress)
             self.save(job_id, status="complete", stage="complete", message="Your feedback is ready")
-        except Exception:
+        except Exception as error:
             logging.getLogger(__name__).exception("Studio take %s failed at %s", job_id, stage)
-            self.save(job_id, status="failed", message=f"{stage} failed. Check the server log and provider configuration.")
+            message = feedback_failure_message(error) if stage == "Creating spoken feedback" else f"{stage} failed. Check the server log."
+            self.save(job_id, status="failed", message=message)
         finally:
             self.release()
 
@@ -219,11 +263,15 @@ def studio_router(config: PipelineConfig):
 
     @router.get("/studio", response_class=HTMLResponse)
     def studio():
-        return HTMLResponse((WEB / "templates" / "studio.html").read_text(encoding="utf-8"), headers={"Cache-Control": "no-store"})
+        html = (WEB / "templates" / "studio.html").read_text(encoding="utf-8")
+        for asset in ("studio.js", "studio.css"):
+            version = (WEB / "static" / asset).stat().st_mtime_ns
+            html = html.replace(f"/static/{asset}", f"/static/{asset}?v={version}")
+        return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
     @router.get("/api/studio/config")
     def settings():
-        return {**jobs.readiness(), "max_seconds": MAX_SECONDS,
+        return {**jobs.readiness(), "max_seconds": MAX_SECONDS, "feedback_pipeline_revision": PIPELINE_REVISION,
                 "scores": [{"id": p.name, "name": p.stem.replace("_", " ")} for p in scores()]}
 
     @router.post("/api/studio/takes", status_code=202)

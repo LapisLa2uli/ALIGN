@@ -5,7 +5,8 @@ from pathlib import Path
 
 from datacreate.audio_utils import load_audio
 import librosa
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 import numpy as np
 
 from datacreate.config import PipelineConfig
@@ -51,7 +52,10 @@ def extract_mels(
 
 
 def _save_preview(log_mel: np.ndarray, path: Path, title: str) -> None:
-    fig, ax = plt.subplots(figsize=(10, 4))
+    # Background Studio jobs render files, not native Matplotlib windows.
+    fig = Figure(figsize=(10, 4))
+    FigureCanvasAgg(fig)
+    ax = fig.subplots()
     img = librosa.display.specshow(
         log_mel,
         x_axis="time",
@@ -64,4 +68,4 @@ def _save_preview(log_mel: np.ndarray, path: Path, title: str) -> None:
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=120)
-    plt.close(fig)
+    fig.clear()

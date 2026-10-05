@@ -3,6 +3,13 @@
 Open **http://127.0.0.1:8765/studio** after starting `datacreate serve` (or
 `datacreate-serve`). There is also a Practice studio link in the annotation UI.
 
+If port 8765 is already in use, the GUI may already be running. Open the printed
+URL instead of launching another copy. For a separate instance, use
+`datacreate serve --port 8767` (or `datacreate-serve --port 8767`), choosing an
+unused port. To reload changed Python code, stop the existing server with Ctrl+C
+in its terminal and start it again. The launcher reserves the chosen port before
+starting the app and reports a clear message when the port is occupied.
+
 1. Select a score from the configured `paths.raw_data_score` directory or upload
    MusicXML (`.musicxml`, `.xml`, `.mxl`, up to 10 MB). Use the score for the passage
    you intend to play; this page does not select measure excerpts.
@@ -33,7 +40,7 @@ complete only after the MP3 is saved.
 Use the existing DataCreate environment with the score renderer and ALIGN model
 installed. The studio uses `config/default.yaml` (or the configuration passed to
 the server), including its alignment Python, checkpoint, device, and timeout.
-It runs the configured GUI alignment pipeline, not experimental stack v9.
+It runs the configured GUI alignment pipeline; the current default is experimental stack v9.
 Its predicted `candidates.json` is passed to the spoken-feedback service;
 the empty human label template is never used as the feedback source.
 
@@ -47,6 +54,13 @@ Speech retries reuse `playback_plan.json` when present, preserving the excerpts;
 plain narration retries reuse `feedback.txt`. The page plays the resulting
 `feedback.mp3` directly.
 
+The studio selects the installed `teacher_lj` voice and enables reference and
+performance snippets. They require detected labels with usable locations and
+times. If no issues are marked, the page and narration explicitly explain why
+no targeted clips are available. New output manifests record the feedback
+pipeline revision and selected voice; the config API exposes the loaded revision.
+See [the Interpretation Pipeline audit](interpretation_studio_audit.md).
+
 Configure the providers as described in [spoken_feedback.md](spoken_feedback.md).
 `ALIGN_FEEDBACK_CONFIG` optionally selects a feedback YAML file; without it,
 `DataCreate/config/feedback.local.yaml` is used (ssstoken narration with
@@ -56,7 +70,7 @@ at `http://127.0.0.1:8081`). No Fish API key or hosted voice ID is needed.
 ```powershell
 conda activate MusicEval
 ./DataCreate/scripts/start_fish_local.ps1
-# Set OPENAI_API_KEY to your ssstoken key in this shell for narration generation.
+# SSSTOKEN_API_KEY must be available for narration generation.
 datacreate serve
 ```
 
@@ -66,6 +80,31 @@ Fish credentials. Restart the studio after changing environment variables.
 The page reports missing server
 environment variables; credentials are never sent to the browser. Configuration
 readiness does not prove the provider, renderer, or model is available.
+
+The studio uses the dedicated `SSSTOKEN_API_KEY` variable, so another app's
+`OPENAI_API_KEY` cannot override the ssstoken credential. When the key is saved
+as a Windows user environment variable, run `datacreate serve` directly. If the
+process has not inherited `SSSTOKEN_API_KEY`, both readiness checks and provider
+requests read it directly from your Windows user environment. No terminal
+application restart is required. Explicit process values take precedence, and
+an explicitly empty value disables the fallback. Restart the GUI once after
+updating its Python code.
+
+If ssstoken returns HTTP 401, check that its saved credential is still valid.
+As an alternative to the persistent user variable, stop the studio and launch
+it with the existing provider-and-key file explicitly:
+
+```powershell
+conda activate MusicEval
+./DataCreate/scripts/start_studio.ps1
+```
+
+This launcher reads the ignored repository-root `llmauth.txt`, verifies that it
+names ssstoken, and loads only its key into the server process. It prints no
+credentials, restores the parent shell's environment on exit, and runs in the
+foreground. Optional flags: `-Port 8767`, `-Python path/to/python.exe`, and
+`-KeyFile path/to/provider-and-key.txt`. A revoked or expired key will still need
+replacement; the launcher does not establish provider authorization.
 Microphone recording still works while providers are unconfigured; a failed
 submission keeps the take in the page for another attempt.
 
@@ -96,3 +135,18 @@ request. Retrying a timed-out provider request can incur another provider charge
 HTTP integration tests stub GPU/rendering and speech providers. They verify
 orchestration, upload limits, recovery, and artifact delivery, but do not establish
 real model accuracy or provider availability.
+
+## Zero labels and inconclusive analysis
+
+Studio checks the model status in `note_alignment_v2.json` before narration.
+An `alignment_uncertain` result means the detector withheld feedback; it is not
+a successful evaluation with no errors. Studio stops at label analysis, explains
+that the recording and selected score need checking, and disables speech-only
+retry. The same check applies to older saved jobs and direct narration of
+`candidates.json`. Old audio remains on disk but is not offered as valid feedback.
+
+An `ok` result can legitimately have zero labels. The status API exposes
+`assessment`, including label count, withheld extra/missed-note count, and the
+model's match fraction. This fraction is an alignment diagnostic, not a grade.
+The page explains when candidates were filtered by confidence. Human annotation
+templates (`labels.json`) are not the prediction source.

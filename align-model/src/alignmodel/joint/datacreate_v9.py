@@ -58,6 +58,8 @@ def gui_documents(sample, index, alignment, feedback, *, duration, provenance):
             if r.get('start_time') is None or r.get('end_time') is None:label.pop('repeats_label_range')
         labels.append(label)
     summary={'engine':'align-joint','backend':'ALIGN v9 (experimental)',
+        'pipeline_revision':info.get('pipeline_revision'),
+        'passage_location':info.get('passage_location'),
         'candidate_generation':'dual-mel CTC + same-pitch-v2',
         'event_count':len(events),'transcribed_note_count':len(transcribed),
         'mapped_note_count':sum(i is not None for i in mapping),

@@ -26,7 +26,7 @@ def harness(tmp_path, monkeypatch):
     score.write_text("<score-partwise/>")
     config = PipelineConfig(paths={"work_dir": str(tmp_path), "raw_data_score": str(score)})
     monkeypatch.delenv("ALIGN_FEEDBACK_CONFIG", raising=False)
-    for key in ("OPENAI_API_KEY", "API_302_KEY", "FISH_AUDIO_API_KEY", "FISH_AUDIO_REFERENCE_ID"):
+    for key in ("SSSTOKEN_API_KEY", "API_302_KEY", "FISH_AUDIO_API_KEY", "FISH_AUDIO_REFERENCE_ID"):
         monkeypatch.setenv(key, "test-value")
     calls = []
 
@@ -69,7 +69,11 @@ def submit(client, audio=None, score_id="piece.musicxml"):
 
 def test_pipeline_to_mp3_and_status_recovery(harness):
     client, calls, config, _ = harness
-    assert client.get("/studio").status_code == 200
+    page = client.get("/studio")
+    assert page.status_code == 200
+    assert page.headers["cache-control"] == "no-store"
+    assert '/static/studio.js?v=' in page.text
+    assert '/static/studio.css?v=' in page.text
     settings = client.get("/api/studio/config").json()
     assert settings["ready"] and settings["scores"][0]["id"] == "piece.musicxml"
     response = submit(client)
@@ -84,6 +88,61 @@ def test_pipeline_to_mp3_and_status_recovery(harness):
     assert calls == ["score", "reference", "audio", "alignment", "features", "feedback"]
     assert studio.StudioJobs(config).status(job_id)["status"] == "complete"
     assert client.post(f"/api/studio/takes/{job_id}/retry").status_code == 409
+
+
+def test_uncertain_alignment_stops_before_narration(harness, monkeypatch):
+    client, calls, _, _ = harness
+    original = studio.make_pipeline
+
+    class UncertainPipeline(original):
+        def run_stage5(self, job):
+            super().run_stage5(job)
+            (job / "candidates.json").write_text('{"labels": []}')
+            (job / "note_alignment_v2.json").write_text(json.dumps({
+                "labels": [], "summary": {"status": "alignment_uncertain",
+                    "score_event_count": 583, "transcribed_note_count": 87},
+                "diagnostics": {"match_fraction": .4138, "minimum_match_fraction": .45,
+                                "missed_withheld": 481}}))
+
+    monkeypatch.setattr(studio, "make_pipeline", UncertainPipeline)
+    job_id = submit(client).json()["id"]
+    state = client.get(f"/api/studio/takes/{job_id}").json()
+    assert state["status"] == "failed"
+    assert "not a zero-error result" in state["message"]
+    assert state["assessment"]["withheld_count"] == 481
+    assert state["assessment"]["score_event_count"] == 583
+    assert not state["can_retry"]
+    assert "feedback" not in calls
+    assert state["analysis_progress"]["current"] == "labels"
+    assert next(s for s in state["analysis_progress"]["steps"] if s['id']=='labels')["state"] == "failed"
+    assert client.post(f"/api/studio/takes/{job_id}/retry").status_code == 409
+    assert client.get(f"/api/studio/takes/{job_id}/audio").status_code == 404
+
+
+def test_old_uncertain_result_is_not_offered_as_success(harness):
+    client, _, config, _ = harness
+    job_id = submit(client).json()["id"]
+    jobs = studio.StudioJobs(config)
+    sample = jobs.root / "samples" / job_id
+    (sample / "note_alignment_v2.json").write_text(json.dumps({
+        "summary": {"status": "alignment_uncertain"}, "labels": []}))
+    state = client.get(f"/api/studio/takes/{job_id}").json()
+    assert state["status"] == "failed"
+    assert "narration" not in state and "audio_url" not in state
+    assert (jobs.directory(job_id) / "feedback" / "feedback.mp3").exists()
+
+
+def test_empty_success_explains_withheld_candidates(harness):
+    client, _, config, _ = harness
+    job_id = submit(client).json()["id"]
+    sample = studio.StudioJobs(config).root / "samples" / job_id
+    (sample / "note_alignment_v2.json").write_text(json.dumps({
+        "summary": {"status": "ok"}, "labels": [],
+        "diagnostics": {"extras_withheld": 2, "match_fraction": .96}}))
+    state = client.get(f"/api/studio/takes/{job_id}").json()
+    assert state["status"] == "complete"
+    assert state["assessment"]["label_count"] == 0
+    assert "2 possible" in state["assessment"]["message"]
 
 
 @pytest.mark.parametrize("audio", [b"invalid", wav_bytes(.5), wav_bytes(1, channels=2), wav_bytes()[:-5]], ids=["invalid", "short", "stereo", "truncated"])
@@ -105,10 +164,28 @@ def test_score_paths_are_allowlisted(harness):
 
 def test_missing_credentials_does_not_start_pipeline(harness, monkeypatch):
     client, calls, _, _ = harness
-    monkeypatch.delenv("OPENAI_API_KEY")
+    monkeypatch.setenv("SSSTOKEN_API_KEY", "")
     assert client.get("/api/studio/config").json()["ready"] is False
     assert submit(client).status_code == 503
     assert not calls
+
+
+@pytest.mark.parametrize("failure, expected", [
+    ("LLM network request failed. private/path", "network connection"),
+    ("LLM returned HTTP 401. private/path", "SSSTOKEN_API_KEY"),
+    ("Each feedback point needs spoken intro text. private/path", "incomplete audio plan"),
+    ("Speech network request failed. private/path", "local Fish service"),
+])
+def test_provider_failure_has_actionable_safe_message(harness, monkeypatch, failure, expected):
+    client, _, _, _ = harness
+    def fail(*args, **kwargs):
+        raise RuntimeError(failure)
+    monkeypatch.setattr(studio, "run_feedback", fail)
+    job_id = submit(client).json()["id"]
+    state = client.get(f"/api/studio/takes/{job_id}").json()
+    assert state["status"] == "failed" and state["can_retry"]
+    assert expected in state["message"]
+    assert "private/path" not in state["message"]
 
 
 def test_default_local_fish_needs_no_fish_credentials(harness, monkeypatch):
@@ -118,10 +195,12 @@ def test_default_local_fish_needs_no_fish_credentials(harness, monkeypatch):
     feedback = studio.StudioJobs(config).feedback_config()
     assert feedback.llm_base_url == "https://api.ssstoken.net/v1"
     assert feedback.llm_model == "gpt-6-luna"
-    assert feedback.llm_api_key_env == "OPENAI_API_KEY"
+    assert feedback.llm_api_key_env == "SSSTOKEN_API_KEY"
     assert feedback.fish_local is True
     assert feedback.fish_base_url == "http://127.0.0.1:8081"
     assert feedback.fish_model == "fish-speech-1.5"
+    assert feedback.fish_local_reference_id == "teacher_lj"
+    assert feedback.include_performance is True
     assert client.get("/api/studio/config").json()["ready"] is True
     assert submit(client).status_code == 202
 
@@ -188,7 +267,7 @@ def test_analysis_progress_reads_live_model_stage_and_does_not_fake_completion(h
     jobs.reserve(job_id)
     jobs.save(job_id, status="processing", stage="alignment")
     assert jobs.status(job_id)["analysis_progress"]["current"] == "transcriber"
-    for step, completed in [("transcriber", 0), ("aligner", 1), ("labels", 2)]:
+    for step, completed in [("transcriber", 0), ("locator", 1), ("aligner", 2), ("labels", 3)]:
         (sample / "alignment_progress.json").write_text(json.dumps({"step": step}))
         progress = jobs.status(job_id)["analysis_progress"]
         assert progress["current"] == step
@@ -197,15 +276,15 @@ def test_analysis_progress_reads_live_model_stage_and_does_not_fake_completion(h
     # An interrupted atomic write must not break status polling.
     (sample / "alignment_progress.json").write_text("invalid")
     assert jobs.status(job_id)["analysis_progress"]["current"] == "transcriber"
-    for step, completed in [("labels", 2), ("narration", 3), ("speech", 4)]:
+    for step, completed in [("labels", 3), ("narration", 4), ("speech", 5)]:
         jobs.save(job_id, stage="feedback", analysis_step=step)
         assert jobs.status(job_id)["analysis_progress"]["completed"] == completed
     jobs.save(job_id, status="failed")
     progress = jobs.status(job_id)["analysis_progress"]
-    assert progress["completed"] == 4
-    assert progress["steps"][4]["state"] == "failed"
+    assert progress["completed"] == 5
+    assert progress["steps"][5]["state"] == "failed"
     jobs.save(job_id, status="complete", stage="complete")
-    assert jobs.status(job_id)["analysis_progress"]["completed"] == 5
+    assert jobs.status(job_id)["analysis_progress"]["completed"] == 6
     assert all(s["state"] == "complete" for s in jobs.status(job_id)["analysis_progress"]["steps"])
 
 
@@ -280,6 +359,7 @@ def test_studio_uses_real_feedback_pipeline_and_retries_saved_plan(harness, monk
             return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps({"points": [point]})}}]})
         assert str(request.url) == "http://127.0.0.1:8081/v1/tts"
         assert "authorization" not in request.headers
+        assert body["reference_id"] == "teacher_lj"
         if fail_speech:
             return httpx.Response(503)
         return httpx.Response(200, headers={"content-type": "audio/mpeg"}, content=speech.getvalue())
@@ -308,6 +388,15 @@ def test_studio_uses_real_feedback_pipeline_and_retries_saved_plan(harness, monk
     timeline = json.loads((output / "timeline.json").read_text())["segments"]
     expected = ["speech", "reference", "speech", "performance", "speech"] if with_reference else ["speech", "performance", "speech"]
     assert [segment["kind"] for segment in timeline] == expected
+    levels = [segment["output_lufs"] for segment in timeline if segment["output_lufs"] is not None]
+    assert max(levels) - min(levels) < 1.0
+    for i, segment in enumerate(timeline):
+        if segment["kind"] in {"reference", "performance"}:
+            assert segment["reverb_mix"] == .08
+            assert segment["silence_after_seconds"] == .5
+            assert segment["start_time"] - timeline[i - 1]["end_time"] == pytest.approx(.5)
+    assert state["feedback_details"]["pipeline_revision"] == studio.PIPELINE_REVISION
+    assert state["feedback_details"]["fish_reference_id"] == "teacher_lj"
     delivered = client.get(state["audio_url"])
     assert delivered.content == (output / "feedback.mp3").read_bytes()
     decoded, rate = sf.read(BytesIO(delivered.content), always_2d=True)

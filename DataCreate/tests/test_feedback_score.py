@@ -80,3 +80,53 @@ def test_reference_midi_uses_tempo_changes_and_written_pitch_transposition(tmp_p
     midi.save(path)
     with pytest.raises(ValueError, match="disagree|match"):
         reference_note_times(score, path)
+
+
+def test_rendered_trill_and_grace_keep_canonical_identity(tmp_path):
+    from music21 import expressions
+    score, part = stream.Score(), stream.Part()
+    part.append(note.Note('C4', quarterLength=1))
+    trill = note.Note('D4', quarterLength=1)
+    trill.expressions.append(expressions.Trill())
+    part.append(trill)
+    part.append(note.Note('D4').getGrace())
+    part.append(note.Note('E4', quarterLength=1))
+    part.append(note.Note('F4', quarterLength=1))
+    score.append(part)
+    path = tmp_path / 'score.musicxml'
+    score.write('musicxml', fp=path)
+    midi = mido.MidiFile(ticks_per_beat=480)
+    track = mido.MidiTrack()
+    midi.tracks.append(track)
+    # Rendered written C, D-E-D-E trill, grace D, E, F; sounding down two.
+    for pitch, duration in [(58,480),(60,120),(62,120),(60,120),(62,120),
+                            (60,60),(62,420),(63,480)]:
+        track.append(mido.Message('note_on', note=pitch, velocity=80))
+        track.append(mido.Message('note_off', note=pitch, time=duration))
+        if len(track) == 2:
+            track.append(mido.MetaMessage('set_tempo', tempo=1000000))
+    midi_path = tmp_path / 'reference.mid'
+    midi.save(midi_path)
+    events = reference_note_times(path, midi_path)
+    assert len(events) == 4
+    assert [e['start'] for e in events] == [0, .5, 1.5, 2.5]
+    assert [e['end'] for e in events] == [.5, 1.5, 2.5, 3.5]
+    # A wrong pitch inside an ornament must not be accepted as arbitrary decoration.
+    track[5].note = track[6].note = 70
+    midi.save(midi_path)
+    with pytest.raises(ValueError, match='ornament timeline'):
+        reference_note_times(path, midi_path)
+
+
+def test_extra_midi_notes_without_notated_ornaments_are_rejected(tmp_path):
+    path = write_score(tmp_path / 'score.musicxml', [1])
+    midi = mido.MidiFile(ticks_per_beat=480)
+    track = mido.MidiTrack()
+    midi.tracks.append(track)
+    for pitch, duration in [(60,240),(60,240),(62,480),(64,480),(65,480)]:
+        track.append(mido.Message('note_on', note=pitch, velocity=80))
+        track.append(mido.Message('note_off', note=pitch, time=duration))
+    midi_path = tmp_path / 'reference.mid'
+    midi.save(midi_path)
+    with pytest.raises(ValueError, match='ornament timeline'):
+        reference_note_times(path, midi_path)

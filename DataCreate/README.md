@@ -109,6 +109,18 @@ otherwise it runs v9 first. It never silently falls back to legacy labeling
 when v9 is configured. Repetition identity stays on the reference-score notes.
 
 The runner uses the Python environment serving DataCreate (use MusicEval).
+The `v9-passage-v1` runtime revision transcribes once, locates up to four possible
+passages in the full score, and performs bounded detailed alignment inside them.
+Scores of at most 128 canonical notes retain the supplied excerpt. Larger scores
+use confidence-weighted subsequence matching with 8 notes of context per side.
+Each detailed window is limited to 512 notes, 1,024 restart hypotheses, 2,048
+expanded template notes, and 2 million DP cells. Ambiguous or unsupported locations
+withhold feedback rather than launching an unbounded full-score fallback.
+Published note IDs always refer to `verified_score.musicxml`; it is never cropped
+or renumbered by the locator. Unplayed notes outside the passage are unassessed.
+Studio shows a separate score-passage search step. This revision preserves the
+v9 acoustic checkpoint and repair parameters; it does not fix v9's overmerging.
+
 `paths.note_alignment_candidate` selects the v9 candidate manifest;
 `paths.note_alignment_python` can explicitly override the interpreter.
 Each regeneration validates and backs up replaced model files under

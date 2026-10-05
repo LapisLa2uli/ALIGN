@@ -10,7 +10,8 @@ import torch
 from alignmodel.transcription.mel_ctc_v3 import load_dual_checkpoint,extract_dual_mel,infer_dual_outputs
 from alignmodel.transcription.mel_v1 import load_audio_mono
 from alignmodel.joint.presence_verifier_v1 import load_verifier,score_presence
-from alignmodel.joint.stack_v9 import align_outputs,feedback
+from alignmodel.joint.stack_v9_passage import align_outputs,feedback
+from alignmodel.joint.passage_v1 import REVISION
 from precision_harness_v4 import rms_db
 
 def main():
@@ -46,7 +47,7 @@ def main():
     index,alignment,events,deletions,info=align_outputs(outputs,args.score,base,mel=mel,audio=audio,presence=presence,
         config={'minimum_match_fraction':candidate.get('minimum_match_fraction',.45),'decoder':candidate['decoder'],'gate':candidate.get('gate',{}),'same_pitch':candidate.get('same_pitch',{})})
     document=feedback(index,alignment,events,deletions,info)
-    document['provenance']={'candidate':str(args.candidate.resolve()),'checkpoint_sha256':candidate['checkpoint_sha256'],
+    document['provenance']={'pipeline_revision':REVISION,'candidate':str(args.candidate.resolve()),'checkpoint_sha256':candidate['checkpoint_sha256'],
                             'candidate_sha256':hashlib.sha256(args.candidate.read_bytes()).hexdigest(),
                             'score':str(args.score.resolve()),'audio':str(args.audio.resolve()),
                             'audio_sha256':hashlib.sha256(args.audio.read_bytes()).hexdigest(),

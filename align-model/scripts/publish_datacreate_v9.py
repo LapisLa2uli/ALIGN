@@ -15,7 +15,8 @@ import torch
 from alignmodel.transcription.mel_ctc_v3 import load_dual_checkpoint,extract_dual_mel,infer_dual_outputs
 from alignmodel.transcription.mel_v1 import load_audio_mono
 from alignmodel.joint.presence_verifier_v1 import load_verifier,score_presence
-from alignmodel.joint.stack_v9 import align_outputs,feedback
+from alignmodel.joint.stack_v9_passage import align_outputs,feedback
+from alignmodel.joint.passage_v1 import REVISION
 from alignmodel.joint.datacreate_v9 import gui_documents
 from precision_harness_v4 import rms_db
 from datacreate.align_bridge import _compatibility_alignment
@@ -31,6 +32,13 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def write(p,v):
     p.parent.mkdir(parents=True,exist_ok=True)
     p.write_text(json.dumps(v,indent=2,allow_nan=False)+'\n',encoding='utf-8')
+
+
+def report_progress(sample, step):
+    path = sample / 'alignment_progress.json'
+    temporary = path.with_suffix('.tmp')
+    write(temporary, {'step': step})
+    os.replace(temporary, path)
 
 
 def main():
@@ -77,6 +85,7 @@ def main():
     cfg={k:c[k] for k in ('decoder','gate','minimum_match_fraction','same_pitch')}
     for pos,sample in enumerate(samples,1):
         stage=out/'staged'/sample.name;stage.mkdir(parents=True)
+        report_progress(sample, 'transcriber')
         audio=load_audio_mono(sample/'performance_audio.wav',22050)
         with torch.inference_mode():
             mel,_=extract_dual_mel(audio,device)
@@ -84,10 +93,13 @@ def main():
         outputs={k:v.astype(np.float16).astype(np.float32) for k,v in outputs.items()}
         outputs['rms_db']=rms_db(audio,len(outputs['ctc']))
         presence=lambda queries:score_presence(verifier,np.asarray(mel,np.float32),queries,device)
+        report_progress(sample, 'aligner')
         index,alignment,events,deletions,info=align_outputs(outputs,sample/'verified_score.musicxml',base,
-            mel=mel,audio=audio,presence=presence,config=cfg)
+            mel=mel,audio=audio,presence=presence,config=cfg,progress=lambda step:report_progress(sample,step))
+        report_progress(sample, 'labels')
         doc=feedback(index,alignment,events,deletions,info)
         provenance={'candidate':str(args.candidate.resolve()),'candidate_sha256':sha(args.candidate),
+            'pipeline_revision':REVISION,
             'checkpoint_sha256':c['checkpoint_sha256'],'audio_sha256':protected[sample.name]['performance_audio.wav'],
             'score_sha256':protected[sample.name]['verified_score.musicxml'],
             'pitch_convention':'written Bb-clarinet; sounding = written - 2',

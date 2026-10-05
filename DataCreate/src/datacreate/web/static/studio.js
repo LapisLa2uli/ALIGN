@@ -7,7 +7,7 @@ let started = 0, ticker, stopAcknowledged, maxSeconds = 300, pollTimer;
 const canvas = $('spectrum'), pen = canvas.getContext('2d');
 const analysisPanel = document.createElement('div');
 analysisPanel.id = 'analysis-progress'; analysisPanel.className = 'analysis-progress'; analysisPanel.hidden = true;
-analysisPanel.innerHTML = '<div class="analysis-progress-heading"><strong>Analysis & feedback</strong><span id="analysis-count"></span></div><progress id="analysis-bar" max="5" value="0" aria-label="Completed analysis and feedback steps"></progress><ol id="analysis-steps"></ol><p>Progress follows completed steps. Each step can take a different amount of time.</p>';
+analysisPanel.innerHTML = '<div class="analysis-progress-heading"><strong>Analysis & feedback</strong><span id="analysis-count"></span></div><progress id="analysis-bar" max="6" value="0" aria-label="Completed analysis and feedback steps"></progress><ol id="analysis-steps"></ol><p>Progress follows completed steps. Each step can take a different amount of time.</p>';
 $('progress').after(analysisPanel);
 let display = Array(96).fill(0), width = 1, height = 1;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -174,12 +174,23 @@ async function poll() {
     if (state.narration) { $('narration').textContent = state.narration; $('transcript').hidden = false; }
     if (state.status === 'complete') {
       $('feedback-playback').src = state.audio_url; $('download').href = state.audio_url; $('result').hidden = false;
-      $('feedback-description').textContent = 'Press play. Take one idea into your next practice session.';
+      const details = state.feedback_details;
+      $('feedback-description').textContent = details?.no_issues_marked
+        ? `${state.assessment?.message || 'The detector marked no specific issues. This does not establish an error-free performance.'} No targeted audio snippets are available.`
+        : details?.reference_excerpts
+          ? 'Listen to the reference, your performance, then the correction and practice advice.'
+          : details?.performance_excerpts
+            ? 'Listen to the marked passages from your performance, followed by practice advice.'
+            : 'Press play. Take one idea into your next practice session.';
       setMode(recordingBlob ? 'recorded' : 'idle'); return;
     }
     if (state.status === 'failed') {
       $('retry').hidden = !state.can_retry;
-      $('feedback-description').textContent = state.narration ? 'Your written feedback is saved. Retry to create the audio.' : 'This take needs a little attention.';
+      $('result').hidden = true;
+      $('transcript').hidden = !state.narration;
+      $('feedback-description').textContent = state.assessment?.status === 'alignment_uncertain'
+        ? 'Analysis was inconclusive. Check the matching score before submitting again.'
+        : state.narration ? 'Your written feedback is saved. Retry to create the audio.' : 'This take needs a little attention.';
       setMode(recordingBlob ? 'recorded' : 'idle'); return;
     }
     setMode('processing');
