@@ -1,5 +1,14 @@
 from datacreate import credentials
 from datacreate.feedback import _secret
+import pytest
+
+
+@pytest.mark.parametrize("name", ["DASHSCOPE_API_KEY", "DASHSCOPE_WORKSPACE_ID",
+                                  "FISH_AUDIO_API_KEY", "FISH_AUDIO_REFERENCE_ID"])
+def test_saved_speech_settings_work_without_inherited_variables(monkeypatch, name):
+    monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(credentials, "_windows_user_variable", lambda key: "saved-qwen-value")
+    assert credentials.credential_value(name) == "saved-qwen-value"
 
 
 def test_saved_user_key_works_without_inherited_variable(monkeypatch):

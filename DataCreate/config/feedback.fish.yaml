@@ -1,0 +1,20 @@
+# Hosted Fish alternative. Secrets belong in environment variables.
+# Latest preview verified 2026-10-05; use s2.1-pro for the production model.
+llm_base_url: https://api.ssstoken.net/v1
+llm_model: gpt-6-luna
+llm_api_key_env: SSSTOKEN_API_KEY
+tts_provider: fish
+fish_local: false
+fish_base_url: https://api.fish.audio
+fish_model: drama-3-preview
+fish_api_key_env: FISH_AUDIO_API_KEY
+# Hosted voice ID, not the local teacher_lj folder.
+fish_reference_id_env: FISH_AUDIO_REFERENCE_ID
+fish_speed: 1.0
+# Correct slow English paragraphs locally without shifting pitch or speeding music.
+speech_min_wpm: 140
+language: English
+instrument: B-flat clarinet
+timeout_seconds: 180
+max_input_chars: 100000
+max_speech_chars: 5000

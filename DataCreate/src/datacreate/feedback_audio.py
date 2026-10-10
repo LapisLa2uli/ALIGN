@@ -4,6 +4,8 @@ from __future__ import annotations
 from math import gcd
 from pathlib import Path
 import hashlib
+import re
+import subprocess
 
 import numpy as np
 import pyloudnorm as pyln
@@ -15,6 +17,53 @@ MIX_TARGET_LUFS = -20.0
 SNIPPET_GAP_SECONDS = 0.5
 SNIPPET_REVERB_MIX = 0.08
 SNIPPET_REVERB_TAIL_SECONDS = 0.25
+
+
+def prepare_speech_pace(source: Path, text: str, language: str, min_wpm: float) -> tuple[Path, dict]:
+    """Gently correct slow English narration without shifting voice pitch.
+
+    Never stretches music, slows faster speech, or estimates Chinese from words.
+    Short cues are excluded because pauses dominate their measured word rate.
+    Keep raw synthesis for replay; adjusted audio is a separate lossless file.
+    """
+    if not min_wpm or not language.lower().startswith(("english", "en")):
+        return source, {}
+    words = len(re.findall(r"\b[A-Za-z]+(?:['-][A-Za-z]+)*\b", text))
+    if words < 12:
+        return source, {}
+    audio, rate = sf.read(source, dtype="float32", always_2d=True)
+    seconds = len(audio) / rate
+    if not seconds:
+        raise ValueError("Cannot adjust empty speech audio.")
+    measured = words * 60 / seconds
+    factor = min(1.25, max(1.0, min_wpm / measured))
+    metadata = {"speech_source_file": source.name, "speech_source_seconds": seconds,
+                "speech_source_wpm": measured, "speech_speed_factor": 1.0}
+    if factor < 1.03:
+        return source, metadata
+    from datacreate.audio_utils import _find_ffmpeg
+    ffmpeg = _find_ffmpeg()
+    if not ffmpeg:
+        raise ValueError("Speech pacing requires ffmpeg or imageio-ffmpeg.")
+    destination = source.with_name(source.stem + "-paced.wav")
+    temporary = destination.with_suffix(".wav.part")
+    try:
+        result = subprocess.run([ffmpeg, "-hide_banner", "-loglevel", "error", "-y",
+            "-i", str(source), "-af", f"atempo={factor:.8f}", "-c:a", "pcm_f32le",
+            "-f", "wav", str(temporary)], capture_output=True, timeout=60,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        if result.returncode:
+            raise ValueError("Speech pacing failed; the original narration is preserved.")
+        info = sf.info(temporary)
+        if not info.frames or info.samplerate != rate:
+            raise ValueError("Speech pacing returned invalid audio.")
+        temporary.replace(destination)
+    except subprocess.TimeoutExpired:
+        raise ValueError("Speech pacing timed out; the original narration is preserved.") from None
+    finally:
+        temporary.unlink(missing_ok=True)
+    metadata.update(speech_speed_factor=factor, speech_output_wpm=words * 60 / info.duration)
+    return destination, metadata
 
 
 def measure_loudness(audio: np.ndarray, rate: int) -> float | None:

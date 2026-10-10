@@ -5,6 +5,7 @@ import logging
 import subprocess
 import sys
 import hashlib
+import pytest
 from pathlib import Path
 from unittest.mock import patch
 
@@ -247,7 +248,8 @@ def test_invalidation_removes_note_first_artifact(tmp_path):
     )
 
 
-def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path):
+@pytest.mark.parametrize('tag,revision', [('v9','v9-passage-v2'), ('v10','v10-boundary-v1')])
+def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path, tag, revision):
     candidate = tmp_path / "candidate.json"
     candidate.write_text("v9")
     sample = tmp_path / "095"
@@ -271,7 +273,7 @@ def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path
                 }.items()
             },
         }
-        payload["provenance"]["pipeline_revision"] = "v9-passage-v1"
+        payload["provenance"]["pipeline_revision"] = revision
         (sample / "note_alignment_v2.json").write_text(json.dumps(payload))
         from datacreate.align_bridge import _compatibility_alignment
         _compatibility_alignment(payload, sample, config)
@@ -280,19 +282,27 @@ def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path
     config = PipelineConfig(
         paths={"note_alignment_candidate": str(candidate), "work_dir": str(tmp_path / "work"),
                "note_alignment_checkpoint": "unused-legacy.pt"},
-        alignment={"model_version": "stack-v9", "note_alignment_device": "cpu"},
+        alignment={"model_version": f"stack-{tag}", "note_alignment_device": "cpu"},
     )
     with patch("datacreate.align_bridge.subprocess.run", side_effect=fake_run):
         result = run_preferred_alignment(
             sample / "performance_audio.wav", sample / "reference_audio.wav",
             sample, config, logging.getLogger("test"),
         )
-    assert result.model_version == "stack-v9"
+    assert result.model_version == f"stack-{tag}"
     assert result.alignment_path.is_file()
     assert seen["command"][0] == sys.executable
-    assert Path(seen["command"][1]).name == "publish_datacreate_v9.py"
+    assert Path(seen["command"][1]).name == f"publish_datacreate_{tag}.py"
     assert "--sample" in seen["command"] and "--checkpoint" not in seen["command"]
     assert seen["env"]["PYTHONNOUSERSITE"] == "1"
+
+    from datacreate.align_bridge import current_v9_feedback
+    assert current_v9_feedback(sample, config)
+    artifact = sample / "note_alignment_v2.json"
+    payload = json.loads(artifact.read_text())
+    payload["provenance"]["pipeline_revision"] = "v9-passage-v1"
+    artifact.write_text(json.dumps(payload))
+    assert not current_v9_feedback(sample, config)
 
 
 def test_default_ui_configuration_selects_v9_in_serving_environment():

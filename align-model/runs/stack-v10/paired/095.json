@@ -1,0 +1,418 @@
+{
+  "sample": "095",
+  "baseline_seconds": 0.45670869999958086,
+  "refinement_seconds": 0.2811112999988836,
+  "labels_used": false,
+  "audio_sha256": "ad6f482830416f7ae8ff99d2f71db246152aad020ac8c7b1490aeafc9b899dc4",
+  "score_sha256": "4856779e1d081d4fa6beec74914b2491a7bd2f07d9a2d58c132329537a0d3dee",
+  "v9": {
+    "status": "ok",
+    "notes": 87,
+    "labels": 4,
+    "merged": 3
+  },
+  "v10": {
+    "status": "ok",
+    "notes": 87,
+    "labels": 4,
+    "merged": 3
+  },
+  "refinement": {
+    "supported_boundaries": [
+      47
+    ],
+    "proposed_restorations": [
+      47
+    ],
+    "accepted_restorations": [],
+    "outside_region_preserved": true,
+    "rejected_reason": "realignment_changed_protected_output_or_failed_boundary",
+    "proposed_audit": {
+      "schema_version": "same-pitch-repair-v3",
+      "config": {
+        "context_sec": 0.09,
+        "neighbor_margin_sec": 0.005,
+        "energy_range_db": 54,
+        "spectral_step_max": 0.35,
+        "spectral_drift_max": 0.65,
+        "merge_attack_max": 1.0,
+        "voiced_min": 0.0,
+        "silence_db": -120.0,
+        "gap_depth_db": 18.0,
+        "gap_min_sec": 0.01,
+        "envelope_window_sec": 0.004,
+        "envelope_hop_sec": 0.001
+      },
+      "energy_source": "waveform_4ms_at_1ms",
+      "pairs_checked": 3,
+      "merged_boundaries": 2,
+      "input_note_count": 90,
+      "output_note_count": 88,
+      "source_groups": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ],
+        [
+          7
+        ],
+        [
+          8
+        ],
+        [
+          9
+        ],
+        [
+          10
+        ],
+        [
+          11
+        ],
+        [
+          12
+        ],
+        [
+          13
+        ],
+        [
+          14
+        ],
+        [
+          15
+        ],
+        [
+          16
+        ],
+        [
+          17
+        ],
+        [
+          18
+        ],
+        [
+          19
+        ],
+        [
+          20
+        ],
+        [
+          21
+        ],
+        [
+          22
+        ],
+        [
+          23
+        ],
+        [
+          24
+        ],
+        [
+          25
+        ],
+        [
+          26
+        ],
+        [
+          27
+        ],
+        [
+          28
+        ],
+        [
+          29
+        ],
+        [
+          30
+        ],
+        [
+          31
+        ],
+        [
+          32
+        ],
+        [
+          33
+        ],
+        [
+          34
+        ],
+        [
+          35
+        ],
+        [
+          36
+        ],
+        [
+          37
+        ],
+        [
+          38
+        ],
+        [
+          39
+        ],
+        [
+          40
+        ],
+        [
+          41
+        ],
+        [
+          42
+        ],
+        [
+          43
+        ],
+        [
+          44
+        ],
+        [
+          45
+        ],
+        [
+          46
+        ],
+        [
+          47
+        ],
+        [
+          48
+        ],
+        [
+          49
+        ],
+        [
+          50
+        ],
+        [
+          51
+        ],
+        [
+          52
+        ],
+        [
+          53
+        ],
+        [
+          54
+        ],
+        [
+          55
+        ],
+        [
+          56
+        ],
+        [
+          57
+        ],
+        [
+          58
+        ],
+        [
+          59
+        ],
+        [
+          60
+        ],
+        [
+          61,
+          62,
+          63
+        ],
+        [
+          64
+        ],
+        [
+          65
+        ],
+        [
+          66
+        ],
+        [
+          67
+        ],
+        [
+          68
+        ],
+        [
+          69
+        ],
+        [
+          70
+        ],
+        [
+          71
+        ],
+        [
+          72
+        ],
+        [
+          73
+        ],
+        [
+          74
+        ],
+        [
+          75
+        ],
+        [
+          76
+        ],
+        [
+          77
+        ],
+        [
+          78
+        ],
+        [
+          79
+        ],
+        [
+          80
+        ],
+        [
+          81
+        ],
+        [
+          82
+        ],
+        [
+          83
+        ],
+        [
+          84
+        ],
+        [
+          85
+        ],
+        [
+          86
+        ],
+        [
+          87
+        ],
+        [
+          88
+        ],
+        [
+          89
+        ]
+      ],
+      "decisions": [
+        {
+          "source_indices": [
+            46,
+            47
+          ],
+          "pitch": 76,
+          "boundary_sec": 24.044263038548753,
+          "decision": "retain",
+          "reason": "score_supported_rearticulation",
+          "evidence": {
+            "window_sec": [
+              23.954263038548753,
+              24.134263038548752
+            ],
+            "energy_range_db": 8.402582397226418,
+            "energy_min_db": -23.1861793282918,
+            "spectral_step": 0.08045188972538325,
+            "spectral_drift": 0.021590241739894593,
+            "attack_max": 0.56884765625,
+            "voiced_min": 0.99951171875,
+            "gap": {
+              "depth_db": 1.024219954259749,
+              "core_start_sec": 24.014,
+              "core_end_sec": 24.054,
+              "core_duration_sec": 0.04
+            }
+          },
+          "v9_decision": "merge",
+          "v9_reason": "continuous_within_relaxed_limits",
+          "repeat_score": 0.7107346358974588
+        },
+        {
+          "source_indices": [
+            61,
+            62
+          ],
+          "pitch": 81,
+          "boundary_sec": 33.73859410430839,
+          "decision": "merge",
+          "reason": "v9_preserved_without_score_support",
+          "evidence": {
+            "window_sec": [
+              33.64859410430839,
+              33.828594104308394
+            ],
+            "energy_range_db": 12.441731899975295,
+            "energy_min_db": -27.314847998315038,
+            "spectral_step": 0.09746480892993066,
+            "spectral_drift": 0.11065374355024263,
+            "attack_max": 0.462890625,
+            "voiced_min": 0.994140625,
+            "gap": {
+              "depth_db": 1.3331064852680363,
+              "core_start_sec": 33.711,
+              "core_end_sec": 33.721,
+              "core_duration_sec": 0.01
+            }
+          },
+          "v9_decision": "merge",
+          "v9_reason": "continuous_within_relaxed_limits"
+        },
+        {
+          "source_indices": [
+            62,
+            63
+          ],
+          "pitch": 81,
+          "boundary_sec": 34.28426303854875,
+          "decision": "merge",
+          "reason": "v9_preserved_without_score_support",
+          "evidence": {
+            "window_sec": [
+              34.19426303854875,
+              34.374263038548754
+            ],
+            "energy_range_db": 8.107090410676879,
+            "energy_min_db": -22.748194936542983,
+            "spectral_step": 0.07074583486531018,
+            "spectral_drift": 0.08233537901865012,
+            "attack_max": 0.2744140625,
+            "voiced_min": 0.99755859375,
+            "gap": {
+              "depth_db": 1.3845612261414928,
+              "core_start_sec": 34.253,
+              "core_end_sec": 34.268,
+              "core_duration_sec": 0.015
+            }
+          },
+          "v9_decision": "merge",
+          "v9_reason": "continuous_within_relaxed_limits"
+        }
+      ],
+      "boundary_config": {
+        "repeat_threshold": 0.5
+      },
+      "boundary_model": "same-pitch-boundary-forest-v1"
+    }
+  }
+}

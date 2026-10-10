@@ -23,6 +23,7 @@ def credential_value(name: str) -> str:
     # our dedicated saved credential; do not import unrelated Windows settings.
     if name in os.environ:
         return os.environ[name].strip()
-    if name == "SSSTOKEN_API_KEY":
+    if name in {"SSSTOKEN_API_KEY", "DASHSCOPE_API_KEY", "DASHSCOPE_WORKSPACE_ID",
+                "FISH_AUDIO_API_KEY", "FISH_AUDIO_REFERENCE_ID"}:
         return _windows_user_variable(name)
     return ""

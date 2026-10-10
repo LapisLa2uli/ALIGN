@@ -93,7 +93,8 @@ def main():
         outputs={k:v.astype(np.float16).astype(np.float32) for k,v in outputs.items()}
         outputs['rms_db']=rms_db(audio,len(outputs['ctc']))
         presence=lambda queries:score_presence(verifier,np.asarray(mel,np.float32),queries,device)
-        report_progress(sample, 'aligner')
+        # Decoding still belongs to transcription; align_outputs reports passage
+        # retrieval and alignment when those operations actually begin.
         index,alignment,events,deletions,info=align_outputs(outputs,sample/'verified_score.musicxml',base,
             mel=mel,audio=audio,presence=presence,config=cfg,progress=lambda step:report_progress(sample,step))
         report_progress(sample, 'labels')

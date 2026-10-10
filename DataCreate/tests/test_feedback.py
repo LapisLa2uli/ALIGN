@@ -1,5 +1,6 @@
 from dataclasses import replace
 import json
+from pathlib import Path
 
 import httpx
 import pytest
@@ -31,6 +32,56 @@ def credentials(monkeypatch):
 
 def llm_response(text="The report flags a possible wrong note. Try this passage slowly."):
     return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {"content": text}}]})
+
+
+@pytest.mark.parametrize("model", ["drama-3-preview", "s2.1-pro"])
+def test_latest_hosted_fish_config_and_controls(tmp_path, credentials, monkeypatch, model):
+    config = FeedbackConfig.load(Path(__file__).parents[1] / "config" / "feedback.fish.yaml")
+    assert config.fish_model == "drama-3-preview" and not config.fish_local
+    config = replace(config, fish_model=model)
+    monkeypatch.setenv("SSSTOKEN_API_KEY", "")
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "")
+    source = tmp_path / "teacher.txt"
+    source.write_text("In bar 2, listen to the reference.")
+    calls = []
+    def handle(request):
+        calls.append(request)
+        assert str(request.url) == "https://api.fish.audio/v1/tts"
+        assert request.headers["model"] == model
+        assert request.headers["authorization"] == "Bearer secret-fish"
+        body = json.loads(request.content)
+        assert body["reference_id"] == "voice-id"
+        assert body["text"] == "In bar two, listen to the reference."
+        assert body["latency"] == "normal" and body["sample_rate"] == 44100
+        assert body["prosody"] == {"speed": 1., "volume": 0, "normalize_loudness": True}
+        assert body["condition_on_previous_chunks"] is True
+        assert "references" not in body
+        return httpx.Response(200, headers={"content-type": "audio/mpeg"}, content=b"ID3audio")
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        output = run_feedback(source, config=config, text_input=True, client=client, output_dir=tmp_path / "run")
+    manifest = json.loads((output / "feedback.json").read_text())
+    assert manifest["tts_model"] == model and manifest["tts_preview"] == (model == "drama-3-preview")
+    assert manifest["status"] == "complete" and len(calls) == 1
+
+
+def test_unknown_fish_model_cannot_silently_fallback():
+    with pytest.raises(FeedbackError, match="Unsupported hosted Fish model"):
+        replace(FeedbackConfig(), fish_model="drama-3-typo").validate()
+
+
+def test_drama_failure_does_not_retry_or_switch_models(tmp_path, credentials):
+    source = tmp_path / "teacher.txt"
+    source.write_text("In bar two.")
+    calls = []
+    def handle(request):
+        calls.append(request.headers["model"])
+        return httpx.Response(503, text="secret-fish")
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        with pytest.raises(FeedbackError, match="HTTP 503"):
+            run_feedback(source, config=replace(FeedbackConfig(), fish_model="drama-3-preview"),
+                         text_input=True, client=client, output_dir=tmp_path / "run")
+    assert calls == ["drama-3-preview"]
+    assert (tmp_path / "run" / "feedback.txt").is_file()
 
 
 def test_full_pipeline_contract_and_artifacts(labels, tmp_path, credentials):

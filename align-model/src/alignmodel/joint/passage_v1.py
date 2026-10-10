@@ -11,7 +11,7 @@ import numpy as np
 
 from .restarts_v4 import local_hypotheses, schedule_restarts
 
-REVISION = "v9-passage-v1"
+REVISION = "v9-passage-v2"
 
 
 @dataclass(frozen=True)

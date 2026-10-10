@@ -1,0 +1,76 @@
+{
+  "design_id": "DAHV1GCEe1E",
+  "status": "completed-saved-in-canva",
+  "source": "exports/paper-methodology-20261006/AudioEval.pdf, Tables 2 and 3",
+  "replaces_image_element": "PB8dtN2l3nBJwnh9-LBtvZVx9fjDsKnmD",
+  "scope": "Replace the two bar-graph images with native Canva bar charts and preserve the existing findings captions and three-column poster layout.",
+  "charts": [
+    {
+      "title": "Synthetic validation",
+      "metric": "Score-based weighted micro-F1 (%)",
+      "recordings": 358,
+      "reference_events": 40712,
+      "rows": [
+        {
+          "method": "AudioEval",
+          "f1": 61.04,
+          "ci_low": 59.37,
+          "ci_high": 62.72
+        },
+        {
+          "method": "Polytune",
+          "f1": 41.39,
+          "ci_low": 39.94,
+          "ci_high": 42.74
+        },
+        {
+          "method": "LadderSym",
+          "f1": 34.71,
+          "ci_low": 33.25,
+          "ci_high": 36.07
+        }
+      ],
+      "confidence_interval_note": "95% intervals from 1,000 recording-bootstrap resamples. Retain as adjacent text if native custom error bars are unavailable."
+    },
+    {
+      "title": "Recorded clarinet performances",
+      "metric": "Error-event micro-F1 (%)",
+      "recordings": 11,
+      "annotated_errors": 71,
+      "rows": [
+        {
+          "method": "AudioEval",
+          "f1": 25.49
+        },
+        {
+          "method": "Polytune",
+          "f1": 1.96
+        },
+        {
+          "method": "LadderSym",
+          "f1": 3.2
+        }
+      ],
+      "metric_note": "Only errors count. Matching requires the same error type and interval IoU >= 0.3."
+    }
+  ],
+  "shared_notes": {
+    "version": "These historical results do not evaluate the revised pipeline.",
+    "synthetic_gains": "19.66 percentage points over Polytune and 26.33 over LadderSym, computed from unrounded scores.",
+    "axis": {
+      "min": 0,
+      "max": 100
+    },
+    "colors": {
+      "AudioEval": "#508960",
+      "Polytune": "#2f75b5",
+      "LadderSym": "#91afc2"
+    }
+  },
+  "native_chart_ids": [
+    "LBvVl6rnhYQ2QPzJ",
+    "LBrVyyZFx2WgSbZS"
+  ],
+  "captions_asset_id": "MAHXOM_Pilk",
+  "verification": "Both native chart data tables verified; horizontal bars, 0–100 axes, two-decimal score labels, matching category colors. Raster graphs removed from caption panel. 95% confidence intervals listed in text. Canva reported All changes saved."
+}

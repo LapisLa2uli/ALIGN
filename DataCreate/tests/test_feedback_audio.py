@@ -11,8 +11,54 @@ from datacreate.feedback import FeedbackConfig, FeedbackError, run_feedback
 from datacreate.feedback_audio import checked_clip, compose_audio, extract_clip, locate_excerpts, measure_loudness
 
 
+def test_slow_narration_after_music_is_paced_without_changing_pitch_or_music(tmp_path):
+    import hashlib
+    from datacreate.feedback import assemble_playback_plan
+    from datacreate.audio_utils import _find_ffmpeg
+    if not _find_ffmpeg():
+        pytest.skip("ffmpeg required for speech pacing")
+    rate = 24000
+    def tone(path, seconds, frequency, format):
+        sf.write(path, .08*np.sin(2*np.pi*frequency*np.arange(int(rate*seconds))/rate), rate, format=format)
+    tone(tmp_path / "speech-00-intro.mp3", 1, 440, "MP3")
+    raw = tmp_path / "speech-00-feedback.mp3"
+    tone(raw, 10, 440, "MP3")
+    raw_bytes = raw.read_bytes()
+    music = tmp_path / "excerpt.wav"
+    tone(music, 4, 330, "WAV")
+    music_bytes = music.read_bytes()
+    clip = {"file": music.name, "sha256": hashlib.sha256(music_bytes).hexdigest(),
+            "source_start_time": 0, "source_end_time": 4}
+    plan = {"points": [{"label_index": 0, "intro": "Listen to this.",
+                        "feedback": " ".join(["practice"]*20), "clip": clip}]}
+    assemble_playback_plan(plan, tmp_path, replace(config(), speech_min_wpm=140))
+    timeline = json.loads((tmp_path / "timeline.json").read_text())["segments"]
+    assert [s["kind"] for s in timeline] == ["speech", "performance", "speech"]
+    performance, speech = timeline[1:]
+    assert performance["end_time"]-performance["start_time"] == pytest.approx(4.25)
+    assert speech["start_time"]-performance["end_time"] == pytest.approx(.5)
+    assert 1.15 < speech["speech_speed_factor"] < 1.19
+    original, sr = sf.read(raw)
+    adjusted, adjusted_rate = sf.read(tmp_path / speech["file"])
+    assert adjusted_rate == sr
+    assert len(adjusted)/sr == pytest.approx(len(original)/sr/speech["speech_speed_factor"], abs=.1)
+    section = adjusted[sr:2*sr]
+    peak = np.fft.rfftfreq(len(section), 1/sr)[np.argmax(abs(np.fft.rfft(section)))]
+    assert peak == pytest.approx(440, abs=2)
+    assert music.read_bytes() == music_bytes and raw.read_bytes() == raw_bytes
+
+
+@pytest.mark.parametrize("language,text,target", [("Chinese", "请慢慢练习这一小节。",140),
+    ("English", "Listen to your performance.",140), ("English", "practice "*20,0)])
+def test_speech_pace_skips_short_cues_other_languages_and_disabled(tmp_path, language, text, target):
+    from datacreate.feedback_audio import prepare_speech_pace
+    source = tmp_path / "unused.mp3"
+    assert prepare_speech_pace(source,text,language,target) == (source,{})
+
+
 @pytest.fixture
-def performance_labels(tmp_path):
+def performance_labels(tmp_path, synthesis_inputs, fake_soundfont):
+    synthesis_inputs(tmp_path)
     rate = 16000
     # Distinct regions make it possible to detect a wrong crop or a trim-offset error.
     time = np.arange(rate * 3) / rate
@@ -40,12 +86,13 @@ def speech_audio():
     return data.getvalue()
 
 
-def test_full_excerpt_sequence_crop_and_offline_retry(performance_labels, tmp_path, monkeypatch):
+def test_full_synthesized_sequence_and_offline_retry(performance_labels, tmp_path, monkeypatch):
     labels, recording, original = performance_labels
     monkeypatch.setenv("API_302_KEY", "test-key")
     spoken = []
     calls = []
     plan = {"points": [{"label_index": 0, "intro": "In bar 2, listen to this passage.",
+                        "performance_intro": "Now hear the transcription of your playing.",
                         "feedback": "You added an extra note. Practise the connection slowly."}]}
 
     def handle(request):
@@ -63,15 +110,18 @@ def test_full_excerpt_sequence_crop_and_offline_retry(performance_labels, tmp_pa
 
     with httpx.Client(transport=httpx.MockTransport(handle)) as client:
         output = run_feedback(labels, config=config(), client=client, output_dir=tmp_path / "first")
-    assert calls == ["/v1/chat/completions", "/v1/tts", "/v1/tts"]
-    assert spoken == ["In bar two, listen to this passage.", plan["points"][0]["feedback"]]
+    assert calls == ["/v1/chat/completions"] + ["/v1/tts"] * 3
+    assert spoken == ["In bar two, listen to this passage.", plan["points"][0]["performance_intro"], plan["points"][0]["feedback"]]
     clip, rate = sf.read(output / "excerpt-000.wav", dtype="float32")
-    np.testing.assert_array_equal(clip, original[12000:28000])  # .25 s context on each side
-    assert rate == 16000
+    events = json.loads((output / "excerpt-000.notes.json").read_text())
+    assert events["synthesized"] is True and events["bars"] == [2]
+    assert len(events["notes"]) == 5
+    assert events["slowdown_factor"] == pytest.approx(1.5)
+    assert rate == 44100 and len(clip) / rate == pytest.approx(3.9)
     timeline = json.loads((output / "timeline.json").read_text())["segments"]
-    assert [row["kind"] for row in timeline] == ["speech", "performance", "speech"]
-    assert timeline[1]["source_start_time"] == 0.75
-    assert timeline[1]["source_end_time"] == 1.75
+    assert [row["kind"] for row in timeline] == ["speech", "reference", "speech", "performance", "speech"]
+    assert timeline[3]["source_start_time"] == .2
+    assert timeline[3]["source_end_time"] == 2.7
     assert timeline[1]["start_time"] == pytest.approx(timeline[0]["end_time"] + .5)
     assert timeline[2]["start_time"] == pytest.approx(timeline[1]["end_time"] + .5)
     mixed, rate = sf.read(output / "feedback.mp3", always_2d=True)
@@ -83,8 +133,9 @@ def test_full_excerpt_sequence_crop_and_offline_retry(performance_labels, tmp_pa
     with httpx.Client(transport=httpx.MockTransport(handle)) as client:
         retry = run_feedback(output / "playback_plan.json", plan_input=True, config=config(),
                              client=client, output_dir=tmp_path / "retry")
-    assert calls == ["/v1/tts", "/v1/tts"]
+    assert calls == ["/v1/tts"] * 3
     assert (retry / "excerpt-000.wav").read_bytes() == (output / "excerpt-000.wav").read_bytes()
+    assert (retry / "excerpt-000.notes.json").read_bytes() == (output / "excerpt-000.notes.json").read_bytes()
     assert json.loads((retry / "feedback.json").read_text())["status"] == "complete"
     with pytest.raises(FeedbackError, match="--plan"):
         run_feedback(output / "feedback.txt", text_input=True, config=config())
@@ -185,7 +236,9 @@ def test_reference_then_performance_and_saved_plan_retry(performance_labels, tmp
     timeline = json.loads((output / "timeline.json").read_text())["segments"]
     assert [x["kind"] for x in timeline] == ["speech", "reference", "speech", "performance", "speech"]
     ref, _ = sf.read(output / "reference-000.wav", dtype="float32")
-    np.testing.assert_array_equal(ref, reference[12000:36000])
+    notes = json.loads((output / "reference-000.notes.json").read_text())
+    assert notes["bars"] == [2] and len(notes["notes"]) == 4
+    assert len(ref) / 44100 == pytest.approx(3.15)
     assert len(calls) == 4
     calls.clear()
     monkeypatch.delenv("API_302_KEY")
@@ -237,3 +290,31 @@ def test_short_or_silent_snippets_do_not_break_normalization(tmp_path):
     assert np.isfinite(audio).all()
     assert timeline[1]["input_lufs"] is None
     assert timeline[1]["gain"] == 1
+
+
+def test_all_labels_get_comparisons_and_retry_preserves_them(performance_labels, tmp_path, monkeypatch):
+    labels, _, _ = performance_labels
+    document = json.loads(labels.read_text())
+    # Same type and bar must not cause deduplication in the every-label mode.
+    document["labels"] = [document["labels"][0]] * 4
+    labels.write_text(json.dumps(document))
+    monkeypatch.setenv("API_302_KEY", "test-key")
+    calls = []
+    def handle(request):
+        calls.append(request.url.path)
+        if request.url.path.endswith("completions"):
+            report = json.loads(json.loads(request.content)["messages"][1]["content"])["report"]
+            assert report["label_count"] == 1 and len(report["labels"]) == 1
+            point = {"label_index": 0, "intro": "In bar two, listen to this passage.",
+                     "performance_intro": "Now hear your playing.", "feedback": "Practise the connection slowly."}
+            return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps({"points": [point]})}}]})
+        return httpx.Response(200, headers={"content-type": "audio/mpeg"}, content=speech_audio())
+    with httpx.Client(transport=httpx.MockTransport(handle)) as client:
+        output = run_feedback(labels, all_labels=True, text_only=True, config=config(), client=client, output_dir=tmp_path / "all")
+        plan = json.loads((output / "playback_plan.json").read_text())
+        assert plan["all_labels"] and [p["label_index"] for p in plan["points"]] == [0, 1, 2, 3]
+        assert calls == ["/v1/chat/completions"] * 4
+        calls.clear()
+        retry = run_feedback(output / "playback_plan.json", plan_input=True, config=config(), client=client, output_dir=tmp_path / "all-retry")
+    assert calls == ["/v1/tts"] * 12
+    assert len(json.loads((retry / "playback_plan.json").read_text())["points"]) == 4

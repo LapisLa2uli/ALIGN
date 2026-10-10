@@ -1,4 +1,4 @@
-"""Optional label -> 302.AI narration -> Fish Audio MP3 pipeline.
+"""Optional label -> LLM narration -> Fish Audio or Qwen Audio MP3 pipeline.
 
 No detector, GPU, score renderer, or provider SDK is needed by this module.
 Credentials are read from the environment only, and never written to artifacts.
@@ -25,6 +25,7 @@ import httpx
 import yaml
 
 from datacreate.credentials import credential_value
+from datacreate.config import PipelineConfig
 
 
 class FeedbackError(ValueError):
@@ -36,12 +37,25 @@ class FeedbackConfig:
     llm_base_url: str = "https://api.302.ai/v1"
     llm_model: str = "gpt-4o-mini"
     llm_api_key_env: str = "API_302_KEY"
+    tts_provider: str = "fish"
+    qwen_model: str = "qwen-audio-3.1-tts-flash"
+    qwen_api_key_env: str = "DASHSCOPE_API_KEY"
+    qwen_workspace_id_env: str = "DASHSCOPE_WORKSPACE_ID"
+    qwen_voice: str = "Abby_v3.1"
+    qwen_rate: float = 0.95
+    qwen_instruction: str = (
+        "Speak as a warm, attentive music teacher addressing one student. "
+        "Use conversational intonation, gentle emphasis on corrections, and a measured pace. "
+        "Clearly finish bar numbers and musical terms. Pause naturally between sentences."
+    )
     fish_base_url: str = "https://api.fish.audio"
     fish_model: str = "s2.1-pro"
     fish_api_key_env: str = "FISH_AUDIO_API_KEY"
     fish_reference_id_env: str = "FISH_AUDIO_REFERENCE_ID"
     fish_local: bool = False
     fish_local_reference_id: str | None = None
+    fish_speed: float = 1.0
+    speech_min_wpm: float = 0.0
     language: str = "English"
     instrument: str = "B-flat clarinet"
     timeout_seconds: float = 120.0
@@ -65,6 +79,16 @@ class FeedbackConfig:
         return config
 
     def validate(self) -> None:
+        if (type(self.speech_min_wpm) not in (int, float) or not math.isfinite(self.speech_min_wpm)
+                or not (self.speech_min_wpm == 0 or 80 <= self.speech_min_wpm <= 200)):
+            raise FeedbackError("speech_min_wpm must be zero (disabled) or between 80 and 200.")
+        if self.tts_provider not in ("fish", "qwen"):
+            raise FeedbackError("tts_provider must be fish or qwen.")
+        if (type(self.qwen_rate) not in (int, float) or not math.isfinite(self.qwen_rate)
+                or not 0.5 <= self.qwen_rate <= 2):
+            raise FeedbackError("qwen_rate must be between 0.5 and 2.")
+        if not isinstance(self.qwen_instruction, str) or len(self.qwen_instruction) > 2000:
+            raise FeedbackError("qwen_instruction must be a string of at most 2000 characters.")
         if type(self.include_performance) is not bool:
             raise FeedbackError("include_performance must be true or false.")
         if (type(self.excerpt_padding_seconds) not in (int, float)
@@ -72,6 +96,9 @@ class FeedbackConfig:
             raise FeedbackError("excerpt_padding_seconds must be between zero and two.")
         if type(self.fish_local) is not bool:
             raise FeedbackError("fish_local must be true or false.")
+        if (type(self.fish_speed) not in (int, float) or not math.isfinite(self.fish_speed)
+                or not 0.5 <= self.fish_speed <= 2):
+            raise FeedbackError("fish_speed must be between 0.5 and 2.")
         if self.fish_local_reference_id is not None and (
                 not isinstance(self.fish_local_reference_id, str)
                 or not re.fullmatch(r"[A-Za-z0-9_-]+", self.fish_local_reference_id)):
@@ -87,8 +114,15 @@ class FeedbackConfig:
                 raise FeedbackError(f"{name} must be HTTPS (or loopback HTTP for local Fish), without credentials, query, or fragment.")
             if local_fish and parsed.hostname not in {"127.0.0.1", "localhost", "::1"}:
                 raise FeedbackError("Local Fish must use a loopback address.")
+        if (self.tts_provider == "fish" and not self.fish_local
+                and urlsplit(self.fish_base_url).hostname == "api.fish.audio"
+                and self.fish_model not in ("s1", "s2-pro", "s2.1-pro", "s2.1-pro-free", "drama-3-preview")):
+            # Fish silently falls back to s2.1-pro for unknown model headers.
+            raise FeedbackError("Unsupported hosted Fish model. Use drama-3-preview for the latest preview "
+                                "or s2.1-pro for production; check Fish's model list before adding a new ID.")
         for name in ("llm_model", "fish_model", "language", "instrument",
-                     "llm_api_key_env", "fish_api_key_env", "fish_reference_id_env"):
+                     "llm_api_key_env", "fish_api_key_env", "fish_reference_id_env",
+                     "qwen_model", "qwen_api_key_env", "qwen_workspace_id_env", "qwen_voice"):
             value = getattr(self, name)
             if not isinstance(value, str) or not value.strip() or len(value) > 200:
                 raise FeedbackError(f"{name} must be a nonempty string of at most 200 characters.")
@@ -99,6 +133,11 @@ class FeedbackConfig:
         if (not isinstance(self.timeout_seconds, (int, float))
                 or not math.isfinite(self.timeout_seconds) or self.timeout_seconds <= 0):
             raise FeedbackError("timeout_seconds must be a positive finite number.")
+
+    def speech_required_environment(self) -> list[str]:
+        if self.tts_provider == "qwen":
+            return [self.qwen_api_key_env, self.qwen_workspace_id_env]
+        return [] if self.fish_local else [self.fish_api_key_env, self.fish_reference_id_env]
 
 
 SYSTEM_PROMPT = """Speak as a warm, practical music teacher giving a student brief
@@ -135,7 +174,7 @@ cover a passage, not just one note. Treat stylistic_choice as intentional, not a
 error. Repetition is an unrequested replay; extra_copies counts additional plays.
 """
 
-PIPELINE_REVISION = "teacher-reference-performance-balanced-room-v1"
+PIPELINE_REVISION = "teacher-whole-bar-sounding-pitch-v3"
 EMPTY_REPORT_NARRATION = (
     "No specific issues were marked by the automatic analysis of this take. "
     "That does not mean the performance was error-free. "
@@ -348,7 +387,7 @@ def build_messages(report: dict[str, Any], config: FeedbackConfig,
                    reference_indices: set[int] | None = None) -> list[dict[str, str]]:
     # Keep times, global indices, and free-text technical comments out of narration.
     spoken_report = {key: value for key, value in report.items() if key != "labels"}
-    spoken_report["labels"] = [{key: row[key] for key in ("type", "source", "score_location", "extra_copies")
+    spoken_report["labels"] = [{key: row[key] for key in ("type", "source", "score_location", "extra_copies", "playback_example")
                                if key in row} for row in report["labels"]]
     prompt = SYSTEM_PROMPT
     if excerpt_indices:
@@ -361,6 +400,8 @@ def build_messages(report: dict[str, Any], config: FeedbackConfig,
                 phrase = (f"bar {bars[0]}" if len(bars) == 1 else f"bars {bars[0]} to {bars[-1]}") if bars else location.get("phrase", "the marked passage")
                 # The musical example identifies the notes; do not ask the LLM to recite ordinals.
                 row["score_location"] = {"phrase": phrase, "scope": location.get("scope", "core")}
+                if row.get("playback_example"):
+                    row["score_location"] = {"phrase": row["playback_example"]["phrase"], "scope": "context"}
         prompt += '''
 
 OUTPUT FORMAT FOR AUDIO EXAMPLES: Instead of a plain paragraph, return ONLY a
@@ -379,10 +420,17 @@ Use ONLY the full-score bar number to locate the passage: do not speak note
 ordinals such as seventh or eighth. The reference audio identifies the notes.
 intro says, for example, "In bar two, the score calls for this passage."
 The reference audio will then play. performance_intro then says, for example,
-"Now listen to how you played it." The student's recording follows that cue.
+"Now hear the transcription of your playing." A synthesis of the student's
+transcribed notes follows that cue. Both music examples are synthesized and
+expanded to complete bars for context; do not imply every note in the bar is wrong.
+When playback_example.slowdown_factor > 1, briefly say both examples are slowed
+for clarity. Their timing is stretched by the SAME factor; do not claim they
+were performed at the same tempo. If partial_recording=true, acknowledge that
+only the recorded portion can be demonstrated; never invent missing performance.
+Transcription approximates pitches and note timing, not tone, breath, or dynamics.
 If reference_available=false and excerpt_available=true, intro names its exact
 score location using "the nth note of bar x" and invites the student to listen.
-The student's recording will play immediately after intro.
+The synthesized transcription will play immediately after intro.
 Then feedback briefly specifies the labeled
 issue and gives one practical correction. Do not place the diagnosis in intro.
 For excerpt_available=false, introduce the location without promising a clip.
@@ -403,7 +451,8 @@ def validate_playback_plan(document: Any, config: FeedbackConfig,
                            report: dict | None = None, reference_indices: set[int] | None = None) -> dict:
     if not isinstance(document, dict) or not isinstance(document.get("points"), list):
         raise FeedbackError("LLM must return a JSON object with feedback points.")
-    if not 1 <= len(document["points"]) <= 3:
+    complete = report is None and document.get("all_labels") is True
+    if not 1 <= len(document["points"]) <= (1000 if complete else 3):
         raise FeedbackError("Audio feedback must contain one to three points.")
     points, seen = [], set()
     for row in document["points"]:
@@ -448,13 +497,13 @@ def validate_playback_plan(document: Any, config: FeedbackConfig,
                        for p in selected for key in ("intro", "performance_intro", "feedback") if key in p)
         # Providers do not always obey the spoken budget. Keep complete teaching
         # points with their paired clips; never cut a sentence or request a paid retry.
-        while len(points) > 1 and word_count(points) > 100:
+        while not complete and len(points) > 1 and word_count(points) > 100:
             points.pop()
-        if word_count(points) > 100:
+        if (any(word_count([p]) > 100 for p in points) if complete else word_count(points) > 100):
             raise FeedbackError("A feedback point exceeds the 100-word spoken limit; no speech was requested.")
-    if sum(len(p[key]) for p in points for key in ("intro", "performance_intro", "feedback") if key in p) > config.max_speech_chars:
+    if sum(len(p[key]) for p in points for key in ("intro", "performance_intro", "feedback") if key in p) > config.max_speech_chars * (len(points) if complete else 1):
         raise FeedbackError("Feedback plan exceeds max_speech_chars.")
-    return {"schema_version": "align-playback-plan-v2", "points": points}
+    return {"schema_version": "align-playback-plan-v2", "points": points, **({"all_labels": True} if complete else {})}
 
 
 def playback_transcript(plan: dict) -> str:
@@ -469,16 +518,35 @@ def playback_transcript(plan: dict) -> str:
     return "\n\n".join(lines)
 
 
-def render_playback_plan(plan: dict, output: Path, config: FeedbackConfig, client: httpx.Client) -> None:
-    from datacreate.feedback_audio import checked_clip, compose_audio
+def render_playback_plan(plan: dict, output: Path, config: FeedbackConfig, client: httpx.Client, *, detail_progress=None) -> None:
+    total = sum(3 if p.get('reference_clip') else 2 for p in plan['points'])
+    done = 0
+    for sequence, point in enumerate(plan["points"]):
+        roles = ("intro", "performance_intro", "feedback") if point.get("reference_clip") else ("intro", "feedback")
+        for role in roles:
+            if detail_progress:
+                title = {'intro': 'reference introduction', 'performance_intro': 'performance introduction',
+                         'feedback': 'practice advice'}[role]
+                detail_progress({'substep': 'synthesize', 'completed': done, 'total': total,
+                                 'message': f'Point {sequence+1} of {len(plan["points"])}: voicing {title}'})
+            synthesize_speech(point[role], output / f"speech-{sequence:02d}-{role}.mp3", config, client)
+            done += 1
+    if detail_progress:
+        detail_progress({'substep': 'mix', 'message': 'Correcting speech pace, balancing levels and mixing music'})
+    assemble_playback_plan(plan, output, config)
+
+
+def assemble_playback_plan(plan: dict, output: Path, config: FeedbackConfig) -> None:
+    """Mix already generated speech with music, rebuilding the playback clock."""
+    from datacreate.feedback_audio import checked_clip, compose_audio, prepare_speech_pace
 
     entries = []
     for sequence, point in enumerate(plan["points"]):
         paired = bool(point.get("reference_clip"))
         for role in (("intro", "performance_intro", "feedback") if paired else ("intro", "feedback")):
             path = output / f"speech-{sequence:02d}-{role}.mp3"
-            synthesize_speech(point[role], path, config, client)
-            entries.append({"kind": "speech", "role": role, "label_index": point["label_index"], "path": path})
+            path, pacing = prepare_speech_pace(path, point[role], config.language, config.speech_min_wpm)
+            entries.append({"kind": "speech", "role": role, "label_index": point["label_index"], "path": path, **pacing})
             clip_key = "reference_clip" if role == "intro" and paired else "clip"
             insert = role == "intro" or (role == "performance_intro" and paired)
             if insert and point.get(clip_key):
@@ -532,16 +600,24 @@ def generate_narration(messages: list[dict[str, str]], config: FeedbackConfig, c
 def synthesize_speech(text: str, output: Path, config: FeedbackConfig, client: httpx.Client) -> None:
     if not text.strip() or len(text) > config.max_speech_chars:
         raise FeedbackError("Speech text must be nonempty and within max_speech_chars.")
+    if config.tts_provider == "qwen":
+        from datacreate.feedback_qwen import synthesize_qwen
+        synthesize_qwen(text, output, config, client)
+        return
     voice = config.fish_local_reference_id if config.fish_local else _secret(config.fish_reference_id_env)
     headers = {"Accept": "audio/mpeg"}
+    payload = {"text": text, "reference_id": voice, "format": "mp3",
+               "mp3_bitrate": 128, "normalize": True}
     if not config.fish_local:
         headers.update({"Authorization": "Bearer " + _secret(config.fish_api_key_env), "model": config.fish_model})
+        payload.update({"sample_rate": 44100, "latency": "normal",
+                        "prosody": {"speed": config.fish_speed, "volume": 0, "normalize_loudness": True},
+                        "condition_on_previous_chunks": True})
     temporary = output.with_suffix(".mp3.part")
     try:
         with client.stream("POST", config.fish_base_url.rstrip("/") + "/v1/tts",
                            headers=headers,
-                           json={"text": text, "reference_id": voice, "format": "mp3",
-                                 "mp3_bitrate": 128, "normalize": True}) as response:
+                           json=payload) as response:
             _check_status(response, "Fish Audio")
             mime = response.headers.get("content-type", "").split(";")[0].lower()
             if mime not in {"audio/mpeg", "audio/mp3", "application/octet-stream"}:
@@ -586,12 +662,16 @@ def run_feedback(
     score_path: Path | None = None,
     performance_path: Path | None = None, plan_input: bool = False,
     reference_path: Path | None = None, reference_midi_path: Path | None = None,
+    reference_config: PipelineConfig | None = None,
+    transcription_path: Path | None = None, alignment_path: Path | None = None,
+    all_labels: bool = False,
     client: httpx.Client | None = None,
     progress: Callable[[str], None] | None = None,
+    detail_progress: Callable[[dict], None] | None = None,
 ) -> Path:
     """Create a new run directory; preserve narration and status if TTS fails.
 
-    Only teaching fields and resolved locations reach the LLM. Fish receives narration.
+    Only teaching fields and resolved locations reach the LLM. TTS receives narration.
     dry_run makes no network requests and needs no API credentials.
     """
     config = config or FeedbackConfig()
@@ -615,6 +695,10 @@ def run_feedback(
     raw = source.read_bytes()
     if progress:
         progress("speech" if text_input or plan_input else "labels")
+    if detail_progress:
+        detail_progress({'substep': 'synthesize' if text_input or plan_input else 'prepare_feedback',
+                         'message': 'Loading saved narration and music' if text_input or plan_input else 'Resolving teaching points and full-bar examples',
+                         'skipped': ['prepare_feedback', 'write', 'examples'] if text_input or plan_input else []})
     try:
         content = raw.decode("utf-8-sig")
         document = None if text_input else json.loads(content)
@@ -631,23 +715,36 @@ def run_feedback(
     recording, excerpts = None, {}
     reference, reference_excerpts = None, {}
     try:
-        if report is not None and config.include_performance:
+        if report is not None and report["labels"] and config.include_performance:
             from datacreate.feedback_audio import resolve_performance, locate_excerpts
             recording = resolve_performance(source, document, performance_path)
             if recording is not None:
-                excerpts = locate_excerpts(report, recording, config.excerpt_padding_seconds)
-            if excerpts:
-                reference = Path(reference_path) if reference_path is not None else source.parent / "reference_audio.wav"
-                if reference.is_file():
-                    midi = Path(reference_midi_path) if reference_midi_path is not None else reference.with_suffix(".mid")
-                    if resolved_score is None or not midi.is_file():
-                        raise ValueError("Reference examples require the selected MusicXML and its matching reference MIDI.")
-                    from datacreate.feedback_audio import locate_reference_excerpts
-                    reference_excerpts = {i: clip for i, clip in locate_reference_excerpts(report, reference, resolved_score, midi).items() if i in excerpts}
-                elif reference_path is not None:
-                    raise ValueError("The supplied reference recording does not exist.")
-                else:
-                    reference = None
+                locate_excerpts(report, recording, 0)  # Validate times only; never crop the recording.
+            if recording is not None or (source.parent / "note_alignment_v2.json").is_file() or alignment_path is not None:
+                midi = Path(reference_midi_path) if reference_midi_path is not None else (
+                    Path(reference_path).with_suffix(".mid") if reference_path else source.parent / "reference_audio.mid")
+                if resolved_score is None or not midi.is_file():
+                    raise ValueError("Synthesized examples require the selected MusicXML and matching reference MIDI.")
+                from datacreate.feedback_synthesis import prepare_examples
+                from datacreate.feedback_score import ReferenceMismatchError, regenerate_reference
+                try:
+                    examples = prepare_examples(report, source.parent, resolved_score, midi,
+                                                transcription_path, alignment_path)
+                except ReferenceMismatchError:
+                    if detail_progress:
+                        detail_progress({'substep': 'prepare_feedback',
+                                         'message': 'Regenerating the reference to match your score'})
+                    regenerate_reference(resolved_score, midi, config=reference_config,
+                                         audio_path=reference_path)
+                    # Retry once, only for reference mismatches. Do not retry
+                    # invalid alignment, provider calls, or rendering failures.
+                    examples = prepare_examples(report, source.parent, resolved_score, midi,
+                                                transcription_path, alignment_path)
+                excerpts = {i: pair["performance"] for i, pair in examples.items()}
+                reference_excerpts = {i: pair["reference"] for i, pair in examples.items()}
+                if excerpts and not dry_run:
+                    from datacreate.feedback_synthesis import synthesis_soundfont
+                    synthesis_soundfont()
         if plan is not None:
             from datacreate.feedback_audio import checked_clip
             for point in plan["points"]:
@@ -657,6 +754,14 @@ def run_feedback(
     except (ValueError, RuntimeError, OSError) as error:
         raise FeedbackError(f"Cannot prepare performance excerpts: {error}") from None
     messages = build_messages(report, config, set(excerpts), set(reference_excerpts)) if report is not None else None
+    per_label_messages = []
+    if all_labels and report is not None and report["labels"]:
+        if set(excerpts) != set(range(len(report["labels"]))):
+            raise FeedbackError("--all-labels requires a synthesized comparison for every label.")
+        for i, label in enumerate(report["labels"]):
+            single = {**report, "labels": [label], "label_count": 1,
+                      "counts_by_type": {label["type"]: 1}, "counts_by_source": {label["source"]: 1}}
+            per_label_messages.append(build_messages(single, config, {0}, {0} if i in reference_excerpts else set()))
     narration = prepare_speech_text(content.strip(), config.language) if text_input else None
     empty_report = report is not None and report["label_count"] == 0
     if empty_report:
@@ -673,9 +778,12 @@ def run_feedback(
     if not dry_run:
         if narration is None and not plan_input:
             _secret(config.llm_api_key_env)
-        if not text_only and not config.fish_local:
-            _secret(config.fish_api_key_env)
-            _secret(config.fish_reference_id_env)
+        if not text_only:
+            for key in config.speech_required_environment():
+                _secret(key)
+            if config.tts_provider == "qwen":
+                from datacreate.feedback_qwen import qwen_endpoint
+                qwen_endpoint(config)
     output = Path(output_dir) if output_dir else source.parent / "feedback" / (
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid4().hex[:8])
     if output.exists():
@@ -685,11 +793,16 @@ def run_feedback(
                 "created_utc": datetime.now(timezone.utc).isoformat(),
                 "input_sha256": hashlib.sha256(raw).hexdigest(), "input_kind": "plan" if plan_input else "text" if text_input else "labels",
                 "language": config.language, "instrument": config.instrument,
+                "speech_min_wpm": config.speech_min_wpm,
                 "llm_model": None if narration is not None or plan_input else config.llm_model,
-                "fish_model": None if text_only or dry_run else config.fish_model,
-                "fish_local": config.fish_local,
+                "tts_provider": config.tts_provider,
+                "tts_model": config.qwen_model if config.tts_provider == "qwen" else config.fish_model,
+                "tts_voice": config.qwen_voice if config.tts_provider == "qwen" else None,
+                "tts_preview": config.tts_provider == "fish" and config.fish_model == "drama-3-preview",
+                "fish_model": None if text_only or dry_run or config.tts_provider != "fish" else config.fish_model,
+                "fish_local": config.tts_provider == "fish" and config.fish_local,
                 "pipeline_revision": PIPELINE_REVISION,
-                "fish_reference_id": config.fish_local_reference_id if config.fish_local else None,
+                "fish_reference_id": config.fish_local_reference_id if config.tts_provider == "fish" and config.fish_local else None,
                 "label_count": report["label_count"] if report is not None else None,
                 "no_issues_marked": empty_report,
                 "excerpt_reason": ("no_marked_issues" if empty_report else "disabled" if not config.include_performance
@@ -700,7 +813,8 @@ def run_feedback(
         manifest["score_sha256"] = hashlib.sha256(resolved_score.read_bytes()).hexdigest()
     if report is not None:
         _write_json(output / "report.json", report)
-        _write_json(output / "request.json", {"model": config.llm_model, "messages": messages})
+        _write_json(output / "request.json", {"model": config.llm_model,
+                    **({"per_label_messages": per_label_messages} if per_label_messages else {"messages": messages})})
     _write_json(output / "feedback.json", manifest)
     if dry_run:
         manifest["status"] = "dry_run"
@@ -711,35 +825,67 @@ def run_feedback(
     try:
         if plan_input:
             import shutil
+            # Animation resolves plan label indices against this exact report.
+            # Preserve it when retrying speech without another narration request.
+            if (source.parent / "report.json").is_file():
+                shutil.copyfile(source.parent / "report.json", output / "report.json")
             for point in plan["points"]:
                 for key in ("clip", "reference_clip"):
                     if point.get(key):
                         path = checked_clip(source.parent, point[key])
                         shutil.copyfile(path, output / path.name)
+                        events_path = path.with_suffix(".notes.json")
+                        if point[key].get("synthesized") and events_path.is_file():
+                            shutil.copyfile(events_path, output / events_path.name)
         elif narration is None:
             if progress:
                 progress("narration")
-            generated = generate_narration(messages, config, client)
+            if per_label_messages:
+                points = []
+                for index, individual in enumerate(per_label_messages):
+                    if detail_progress:
+                        detail_progress({'substep': 'write', 'completed': index, 'total': len(per_label_messages),
+                                         'message': f'Writing advice for point {index+1} of {len(per_label_messages)}'})
+                    response = generate_narration(individual, config, client)
+                    (output / f"llm-response-{index:03d}.txt").write_text(response, encoding="utf-8")
+                    single = {**report, "labels": [report["labels"][index]]}
+                    try:
+                        validated = validate_playback_plan(json.loads(response), config, single, {0})
+                    except json.JSONDecodeError:
+                        raise FeedbackError("LLM returned invalid playback JSON; no speech was requested.") from None
+                    point = validated["points"][0]
+                    point["label_index"] = index
+                    points.append(point)
+                plan = {"schema_version": "align-playback-plan-v2", "all_labels": True, "points": points}
+                generated = json.dumps(plan, ensure_ascii=False)
+            else:
+                if detail_progress:
+                    detail_progress({'substep': 'write', 'message': 'Writing your feedback and playback plan'})
+                generated = generate_narration(messages, config, client)
             if excerpts:
                 (output / "llm_response.txt").write_text(generated + "\n", encoding="utf-8")
                 try:
-                    plan = validate_playback_plan(json.loads(generated), config, report, set(reference_excerpts))
+                    if plan is None:
+                        plan = validate_playback_plan(json.loads(generated), config, report, set(reference_excerpts))
                 except json.JSONDecodeError:
                     raise FeedbackError("LLM returned invalid playback JSON; no speech was requested.") from None
-                from datacreate.feedback_audio import extract_clip
-                for point in plan["points"]:
+                from datacreate.feedback_synthesis import render_example
+                for position, point in enumerate(plan["points"]):
+                    if detail_progress:
+                        detail_progress({'substep': 'examples', 'completed': position, 'total': len(plan['points']),
+                                         'message': f'Synthesizing reference and performance for point {position+1} of {len(plan["points"])}'})
                     index = point["label_index"]
                     if index in excerpts:
-                        point["clip"] = extract_clip(recording, excerpts[index], output / f"excerpt-{index:03d}.wav")
+                        point["clip"] = render_example(excerpts[index], output / f"excerpt-{index:03d}.wav")
                     if index in reference_excerpts:
-                        point["reference_clip"] = extract_clip(reference, reference_excerpts[index], output / f"reference-{index:03d}.wav")
+                        point["reference_clip"] = render_example(reference_excerpts[index], output / f"reference-{index:03d}.wav")
             else:
                 narration = prepare_speech_text(generated, config.language)
         if plan is not None:
             _write_json(output / "playback_plan.json", plan)
             narration = playback_transcript(plan)
             manifest["playback_plan_file"] = "playback_plan.json"
-        if len(narration) > config.max_speech_chars:
+        if len(narration) > config.max_speech_chars * (len(plan["points"]) if plan and plan.get("all_labels") else 1):
             raise FeedbackError("Normalized narration exceeds max_speech_chars; no speech was requested.")
         (output / "feedback.txt").write_text(narration + "\n", encoding="utf-8")
         manifest.update(status="text_ready", text_file="feedback.txt",
@@ -749,9 +895,12 @@ def run_feedback(
             if progress:
                 progress("speech")
             if plan is not None:
-                render_playback_plan(plan, output, config, client)
+                render_playback_plan(plan, output, config, client, detail_progress=detail_progress)
                 manifest["timeline_file"] = "timeline.json"
             else:
+                if detail_progress:
+                    detail_progress({'substep': 'synthesize', 'message': 'Generating spoken feedback',
+                                     'skipped': ['write', 'examples', 'mix'] if empty_report else ['examples', 'mix']})
                 synthesize_speech(narration, output / "feedback.mp3", config, client)
             manifest["audio_file"] = "feedback.mp3"
             manifest["status"] = "complete"
@@ -767,7 +916,7 @@ def run_feedback(
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(description="ALIGN labels -> 302.AI spoken analysis -> Fish Audio MP3")
+    parser = argparse.ArgumentParser(description="ALIGN labels -> LLM spoken analysis -> Fish or Qwen Audio MP3")
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--labels", type=Path, help="Explicit labels.json, labels_agent.json, or prediction JSON")
     source.add_argument("--text", type=Path, help="Speak saved/edited narration without calling the LLM")
@@ -775,12 +924,15 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--config", type=Path, help="Feedback YAML (not the DataCreate pipeline config)")
     parser.add_argument("--score", type=Path, help="Matching MusicXML; defaults to verified_score.musicxml beside labels")
     parser.add_argument("--performance", type=Path, help="Recording matching label timestamps; defaults to audio_reference or performance_audio.wav")
-    parser.add_argument("--reference", type=Path, help="Rendered reference recording; defaults to reference_audio.wav")
+    parser.add_argument("--reference", type=Path, help="Legacy reference path, used to locate its paired MIDI; audio is synthesized")
     parser.add_argument("--reference-midi", type=Path, help="MIDI used to render the reference; defaults to the reference's .mid sibling")
+    parser.add_argument("--transcription", type=Path, help="Matching note JSON; defaults to transcribed_notes in the alignment")
+    parser.add_argument("--note-alignment", type=Path, help="Score-to-performance note mapping; defaults to note_alignment_v2.json")
     parser.add_argument("--no-excerpts", action="store_true", help="Generate speech without performance clips")
+    parser.add_argument("--all-labels", action="store_true", help="Narrate every retained label separately for video (one LLM call per label)")
     parser.add_argument("--output", type=Path, help="New run directory; default: input-dir/feedback/<unique-run>")
     mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--text-only", action="store_true", help="Generate narration without Fish TTS")
+    mode.add_argument("--text-only", action="store_true", help="Generate narration without TTS")
     mode.add_argument("--dry-run", action="store_true", help="Validate input and save the prompt; no API calls")
     args = parser.parse_args(argv)
     try:
@@ -791,7 +943,8 @@ def main(argv: list[str] | None = None) -> None:
                               output_dir=args.output, text_input=args.text is not None,
                               text_only=args.text_only, dry_run=args.dry_run, score_path=args.score,
                               performance_path=args.performance, plan_input=args.plan is not None,
-                              reference_path=args.reference, reference_midi_path=args.reference_midi)
+                              reference_path=args.reference, reference_midi_path=args.reference_midi,
+                              transcription_path=args.transcription, alignment_path=args.note_alignment, all_labels=args.all_labels)
     except (FeedbackError, OSError, yaml.YAMLError) as error:
         print(f"Feedback failed: {error}", file=sys.stderr)
         raise SystemExit(1) from None

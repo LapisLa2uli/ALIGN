@@ -1,3 +1,4 @@
+import {createProgressView} from './studio-progress.js';
 import {melFilters, melEnergy, encodeWav, uploadedAudioWav} from './studio-audio.js';
 
 const $ = id => document.getElementById(id);
@@ -5,10 +6,10 @@ let mode = 'idle', stream, context, analyser, recorder, source, mute;
 let filters, frequencies, chunks = [], recordingBlob, recordingURL, currentJob;
 let started = 0, ticker, stopAcknowledged, maxSeconds = 300, pollTimer;
 const canvas = $('spectrum'), pen = canvas.getContext('2d');
-const analysisPanel = document.createElement('div');
-analysisPanel.id = 'analysis-progress'; analysisPanel.className = 'analysis-progress'; analysisPanel.hidden = true;
-analysisPanel.innerHTML = '<div class="analysis-progress-heading"><strong>Analysis & feedback</strong><span id="analysis-count"></span></div><progress id="analysis-bar" max="6" value="0" aria-label="Completed analysis and feedback steps"></progress><ol id="analysis-steps"></ol><p>Progress follows completed steps. Each step can take a different amount of time.</p>';
-$('progress').after(analysisPanel);
+const progressView = createProgressView();
+const analysisPanel = progressView.element;
+document.querySelector('.workspace').before(analysisPanel);
+let progressFocused = false;
 let display = Array(96).fill(0), width = 1, height = 1;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -31,9 +32,12 @@ function hasScore() { return Boolean($('score-select').value || $('score-upload'
 function setMode(value) { mode = value; updateControls(); }
 function formatTime(seconds) { return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`; }
 function resetFeedback() {
+  progressFocused = false;
   clearTimeout(pollTimer);
   for (const id of ['result', 'transcript', 'retry', 'progress', 'analysis-progress']) $(id).hidden = true;
   $('feedback-playback').pause(); $('feedback-playback').removeAttribute('src');
+  $('feedback-video').pause(); $('feedback-video').removeAttribute('src');
+  $('feedback-video').hidden = true; $('download-video').hidden = true;
   $('empty-feedback').hidden = false; $('job-status').textContent = '';
   $('feedback-description').textContent = 'Your spoken feedback will be here when your take is ready.';
   sessionStorage.removeItem('align-studio-take'); currentJob = null;
@@ -47,6 +51,7 @@ async function cleanupAudio() {
 }
 async function startRecording() {
   error();
+  $('feedback-video').pause();
   if (!navigator.mediaDevices?.getUserMedia || !window.AudioWorkletNode) {
     error('Microphone recording needs a current browser on localhost or HTTPS.'); return;
   }
@@ -155,11 +160,29 @@ async function submit() {
   if ($('score-upload').files[0]) data.append('score', $('score-upload').files[0]);
   else data.append('score_id', $('score-select').value);
   $('job-status').textContent = 'Uploading your take…'; $('empty-feedback').hidden = true;
+  showProgressWaiting('Uploading your recording and score…');
   try {
     const job = await request('/api/studio/takes', {method: 'POST', body: data});
     currentJob = job.id; sessionStorage.setItem('align-studio-take', currentJob);
     setMode('processing'); poll();
-  } catch (failure) { error(failure.message); $('job-status').textContent = 'Your recording is still available above.'; setMode('recorded'); }
+  } catch (failure) { error(failure.message); $('analysis-title').textContent = 'Upload needs attention'; $('analysis-current').textContent = failure.message; analysisPanel.dataset.status = 'failed'; $('job-status').textContent = 'Your recording is still available above.'; setMode('recorded'); }
+}
+function showFeedbackMedia(state) {
+  const video = $('feedback-video'), audio = $('feedback-playback');
+  if (state.video_url) {
+    if (video.getAttribute('src') !== state.video_url) video.src = state.video_url;
+    $('download-video').href = state.video_url;
+    audio.pause();
+  }
+  video.hidden = !state.video_url;
+  $('download-video').hidden = !state.video_url;
+  if (state.audio_url) {
+    if (audio.getAttribute('src') !== state.audio_url) audio.src = state.audio_url;
+    $('download').href = state.audio_url;
+  }
+  audio.hidden = Boolean(state.video_url) || !state.audio_url;
+  $('download').hidden = !state.audio_url;
+  $('result').hidden = !state.video_url && !state.audio_url;
 }
 async function poll() {
   const jobId = currentJob;
@@ -167,29 +190,33 @@ async function poll() {
     const state = await request(`/api/studio/takes/${jobId}`);
     if (currentJob !== jobId) return;
     $('job-status').textContent = state.message; $('empty-feedback').hidden = true;
-    $('progress').hidden = state.status !== 'processing';
-    renderAnalysisProgress(state.analysis_progress);
+    $('progress').hidden = true;
+    renderAnalysisProgress(state.detailed_progress, state.analysis_progress);
     const step = ['queued', 'score', 'reference', 'audio'].includes(state.stage) ? 0 : ['alignment', 'features'].includes(state.stage) ? 1 : 2;
     document.querySelectorAll('.progress li').forEach((item, i) => { item.classList.toggle('current', i === step); item.classList.toggle('done', i < step); });
     if (state.narration) { $('narration').textContent = state.narration; $('transcript').hidden = false; }
+    showFeedbackMedia(state);
     if (state.status === 'complete') {
-      $('feedback-playback').src = state.audio_url; $('download').href = state.audio_url; $('result').hidden = false;
       const details = state.feedback_details;
       $('feedback-description').textContent = details?.no_issues_marked
         ? `${state.assessment?.message || 'The detector marked no specific issues. This does not establish an error-free performance.'} No targeted audio snippets are available.`
+        : state.video_url
+          ? 'Watch the score animation with the reference, your transcribed playing, and practice advice.'
         : details?.reference_excerpts
           ? 'Listen to the reference, your performance, then the correction and practice advice.'
           : details?.performance_excerpts
             ? 'Listen to the marked passages from your performance, followed by practice advice.'
             : 'Press play. Take one idea into your next practice session.';
+      if (state.video_message) $('feedback-description').textContent += ` ${state.video_message}`;
       setMode(recordingBlob ? 'recorded' : 'idle'); return;
     }
     if (state.status === 'failed') {
       $('retry').hidden = !state.can_retry;
-      $('result').hidden = true;
+      $('retry').textContent = state.retry_kind === 'video' ? 'Retry score animation' : 'Retry spoken feedback';
       $('transcript').hidden = !state.narration;
       $('feedback-description').textContent = state.assessment?.status === 'alignment_uncertain'
         ? 'Analysis was inconclusive. Check the matching score before submitting again.'
+        : state.retry_kind === 'video' ? 'Your feedback audio is ready below. Retry to finish the score animation.'
         : state.narration ? 'Your written feedback is saved. Retry to create the audio.' : 'This take needs a little attention.';
       setMode(recordingBlob ? 'recorded' : 'idle'); return;
     }
@@ -201,23 +228,25 @@ async function poll() {
       error('This take is no longer available on the server. Record or submit a new take.'); return;
     }
     $('job-status').textContent = 'Connection interrupted. Reconnecting to your take…';
+    $('analysis-current').textContent = 'Connection interrupted. Reconnecting to your take…';
+    progressView.waiting('Connection interrupted. Reconnecting to your take…');
   }
   pollTimer = setTimeout(poll, 2000);
 }
-function renderAnalysisProgress(progress) {
-  analysisPanel.hidden = !progress;
-  if (!progress) return;
-  $('analysis-count').textContent = `${progress.completed} of ${progress.total} steps complete`;
-  $('analysis-bar').max = progress.total; $('analysis-bar').value = progress.completed;
-  $('analysis-bar').setAttribute('aria-valuetext', `${progress.completed} of ${progress.total} steps complete. ${progress.message}`);
-  $('analysis-steps').replaceChildren(...progress.steps.map(step => {
-    const item = document.createElement('li'); item.className = step.state;
-    const label = document.createElement('strong'); label.textContent = step.label;
-    const status = document.createElement('span');
-    status.textContent = {complete: 'Done', active: 'In progress', pending: 'Waiting', failed: 'Stopped'}[step.state];
-    if (step.state === 'active') item.setAttribute('aria-current', 'step');
-    item.append(label, status); return item;
-  }));
+function focusProgress() {
+  if (!progressFocused) {
+    progressFocused = true;
+    requestAnimationFrame(() => analysisPanel.scrollIntoView({behavior: reducedMotion ? 'auto' : 'smooth',
+      block: analysisPanel.getBoundingClientRect().height > innerHeight - 48 ? 'start' : 'center'}));
+  }
+}
+function showProgressWaiting(message) {
+  progressView.waiting(message);
+  focusProgress();
+}
+function renderAnalysisProgress(progress, legacy) {
+  progressView.render(progress, legacy);
+  if (progress?.status === 'processing') focusProgress();
 }
 $('record').addEventListener('click', () => mode === 'recording' ? stopRecording() : startRecording());
 $('submit').addEventListener('click', submit);
@@ -227,6 +256,7 @@ $('audio-upload').addEventListener('change', async () => {
   $('audio-upload').value = ''; // Allow choosing the same file again after a failure.
 });
 $('retry').addEventListener('click', async () => {
+  progressFocused = false;
   error(); $('retry').disabled = true;
   try { await request(`/api/studio/takes/${currentJob}/retry`, {method: 'POST'}); $('retry').hidden = true; setMode('processing'); poll(); }
   catch (failure) { error(failure.message); }

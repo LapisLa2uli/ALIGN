@@ -4,6 +4,40 @@ import json
 from pathlib import Path
 
 
+class ReferenceMismatchError(ValueError):
+    """The rendered reference cannot be validated against the selected score."""
+
+
+def regenerate_reference(score_path, midi_path, *, config=None, audio_path=None):
+    """Rebuild a validated MIDI/WAV pair before replacing the old reference."""
+    import logging
+    import shutil
+    from tempfile import TemporaryDirectory
+    from uuid import uuid4
+    from datacreate.config import PipelineConfig
+    from datacreate.tools.musescore import export_score_to_midi, render_midi_to_wav
+
+    config = config or PipelineConfig.load()
+    audio_path = Path(audio_path) if audio_path else midi_path.with_suffix('.wav')
+    logger = logging.getLogger(__name__)
+    with TemporaryDirectory(prefix='reference-rebuild-', dir=midi_path.parent) as temporary:
+        fresh_midi = Path(temporary) / 'reference.mid'
+        fresh_audio = Path(temporary) / 'reference.wav'
+        export_score_to_midi(config, score_path, fresh_midi, logger)
+        reference_note_times(score_path, fresh_midi)
+        render_midi_to_wav(fresh_midi, fresh_audio, config, logger)
+        # Preserve the original pair for diagnosis; failed validation/rendering
+        # never overwrites either original artifact.
+        backup = midi_path.parent / ('reference-before-rebuild-' + uuid4().hex)
+        backup.mkdir()
+        for path in (midi_path, audio_path):
+            if path.exists():
+                shutil.copy2(path, backup / path.name)
+        fresh_audio.replace(audio_path)
+        fresh_midi.replace(midi_path)
+    logger.info('Automatically regenerated reference MIDI and audio for %s', score_path.name)
+
+
 def label_note_indices(label: dict, *, context: bool = False):
     part = label.get("score_part") or {}
     if part:
@@ -91,7 +125,7 @@ def reference_note_times(score_path: Path, midi_path: Path):
         if message.type == "note_on" and message.velocity > 0:
             key = (message.channel, message.note)
             if key in active:
-                raise ValueError("Overlapping MIDI notes cannot be matched reliably to score indices.")
+                raise ReferenceMismatchError("Overlapping MIDI notes cannot be matched reliably to score indices.")
             active[key] = (seconds, ticks / midi.ticks_per_beat)
         elif message.type in ("note_on", "note_off"):
             key = (message.channel, message.note)
@@ -101,14 +135,63 @@ def reference_note_times(score_path: Path, midi_path: Path):
                                "ql_start": start[1], "ql_end": ticks / midi.ticks_per_beat})
     events.sort(key=lambda item: (item["start"], item["pitch"]))
     if active:
-        raise ValueError("Reference MIDI does not match the sounding notes in the selected score. Re-render the reference.")
+        raise ReferenceMismatchError("Reference MIDI does not match the sounding notes in the selected score. Re-render the reference.")
+    events = _validate_chord_events(parsed, events, midi.ticks_per_beat)
     if len(events) != len(score_notes):
         return _decorated_reference_times(parsed, score_notes, events, midi.ticks_per_beat)
     # A constant written-to-sounding transposition is expected for clarinet.
     shifts = {event["pitch"] - note.pitch for event, note in zip(events, score_notes)}
     if len(shifts) > 1:
-        raise ValueError("Reference MIDI pitches disagree with the selected score. Re-render the reference.")
+        raise ReferenceMismatchError("Reference MIDI pitches disagree with the selected score. Re-render the reference.")
     return events
+
+
+def _validate_chord_events(parsed, events, ticks_per_beat):
+    """Validate chord playback without changing the detector's single-note indices.
+
+    Octave alternatives in a wind part are exported as chords by MuseScore, but
+    are absent from parse_sounding_notes. Keep them in the actual playback MIDI;
+    exclude only validated chord events from the canonical note mapping.
+    """
+    from music21 import chord, expressions, note
+    from datacreate.score_notes import collapse_tied_records
+
+    chords = list(parsed.recurse().getElementsByClass(chord.Chord))
+    if not chords:
+        return events
+    tolerance = 1 / ticks_per_beat + 1e-7
+    # Use plain notes to establish sounding pitch independently of chord pitches.
+    anchors = []
+    for element in parsed.recurse().getElementsByClass(note.Note):
+        if element.duration.isGrace or any(isinstance(e, expressions.Ornament) for e in element.expressions):
+            continue
+        onset = float(element.getOffsetInHierarchy(parsed))
+        matches = [e for e in events if abs(e['ql_start'] - onset) <= tolerance]
+        if len(matches) == 1:
+            anchors.append(matches[0]['pitch'] - int(element.pitch.midi))
+    if not anchors or len(set(anchors)) != 1:
+        raise ReferenceMismatchError('Cannot validate reference chord transposition. Re-render the reference.')
+    shift = anchors[0]
+    # Merge each chord tone's ties separately (an octave chord has two voices).
+    records = []
+    for element in chords:
+        for tone in element.notes:
+            records.append({'voice': (0, int(tone.pitch.midi)), 'midi': int(tone.pitch.midi),
+                            'offset_ql': float(element.getOffsetInHierarchy(parsed)),
+                            'duration_ql': float(element.duration.quarterLength),
+                            'tie_type': tone.tie.type if tone.tie else None})
+    spans = collapse_tied_records(records)
+    consumed = set()
+    for span in spans:
+        start, end = span['offset_ql'], span['offset_ql'] + span['duration_ql']
+        matches = [i for i, event in enumerate(events)
+                   if i not in consumed and event['pitch'] == span['midi'] + shift
+                   and abs(event['ql_start'] - start) <= tolerance
+                   and start < event['ql_end'] <= end + tolerance]
+        if len(matches) != 1:
+            raise ReferenceMismatchError('Reference MIDI chord notes disagree with the score. Re-render the reference.')
+        consumed.add(matches[0])
+    return [event for i, event in enumerate(events) if i not in consumed]
 
 
 def _decorated_reference_times(parsed, notes, events, ticks_per_beat):
@@ -124,7 +207,7 @@ def _decorated_reference_times(parsed, notes, events, ticks_per_beat):
     from datacreate.score_notes import is_decorative_element
 
     def mismatch():
-        raise ValueError("Reference MIDI does not match the score's note and ornament timeline. Re-render the reference.")
+        raise ReferenceMismatchError("Reference MIDI does not match the score's note and ornament timeline. Re-render the reference.")
 
     if not notes or not events:
         mismatch()
@@ -134,6 +217,7 @@ def _decorated_reference_times(parsed, notes, events, ticks_per_beat):
         mismatch()  # This narration pipeline requires one monophonic part.
     allowed = [{n.pitch} for n in notes]
     decorated = set()
+    early_graces = []
     for element in parsed.recurse().getElementsByClass(note.Note):
         ql = float(element.getOffsetInHierarchy(parsed))
         index = bisect_right(starts, ql + tolerance) - 1
@@ -145,6 +229,18 @@ def _decorated_reference_times(parsed, notes, events, ticks_per_beat):
                                or abs(notes[i].ql_start - ql) <= tolerance):
                     allowed[i].add(int(element.pitch.midi))
                     decorated.add(i)
+            # MuseScore can place a slashed grace before the preceding short
+            # note, taking the second half of the note before that (e.g. a
+            # slurred sixteenth-note run). Record only this adjacent pattern;
+            # validate the actual grace event after establishing transposition.
+            i = index - 2
+            if (element.duration.isGrace and element.duration.slash and i >= 0
+                    and abs(notes[index].ql_start - ql) <= tolerance
+                    and notes[i].measure == notes[index].measure
+                    and abs(notes[i].ql_end - notes[i + 1].ql_start) <= tolerance
+                    and abs(notes[i + 1].ql_end - ql) <= tolerance
+                    and ql - notes[i].ql_start <= 1 + tolerance):
+                early_graces.append((i, int(element.pitch.midi)))
         elif index >= 0 and any(isinstance(e, expressions.Ornament) for e in element.expressions):
             allowed[index].update(int(n.pitch.midi) for n in expressions.realizeOrnaments(element)
                                   if isinstance(n, note.Note))
@@ -165,6 +261,19 @@ def _decorated_reference_times(parsed, notes, events, ticks_per_beat):
     if len(shifts) != 1:
         mismatch()
     shift = shifts.pop()
+    for i, pitch in early_graces:
+        n, group = notes[i], grouped[i]
+        if len(group) != 2 or pitch == n.pitch:
+            continue
+        main, grace = group
+        midpoint = (n.ql_start + n.ql_end) / 2
+        if (main['pitch'] == n.pitch + shift and grace['pitch'] == pitch + shift
+                and abs(main['ql_start'] - n.ql_start) <= tolerance
+                and abs(grace['ql_start'] - midpoint) <= tolerance
+                and main['ql_end'] <= grace['ql_start'] + tolerance
+                and abs(grace['ql_end'] - n.ql_end) <= tolerance):
+            allowed[i].add(pitch)
+            decorated.add(i)
     result = []
     for i, (n, group) in enumerate(zip(notes, grouped)):
         pitches = {e['pitch'] - shift for e in group}

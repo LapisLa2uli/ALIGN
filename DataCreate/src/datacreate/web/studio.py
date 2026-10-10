@@ -2,22 +2,27 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
 import json
 import logging
 import os
 from pathlib import Path
 import re
+import shutil
+from tempfile import TemporaryDirectory
 from threading import Lock
 from uuid import uuid4
 import wave
 
-from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi import APIRouter, BackgroundTasks, File, Form, Header, HTTPException, UploadFile
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
 from datacreate.config import PipelineConfig
 from datacreate.analysis_status import sample_assessment, UNCERTAIN_MESSAGE
 from datacreate.credentials import credential_value
 from datacreate.feedback import FeedbackConfig, PIPELINE_REVISION, run_feedback
+from datacreate.web.studio_progress import detailed_progress
+from datacreate.web.studio_requests import file_digest, key_digest, lookup, receipt, request_store
 
 
 def feedback_failure_message(error):
@@ -27,12 +32,18 @@ def feedback_failure_message(error):
         return "The narration service could not be reached. Your analysis is saved. Check the server's network connection, then retry spoken feedback."
     if "LLM returned HTTP 401" in message:
         return "The narration service rejected its API key. Update SSSTOKEN_API_KEY for the server, then retry spoken feedback."
+    if "LLM returned HTTP 404" in message:
+        return "The narration service could not find the requested model or API route (HTTP 404). Your analysis is saved. Check the narration endpoint and model; if they are correct, retry spoken feedback after the provider recovers."
     if "Each feedback point needs" in message or "playback JSON" in message:
         return "The narration service returned an incomplete audio plan. Your analysis is saved; retry spoken feedback."
+    if "Qwen" in message or "DASHSCOPE" in message:
+        return "Qwen speech audio could not be created. Check the Beijing DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID, selected voice, and account quota, then retry spoken feedback. Your saved narration and snippets will be reused."
     if "Local Fish connection failed" in message:
         return "Cannot connect to local Fish Speech. Run DataCreate/scripts/start_fish_local.ps1 -Foreground, wait for startup to finish, then retry spoken feedback. Your narration and snippets are saved."
     if "Local Fish speech request timed out" in message:
         return "Local Fish Speech timed out. Check its terminal and wait for any active synthesis to finish, then retry spoken feedback. Your narration and snippets are saved."
+    if "Fish Audio" in message or "FISH_AUDIO" in message:
+        return "Hosted Fish Audio could not create speech. Check FISH_AUDIO_API_KEY, FISH_AUDIO_REFERENCE_ID, model access, and API balance, then retry spoken feedback. Your saved narration and snippets will be reused."
     if "Fish" in message or "Speech" in message or "speech" in message:
         return "Speech audio could not be created. Check the local Fish service, then retry spoken feedback. Your saved feedback will be reused when available."
     return "Creating spoken feedback failed. Your analysis is saved. Check the server log, then retry spoken feedback."
@@ -46,6 +57,7 @@ ANALYSIS_STEPS = [
     ("labels", "Label analysis", "Analyzing possible issues and score locations"),
     ("narration", "Narration", "Writing your spoken feedback"),
     ("speech", "Speech audio", "Synthesizing the feedback MP3"),
+    ("video", "Score animation", "Rendering the synchronized feedback MP4"),
 ]
 
 
@@ -74,7 +86,7 @@ def analysis_progress(state, sample):
             "completed": index, "total": len(keys),
             "message": "Your feedback is ready" if finished else ANALYSIS_STEPS[index][2],
             "steps": [{"id": key, "label": label,
-                       "state": "complete" if i < index else (
+                       "state": "skipped" if finished and key == "video" and state.get("video_status") == "unavailable" else "complete" if i < index else (
                            "failed" if state["status"] == "failed" else "active") if i == index else "pending"}
                       for i, (key, label, _) in enumerate(ANALYSIS_STEPS)]}
 
@@ -85,6 +97,12 @@ def make_pipeline(config):
     return DataCreatePipeline(config)
 
 
+def render_feedback_video(sample, feedback, output, *, detail_progress=None):
+    # Keep optional engraving dependencies out of page/status startup.
+    from datacreate.feedback_video import render_video
+    return render_video(sample, feedback, output, detail_progress=detail_progress)
+
+
 class StudioJobs:
     def __init__(self, config: PipelineConfig):
         self.config = deepcopy(config)
@@ -92,23 +110,26 @@ class StudioJobs:
         self.config.paths["samples_root"] = str(self.root / "samples")
         self.lock = Lock()
         self.active: str | None = None
+        self._preview_hashes = {}
 
     def feedback_config(self):
         path = os.environ.get("ALIGN_FEEDBACK_CONFIG")
-        # The practice studio uses the local Fish service by default. Hosted
-        # speech is available only through an explicit configuration override.
+        # Share the hosted voice/model and pacing settings with Interpretation.
         return FeedbackConfig.load(
-            Path(path) if path else WEB.parents[2] / "config" / "feedback.local.yaml"
+            Path(path) if path else WEB.parents[2] / "config" / "feedback.fish.yaml"
         )
 
     def readiness(self):
         try:
             config = self.feedback_config()
             required = [config.llm_api_key_env]
-            if not config.fish_local:
-                required += [config.fish_api_key_env, config.fish_reference_id_env]
+            required += config.speech_required_environment()
             missing = [key for key in required if not credential_value(key)]
-            return {"ready": not missing, "message": "Missing server environment: " + ", ".join(missing) if missing else "Ready for your next take", "instrument": config.instrument}
+            speech = {"provider": config.tts_provider,
+                      "mode": "local" if config.tts_provider == "fish" and config.fish_local else "hosted",
+                      "model": config.fish_model if config.tts_provider == "fish" else config.qwen_model,
+                      "speech_min_wpm": config.speech_min_wpm}
+            return {"ready": not missing, "message": "Missing server environment: " + ", ".join(missing) if missing else "Ready for your next take", "instrument": config.instrument, "speech": speech}
         except (ValueError, OSError):
             return {"ready": False, "message": "Check the server's ALIGN_FEEDBACK_CONFIG file.", "instrument": "B-flat clarinet"}
 
@@ -126,6 +147,67 @@ class StudioJobs:
         temporary.write_text(json.dumps(state), encoding="utf-8")
         temporary.replace(path)
 
+    def _preview_hash(self, path, *, audio=False):
+        """Hash PCM rather than WAV headers; cache only while the file is unchanged."""
+        stat = path.stat()
+        stamp = (stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns)
+        key = (path, audio)
+        cached = self._preview_hashes.get(key)
+        if cached and cached[0] == stamp:
+            return cached[1]
+        digest = hashlib.sha256()
+        if audio:
+            with wave.open(str(path), 'rb') as recording:
+                digest.update(str((recording.getnchannels(), recording.getsampwidth(),
+                                   recording.getframerate(), recording.getnframes())).encode())
+                while chunk := recording.readframes(65536):
+                    digest.update(chunk)
+        else:
+            with path.open('rb') as stream:
+                while chunk := stream.read(1024 * 1024):
+                    digest.update(chunk)
+        value = digest.hexdigest()
+        self._preview_hashes[key] = (stamp, value)
+        return value
+
+    def _preview_identity(self, job_id):
+        sample = self.root / 'samples' / job_id
+        score = sample / 'verified_score.musicxml'
+        full_score = sample / 'full_score.musicxml'
+        metadata = sample / 'metadata.json'
+        segment = json.loads(metadata.read_text(encoding='utf-8')).get('score_segment') if metadata.is_file() else None
+        return (self._preview_hash(self.directory(job_id) / 'recording.wav', audio=True),
+                self._preview_hash(score), self._preview_hash(full_score if full_score.is_file() else score),
+                json.dumps(segment or {}, sort_keys=True))
+
+    def matching_video(self, job_id):
+        """Find a real completed video for identical audio, score, and selected passage."""
+        try:
+            identity = self._preview_identity(job_id)
+        except (OSError, ValueError, EOFError, wave.Error):
+            return None
+        candidates = []
+        for directory in (self.root / 'jobs').iterdir():
+            if directory.name == job_id or not re.fullmatch(r'[0-9a-f]{32}', directory.name):
+                continue
+            try:
+                video = directory / 'video' / 'feedback.mp4'
+                if video.stat().st_size > 0:
+                    candidates.append((video.stat().st_mtime_ns, directory))
+            except OSError:
+                continue
+        for _, directory in sorted(candidates, reverse=True):
+            try:
+                state = json.loads((directory / 'status.json').read_text(encoding='utf-8'))
+                if state.get('status') != 'complete' or self._preview_identity(directory.name) != identity:
+                    continue
+                assessment = sample_assessment(self.root / 'samples' / directory.name)
+                if assessment is None or assessment['status'] == 'ok':
+                    return directory.name
+            except (OSError, ValueError, EOFError, wave.Error):
+                continue
+        return None
+
     def status(self, job_id):
         directory = self.directory(job_id)
         try:
@@ -134,6 +216,17 @@ class StudioJobs:
             raise HTTPException(404, "Take not found") from None
         if state["status"] == "processing" and self.active != job_id:
             state.update(status="failed", message="The server restarted. Start a new take, or retry feedback if analysis finished.")
+        if (state.get('input_quality') or {}).get('status') == 'rejected':
+            # A recording-quality rejection is not an alignment or zero-label
+            # result. Never expose cached/prior-run feedback for this input.
+            state.update(status='failed', stage='input_quality',
+                         message=state['input_quality']['message'], can_retry=False,
+                         assessment=None, analysis_progress=None, retry_kind=None)
+            for key in ('audio_url', 'video_url', 'preview_video_url', 'preview_video_source_id',
+                        'narration', 'feedback_details'):
+                state.pop(key, None)
+            state['detailed_progress'] = detailed_progress(state, None)
+            return state
         sample = self.root / "samples" / job_id
         assessment = sample_assessment(sample)
         state["assessment"] = assessment
@@ -143,6 +236,7 @@ class StudioJobs:
             state.update(status="failed", stage="alignment", analysis_step="labels", message=assessment['message'])
         state["can_retry"] = not uncertain and state["status"] == "failed" and (sample / "candidates.json").exists()
         state["analysis_progress"] = analysis_progress(state, sample)
+        state['detailed_progress'] = detailed_progress(state, state['analysis_progress'])
         if state["status"] == "processing" and state["analysis_progress"]:
             state["message"] = state["analysis_progress"]["message"]
         text = directory / "feedback" / "feedback.txt"
@@ -151,7 +245,8 @@ class StudioJobs:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             state["feedback_details"] = {key: manifest.get(key) for key in (
                 "pipeline_revision", "label_count", "no_issues_marked", "excerpt_reason",
-                "reference_excerpts", "performance_excerpts", "fish_reference_id")}
+                "reference_excerpts", "performance_excerpts", "fish_reference_id",
+                "tts_provider", "tts_model", "tts_voice")}
             # Older runs lacked these fields; show the reason without rewriting saved output.
             report_path = directory / "feedback" / "report.json"
             if state["feedback_details"]["label_count"] is None and report_path.exists():
@@ -159,15 +254,87 @@ class StudioJobs:
                 state["feedback_details"].update(label_count=count, no_issues_marked=count == 0)
         if text.exists() and not uncertain:
             state["narration"] = text.read_text(encoding="utf-8")
-        if state["status"] == "complete":
+        audio_ready = (directory / "feedback" / "feedback.mp3").is_file()
+        if not uncertain and audio_ready and (state["status"] == "complete" or state.get("stage") == "video"):
             state["audio_url"] = f"/api/studio/takes/{job_id}/audio"
+        if state["status"] == "complete" and (directory / "video" / "feedback.mp4").is_file():
+            state["video_url"] = f"/api/studio/takes/{job_id}/video"
+        elif state["status"] == "complete":
+            previous = self.matching_video(job_id)
+            if previous:
+                # A preview from another run must not be confused with this run's
+                # narration, MP3, or detector result in the full Studio.
+                state['preview_video_url'] = f'/api/studio/takes/{previous}/video'
+                state['preview_video_source_id'] = previous
+        state["retry_kind"] = "video" if state.get("stage") == "video" else "feedback"
         return state
+
+    def finish_video(self, job_id, sample, output):
+        directory = self.directory(job_id)
+        plan_path = output / "playback_plan.json"
+        if not plan_path.is_file():
+            self.save(job_id, video_status="unavailable",
+                      video_message="Audio-only feedback: no narrated score comparisons are available to animate.")
+        else:
+            self.save(job_id, status="processing", stage="video", analysis_step="video",
+                      progress_detail={},
+                      video_status="processing", message="Rendering the synchronized feedback MP4")
+            destination = directory / "video"
+            if destination.exists():
+                destination.rename(directory / f"video-{uuid4().hex}")
+            render_feedback_video(sample, output, destination,
+                                  detail_progress=lambda event: self.save(job_id, progress_detail=event))
+            if not (destination / "feedback.mp4").is_file():
+                raise RuntimeError("Video renderer did not produce feedback.mp4")
+            self.save(job_id, video_status="complete", video_message=None)
+        self.save(job_id, status="complete", stage="complete", message="Your feedback is ready")
 
     def reserve(self, job_id):
         with self.lock:
             if self.active:
                 raise HTTPException(409, "Another take is processing. Please wait for it to finish.")
             self.active = job_id
+
+    def accept_request(self, key, fingerprint, staging, score_name):
+        """Commit acceptance before scheduling any inference or provider calls."""
+        digest = key_digest(key)
+        job_id = uuid4().hex
+        directory = self.directory(job_id)
+        with self.lock:
+            try:
+                with request_store(self.root) as connection:
+                    row = connection.execute(
+                        "SELECT fingerprint, job_id FROM requests WHERE key_hash = ?", (digest,)
+                    ).fetchone()
+                    if row is not None:
+                        if row[0] != fingerprint:
+                            raise HTTPException(409, {"code": "idempotency_conflict",
+                                                     "message": "This key was accepted with different audio or score content."})
+                        return receipt(self.root, row[1], replayed=True), None
+                    if self.active:
+                        raise HTTPException(409, {"code": "studio_busy", "message": "Another take is processing."},
+                                            headers={"Retry-After": "2"})
+                    ready = self.readiness()
+                    if not ready['ready']:
+                        raise HTTPException(503, ready['message'])
+                    directory.parent.mkdir(parents=True, exist_ok=True)
+                    staging.replace(directory)
+                    self.save(job_id, status="processing", stage="queued", message="Your take is queued")
+                    # Ensure inputs and initial status reach disk before the durable receipt.
+                    for path in directory.iterdir():
+                        with path.open('r+b') as stream:
+                            os.fsync(stream.fileno())
+                    connection.execute("INSERT INTO requests VALUES (?, ?, ?)", (digest, fingerprint, job_id))
+                # No worker can run before the commit above succeeds. A crash
+                # after commit yields an interrupted take, never an automatic replay.
+                self.active = job_id
+            except BaseException:
+                if directory.exists():
+                    for name in ('recording.wav', score_name, 'status.json', 'status.tmp'):
+                        (directory / name).unlink(missing_ok=True)
+                    directory.rmdir()
+                raise
+        return receipt(self.root, job_id, replayed=False), directory / score_name
 
     def release(self):
         with self.lock:
@@ -177,8 +344,26 @@ class StudioJobs:
         directory = self.directory(job_id)
         stage = "Preparing your score"
         try:
-            config = self.feedback_config()
             sample = self.root / "samples" / job_id
+            output = directory / "feedback"
+            saved = json.loads((directory / "status.json").read_text())
+            if (saved.get('input_quality') or {}).get('status') == 'rejected':
+                return
+            if not retry:
+                stage = 'Checking recording quality'
+                self.save(job_id, status='processing', stage='input_quality', message=stage,
+                          analysis_step=None, progress_detail={})
+                from datacreate.input_quality import assess_recording
+                quality = assess_recording(directory / 'recording.wav')
+                self.save(job_id, input_quality=quality)
+                if quality['status'] == 'rejected':
+                    self.save(job_id, status='failed', message=quality['message'])
+                    return
+            if retry and saved.get("stage") == "video":
+                stage = "Rendering score animation"
+                self.finish_video(job_id, sample, output)
+                return
+            config = self.feedback_config()
             if not retry:
                 pipeline = make_pipeline(self.config)
                 job = pipeline.create_sample(job_id, score=score, performance=directory / "recording.wav")
@@ -188,7 +373,7 @@ class StudioJobs:
                           ("alignment", "Aligning notes and identifying possible issues", pipeline.run_stage5),
                           ("features", "Building mel spectrograms", pipeline.run_stage7)]
                 for key, stage, action in stages:
-                    self.save(job_id, status="processing", stage=key, message=stage)
+                    self.save(job_id, status="processing", stage=key, message=stage, progress_detail={})
                     action(job)
             stage = "Creating spoken feedback"
             assessment = sample_assessment(sample)
@@ -210,13 +395,22 @@ class StudioJobs:
                 elif (archived / "feedback.txt").exists():
                     source, text_input = archived / "feedback.txt", True
             def feedback_progress(step):
-                self.save(job_id, analysis_step=step)
+                self.save(job_id, analysis_step=step, progress_detail={})
+            def detail_progress(event):
+                changes = {'progress_detail': event}
+                if 'skipped' in event:
+                    changes['progress_skipped'] = event['skipped']
+                self.save(job_id, **changes)
             run_feedback(source, config=config, output_dir=output, text_input=text_input,
-                         plan_input=plan_input, progress=feedback_progress)
-            self.save(job_id, status="complete", stage="complete", message="Your feedback is ready")
+                         plan_input=plan_input, all_labels=True, progress=feedback_progress,
+                         detail_progress=detail_progress, reference_config=self.config)
+            stage = "Rendering score animation"
+            self.finish_video(job_id, sample, output)
         except Exception as error:
             logging.getLogger(__name__).exception("Studio take %s failed at %s", job_id, stage)
-            message = feedback_failure_message(error) if stage == "Creating spoken feedback" else f"{stage} failed. Check the server log."
+            message = ("Score animation failed. Your feedback audio is saved. Check the server log and video dependencies, then retry the animation."
+                       if stage == "Rendering score animation" else feedback_failure_message(error)
+                       if stage == "Creating spoken feedback" else f"{stage} failed. Check the server log.")
             self.save(job_id, status="failed", message=message)
         finally:
             self.release()
@@ -271,12 +465,64 @@ def studio_router(config: PipelineConfig):
 
     @router.get("/api/studio/config")
     def settings():
+        available = scores()
         return {**jobs.readiness(), "max_seconds": MAX_SECONDS, "feedback_pipeline_revision": PIPELINE_REVISION,
-                "scores": [{"id": p.name, "name": p.stem.replace("_", " ")} for p in scores()]}
+                "integration_contract": "studio-robot-v1",
+                "default_score_id": available[0].name if len(available) == 1 else None,
+                "scores": [{"id": p.name, "name": p.stem.replace("_", " ")} for p in available]}
+
+    @router.get("/upload", response_class=HTMLResponse)
+    def upload_page():
+        html = (WEB / "templates" / "studio-upload.html").read_text(encoding="utf-8")
+        for asset in ("studio-upload.js", "studio-upload.css", "studio.css"):
+            version = (WEB / "static" / asset).stat().st_mtime_ns
+            html = html.replace(f"/static/{asset}", f"/static/{asset}?v={version}")
+        return HTMLResponse(html, headers={"Cache-Control": "no-store"})
 
     @router.post("/api/studio/takes", status_code=202)
     async def create_take(background: BackgroundTasks, audio: UploadFile = File(...),
-                          score: UploadFile | None = File(None), score_id: str = Form("")):
+                          score: UploadFile | None = File(None), score_id: str = Form(""),
+                          idempotency_key: str | None = Header(None, alias="Idempotency-Key")):
+        if idempotency_key is not None:
+            # Hash and validate complete uploads before acceptance. No inference
+            # occurs here; same-key replays remain available even while busy.
+            try:
+                key_digest(idempotency_key)
+                staging_root = jobs.root / 'incoming'
+                staging_root.mkdir(parents=True, exist_ok=True)
+                with TemporaryDirectory(prefix='take-', dir=staging_root) as temporary:
+                    staging = Path(temporary)
+                    audio_path = staging / 'recording.wav'
+                    await save_upload(audio, audio_path, 60_000_000)
+                    validate_recording(audio_path)
+                    if score and score.filename:
+                        suffix = Path(score.filename).suffix.lower()
+                        if suffix not in {'.musicxml', '.xml', '.mxl'}:
+                            raise HTTPException(422, 'Choose a MusicXML (.musicxml, .xml, .mxl) score')
+                        score_path = staging / f'score{suffix}'
+                        await save_upload(score, score_path, 10_000_000)
+                    else:
+                        selected = next((p for p in scores() if p.name == score_id), None)
+                        if selected is None:
+                            raise HTTPException(422, 'Select or upload a score first')
+                        if not 0 < selected.stat().st_size <= 10_000_000:
+                            raise HTTPException(422, 'Choose a nonempty score of at most 10 MB')
+                        score_path = staging / f'score{selected.suffix.lower()}'
+                        # Freeze the selected score so changes on disk after
+                        # acceptance cannot change this job's evaluated input.
+                        shutil.copyfile(selected, score_path)
+                    fingerprint = hashlib.sha256(json.dumps(
+                        [file_digest(audio_path), file_digest(score_path), score_path.suffix]
+                    ).encode()).hexdigest()
+                    result, accepted_score = jobs.accept_request(idempotency_key, fingerprint, staging, score_path.name)
+                    if accepted_score is not None:
+                        background.add_task(jobs.process, result['id'], accepted_score)
+                    return JSONResponse(result, status_code=200 if result['replayed'] else 202,
+                                        headers={'Cache-Control': 'no-store'})
+            finally:
+                await audio.close()
+                if score:
+                    await score.close()
         ready = jobs.readiness()
         if not ready["ready"]:
             raise HTTPException(503, ready["message"])
@@ -315,23 +561,41 @@ def studio_router(config: PipelineConfig):
     def take_status(job_id: str):
         return jobs.status(job_id)
 
+    @router.get("/api/studio/requests/{key}")
+    def request_lookup(key: str):
+        return JSONResponse(lookup(jobs.root, key), headers={'Cache-Control': 'no-store'})
+
     @router.post("/api/studio/takes/{job_id}/retry", status_code=202)
     def retry_feedback(job_id: str, background: BackgroundTasks):
-        if not jobs.status(job_id)["can_retry"]:
+        state = jobs.status(job_id)
+        if not state["can_retry"]:
             raise HTTPException(409, "This take cannot retry feedback")
-        ready = jobs.readiness()
-        if not ready["ready"]:
-            raise HTTPException(503, ready["message"])
+        video_retry = state["retry_kind"] == "video"
+        if not video_retry:
+            ready = jobs.readiness()
+            if not ready["ready"]:
+                raise HTTPException(503, ready["message"])
         jobs.reserve(job_id)
-        jobs.save(job_id, status="processing", stage="feedback", analysis_step="labels", message="Retrying spoken feedback")
+        jobs.save(job_id, status="processing", stage="video" if video_retry else "feedback",
+                  progress_detail={},
+                  analysis_step="video" if video_retry else "labels",
+                  message="Retrying score animation" if video_retry else "Retrying spoken feedback")
         background.add_task(jobs.process, job_id, retry=True)
         return {"id": job_id}
 
     @router.get("/api/studio/takes/{job_id}/audio")
     def take_audio(job_id: str):
-        if jobs.status(job_id)["status"] != "complete":
+        if "audio_url" not in jobs.status(job_id):
             raise HTTPException(404, "Feedback audio is not ready")
         return FileResponse(jobs.directory(job_id) / "feedback" / "feedback.mp3",
                             media_type="audio/mpeg", filename="align-feedback.mp3")
+
+    @router.get("/api/studio/takes/{job_id}/video")
+    def take_video(job_id: str):
+        if "video_url" not in jobs.status(job_id):
+            raise HTTPException(404, "Feedback video is not ready")
+        return FileResponse(jobs.directory(job_id) / "video" / "feedback.mp4",
+                            media_type="video/mp4", filename="align-feedback.mp4",
+                            content_disposition_type="inline")
 
     return router

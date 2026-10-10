@@ -1,0 +1,112 @@
+{
+  "design_id": "DAHV1GCEe1E",
+  "transaction_id": "7002489633640433591",
+  "status": "committed",
+  "pages": [
+    {
+      "page_id": "PB8dtN2l3nBJwnh9",
+      "page_number": 1,
+      "dimension": {
+        "width": 4535,
+        "height": 4535
+      },
+      "is_responsive": false,
+      "is_empty": false,
+      "is_editable": true
+    },
+    {
+      "page_id": "PBM1CCTjhBqpBkk6",
+      "page_number": 2,
+      "dimension": {
+        "width": 4535,
+        "height": 4535
+      },
+      "is_responsive": false,
+      "is_empty": true,
+      "is_editable": true
+    }
+  ],
+  "operations": [
+    {
+      "type": "find_and_replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "find_text": "• The user supplies a clarinet recording and its reference score.",
+      "replace_text": "The user provides a monophonic clarinet recording and its MusicXML score. The score describes the intended notes and timing, while the recording contains what the player actually performed."
+    },
+    {
+      "type": "find_and_replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "find_text": "• The transcriber estimates note pitches and onset times.\n• Postprocessing refines the candidate note sequence.",
+      "replace_text": "The transcriber converts the audio into candidate notes with estimated pitches and onset times. Postprocessing refines these candidates before alignment. The recording supplies the acoustic evidence; the score helps interpret it in the next stage."
+    },
+    {
+      "type": "find_and_replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "find_text": "• The aligner matches performed notes to written locations.\n• It tracks repeated visits to the same passage.",
+      "replace_text": "The aligner connects performed notes to their intended score locations while allowing mistakes and returns to earlier passages. Repeated visits retain the same written-note identities but different recording times, so the system can distinguish the first attempt from a replay."
+    },
+    {
+      "type": "find_and_replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "find_text": "• The system identifies wrong, missed and extra notes from the alignment.\n• It distinguishes repeated passages from extra notes.",
+      "replace_text": "The system compares the aligned notes with the score to identify pitch substitutions, omissions and additional notes. Tracking passage repetitions prevents an entire replay from being treated simply as a sequence of extra notes."
+    },
+    {
+      "type": "find_and_replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "find_text": "• The earlier system compares performed and reference timing to identify rhythm errors.",
+      "replace_text": "The earlier system compares aligned note timing with the reference after accounting for the estimated tempo. Its rhythm classifier identifies timing deviations. The current revision uses timing to refine alignment but does not emit rhythm-error labels."
+    },
+    {
+      "type": "find_and_replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "find_text": "• Each label links an error type to affected notes and a replay interval.",
+      "replace_text": "The output combines each reported error type with its written location and a relevant recording interval. A practice interface can highlight the affected notes and replay the passage, helping the player understand and review the feedback."
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "formatting": {
+        "font_size": 47,
+        "line_height": 1.22,
+        "list_marker": "none",
+        "list_level": 0
+      }
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "text": "The diagram traces the earlier AudioEval pipeline from a recording and reference score to practice feedback. The module explanations below describe how each stage contributes."
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "formatting": {
+        "font_size": 47,
+        "line_height": 1.22,
+        "list_marker": "none",
+        "list_level": 0
+      }
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "formatting": {
+        "font_weight": "normal",
+        "font_size": 47,
+        "line_height": 1.22,
+        "list_marker": "none",
+        "list_level": 0
+      }
+    }
+  ],
+  "latest_preview": [
+    {
+      "width": -1,
+      "height": -1,
+      "url": "https://export-download.canva.com/05117dab-a592-477c-802b-a8a596d665e4/0/0001-2173504931793663783.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261006%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261006T010533Z&X-Amz-Expires=31185&X-Amz-Signature=348d1a7d131bc73385d7416241ee35e65e9f6c20279b2e21632464a2c1495c4f&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Tue%2C%2006%20Oct%202026%2009%3A45%3A18%20GMT"
+    }
+  ],
+  "rebased_on_latest_chart_edits": true,
+  "saved_at_utc": "2026-10-06T08:44:24.6500905Z"
+}

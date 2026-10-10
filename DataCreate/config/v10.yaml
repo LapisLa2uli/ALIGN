@@ -1,0 +1,100 @@
+schema_version: "1.1"
+
+paths:
+  audiveris: C:/Program Files/Audiveris/Audiveris.exe
+  audiveris_home: C:/Program Files/Audiveris   # jpackage layout: Audiveris.exe + app/ + runtime/
+  musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
+  samples_root: ./samples
+  synthetic_root: ./samples/synthetic
+  work_dir: ./work
+  raw_data_score: ../RawData/Score
+  raw_data_audio: ../RawData/Audio
+  # Use the Python environment serving DataCreate (MusicEval); override only explicitly.
+  note_alignment_candidate: ../align-model/runs/stack-v10/CANDIDATE_STACK_V10.json
+  # These two paths are used only when model_version is explicitly set to legacy.
+  note_alignment_checkpoint: ../align-model/runs/joint-audit-v2/end-to-end-v2/weak-note-continuation-optimized/joint_decoder.pt
+  note_alignment_weights: ../align-model/runs/contextual-aligner-outputRaw_sf-1k/weights
+
+audio:
+  sample_rate: 22050
+  mono: true
+
+mel:
+  n_fft: 2048
+  hop_length: 512
+  n_mels: 128
+  fmin: 30.0
+  fmax: null
+
+alignment:
+  engine: joint
+  model_version: stack-v10
+  note_alignment_device: cuda
+  note_alignment_timeout_sec: 900
+  feature: chroma          # chroma | cqt
+  cqt_bins: 84
+  dtw_band_ratio: 0.1      # Sakoe-Chiba band as fraction of sequence length
+  jump_dtw: true
+  cents_tolerance: 20
+  # Rhythm: note/rest duration ratios (perf/ref) via EWMA + far-window (not absolute DTW slope)
+  rhythm_ewma_alpha: 0.3
+  rhythm_ewma_log_threshold: 0.25   # |log(ratio/ewma)|; ~0.25 ≈ 28% tempo jump
+  rhythm_far_window: 12
+  rhythm_far_gap: 6
+  rhythm_far_log_threshold: 0.35
+  residual_tolerance: 1.2  # stored in alignment.npz; not emitted as rhythm_error
+  min_candidate_duration_sec: 0.15
+  # Snap note perf_start to first energy rise (skip leading silence from DTW)
+  onset_refine: true
+  onset_lookback_sec: 0.15
+  onset_max_shift_sec: 0.6
+  onset_rise_db: 8.0
+  # DTW only the sounding region so start/end padding or an unmatched
+  # opening rest cannot pin the path and shift the rest of the take.
+  trim_silence: true
+  silence_top_db: 35
+  silence_pad_sec: 0.08
+  # Interior rests: energy row + compress long silent runs before DTW
+  energy_weight: 1.5
+  midi_weight: 1.5          # melody-height row so DTW follows pitch, not just chroma
+  cluster_repair: true      # linear fallback if half the notes pile at either end
+  compress_silence: true
+  silence_energy_thresh: 0.08
+  keep_silence_sec: 0.16
+  # Rest-separated figures: match each phrase in score order so a later
+  # similar arpeggio cannot steal earlier notes (lag then cascades).
+  phrase_dtw: true
+  phrase_min_rest_ql: 0.25
+  phrase_slack: 1.12
+
+taxonomy:
+  - wrong_note          # different pitch than the score (e.g. played B instead of C)
+  - intonation_error    # correct note, but out of tune
+  - missed_note
+  - extra_note
+  - rhythm_error
+  - repetition
+  - stylistic_choice
+  - bad_start           # messy/failed attack (air, tongue, no clean onset)
+  - bad_timbre          # poor tone quality (stuffy, airy, unfocused)
+  - squeak              # unintended harmonic / overblown squeak
+  - sliding             # rolling over a note too fast (smear / incomplete articulation)
+  - misc                # other error that does not fit the types above
+
+musescore:
+  min_version: "4.2.0"
+  export_format: wav
+  synthesizer_gain_db: -6
+  tail_seconds: 2.0
+
+omr:
+  open_in_gui: true
+
+review:
+  sampling_rate: 0.1
+
+synthetic:
+  output_separate_root: true
+  corruptions_per_score: 3
+

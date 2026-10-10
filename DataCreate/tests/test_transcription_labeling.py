@@ -299,7 +299,7 @@ def test_v9_relabel_upgrades_legacy_and_refreshes_changed_inputs(tmp_path, monke
                 "score_sha256": sample / "verified_score.musicxml",
             }.items()
         }
-        payload["provenance"]["pipeline_revision"] = "v9-passage-v1"
+        payload["provenance"]["pipeline_revision"] = "v9-passage-v2"
         alignment.write_text(json.dumps(payload))
 
     monkeypatch.setattr(align_bridge, "run_preferred_alignment", fresh_run)

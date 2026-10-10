@@ -1,0 +1,20 @@
+{
+  "scope": "Replay archived acoustic controls with explicit score-support conditions.\n\nThese isolate the repair rule, not fresh transcription or end-to-end accuracy.\nAlso expose the hard case: a false split aligned across two repeated score notes.\n",
+  "summary": {
+    "genuine_repeat": {
+      "count": 543,
+      "v9_merged": 457,
+      "v10_merged_with_expected_score_support": 65,
+      "restoration_votes_if_score_maps_to_two_notes": 392
+    },
+    "injected_split": {
+      "count": 316,
+      "v9_merged": 316,
+      "v10_merged_with_expected_score_support": 316,
+      "restoration_votes_if_score_maps_to_two_notes": 57
+    }
+  },
+  "raw_audio_available": false,
+  "independent_test": false,
+  "warning": "Score-support cases are controlled assumptions. Full realignment and wrong score-span cases require end-to-end evaluation."
+}

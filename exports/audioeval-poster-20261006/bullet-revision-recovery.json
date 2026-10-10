@@ -1,0 +1,352 @@
+{
+  "design_id": "DAHV1GCEe1E",
+  "transaction_id": "5389075060374155767",
+  "status": "committed",
+  "pages": [
+    {
+      "page_id": "PB8dtN2l3nBJwnh9",
+      "page_number": 1,
+      "dimension": {
+        "width": 4535,
+        "height": 4535
+      },
+      "is_responsive": false,
+      "is_empty": false,
+      "is_editable": true
+    }
+  ],
+  "operations": [
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "text": "The diagram shows how a recording and reference score become score-linked feedback.\nThe explanations follow the diagram's module labels."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "width": 1365
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "formatting": {
+        "font_size": 52,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "disc",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "left": 70,
+      "top": 775
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "text": "STAGE 1: USER INPUT\n• The user supplies a clarinet recording and its reference score.\n\nSTAGE 2: TRANSCRIPTION\n• The transcriber estimates note pitches and onset times.\n• Postprocessing refines the candidate note sequence.\n\nSTAGE 3: ALIGNMENT\n• The aligner matches performed notes to written locations.\n• It tracks repeated visits to the same passage.\n\nSTAGE 3.1: NOTE ERROR LABELLING\n• The system identifies wrong, missed and extra notes from the alignment.\n• It distinguishes repeated passages from extra notes.\n\nSTAGE 3.2: RHYTHM ERROR LABELLING\n• The earlier system compares performed and reference timing to identify rhythm errors.\n\nSTAGE 4: LABEL OUTPUT\n• Each label links an error type to affected notes and a replay interval."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "width": 1370
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "formatting": {
+        "font_size": 53,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "none",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "left": 70,
+      "top": 2090
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBMnsH1mV7fsK996",
+      "text": "AudioEval links clarinet performance errors to written notes and replay intervals.\nThe earlier system combines transcription, alignment, note-error and rhythm-error labelling.\nSynthetic performances provide known note-to-score relationships for training.\nThe historical model used 4,544 training recordings and 358 validation recordings.\nThe current revision uses CTC transcription and bounded passage alignment; its accuracy still needs evaluation."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBMnsH1mV7fsK996",
+      "width": 1400
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBMnsH1mV7fsK996",
+      "formatting": {
+        "font_size": 53,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "disc",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBMnsH1mV7fsK996",
+      "left": 1555,
+      "top": 775
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBZPb58vQN8r1PKh",
+      "text": "The paper evaluates earlier AudioEval configurations on synthetic and real recordings.\nThe comparisons use different metrics and do not evaluate the current revision."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBZPb58vQN8r1PKh",
+      "width": 1395
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBZPb58vQN8r1PKh",
+      "formatting": {
+        "font_size": 53,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "disc",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBZPb58vQN8r1PKh",
+      "left": 3050,
+      "top": 775
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LB82xbqZZhC3sJnS",
+      "text": "PRACTICAL STRENGTHS\n• Score locations and replay intervals make each error easy to review.\n• Repeat tracking distinguishes successive attempts at the same passage.\n\nCURRENT METHOD LIMITS\n• Repeated phrases, same-pitch attacks and bounded searches can cause failures.\n• The current method omits rhythm, intonation and timbre error labels.\n• An empty error list does not confirm a clean performance.\n\nSTUDY LIMITS\n• The revised pipeline still needs a matched evaluation.\n• The synthetic set was used during development; 21 recordings overlapped baseline training and 3 overlapped model selection.\n• Training data and label coverage differ across systems.\n• The real set includes 11 recordings by one player.\n• Real scoring includes rhythm errors that the baselines do not predict.\n\nMUSICPAL: PROPOSED DEVICE\n• The device would record, display score-linked feedback and replay passages.\n• Manually reviewed sessions could support future training and evaluation."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LB82xbqZZhC3sJnS",
+      "width": 1400
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LB82xbqZZhC3sJnS",
+      "formatting": {
+        "font_size": 48,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "none",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LB82xbqZZhC3sJnS",
+      "left": 1555,
+      "top": 2140
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBmfMVQ13DSrl2fn",
+      "text": "Earlier results support score-linked feedback, while the revised method needs independent evaluation.\nFuture tests should include more players, pieces and recording conditions.\nMusicPal remains a proposed way to present the feedback."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBmfMVQ13DSrl2fn",
+      "width": 1400
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBmfMVQ13DSrl2fn",
+      "formatting": {
+        "font_size": 53,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "disc",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBmfMVQ13DSrl2fn",
+      "left": 1555,
+      "top": 3870
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBHy5MXlHs8CxHBr",
+      "text": "CASE STUDY\n• The system linked a return at 9.8 s to bars 1-4 in Howl's Moving Castle.\n• It identified C6 instead of A5 in bar 12.\n• Human annotations corroborated three repetitions and the discussed wrong note."
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBHy5MXlHs8CxHBr",
+      "width": 1395
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBHy5MXlHs8CxHBr",
+      "formatting": {
+        "font_size": 48,
+        "font_weight": "normal",
+        "color": "#193344",
+        "line_height": 1.18,
+        "list_marker": "none",
+        "list_level": 0,
+        "text_align": "start"
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBHy5MXlHs8CxHBr",
+      "left": 3050,
+      "top": 4100
+    },
+    {
+      "type": "resize_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LB8fmdZL1xXwl8Bd",
+      "width": 1440,
+      "height": 900,
+      "preserve_aspect_ratio": false
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LB8fmdZL1xXwl8Bd",
+      "left": 40,
+      "top": 1100
+    },
+    {
+      "type": "update_fill",
+      "element_id": "PB8dtN2l3nBJwnh9-LB8fmdZL1xXwl8Bd",
+      "asset_id": "MAHXNwFv6K8",
+      "asset_type": "image",
+      "alt_text": "User-supplied diagram of the earlier AudioEval architecture: Stage 1 user input; Stage 2 transcription and postprocessing; Stage 3 alignment; Stage 3.1 note error labelling; Stage 3.2 rhythm error labelling; Stage 4 label output. The current revision does not emit rhythm-error labels."
+    },
+    {
+      "type": "update_fill",
+      "element_id": "PB8dtN2l3nBJwnh9-LBtvZVx9fjDsKnmD",
+      "asset_id": "MAHXNwfXIZ8",
+      "asset_type": "image",
+      "alt_text": "Historical AudioEval comparisons with full-sentence bullet captions. Synthetic weighted micro-F1 is 61.04%, versus 41.39% and 34.71%; real error-event micro-F1 is 25.49%, versus 1.96% and 3.20%. The metrics differ and do not assess the revised pipeline."
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "text": "• The diagram shows how a recording and reference score become score-linked feedback.\n• The explanations follow the diagram's module labels."
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBVBV32lBXNgCkPQ",
+      "formatting": {
+        "list_marker": "none",
+        "list_level": 0,
+        "line_height": 1.24,
+        "font_size": 53
+      }
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBMnsH1mV7fsK996",
+      "text": "• AudioEval links clarinet performance errors to written notes and replay intervals.\n• The earlier system combines transcription, alignment, note-error and rhythm-error labelling.\n• Synthetic performances provide known note-to-score relationships for training.\n• The historical model used 4,544 training recordings and 358 validation recordings.\n• The current revision uses CTC transcription and bounded passage alignment; its accuracy still needs evaluation."
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBMnsH1mV7fsK996",
+      "formatting": {
+        "list_marker": "none",
+        "list_level": 0,
+        "line_height": 1.24,
+        "font_size": 55
+      }
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBZPb58vQN8r1PKh",
+      "text": "• The paper evaluates earlier AudioEval configurations on synthetic and real recordings.\n• The comparisons use different metrics and do not evaluate the current revision."
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBZPb58vQN8r1PKh",
+      "formatting": {
+        "list_marker": "none",
+        "list_level": 0,
+        "line_height": 1.24,
+        "font_size": 53
+      }
+    },
+    {
+      "type": "replace_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBmfMVQ13DSrl2fn",
+      "text": "• Earlier results support score-linked feedback, while the revised method needs independent evaluation.\n• Future tests should include more players, pieces and recording conditions.\n• MusicPal remains a proposed way to present the feedback."
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBmfMVQ13DSrl2fn",
+      "formatting": {
+        "list_marker": "none",
+        "list_level": 0,
+        "line_height": 1.24,
+        "font_size": 53
+      }
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LBjMD76RKKYRqTZG",
+      "formatting": {
+        "font_size": 57,
+        "line_height": 1.24
+      }
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBdcgxq8Vdrzrv5l",
+      "left": 1740,
+      "top": 1625
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LBBDMrVKJd1QTb5y",
+      "left": 1555,
+      "top": 1625
+    },
+    {
+      "type": "position_element",
+      "element_id": "PB8dtN2l3nBJwnh9-LB82xbqZZhC3sJnS",
+      "left": 1555,
+      "top": 1835
+    },
+    {
+      "type": "format_text",
+      "element_id": "PB8dtN2l3nBJwnh9-LB82xbqZZhC3sJnS",
+      "formatting": {
+        "font_size": 49,
+        "line_height": 1.23
+      }
+    }
+  ],
+  "latest_preview": [
+    {
+      "width": -1,
+      "height": -1,
+      "url": "https://export-download.canva.com/52e64903-2bab-4d56-8aee-0ba5074e0857/0/0001-7819892961065863725.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20261006%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261006T023801Z&X-Amz-Expires=22686&X-Amz-Signature=160dc2834f9eef75b4a650ce54d0e924e497d7af3255cde9055f452eeae2456b&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Tue%2C%2006%20Oct%202026%2008%3A56%3A07%20GMT"
+    }
+  ],
+  "source_diagram": "C:/Users/Hank/Downloads/Add a little bit of body text (42 x 59.4 cm) (1).svg"
+}

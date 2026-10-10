@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload performance — ALIGN</title>
+  <link rel="stylesheet" href="/static/studio.css">
+  <link rel="stylesheet" href="/static/studio-upload.css">
+  <script type="module" src="/static/studio-upload.js"></script>
+</head>
+<body>
+  <main id="upload-app">
+    <section id="upload-screen" class="upload-card" aria-labelledby="upload-title">
+      <p class="eyebrow">ALIGN / PERFORMANCE UPLOAD</p>
+      <h1 id="upload-title">Upload your performance</h1>
+      <p class="upload-description">Choose your audio and its matching score to generate feedback.</p>
+      <form id="upload-form">
+        <label for="performance-file">Audio recording</label>
+        <input id="performance-file" type="file" accept="audio/*,.wav,.mp3,.m4a,.aac,.flac,.ogg,.webm" required>
+        <small>1–300 seconds · up to 60 MB · WAV, MP3, M4A and other browser-supported formats</small>
+        <label for="score-choice">Matching score</label>
+        <select id="score-choice"><option value="">Choose a score</option></select>
+        <label for="score-file">Or upload a MusicXML score</label>
+        <input id="score-file" type="file" accept=".musicxml,.xml,.mxl">
+        <small>MusicXML · XML · MXL · up to 10 MB</small>
+        <p id="upload-readiness" role="status">Connecting to the server…</p>
+        <p id="upload-error" class="error" role="alert" hidden></p>
+        <button id="upload-submit" class="primary" type="submit" disabled>Upload &amp; generate feedback</button>
+      </form>
+    </section>
+    <section id="progress-screen" hidden aria-label="Feedback generation progress"></section>
+    <section id="failure-screen" class="upload-card" hidden aria-labelledby="failure-title">
+      <h1 id="failure-title">Feedback needs attention</h1>
+      <p id="failure-message" role="alert"></p>
+      <button id="retry-feedback" class="primary" type="button" hidden>Retry feedback</button>
+      <button id="new-upload" class="secondary" type="button">Back to upload</button>
+    </section>
+    <section id="success-screen" hidden aria-labelledby="success-message">
+      <p id="success-message" role="status">feedback uploaded!</p>
+      <video id="feedback-video" controls playsinline preload="metadata" aria-label="Feedback video preview" hidden></video>
+      <p id="video-reused" hidden>Showing previously generated feedback for the same audio and score.</p>
+      <p id="video-unavailable" hidden>This take has no video preview.</p>
+    </section>
+  </main>
+</body>
+</html>

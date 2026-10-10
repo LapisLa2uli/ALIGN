@@ -1838,10 +1838,12 @@ function scoreNoteUnassessed(index) {
 
 function transcribedAlignKind(note, refByIndex) {
   if (note.ignored) return "ignored";
+  if (note.relationship === "match") return "match";
+  if (note.relationship === "substitute") return "sub";
   if (note.score_index == null) return "extra";
   const ref = refByIndex.get(note.score_index);
   if (!ref) return "extra";
-  const played = eventMidi(note);
+  const played = note.alignment_midi ?? eventMidi(note);
   const written = eventMidi(ref);
   if (played != null && written != null && played !== written) return "sub";
   return "match";
@@ -1865,7 +1867,7 @@ function renderTranscriptionStrip() {
     container.dataset.renderKey = "";
     container.innerHTML =
       `<p class="melody-empty">No audio transcription for this sample yet. ` +
-      `Apply a score segment (or Re-align) so Basic Pitch and the joint decoder can transcribe the take.</p>`;
+      `Apply a score segment (or Re-align) to run the configured transcriber and aligner.</p>`;
     return;
   }
   const refByIndex = referenceByScoreIndex();
@@ -1902,10 +1904,19 @@ function renderTranscriptionStrip() {
     const played = ev.pitch || midiToPitchName(ev.midi) || "?";
     const written = ref ? (ref.pitch || midiToPitchName(eventMidi(ref)) || "?") : "—";
     hit.title = kind === "ignored"
-      ? `Ignored extra ${played} (post-processor noise)`
+      ? `Ignored candidate ${played}; the aligner dropped this candidate, so it has no agent label.`
       : kind === "extra"
-        ? `Extra ${played}`
+        ? `Unmapped candidate ${played}; an extra-note agent label is created only if the evidence checks pass.`
         : `${played} → ${written}${ref?.measure != null ? ` · m${ref.measure}` : ""}`;
+    if (ev.alignment_midi != null && ev.alignment_midi !== eventMidi(ev)) {
+      hit.title += ` · Aligner selected the alternative pitch ${midiToPitchName(ev.alignment_midi)}.`;
+    }
+    if (ev.relationship === "copy") {
+      hit.title += " · Replay: the model reports a repetition rather than separate wrong-note labels inside this pass.";
+    }
+    if (noteAlignmentData?.feedback_review?.status === "alignment_uncertain") {
+      hit.title += " · Alignment uncertain; agent error labels withheld.";
+    }
     if (kind === "ignored") hit.classList.add("ignored");
     container.appendChild(hit);
   });
@@ -2620,6 +2631,24 @@ function renderAlignmentInfo(data) {
           ? `Located passage: measures ${escapeXml(String(location.start_measure))}–${escapeXml(String(location.end_measure))}. Notes outside the passage are unassessed.`
           : `Passage search: ${escapeXml(String(location.status))}.`}</div>`
     : "";
+  const review = data.feedback_review;
+  const feedbackNotice = review
+    ? `<div class="summary"><strong>Alignment findings and agent labels</strong><br>` +
+      `Staff colors show raw alignment relationships; they are not all agent error labels. ` +
+      `${review.agent_label_count} labels have playback ranges. ` +
+      `${review.extras_withheld} extra-note and ${review.missed_withheld} missed-note findings were withheld by evidence checks. ` +
+      (review.ignored_candidates ? `${review.ignored_candidates} transcription candidates were dropped by the aligner. ` : "") +
+      (review.missed_inferred ? `${review.missed_inferred} unmatched score notes were inferred as played from audio evidence. ` : "") +
+      (review.status !== "ok" ? `The alignment is uncertain; error labels are withheld. ` : "") +
+      `Pitch mismatches within a replay are covered by the repetition report; the current model does not emit separate wrong-note labels there.</div>` +
+      ((review.score_only_labels || []).length
+        ? `<div class="summary"><strong>Agent labels on score notes — playback unavailable</strong><ul>` +
+          review.score_only_labels.map(label => `<li>${escapeXml(TYPE_LABELS[label.type] || label.type)} · ` +
+            `score note indices ${escapeXml((label.score_event_indices || []).join(", "))} (zero-based)` +
+            (label.measure_number != null ? ` · m${escapeXml(String(label.measure_number))}` : "") +
+            `</li>`).join("") + `</ul>These labels keep their score-note identities; no waveform times have been invented.</div>`
+        : "")
+    : "";
   el.innerHTML =
     `<div class="summary">` +
     `${escapeXml(String(engine))}${version} · ` +
@@ -2628,6 +2657,7 @@ function renderAlignmentInfo(data) {
     `${s.event_count ?? 0} aligned events` +
     `</div>` +
     reviewNotice +
+    feedbackNotice +
     passageNotice +
     orderWarn +
     `<table><thead><tr>` +
@@ -3576,7 +3606,8 @@ async function reLabelSample() {
     alert(
       `Agent labels updated using ${result.method || "current alignment"}.\n`
       + (result.regenerated_alignment ? "Transcription and alignment were regenerated first.\n" : "Used saved feedback for the current score and recording.\n")
-      + `${result.label_count ?? 0} kept (${countText}).${dismissed}`,
+      + `${result.label_count ?? 0} kept (${countText}).${dismissed}`
+      + (result.score_only_label_count ? `\n${result.score_only_label_count} additional score-note labels have no playback time; see Alignment details.` : ""),
     );
   } catch (err) {
     alert(err.message || String(err));

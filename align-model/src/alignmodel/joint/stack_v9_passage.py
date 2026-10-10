@@ -63,14 +63,24 @@ def align_notes(rows, index, score_path, candidate, *, evidence, config=None, pr
         return empty, (), frozenset(), {'status':'alignment_uncertain', 'clip_abstained':True,
             'match_fraction':0., 'passage_location':location, 'pipeline_revision':REVISION}
     results.sort(key=lambda row: row[0])
-    rank, a, b, alignment, local_score, retrieval = results[0]
-    ambiguous = (len(results) > 1 and abs(results[1][5]-retrieval) <= locator.ambiguity_margin
-                 and results[1][0]-rank <= .08)
+    best = results[0]
+    minimum_match_fraction = config.get('minimum_match_fraction', .45)
+    # Resolve repeated-passage ambiguity against the best match, not by chaining
+    # near ties. Consider every retained candidate, including a third/fourth
+    # occurrence that ranks slightly below the best but occurs earlier in score.
+    plausible = [row for row in results
+        if abs(row[5]-best[5]) <= locator.ambiguity_margin
+        and row[0]-best[0] <= .08
+        and row[3].match_fraction >= minimum_match_fraction]
+    selected = min(plausible, key=lambda row: (row[1], row[2], row[0])) if plausible else best
+    rank, a, b, alignment, local_score, retrieval = selected
     location.update(selected_start=a, selected_end=b,
-        status='ambiguous' if ambiguous else location['status'])
+        selection_policy='earliest_plausible',
+        ambiguity_resolved=len(plausible) > 1,
+        plausible_starts=sorted(row[1] for row in plausible))
     events, deletions, info = gate_v4(alignment, local_score, evidence,
         GateConfig(**(candidate['gate'] | config.get('gate', {}))),
-        minimum_match_fraction=config.get('minimum_match_fraction', .45))
+        minimum_match_fraction=minimum_match_fraction)
     if location['candidates']:
         # Padding assists boundary matching; it is not evidence that those notes
         # were attempted. Do not emit missing-note errors outside audible coverage.
@@ -80,9 +90,6 @@ def align_notes(rows, index, score_path, candidate, *, evidence, config=None, pr
             deletions = frozenset(i for i in deletions if lo <= i < hi)
             location.update(assessed_start=lo+a, assessed_end=hi+a,
                 start_measure=index.events[lo+a].measure, end_measure=index.events[hi+a-1].measure)
-    if ambiguous:
-        events, deletions = (), frozenset()
-        info.update(status='alignment_uncertain', clip_abstained=True)
     info.update(passage_location=location, pipeline_revision=REVISION)
     return (_global_alignment(alignment, a),
         tuple(replace(e, score_span=(e.score_span[0]+a,e.score_span[1]+a) if e.score_span else None) for e in events),

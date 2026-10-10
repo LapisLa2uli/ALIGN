@@ -1,14 +1,138 @@
 # Spoken performance feedback
 
-`datacreate-feedback` takes ALIGN label JSON, asks 302.AI for an English
-explanation, and sends the narration to Fish Audio directly to produce an MP3.
+`datacreate-feedback` takes ALIGN label JSON, asks a configured chat-completions
+API for an explanation, and sends narration to Fish Audio or Qwen Audio for MP3.
 It also exposes `datacreate.feedback.run_feedback` for integration. It does not
 rerun detection or change labels, and is independent of the GUI alignment model.
 
 For speech synthesis without a Fish API key, see [local Fish setup](local_fish.md)
 and use `DataCreate/config/feedback.local.yaml` after starting the local server.
 
+For a synchronized 480p, 24 fps score animation, see [animated score feedback](feedback_video.md).
+Use `--all-labels` when generating audio for a video that covers every retained label.
+
 ## Setup
+
+### Qwen Audio 3.1 TTS Flash (China / Beijing)
+
+Use `DataCreate/config/feedback.ssstoken.qwen.yaml`. This keeps the existing
+ssstoken `gpt-6-luna` narration and replaces speech with `qwen-audio-3.1-tts-flash`.
+No local Fish server or provider SDK is required. The Qwen-Audio HTTP protocol
+is different from the older Qwen3-TTS API; do not substitute their endpoints.
+
+1. Sign in to Alibaba Cloud China and open Model Studio / the Qwen API console.
+2. Select **China (Beijing)**, activate the service if prompted, and create a
+   Model Studio API key in the workspace you will use. This is not a RAM AccessKey.
+3. Copy that workspace's **workspace ID** from its details page.
+4. Enable the model and sufficient account balance/billing in the console.
+   The key itself is not a subscription purchase: synthesis usage is billed.
+
+Set these in the terminal that starts the pipeline:
+
+```powershell
+$env:DASHSCOPE_API_KEY = "your-Beijing-Model-Studio-key"
+$env:DASHSCOPE_WORKSPACE_ID = "your-workspace-id"
+$env:ALIGN_FEEDBACK_CONFIG = (Resolve-Path DataCreate/config/feedback.ssstoken.qwen.yaml).Path
+```
+
+Alternatively, save the first two as Windows **user environment variables**;
+the pipeline reads those dedicated settings even if its shell is already open.
+Keep actual keys out of YAML, source control, and chat. `SSSTOKEN_API_KEY` remains
+the separate credential for the narration LLM. Studio still defaults to local
+Fish unless `ALIGN_FEEDBACK_CONFIG` selects the Qwen config; restart Studio with
+that override to switch.
+
+The starting English voice is `Abby_v3.1`, with `qwen_rate: 0.95` and a warm
+teacher instruction in `qwen_instruction`. For Mandarin change both
+`language: Chinese` and `qwen_voice: xieshurou_v3.1`. Premium English presets
+support English only, and premium Chinese presets support Mandarin only.
+Choose a documented compatible voice before requesting mixed-language output.
+
+Test saved text without another LLM request:
+
+```powershell
+$env:PYTHONPATH = 'DataCreate/src'
+python -m datacreate.feedback --text path/to/plain-narration.txt `
+  --config DataCreate/config/feedback.ssstoken.qwen.yaml --output feedback/qwen-trial
+```
+
+For narration with music examples, reuse its `playback_plan.json` via `--plan`
+instead of `--text`. This regenerates speech, preserves the music clips, matches
+loudness, and rebuilds `timeline.json` from the new durations. Render the video
+again from this new feedback directory; do not reuse the previous MP4 timing.
+
+Each generated speech MP3 has a `.tts.json` sidecar containing model, voice, and
+provider-reported token usage. Signed audio URLs and API keys are never saved.
+The published Beijing list price checked October 5, 2026 is CNY 1.5 per million
+input tokens and CNY 12 per million output tokens (not a per-character price).
+Failed calls are not automatically retried; saved narration allows explicit
+recovery without paying for a second LLM request.
+
+Official references: [HTTP API](https://help.aliyun.com/en/model-studio/qwen-audio-tts-http-api),
+[voice list](https://help.aliyun.com/en/model-studio/qwen-audio-tts-voice-list),
+[pricing](https://help.aliyun.com/en/model-studio/qwen-audio-3-1-tts-flash).
+
+### Fish Audio
+
+#### Latest hosted Fish alternative (Drama 3 Preview)
+
+`DataCreate/config/feedback.fish.yaml` keeps the existing ssstoken
+`gpt-6-luna` narrator and calls `https://api.fish.audio/v1/tts` with the exact
+`model: drama-3-preview` header. Fish's September 23, 2026 release is its newest
+documented TTS preview as of October 5, 2026. Its behavior and availability may
+change. The latest recommended production model is `s2.1-pro`; select that by
+editing `fish_model` in this config. The pipeline makes no automatic fallback
+or retry. It rejects unknown model IDs on the official endpoint because Fish
+otherwise silently falls back to S2.1 Pro.
+
+Create a Fish API key and select a hosted voice model in your Fish library.
+The voice ID is separate from the synthesis engine ID. The local `teacher_lj`
+folder is not a hosted voice; pick a conversational teacher-like English voice
+to begin. This configuration does not upload local reference recordings.
+
+```powershell
+$env:FISH_AUDIO_API_KEY = "your-Fish-API-key"
+$env:FISH_AUDIO_REFERENCE_ID = "your-hosted-voice-model-id"
+$env:ALIGN_FEEDBACK_CONFIG = (Resolve-Path DataCreate/config/feedback.fish.yaml).Path
+
+# Replay an existing comparison plan without another LLM request.
+$env:PYTHONPATH = 'DataCreate/src'
+python -m datacreate.feedback `
+  --plan feedback/sample-001-sounding-pitch-corrected/playback_plan.json `
+  --config DataCreate/config/feedback.fish.yaml `
+  --output feedback/sample-001-fish-drama3
+```
+
+Both Fish variables can also be saved as Windows user environment variables.
+`SSSTOKEN_API_KEY` is needed only when generating new narration. To switch
+Studio, start it with the `ALIGN_FEEDBACK_CONFIG` override above. Qwen and local
+Fish configurations remain independently selectable.
+
+Hosted calls use `latency: normal` (quality-focused), 44.1 kHz MP3, loudness
+normalization, and previous-chunk conditioning. `fish_speed: 1.0` requests the
+voice's normal pace. `speech_min_wpm: 140` gently accelerates slower English
+paragraphs during comparison assembly with pitch-preserving FFmpeg `atempo`,
+capped at 1.25x. It leaves short cues (under 12 words), faster speech, and other
+languages unchanged. Set this to zero to disable correction. Original speech
+MP3s are retained beside adjusted `*-paced.wav` files, and the timeline records
+the applied speed factors. Music slowdown is independent. These hosted controls are not sent to local
+Fish 1.5. Music clips, loudness matching, silence margins, and reverb are
+preserved, and the timeline is rebuilt for the new voice before video export.
+
+Pricing checked October 5, 2026: S2.1 Pro is $15 per million **UTF-8 bytes**;
+1,000 ASCII English characters cost about $0.015, while 1,000 typical Chinese
+characters use about 3,000 bytes ($0.045). Drama 3 Preview is not separately
+listed in the public pricing table; check your Fish console before a paid run.
+The documented `s2.1-pro-free` evaluation option uses the same S2.1 model under
+fair-use limits, currently advertised through November 30, 2026. This is Fish's
+direct hosted API; mainland-China inference location has not been verified.
+
+Sources: [releases](https://docs.fish.audio/developer-guide/getting-started/changelog),
+[API](https://docs.fish.audio/api-reference/endpoint/openapi-v1/text-to-speech),
+[pricing](https://docs.fish.audio/developer-guide/models-pricing/pricing-and-rate-limits),
+[API-key setup](https://docs.fish.audio/developer-guide/getting-started/api-key).
+
+#### Original 302.AI + Fish configuration
 
 From the repository root, in your Python environment:
 
@@ -70,56 +194,75 @@ Without `--output`, each invocation creates a unique run below the input's
 
 ## Performance examples in the feedback
 
-When a matching recording and timed labels are available, feedback now plays
-each selected point as **full-score bar and reference cue → reference excerpt →
-performance cue → actual performance excerpt → diagnosis and practice advice**.
-With a reference example, the narrator uses the bar number and lets the music
-identify the notes instead of saying "seventh" or "eighth". The model chooses
-at most three labeled points and returns `intro`, `performance_intro`, and
-`feedback` sentences.
-Audio markers and JSON are never spoken. The LLM receives only label facts and
-an indication that an excerpt is available; the recording stays local.
+Musical examples are synthesized locally, in this order: **full-score bar and
+reference cue → synthesized reference → performance cue → synthesized
+transcription → diagnosis and practice advice**. Both use the reference MIDI's
+instrument. The performance example preserves the transcription's pitches,
+relative onsets, note lengths, and pauses, including extra notes and wrong
+pitches; missed notes are not filled in. Ignored transcription events are excluded.
+This is an approximation of notes and timing, not the student's tone, breath,
+or dynamics. Decoder note ends may be estimates rather than acoustic offsets.
+ALIGN's written-pitch transcription is converted to sounding pitch before
+playback (B-flat clarinet: minus two semitones), using its declared pitch
+convention or the validated score/MIDI transposition. This preserves wrong-note
+intervals as well as correct notes. A transcription explicitly marked
+`pitch_space: sounding` bypasses conversion to avoid transposing it twice.
 
-The recording comes from the label document's `audio_reference`, or from
-`performance_audio.wav` beside the labels if no reference is specified.
-Use `--performance path/to/recording.wav` to select it explicitly (MP3 is also
-supported). Label times must refer to that exact recording: DataCreate labels
-usually address the trimmed `performance_audio.wav`, not the original full
-recording. Out-of-range times fail before a paid LLM request.
+Every selected error expands to the complete bar or inclusive range of bars
+containing its core notes. Context padding does not expand the error itself.
+The narrator uses full-score bar numbers instead of note ordinals, and does not
+imply every note in the example is wrong. At most three teaching points are
+selected; neighboring errors may share one comparison.
 
-Reference examples use `reference_audio.wav` and its paired `reference_audio.mid`.
-Use `--reference` and `--reference-midi` to override these paths. The MIDI must
-be the file used to render the selected score's reference, including its tempo
-changes. Sounding note count and pitch sequence are checked against MusicXML,
-allowing the constant written-to-sounding transposition used by clarinet.
-The snippet covers the label's score span, including supplied context notes;
-it does not imply that every note in the example is wrong. Release tails stop
-before the next note. No duration scaling or performance-to-reference timestamp
-guessing is used. A stale or mismatched MIDI fails before any paid request.
+Examples require `verified_score.musicxml`, its matching `reference_audio.mid`,
+and `note_alignment_v2.json` beside the labels. The alignment's embedded
+`transcribed_notes` is used so notes match the alignment that located them.
+Override with `--score`, `--reference-midi`, `--note-alignment`, or
+`--transcription` (a note array or an object containing `transcribed_notes`).
+An override transcription must use the same time origin as the alignment.
+For concert-pitch overrides, use an object with `pitch_space: sounding` and
+`transcribed_notes`; a bare array inherits the alignment's pitch convention.
+A SoundFont is required; configure `paths.soundfont` in the pipeline config.
+On Windows, MuseScore's installed MS Basic SoundFont is detected automatically.
 
-When no reference recording is available, the performance-only format remains
-available. In that fallback, spoken note positions use "the nth note of bar x"
-and still refer to the full score. If a reference recording exists but its score
-or matching MIDI is missing, supply those files or use `--no-excerpts`.
+The reference MIDI is checked against the selected score, including its
+written-to-sounding transposition. Rendered ornaments and tempo changes are
+preserved. `full_score.musicxml` and selection metadata provide full-score
+numbering and reference notes outside partial-bar selections. Only the recorded
+portion of a partial selection can be synthesized as performance; the narrator
+acknowledges this. Aligned notes locate performance bars, with boundary rests or
+missing edge notes estimated from local timing. Internal transcription timing
+is never quantized. Missing score/alignment data fails clearly; use
+`--no-excerpts` for narration alone.
 
-Clips include 0.25 seconds of context on either side, bounded by the recording.
-Set `excerpt_padding_seconds` in YAML to change this (0–2 seconds). Assembly
-keeps the original pitch and tempo and matches all speech and music segments
-using gated, frequency-weighted loudness (normally -20 LUFS). A single gain per
-segment preserves its internal dynamics. The shared target is lowered if needed
-to keep estimated peaks below -2 dBFS or avoid boosting very quiet material by
-more than 30 dB; silent clips stay silent. Clips shorter than 400 ms use a shorter
-loudness measurement window.
+Both versions receive exactly the same time multiplier. A brief example targets
+at least three seconds; fast notes target a 10th-percentile note duration/onset
+interval of 0.22 seconds. The larger required slowdown is used, capped at 4× so
+short transcription glitches cannot create excessively long examples. This cap
+means unusually brief events can remain shorter than the target. Pitches stay
+unchanged. The narrator mentions when both versions are slowed. The student's
+relative tempo differences remain audible.
+
+The original recording is not embedded or uploaded. If available, it is used
+only to validate label time bounds (`audio_reference`, `performance_audio.wav`,
+or `--performance`). No reference WAV is needed; the legacy `--reference` flag
+only locates its paired MIDI. `excerpt_padding_seconds` applies to legacy crop
+helpers, not these whole-bar examples. The LLM receives label facts and example
+availability/bar/slowdown information; all music and note-event data stay local.
+
+Assembly matches speech and music with gated, frequency-weighted loudness
+(normally -20 LUFS). One gain per segment preserves internal dynamics. The
+shared target is lowered if needed to keep estimated peaks below -2 dBFS or
+avoid boosts above 30 dB; silent examples remain silent.
 
 Music snippets receive short edge fades and subtle room reverb (8% wet amplitude,
 0.25-second tail). Speech stays dry for clarity. There is 0.5 seconds of silence
 before each snippet and another 0.5 seconds after its reverb tail, so narration
-does not interrupt the decay. The finished MP3 is 44.1 kHz stereo. Missing label times produce spoken feedback
-without an excerpt for that point; no times are guessed from score positions.
+does not interrupt the decay. The finished MP3 is 44.1 kHz stereo. Labels may
+use score indices without timestamps when the note alignment provides timing.
 
 Use `--no-excerpts` or `include_performance: false` for narration alone.
-Without a matching recording or any timed labels, the plain narration workflow
-continues to work. The excerpts mode also works with `--text-only`: it saves
+Without a recording or alignment, the plain narration workflow continues to work. The excerpts mode also works with `--text-only`: it saves
 the plan and selected clips for review without synthesizing speech.
 
 | File | Contents |
@@ -130,8 +273,9 @@ the plan and selected clips for review without synthesizing speech.
 | `feedback.mp3` | MP3 published after a successful response and header check. |
 | `feedback.json` | Run status, model names, input/text hashes, output filenames. |
 | `playback_plan.json` | Selected labels, spoken cues/corrections, and verified reference/performance clip files; old performance-only plans remain replayable. |
-| `excerpt-NNN.wav` | Exact selected recording range with context, before final mix gain and fades. |
-| `reference-NNN.wav` | Corresponding passage from the rendered reference audio. |
+| `excerpt-NNN.wav` | Synthesized performance transcription covering the selected bars. |
+| `reference-NNN.wav` | Synthesized reference covering the same bars and slowdown. |
+| `*.notes.json` | Exact synthesized pitch/onset/end events, source bounds, bars, slowdown, and alignment hash. |
 | `speech-NN-*.mp3` | Individual synthesized introduction, performance cue, and feedback segments. |
 | `timeline.json` | Segment order, final MP3 positions, source excerpt times, loudness/gains, reverb tails, and silence margins. |
 
@@ -160,7 +304,8 @@ datacreate-feedback --plan feedback/review/playback_plan.json `
   --output feedback/spoken-with-excerpts
 ```
 
-This makes no LLM request and preserves the selected recording clips. Keep the
+This makes no LLM request and preserves the saved musical clips. Legacy plans
+remain replayable with their original clips; regenerate from labels to adopt synthesis. Keep the
 plan beside its excerpt WAV files; hashes are checked before reuse. The practice
 studio also uses this plan when retrying a failed speech stage.
 Full runs check both credentials and the voice ID before calling the LLM.
@@ -187,7 +332,7 @@ mechanically guarantee factual accuracy; use text review when needed.
 Only selected label fields reach 302.AI. Checkpoint paths, annotator IDs, score
 files, and performance audio are not uploaded. Fish receives only narration and
 the chosen voice ID. The outbound labels contain only type, source, derived score
-location, and repetition count when available. Timestamps, global note indices,
+location, repetition count, and synthesized example context when available. Timestamps, global note indices,
 MIDI pitches, and comments are omitted from the LLM request. The local report
 retains normalized fields, including comments, and should be treated as private
 performance data.

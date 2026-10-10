@@ -146,6 +146,8 @@ def _normalize_transcribed_notes(payload: dict[str, Any]) -> list[dict[str, Any]
                 "duration_ql": round(max(0.0625, (end - start) * 2.0), 4),
                 "ignored": bool(raw.get("ignored")),
                 "ignored_reason": raw.get("ignored_reason"),
+                "alignment_midi": _optional_int(raw.get("alignment_pitch")),
+                "relationship": raw.get("relationship"),
             }
         )
     return notes
@@ -888,11 +890,13 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
             summary["event_count"],
             len(transcribed),
         )
+        from datacreate.feedback_visibility import feedback_review
         return {
             "events": list(payload.get("events") or []),
             "transcribed_notes": transcribed,
             "note_mapping": mapping,
             "unassessed_score_event_indices": list(payload.get("unassessed_score_event_indices") or []),
+            "feedback_review": feedback_review(payload, sample_dir),
             "summary": summary,
         }
     align_path = sample_dir / "alignment.npz"

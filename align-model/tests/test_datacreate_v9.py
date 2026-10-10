@@ -37,3 +37,29 @@ def test_gui_refuses_mismatched_score_identity(tmp_path):
     stream.Stream([note.Note(70)]).write('musicxml',fp=path)
     with pytest.raises(ValueError,match='index mismatch'):
         gui_documents(tmp_path,SimpleNamespace(events=[]),None,None,duration=1.,provenance={})
+
+
+@pytest.mark.parametrize('times', [(None, None), (float('nan'), float('inf'))])
+def test_score_identity_is_retained_without_playback_time(tmp_path, times):
+    import json
+    from datacreate.transcription_labeling import relabel_sample_from_current_alignment
+    path=tmp_path/'verified_score.musicxml'
+    stream.Stream([note.Note(70)]).write('musicxml',fp=path)
+    index=ScoreEventIndex.from_musicxml(path)
+    alignment=SimpleNamespace(notes=[],kept_note_indices=(),match_fraction=1.,events=[])
+    label={'id':'v9_0000','type':'missed_note','score_event_indices':[0],
+           'start_time':times[0],'end_time':times[1],'timing_status':'unavailable'}
+    feedback={'status':'ok','labels':[label],'unassessed_score_event_indices':[],
+        'diagnostics':{'status':'ok','same_pitch_repair':{'source_groups':[],'merged_boundaries':0,'pairs_checked':0}}}
+    gui,document=gui_documents(tmp_path,index,alignment,feedback,duration=1.,provenance={})
+    assert not gui['labels'] and not document['labels']
+    assert gui['score_only_labels'][0]['score_event_indices']==[0]
+    assert gui['score_only_labels'][0]['start_time'] is None
+    assert document['agent_labeling']['score_only_labels']==gui['score_only_labels']
+    (tmp_path/'note_alignment_v2.json').write_text(json.dumps(gui, allow_nan=False))
+    loaded=build_note_alignment(tmp_path)
+    assert loaded['feedback_review']['score_only_labels']==gui['score_only_labels']
+    result=relabel_sample_from_current_alignment(tmp_path)
+    assert result['score_only_label_count']==1 and result['label_count']==0
+    saved=json.loads((tmp_path/'labels_agent.json').read_text())
+    assert saved['agent_labeling']['score_only_labels']==gui['score_only_labels']

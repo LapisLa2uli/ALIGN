@@ -191,9 +191,11 @@ def _bridge_command_env(config: PipelineConfig) -> tuple[Path, dict[str, str]]:
 
 
 def _v9_candidate(config: PipelineConfig) -> Path:
+    version = config.alignment.get("model_version", "stack-v9")
+    number = "V10" if version == "stack-v10" else "V9"
     return _configured_path(
         config, "note_alignment_candidate",
-        ROOT / "align-model/runs/stack-v9/CANDIDATE_STACK_V9.json",
+        ROOT / f"align-model/runs/{version}/CANDIDATE_STACK_{number}.json",
     )
 
 
@@ -212,7 +214,8 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
     if not _has_model_feedback(payload):
         return False
     provenance = payload.get("provenance") or {}
-    if provenance.get("pipeline_revision") != "v9-passage-v1":
+    revision = "v10-boundary-v1" if config.alignment.get("model_version") == "stack-v10" else "v9-passage-v2"
+    if provenance.get("pipeline_revision") != revision:
         return False
     inputs = {
         "candidate_sha256": _v9_candidate(config),
@@ -225,7 +228,7 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
 
 def ensure_current_model_feedback(sample_dir: Path, config: PipelineConfig, logger) -> bool:
     """Upgrade legacy/stale UI artifacts before relabeling; never silently downgrade."""
-    if config.alignment.get("model_version", "legacy") != "stack-v9":
+    if config.alignment.get("model_version", "legacy") not in {"stack-v9", "stack-v10"}:
         return False
     if current_v9_feedback(sample_dir, config):
         return False
@@ -234,7 +237,7 @@ def ensure_current_model_feedback(sample_dir: Path, config: PipelineConfig, logg
         sample_dir, config, logger,
     )
     if not current_v9_feedback(sample_dir, config):
-        raise RuntimeError("V9 regeneration did not produce current model feedback")
+        raise RuntimeError("Regeneration did not produce current model feedback")
     return True
 
 
@@ -242,31 +245,33 @@ def _run_v9_alignment(sample_dir: Path, config: PipelineConfig, logger, *, detec
     """Use the same validated publisher as the full v9 DataCreate inference run."""
     python, env = _bridge_command_env(config)
     work = config.resolved_path("work_dir") or ROOT / "DataCreate/work"
-    run = work / "v9-ui" / f"{sample_dir.name}-{uuid.uuid4().hex}"
+    version = config.alignment.get("model_version", "stack-v9")
+    tag = "v10" if version == "stack-v10" else "v9"
+    run = work / f"{tag}-ui" / f"{sample_dir.name}-{uuid.uuid4().hex}"
     command = [
-        str(python), str(ROOT / "align-model/scripts/publish_datacreate_v9.py"),
+        str(python), str(ROOT / f"align-model/scripts/publish_datacreate_{tag}.py"),
         "--sample", str(sample_dir.resolve()), "--output", str(run),
         "--candidate", str(_v9_candidate(config)),
         "--device", str(config.alignment.get("note_alignment_device", "cuda")),
         "--sample-rate", str(config.sample_rate()),
         "--hop-length", str(config.mel.get("hop_length", 512)),
     ]
-    logger.info("Running ALIGN v9: %s", subprocess.list2cmdline(command))
+    logger.info("Running ALIGN %s: %s", tag, subprocess.list2cmdline(command))
     completed = subprocess.run(
         command, cwd=ROOT, env=env, capture_output=True, text=True,
         timeout=float(config.alignment.get("note_alignment_timeout_sec", 900)),
     )
     if completed.returncode:
-        raise RuntimeError("ALIGN v9 failed: " + (completed.stderr.strip() or completed.stdout.strip()))
+        raise RuntimeError(f"ALIGN {tag} failed: " + (completed.stderr.strip() or completed.stdout.strip()))
     if not current_v9_feedback(sample_dir, config):
-        raise RuntimeError("ALIGN v9 returned without matching score/audio/candidate provenance")
+        raise RuntimeError(f"ALIGN {tag} returned without matching score/audio/candidate provenance")
     payload = json.loads((sample_dir / "note_alignment_v2.json").read_text(encoding="utf-8"))
     alignment_path = sample_dir / "alignment.npz"
     with np.load(alignment_path) as archive:
         wp = archive["wp"].copy()
     candidates = [Label(**{**raw, "source": "auto"}) for raw in payload["labels"]] if detect_candidates else []
-    logger.info("ALIGN v9 wrote %d feedback labels; backup/run: %s", len(payload["labels"]), run)
-    return NoteFirstAlignmentResult(candidates, alignment_path, wp, wp, "stack-v9")
+    logger.info("ALIGN %s wrote %d feedback labels; backup/run: %s", tag, len(payload["labels"]), run)
+    return NoteFirstAlignmentResult(candidates, alignment_path, wp, wp, version)
 
 
 def dump_transcription(
@@ -392,7 +397,7 @@ def run_preferred_alignment(
     """Run the configured version; v9 regenerates alignment and agent feedback together."""
 
     version = config.alignment.get("model_version", "legacy")
-    if version == "stack-v9":
+    if version in {"stack-v9", "stack-v10"}:
         return _run_v9_alignment(sample_dir, config, logger, detect_candidates=detect_candidates)
     if version != "legacy":
         raise ValueError(f"Unknown alignment model_version: {version}")

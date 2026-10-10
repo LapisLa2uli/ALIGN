@@ -36,12 +36,18 @@ def gui_documents(sample, index, alignment, feedback, *, duration, provenance):
                 'duration_ql':note.ql_end-note.ql_start,'ref_start':note.start,'ref_end':note.end,
                 'perf_start':e.start,'perf_end':e.end,'alignment_kind':e.relationship,
                 'is_repetition':bool(e.copy_pass),'alignment_status':feedback['status']})
-    labels=[];unavailable=[]
+    labels=[];unavailable=[];score_only=[]
     for raw in feedback['labels']:
         ids=raw['score_event_indices']
         if any(i<0 or i>=len(sounding) for i in ids):raise ValueError('invalid label identity')
         a,b=raw.get('start_time'),raw.get('end_time')
         if a is None or b is None or not math.isfinite(a) or not math.isfinite(b):
+            selected=[sounding[i] for i in ids]
+            score_only.append({**raw,'source':'agent','timing_status':'unavailable',
+                'start_time':float(a) if a is not None and math.isfinite(a) else None,
+                'end_time':float(b) if b is not None and math.isfinite(b) else None,
+                'note_id':selected[0].note_id,'note_ids':[n.note_id for n in selected],
+                'core_note_ids':[n.note_id for n in selected],'measure_number':selected[0].measure})
             unavailable.append(raw['id']);continue
         # Playback regions must be inside the recording. Identity is unchanged.
         start=max(0.,min(float(a),max(0.,duration-.001)))
@@ -73,13 +79,13 @@ def gui_documents(sample, index, alignment, feedback, *, duration, provenance):
     payload={'format_version':2,'engine':'align-joint','sample_id':sample.name,
         'label_generation':{'schema_version':'datacreate-model-feedback-v1',
                             'method':'align_stack_v9','annotator_id':'align_stack_v9_review'},
-        'events':events,'labels':labels,'transcribed_notes':transcribed,'note_mapping':mapping,
+        'events':events,'labels':labels,'score_only_labels':score_only,'transcribed_notes':transcribed,'note_mapping':mapping,
         'repetitions':[l for l in labels if l['type']=='repetition'],
         'summary':summary,'provenance':provenance,'diagnostics':info,
         'unassessed_score_event_indices':feedback['unassessed_score_event_indices']}
     document={'schema_version':'1.2','audio_reference':'performance_audio.wav',
         'annotator_id':'align_stack_v9_review','self_reported':[],'labels':labels,
         'agent_labeling':{**provenance,'method':'align_stack_v9','status':feedback['status'],
-                          'labels_without_playback_time':unavailable,'training_performed':False}}
+                          'labels_without_playback_time':unavailable,'score_only_labels':score_only,'training_performed':False}}
     LabelsDocument.model_validate(document)
     return payload,document

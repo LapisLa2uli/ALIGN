@@ -88,15 +88,61 @@ def test_full_score_identity_and_unplayed_notes_are_unassessed(tmp_path):
     assert set(range(200)) | set(range(240,400)) <= set(doc['unassessed_score_event_indices'])
 
 
-def test_ambiguous_locations_withhold_labels(tmp_path):
-    pitches = np.random.default_rng(7).integers(60,84,450)
-    pitches[300:340] = pitches[100:140]
+def test_ambiguous_locations_use_first_occurrence_and_keep_labels(tmp_path):
+    pitches = np.random.default_rng(6).integers(60,84,450)
+    pitches[300:340] = pitches[200:240]
     path,index = _write_score(tmp_path,pitches)
-    alignment, events, deletions, info = align_notes(heard(pitches[100:140]), index, path, _candidate(), evidence={})
+    played = list(pitches[200:240])
+    played[15] = 90
+    alignment, events, deletions, info = align_notes(heard(played), index, path, _candidate(), evidence={})
     doc = feedback(index, alignment, events, deletions, info)
-    assert info['passage_location']['status']=='ambiguous'
-    assert doc['status']=='alignment_uncertain' and not doc['labels']
-    assert len(doc['unassessed_score_event_indices'])==len(index.events)
+    location = info['passage_location']
+    assert location['status'] == 'located'
+    assert location['ambiguity_resolved']
+    assert location['assessed_start'] == 200
+    assert location['start_measure'] == index.events[200].measure
+    assert doc['status'] == 'ok'
+    wrong = [label for label in doc['labels'] if label['type'] == 'wrong_note']
+    assert len(wrong) == 1 and wrong[0]['score_event_indices'] == [215]
+    assert wrong[0]['note_ids'] == ['note_0215']
+    assert set(range(300, 340)) <= set(doc['unassessed_score_event_indices'])
+
+
+@pytest.mark.parametrize('costs,similarities,fractions,expected,status', [
+    ([.07, .02, 0.], [1., 1., 1.], [1., 1., 1.], 100, 'ok'),
+    ([.2, .15, 0.], [1., 1., 1.], [1., 1., 1.], 300, 'ok'),
+    ([.01, .01, 0.], [.9, .9, 1.], [1., 1., 1.], 300, 'ok'),
+    ([.01, .01, 0.], [1., 1., 1.], [.2, .2, 1.], 300, 'ok'),
+    ([.01, .01, 0.], [1., 1., 1.], [.2, .2, .2], 300, 'alignment_uncertain'),
+])
+def test_passage_preference_preserves_ranking_and_confidence(
+        monkeypatch, costs, similarities, fractions, expected, status):
+    from alignmodel.joint import stack_v9_passage as pipeline
+    from alignmodel.joint.robust_dp_aligner_v5 import AlignmentV5
+
+    notes = heard([60] * 8)
+    score = score_rows([60] * 400)
+    starts = [100, 200, 300]
+    # Retrieval order is deliberately reversed; the earliest near tie is third.
+    monkeypatch.setattr(pipeline, 'locate_passages', lambda *args: (
+        [(a, a+8) for a in reversed(starts)], {'status': 'located', 'candidates': [
+            {'similarity': similarity} for similarity in reversed(similarities)]}))
+    monkeypatch.setattr(pipeline, 'score_ornament_patterns', lambda *args: (None,) * 400)
+
+    def fake_align(rows, local_score, *args, **kwargs):
+        position = starts.index(int(local_score[0].ql_start))
+        return AlignmentV5(events=(), deletions=frozenset(),
+            cost=costs[position]*len(notes), source_span=(0, 8), copies=0,
+            kept_note_indices=tuple(range(8)), extras=(), missed=(), notes=tuple(notes),
+            artifact_notes=frozenset(), seconds_per_ql=.3, match_fraction=fractions[position])
+
+    monkeypatch.setattr(pipeline, 'align_v5', fake_align)
+    alignment, events, deletions, info = align_notes(
+        notes, SimpleNamespace(events=score), None, _candidate(), evidence={})
+    assert info['passage_location']['selected_start'] == expected
+    assert alignment.source_span == (expected, expected+8)
+    assert info['status'] == status
+    assert info['clip_abstained'] == (status != 'ok')
 
 
 def test_dp_budget_checked_before_allocating(tmp_path):

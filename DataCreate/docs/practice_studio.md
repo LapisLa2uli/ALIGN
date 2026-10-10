@@ -1,7 +1,24 @@
 # Practice studio
 
+For hardware gateways, see [the robot integration contract](robot_integration.md)
+for durable idempotency, crash reconciliation, score selection and job-specific media.
+
 Open **http://127.0.0.1:8765/studio** after starting `datacreate serve` (or
 `datacreate-serve`). There is also a Practice studio link in the annotation UI.
+
+For the dedicated upload flow, open **http://127.0.0.1:8765/upload**. Select audio
+and its matching score, then submit. The form is replaced by the centered Studio
+progress panel as the only page content. Once the shared pipeline finishes,
+the page displays **feedback uploaded!** with a video player to preview the generated
+feedback MP4. If this take has no MP4, the preview uses the newest completed video
+with identical WAV audio samples and the same score and selected passage, and
+identifies it as previously generated feedback. WAV header metadata is ignored
+when matching. This also works for older saved takes. If no matching video exists,
+the page explains why this take has no preview.
+Feedback files are saved on this
+server; this message does not imply delivery to an external service. Failed jobs show an error with a
+retry option when supported; they never display the success message. Reloading
+the tab reconnects to its take using a separate session key from the full Studio.
 
 If port 8765 is already in use, the GUI may already be running. Open the printed
 URL instead of launching another copy. For a separate instance, use
@@ -16,7 +33,8 @@ starting the app and reports a clear message when the port is occupied.
 2. Start recording and allow microphone access. Play for 1–300 seconds.
 3. Press **Stop & get feedback**. The take uploads and the pipeline starts
    automatically. At five minutes recording stops and submits automatically.
-4. Follow the actual processing stages, then play or download the feedback MP3.
+4. Follow the actual processing stages, then watch or download the feedback MP4.
+   An MP3 download is also available.
    The narration is also available as text. Your original take remains playable
    in the page until you record another take or reload.
 
@@ -25,15 +43,41 @@ WAV, MP3, M4A, or another audio format supported by your browser (1–300 second
 up to 60 MB). Listen to the preview, select the matching score, then click
 **Get my feedback**. No microphone permission is needed for uploads. The browser
 decodes the file, mixes its channels to mono, and converts it to 48 kHz PCM WAV
-before sending it through the same analysis and local Fish speech pipeline.
+before sending it through the same analysis and configured speech pipeline.
 Unsupported or overlong files show an error and leave your previous take intact.
 
-During processing, the detailed progress bar shows **Transcriber → Aligner →
-Label analysis → Narration → Speech audio**. Updates come from the model
+When several score passages fit the recording similarly, analysis assumes the
+earliest occurrence in the score. Candidates qualify when their retrieval
+similarity is within 0.04 and their normalized alignment rank is within 0.08 of
+the best match, and they pass the alignment match-fraction threshold. A clearly
+better later match still wins. Feedback and audio examples use the selected
+occurrence's original score locations; repeated passages alone no longer cause
+all labels to be withheld. Other confidence checks still apply.
+
+During processing, the detailed progress bar shows **Transcriber → Score passage →
+Aligner → Label analysis → Narration → Speech audio → Score animation**. Updates come from the model
 subprocess and feedback service. The bar counts completed steps, not elapsed
 time; transcription, alignment, and local speech can take different amounts of
-time. Failed runs keep the stopped step visible, and all five steps are marked
-complete only after the MP3 is saved.
+time. Failed runs keep the stopped step visible. Completion waits for the MP4
+to be saved. Audio-only feedback without a comparison plan (including takes with
+no marked issues) skips animation and explains why in the page.
+
+The centered progress panel groups work into Prepare, Analyze, Write feedback,
+Create speech, and Animate score. Each stage lists its substeps, with an active
+task description. Narration points, voice segments, engraved comparisons, and
+video frames report actual counts where available. The thick overall bar counts
+resolved milestones (completed or skipped), not elapsed time or an ETA. The
+panel scrolls into view once per run and keeps failed tasks visible. Retries
+reuse saved work and restart only the relevant task. Legacy stage progress is
+retained in the API for older clients.
+
+If feedback detects a mismatched reference MIDI, it automatically regenerates
+the reference MIDI and audio with the configured renderer, validates them, and
+retries example preparation once. The page remains on progress with a
+"Regenerating the reference to match your score" message. Originals are retained
+in a `reference-before-rebuild-*` directory. Notated octave chords are validated
+without changing the detector's note indices. An unrecoverable rendering or
+validation failure still stops the take rather than using an incorrect example.
 
 ## Server configuration
 
@@ -46,15 +90,30 @@ the empty human label template is never used as the feedback source.
 
 The browser submits to `/api/studio/takes`; the worker calls the existing
 `datacreate.feedback.run_feedback` entry point used by `datacreate-feedback`.
-Report preparation, score locations, ssstoken narration, local Fish synthesis,
+Report preparation, score locations, ssstoken narration, Fish synthesis,
 and MP3 assembly all stay in that shared pipeline. Matching performance audio,
 reference audio, MusicXML, and reference MIDI are discovered in the generated
 sample directory, enabling the pipeline's reference/performance examples.
 Speech retries reuse `playback_plan.json` when present, preserving the excerpts;
-plain narration retries reuse `feedback.txt`. The page plays the resulting
-`feedback.mp3` directly.
+plain narration retries reuse `feedback.txt`. New takes request a narrated
+comparison for every retained label (`all_labels=True`, one LLM call per label).
+After MP3 assembly, `datacreate.feedback_video.render_video` creates
+`jobs/<id>/video/feedback.mp4` from that same audio, report, playback plan, and
+saved note events. The page plays it via `/api/studio/takes/<id>/video`, with
+range requests supported for seeking; `/audio` remains the MP3 download.
 
-The studio selects the installed `teacher_lj` voice and enables reference and
+If animation fails, the MP3 stays playable. **Retry score animation** reuses the
+completed feedback files without transcription, alignment, narration, or speech
+generation. Partial video attempts are archived. Speech retries also preserve
+the label report and synthesized note events needed by the animation renderer.
+Existing completed audio-only takes are not automatically regenerated.
+
+Install video dependencies in the same Python environment used to run Studio:
+`python -m pip install -e "./DataCreate[video]"`. Restart Studio after upgrading
+the server code. Video rendering uses the optional Verovio, resvg-py, Pillow,
+and imageio-ffmpeg dependencies; it does not call another external API.
+
+The studio selects the saved `FISH_AUDIO_REFERENCE_ID` voice and enables reference and
 performance snippets. They require detected labels with usable locations and
 times. If no issues are marked, the page and narration explicitly explain why
 no targeted clips are available. New output manifests record the feedback
@@ -63,20 +122,30 @@ See [the Interpretation Pipeline audit](interpretation_studio_audit.md).
 
 Configure the providers as described in [spoken_feedback.md](spoken_feedback.md).
 `ALIGN_FEEDBACK_CONFIG` optionally selects a feedback YAML file; without it,
-`DataCreate/config/feedback.local.yaml` is used (ssstoken narration with
-`gpt-6-luna`, and local Fish Speech
-at `http://127.0.0.1:8081`). No Fish API key or hosted voice ID is needed.
+`DataCreate/config/feedback.fish.yaml` is used: ssstoken narration with
+`gpt-6-luna`, and hosted Fish at `https://api.fish.audio` with `drama-3-preview`.
+This matches Interpretation Pipeline, including normal Fish speed (1.0) and
+pitch-preserving correction of slow English narration toward 140 words/minute.
+Music timing is unchanged. Set `FISH_AUDIO_API_KEY` and `FISH_AUDIO_REFERENCE_ID`
+alongside `SSSTOKEN_API_KEY`; saved Windows user variables are supported.
+`/api/studio/config` exposes the selected provider, mode, model, and pacing
+threshold without exposing credentials or the voice ID.
 
 ```powershell
 conda activate MusicEval
-./DataCreate/scripts/start_fish_local.ps1
-# SSSTOKEN_API_KEY must be available for narration generation.
+# Save the ssstoken and Fish credentials before starting.
 datacreate serve
 ```
 
-Only the LLM key is required in local Fish mode. To explicitly use hosted Fish,
-set `ALIGN_FEEDBACK_CONFIG` to `DataCreate/config/feedback.yaml` and configure its
-Fish credentials. Restart the studio after changing environment variables.
+To use local Fish instead, select `DataCreate/config/feedback.local.yaml` through
+`ALIGN_FEEDBACK_CONFIG` or the launcher's `-FeedbackConfig` parameter and start
+`DataCreate/scripts/start_fish_local.ps1`. Only the LLM key is required in local
+mode. The launcher preserves an explicit configuration override; its default is
+hosted Fish. Restart the studio after changing process environment variables.
+For Qwen Audio 3.1 TTS Flash, set `ALIGN_FEEDBACK_CONFIG` to
+`DataCreate/config/feedback.ssstoken.qwen.yaml`, and set `DASHSCOPE_API_KEY` and
+`DASHSCOPE_WORKSPACE_ID` for the Beijing workspace. No Fish credentials or local
+speech server are needed. See the Qwen setup in [spoken_feedback.md](spoken_feedback.md).
 The page reports missing server
 environment variables; credentials are never sent to the browser. Configuration
 readiness does not prove the provider, renderer, or model is available.

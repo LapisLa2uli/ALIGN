@@ -66,6 +66,7 @@ def _model_feedback_document(payload: dict[str, Any]) -> dict[str, Any]:
     if status is None:
         raise ValueError("Model feedback artifact is missing its assessment status")
     labels = deepcopy(payload["labels"]) if status == "ok" else []
+    score_only = deepcopy(payload.get("score_only_labels") or []) if status == "ok" else []
     for label in labels:
         label["source"] = "agent"
     counts = dict(sorted(Counter(label["type"] for label in labels).items()))
@@ -89,6 +90,8 @@ def _model_feedback_document(payload: dict[str, Any]) -> dict[str, Any]:
             "kept_counts_by_type": counts,
             "dismissed_types": [],
             "replaced_previous_agent_labels": True,
+            "score_only_labels": score_only,
+            "labels_without_playback_time": [r['id'] for r in score_only],
         },
     }
     # Validate without serializing through the old Label model: it drops newer
@@ -1047,6 +1050,9 @@ def relabel_sample_from_current_alignment(
     alignment_path = sample_dir / NOTE_ALIGNMENT_FILENAME
     if alignment_path.is_file():
         payload = json.loads(alignment_path.read_text(encoding="utf-8"))
+        if _has_model_feedback(payload):
+            from datacreate.feedback_visibility import score_only_feedback
+            payload['score_only_labels'] = score_only_feedback(payload, sample_dir)
         document = build_agent_label_document_from_alignment_payload(
             sample_dir, payload, maximum_per_type=maximum_per_type
         )
@@ -1074,6 +1080,7 @@ def relabel_sample_from_current_alignment(
         "path": str(output),
         "source": source,
         "label_count": len(document["labels"]),
+        "score_only_label_count": len(document['agent_labeling'].get('score_only_labels') or []),
         "counts_by_type": dict(document["agent_labeling"]["kept_counts_by_type"]),
         "dismissed_types": list(document["agent_labeling"]["dismissed_types"]),
         "method": document["agent_labeling"]["method"],

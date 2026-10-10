@@ -1,0 +1,50 @@
+{
+  "metrics": {
+    "fit": {
+      "genuine_repeat": {
+        "count": 298,
+        "with_features": 252,
+        "acoustic_repeat_votes": 214
+      },
+      "injected_split": {
+        "count": 190,
+        "with_features": 190,
+        "acoustic_repeat_votes": 30
+      }
+    },
+    "selection": {
+      "genuine_repeat": {
+        "count": 128,
+        "with_features": 104,
+        "acoustic_repeat_votes": 89
+      },
+      "injected_split": {
+        "count": 50,
+        "with_features": 50,
+        "acoustic_repeat_votes": 9
+      }
+    },
+    "check": {
+      "genuine_repeat": {
+        "count": 117,
+        "with_features": 103,
+        "acoustic_repeat_votes": 91
+      },
+      "injected_split": {
+        "count": 76,
+        "with_features": 76,
+        "acoustic_repeat_votes": 18
+      }
+    }
+  },
+  "feature_importance": {
+    "energy_range_db": 0.1048710150561913,
+    "spectral_step": 0.18887793711350334,
+    "spectral_drift": 0.07333870555706624,
+    "attack_max": 0.29780514182363743,
+    "voiced_min": 0.1603873236118987,
+    "gap_depth_db": 0.13240144598577003,
+    "gap_core_duration_sec": 0.04231843085193299
+  },
+  "warning": "Acoustic-only votes are not deployed decisions. Controls are reused development data."
+}
