@@ -26,7 +26,8 @@ def score_only_feedback(payload: dict, sample: Path | None = None) -> list[dict]
         return []
     provenance = payload.get('provenance') or {}
     method = (payload.get('label_generation') or {}).get('method')
-    name = {'align_stack_v9': 'feedback_v9.json', 'align_stack_v10': 'feedback_v10.json'}.get(method)
+    name = {'align_stack_v9': 'feedback_v9.json', 'align_stack_v10': 'feedback_v10.json',
+            'align_stack_solo': 'feedback_solo.json'}.get(method)
     if name is None or not (sample / name).is_file():
         return []
     try:

@@ -1,0 +1,29 @@
+schema_version: '1.2'
+dataset:
+  name: solo-multi-instrument-v1
+  seed: 20261017
+  clips_per_instrument: 500
+  train_fraction: 0.8
+  validation_fraction: 0.1
+paths:
+  output_root: E:/ALIGN_Data/solo_multinstrument_v1
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
+audio: {sample_rate: 22050, mono: true}
+musescore: {synthesizer_gain_db: -9, tail_seconds: 0.35, render_chunk_size: 4096}
+render: {soundfont: msbasic, sounding_transpose: 0}
+generation:
+  measures_min: 2
+  measures_max: 5
+  tempo_min: 80
+  tempo_max: 160
+  rest_probability: 0.08
+  syncopation_prob: 0.2
+  ornament_prob: 0
+  repeat_pitch_probability: 0.28
+  # The solo generator uses sounding ranges from its instrument registry.
+  # 20% fast passages, 20% same-pitch runs, 10% single sustained notes.
+  # No chords, pedal or overlapping MIDI gates; release/reverb tails are natural.
+degrade:
+  probability: 0.5
+  snr_db: [25, 45]
+  reverb_mix: [0.02, 0.15]

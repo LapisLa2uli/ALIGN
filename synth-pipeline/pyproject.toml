@@ -14,10 +14,14 @@ dependencies = [
   "numpy>=1.24",
   "pyyaml>=6.0",
   "pydantic>=2.6",
+  "soundfile>=0.12",
+  "scipy>=1.10",
+  "tinysoundfont>=0.3",
 ]
 
 [project.scripts]
 synth-pipeline = "synthpipeline.cli:main"
+synth-solo = "synthpipeline.solo:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

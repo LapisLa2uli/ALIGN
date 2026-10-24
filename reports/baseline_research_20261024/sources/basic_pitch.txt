@@ -1,0 +1,340 @@
+                                                  A LIGHTWEIGHT INSTRUMENT-AGNOSTIC MODEL FOR POLYPHONIC NOTE
+                                                            TRANSCRIPTION AND MULTIPITCH ESTIMATION
+
+                                           Rachel M. Bittner[ , Juan José Bosch[ , David Rubinstein[ , Gabriel Meseguer-Brocal] , Sebastian Ewert[
+                                                                                                            [
+                                                                                                                Spotify, ] IRCAM
+
+
+                                                                        ABSTRACT                                             maintenance constraints. Further, for many instruments it is chal-
+arXiv:2203.09893v2 [cs.SD] 12 May 2022
+
+
+
+
+                                                                                                                             lenging to create a dataset large enough to train modern methods.
+                                              Automatic Music Transcription (AMT) has been recognized as a                   Applications can also add additional restrictions w.r.t. the size of
+                                         key enabling technology with a wide range of applications. Given the                the model, its (peak) memory consumption and run-time. Therefore,
+                                         task’s complexity, best results have typically been reported for sys-               there is often a gap between the latest published state of the art and
+                                         tems focusing on specific settings, e.g. instrument-specific systems                models that can practically be deployed in a range of settings.
+                                         tend to yield improved results over instrument-agnostic methods.                         In this work, we consider a broad scenario: an instrument-
+                                         Similarly, higher accuracy can be obtained when only estimating                     agnostic1 polyphonic AMT model which estimates both notes and
+                                         frame-wise f0 values and neglecting the harder note event detection.                multipitch outputs. The proposed model is a lightweight neural net-
+                                         Despite their high accuracy, such specialized systems often cannot                  work which runs efficiently on low-end devices, thanks to its low
+                                         be deployed in the real-world. Storage and network constraints pro-                 memory and processing time requirements. Unless otherwise noted,
+                                         hibit the use of multiple specialized models, while memory and                      we deal with polyphonic recordings of a single instrument class (e.g.
+                                         run-time constraints limit their complexity. In this paper, we propose              solo piano, an ensemble of violins, solo vocals, a choir, etc.), but
+                                         a lightweight neural network for musical instrument transcription,                  do not restrict which classes we consider. It is jointly trained to pre-
+                                         which supports polyphonic outputs and generalizes to a wide variety                 dict frame-level onset, multipitch and note posteriorgrams. During
+                                         of instruments (including vocals). Our model is trained to jointly                  inference, we post-process the frame-level posteriorgrams to obtain
+                                         predict frame-wise onsets, multipitch and note activations, and we                  note events and multipitch information. We study the ability of the
+                                         experimentally show that this multi-output structure improves the                   proposed model to transcribe a variety of instruments and vocals
+                                         resulting frame-level note accuracy. Despite its simplicity, bench-                 without retraining, and compare with a recent baseline model for
+                                         mark results show our system’s note estimation to be substantially                  instrument-agnostic polyphonic note estimation. Further, we evaluate
+                                         better than a comparable baseline, and its frame-level accuracy to                  the contribution of components of the proposed model with an abla-
+                                         be only marginally below those of specialized state-of-the-art AMT                  tion study. All code and trained models discussed in this paper are
+                                         systems. With this work we hope to encourage the community to                       made publicly available2 . Additionally, we only use public datasets
+                                         further investigate low-resource, instrument-agnostic AMT systems.                  for training and evaluation in order to foster reproducibility.
+
+                                            Index Terms— automatic music transcription, note estimation,                                2. BACKGROUND AND RELATED WORK
+                                         multi-pitch estimation, polyphonic, low-resource
+                                                                                                                             There is a huge body of work on AMT. Due to space constraints we
+                                                                                                                             refer to [1, 11] for a more comprehensive overview. As previously
+                                                                  1. INTRODUCTION                                            mentioned, AMT systems have three dimensions: (1) the degree
+                                                                                                                             of output polyphony considered, (2) the type of output estimated
+                                         The automatic transcription of music has been studied for more than                 and (3) the type of input audio. In this work we consider the poly-
+                                         four decades [1]. During this time, systems have considerably im-                   phonic setting, where more than one note/pitch may be present in
+                                         proved, in particular since the rise of deep learning. Yet, the task                the output at a time; note that monophonic AMT is a strict subset
+                                         remains unsolved, partially due to various intrinsic challenges [1]                 of polyphonic AMT, and thus we also support monophonic sources.
+                                         but also due to a lack of an objective ground truth on which humans                 AMT outputs are typically either frame-level multipitch estimation
+                                         consistently agree [2]. Because of the intrinsic difficulty of the task,            (MPE) or note-level estimation, which transcribe polyphonic music
+                                         AMT systems are usually designed with a limited scope, and focus on                 at different levels of granularity [1]. Both are useful depending on
+                                         a sub-task. There are a number of common sub-tasks in AMT which                     the application: MPE provides lower-level expressive performance
+                                         branch along three dimensions: (1) the degree of output polyphony                   information (such as vibrato, glissando), whereas note-level estima-
+                                         (monophonic, polyphonic) (2) the types of output to be estimated                    tion gives information closer to the musical score. MPE methods
+                                         (notes, f0 ), and (3) the type of input audio (pop songs, solo piano,               predict the fundamental frequencies (f0 s) which are active at a given
+                                         solo guitar, jazz ensembles, etc.). For example, specializing for a                 time-frame (note that even if not strictly equivalent, we use pitch and
+                                         specific instrument class allows models to exploit instrument-specific              f0 interchangeably following the literature in the field [1]). They
+                                         characteristics to increase the transcription accuracy, e.g. piano [3–5],           commonly first estimate a pitch posteriorgram [12, 13], where each
+                                         guitar [6, 7] or singing voice [8, 9]. Similarly, models built to estimate          time-frequency bin is assigned an estimate of the likelihood of that
+                                         a particular output type, or which are restricted to monophonic set-                fundamental frequency being active at a given time. Such matrices
+                                         tings [10] can further increase accuracy in these scenarios. In many
+                                         real-world applications, deploying a number of specialized systems                      1 By “instrument agnostic” we mean “not specific to an instrument class”.
+
+                                         becomes intractable, for example because of storage, network and                        2 https://github.com/spotify/basic-pitch
+
+
+                                         Copyright 2022 IEEE. Published in ICASSP 2022 - 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), scheduled for
+                                         7-13 May 2022 Virtual; 22-27 May 2022 In-Person in Singapore. Personal use of this material is permitted. However, permission to reprint/republish this
+                                         material for advertising or promotional purposes or for creating new collective works for resale or redistribution to servers or lists, or to reuse any copyrighted
+                                         component of this work in other works, must be obtained from the IEEE. Contact: Manager, Copyrights and Permissions / IEEE Service Center / 445 Hoes
+                                         Lane / P.O. Box 1331 / Piscataway, NJ 08855-1331, USA. Telephone: + Intl. 908-562-3966.
+typically contain multiple bins per semitone, which allows estimation
+of small (“continuous”) variations of pitch. Various methods aim at
+estimating and subsequently grouping MPE outputs from polyphonic
+recordings into note events [14–18], or attempt to group pitches into
+contours [11, 12, 19]. Note estimation (or note tracking) methods
+aim at estimating notes events (defined as: pitch, onset time, offset
+time). Notes cannot be trivially estimated from the output of an MPE
+system, because MPE information does not encode onsets/offsets, and
+preserves fluctuations in pitch which should not always be quantized
+to the nearest semitone. In particular, note estimation is difficult for
+singing voice, which may have a high degree of fluctuation around
+a center pitch [9] compared to instruments such as the piano. Mul-
+tiple methods have been proposed for estimating notes from pitch
+posteriorgrams e.g. using median filtering [11], Hidden Markov Mod-
+els [16] or neural networks [20, 21]. While most approaches consider
+each semitone independently, some approaches attempt to model the
+interactions between notes, using spectral likelihood models [1, 18],
+or music language models [3, 17]. Transformers have recently been
+applied to AMT, directly predicting MIDI-like note events from spec-
+trograms in piano music [5]. A few AMT models perform both note
+and pitch estimation [14, 18, 22], and most work with monophonic
+data. Regarding input audio characteristics, traditional AMT methods
+based on signal-processing have been more generalizable to multiple
+instruments than more recent approaches, as well as being simpler
+and faster [1, 12]. However, the best performing systems often come
+at the expense of higher computational requirements and a focus on               Fig. 1. The NMP architecture. The matrix posteriorgram outputs Yo ,
+instrument-specific systems [4].                                                 Yp , and Yn are outlined in green. σ indicates a sigmoid activation.
+
+
+                             3. MODEL
+                                                                                 information “musically quantized” in time and frequency, while Yp
+Our goal is to create an AMT model that generalizes across a set of              encodes frame level multipitch information, capturing details such
+polyphonic (or monophonic) instruments without retraining, while be-             as vibrato. During training, the target for each of these outputs are
+ing lightweight enough to run in low-resource settings. We consider              binary matrices generated from note and pitch annotations.
+both the speed and the peak memory usage when running inference,                      The architecture is structured in order to exploit the differing
+and purposely limit ourselves to a shallow architecture to keep the              properties of the three outputs. We assume that Yp is the output
+memory needs low. Note that the number of parameters of a model                  which is “closest” to the input audio. The architecture estimating
+does not necessarily correlate with its memory usage; e.g. a convolu-            Yp is similar to that of [13], but with fewer convolutional layers to
+tion layer requires few parameters, but can still have high memory               reduce memory usage. Notably, we employ the same octave plus one
+usage due to the feature map sizes.                                              semitone-sized kernel in frequency, which we found to be helpful for
+Harmonic Stacking. Given the input audio, the model first computes               avoiding octave mistakes. This stack of convolutions performs a form
+a Constant-Q Transform (CQT) with 3 bins per semitone and a hop                  of “denoising”, in order to emphasize the multipitch posterior outputs
+size of ≈ 11 ms. Rather than using, e.g. a mel spectrogram and ulti-             and de-emphasize transients, harmonics and other un-pitched content.
+mately learning the projection onto the output log-spaced frequency              An added benefit to using a limited receptive field in frequency is that
+scale using a Dense or LSTM layer (which requires the model to have              it removes the need for pitch shifting data augmentations. Yp followed
+a full-frequency receptive field) [4], we start with a representation            by two small convolutional layers are used to estimate Yn . These
+with the desired frequency scale. The Harmonic CQT (HCQT) [13]                   convolutions can be seen as “musical quantization” layers, learning
+is a transformation of the CQT which aligns harmonically-related                 how to perform the non trivial grouping of multipitch posteriorgrams
+frequencies along a third dimension, allowing small convolutional                into note event posteriorgrams. Finally, as in [24], Yo is estimated
+kernels to capture harmonically-related information. As an efficient             using as input both Yn and convolutional features computed from the
+approximation of the HCQT, following [23], we copy the CQT and                   audio, which are necessary to identify transients.
+shift it vertically by the number of frequency bins corresponding to             Training. Binary cross entropy is used as the loss function for each
+each harmonic. In this work we use 7 harmonics and 1 sub-harmonic.               output, and the total loss is the sum of the three losses. However,
+Architecture. The architecture illustrated in Fig. 1 is a fully convolu-         for Yo , there is a heavy class imbalance that drives models to output
+tional model taking audio as input and produces three posteriorgram              Yo = 0 everywhere. As a countermeasure, we use a class-balanced
+outputs, with a total of only 16,782 parameters. The model’s three               cross entropy loss, where the weight for the negative class is 0.05
+output posteriorgrams are time-frequency matrices encoding if (1) the            and the positive is 0.95 (set empirically by observing the properties
+onset of a note is taking place (Yo ) (2) a note is active (Yn ) and (3) a       of the resulting Yo ) which helps the model capture the onsets while
+pitch is active (Yp ). All outputs have the same number of time frames           remaining sparse. During training, the model input is 2 seconds of
+as the input CQT, and in frequency, both Yo and Yn have a resolution             audio at a sample rate of 22050 Hz. We train the model with a batch
+of 1 bin per semitone while Yp has a resolution of 3 bins per semitone.          size of 16 and use the Adam optimizer with a learning rate of 0.001.
+Besides having different frequency resolutions, Yn and Yp are trained            During training, random label-preserving augmentations are applied
+to capture different concepts: Yn captures frame-level note event                to the audio, including adding noise, equalization filters, and reverb.
+
+
+                                                                             2
+Posteriorgram post-processing. Similar to many note or contour                        Dataset      Polyphony      Instrument     Labels    Train     Test
+                                                                                  Molina [28]        Mono           Vocals         N         -        38
+creation post-processing methods, we create note events, defined
+                                                                                GuitarSet [29]     Mono / Poly     Ac. Guitar    N+P        648       72
+by a start time t0 , end time t1 and a pitch f by running a post-               MAESTRO [4]           Poly           Piano         N       1154      128
+processing step using Yo and Yn as inputs [1], following a process                  Slakh [30]        Poly        Synthesizers     N       1590      120
+similar to that described in Onsets and Frames [4]. A set of onset               Phenicx [31]         Poly         Orchestral      N         -        42
+candidates {(t0i , fi )} are populated by peak picking Yo across time,              iKala [32]       Mono           Vocals       N+P        252        -
+and discarding peaks with likelihood < 0.5. Note events are created             MedleyDB [33]        Mono           Multiple     N+P        103        -
+for each i in descending order of t0i , by tracking forward in time
+through Yn until the likelihood falls below a threshold τn for longer          Table 1. Summary of the datasets used. The Train and Test columns
+than an allowed tolerance (11 frames), then ending the note. When              indicate the number of tracks. The Labels column indicates which
+notes are created, the likelihood of all corresponding frames of Yn are        kind of annotations are available: (N) Notes, (P) Multi-pitch.
+updated to 0. After all onsets have been used, additional note events
+are created by iterating through bins of Yn that have likelihood > τn
+in descending order, following the same note creation procedure but                 Results for our proposed method and MI-AMT are presented in
+instead tracing both forward and backward in time. Finally, note               Table 2. We first remark that NMP considerably outperforms the base-
+events which are shorter than ≈ 120 ms are removed. Multi-pitch                line MI-AMT on all test datasets and metrics, with the exception of
+estimates are created by simply peak picking Yp across frequency               the comparable Acc on MAESTRO (piano) and Slakh (synthesizers).
+and retaining all peaks greater than τn .                                      NMP performs strongly for datasets with polyphonic instruments
+                                                                               (MAESTRO, Slakh, Phenicx, 1⁄2 of GuitarSet) as well as monophonic
+                                                                               (Molina and 1⁄2 of GuitarSet) despite not imposing a monophonic con-
+                        4. EXPERIMENTS
+                                                                               straint on the output note estimates. Additionally, we see consistent
+In this section we examine the performance of the proposed method,             performance across datasets with varying instrument types, validating
+“Notes and Multipitch” (NMP), focusing on the note estimation                  that NMP performs well without needing to be instrument-specific.
+task, but also briefly commenting on the MPE task. AMT meth-
+ods have commonly been evaluated using a set of metrics proposed                          Molina      GuitarSet    Maestro       Slakh       Phenicx
+for MIREX3 evaluation tasks. In this work we report the note-level F-                   Acc Fno F Acc Fno F Acc Fno F Acc Fno F Acc Fno F
+measure (F), where notes are considered correct if the pitch is within         MI-AMT  .48 .31 .11 .43 .59 .27 .39    .30 .07 .40   .23 .07 .13    .12 .05
+a quarter tone, the onset is within 50 ms, and the offset is within               NMP  .63 .52 .35 .70 .79 .56 .38    .71 .11 .44   .42 .21 .53    .49 .35
+20% of the note’s duration, the note-level F-measure-no-offset (Fno)           NMP - P .60 .55 .38 .67 .78 .55 .36    .65 .12 .40   .43 .23 .50    .51 .36
+with the same criterion as F-measure, but ignoring offsets, and the            NMP - H .45 .36 .20 .50 .65 .40 .27    .48 .10 .33   .36 .17 .37    .39 .23
+frame-level note accuracy (Acc), which is computed for frames with
+a hop size of 10 ms. We use Fno as the main measure of overall note
+estimation accuracy since the definition of offsets is less objective          Table 2. Average note event metrics on all test datasets for the
+than onsets (e.g. due to reverberation, sustain pedal, annotation pro-         baseline algorithm, proposed method, and ablation experiments. The
+cedure) [25]. We compute these metrics using mir_eval [26]. For                best score for each column is in bold. The shade of green indicates
+NMP and each of the ablation studies, we fine-tune the note creation           how far a score is from the best score, with the worst scores in white.
+parameter τn on the validation dataset such that it maximizes Fno.             All non-underlined results are statistically significantly different with
+     In order to assess how well NMP and the baseline perform across           p < 0.05 compared with NMP (per metric/dataset) via a paired t-test.
+different instrument classes, we use a wide variety of training and test
+data spanning multiple instrument types, summarized in Table 1 (see
+the cited papers for more specific details), using the mirdata [27]            4.2. Ablation Experiments
+library. A random 5% of tracks from the training set are used for
+validation. We note a few additional details for some the datasets:            Harmonic Stacking. To examine the use of Harmonic Stacking as
+We use the de-duplicated “redux” version of Slakh, and test on an              an input representation, we trained a model which omits the harmonic
+instrument-balanced subset of 120 of the non-percussive test-set stems         stacking layer but is equivalent otherwise, denoted as NMP - H in
+with the least silence; the note annotations in MedleyDB and iKala             Table 2. Unsurprisingly, given the small receptive field, the omission
+are automatically generated using pyin-notes [22]; the audio files for         of harmonic stacking substantially reduces performance across all
+MedleyDB are taken from the pitch tracking subset4 , and for iKala,            metrics and datasets, in accordance with the results of similar experi-
+we use the isolated vocals; for Phenicx, we use the 42 instrumental            ments performed in [13, 23]. This indicates that Harmonic Stacking
+section-grouped stems (e.g. violins, bassoons) and annotations.                effectively allows the model to use smaller convolutional kernels
+                                                                               while still capturing relevant information. One limitation of this
+                                                                               comparison is that the number of channels is reduced when omitting
+4.1. Note Transcription Baseline Comparison                                    harmonic stacking, which in turn reduces the model’s capacity.
+We compare our model with a recent, strong baseline model, MI-                 The Effect of Yp . We measure the impact that the supervised bottle-
+AMT [34] which is a polyphonic, instrument-agnostic note estimation            neck layer Yp on Yn has on note estimation by training an equivalent
+method. It uses a U-Net architecture with an attention mechanism               model, where Yp is not supervised, and where Yn is the output of
+and outputs a note-activation posteriorgram with a total of over 20M           the stack of convolutions preceding it, with the Batch Norm → ReLu
+parameters, trained on MAESTRO and MusicNet. The note posteri-                 → 1 Conv2D (5x5) layers in Fig. 1 omitted. The results for
+orgram is post-processed in order to create note events.                       this condition are denoted as NMP - P in Table 2. We first see that
+                                                                               the constraint introduced by Yp consistently improves Acc across
+   3 http://www.music-ir.org/mirex/                                            all datasets, however the effect on Fno and F is mixed; there is
+   4 https://zenodo.org/record/2620624                                         no significant difference for GuitarSet, Slakh and Phenicx, Yp im-
+
+
+                                                                           3
+proves performance slightly for MAESTRO, and degrades slightly                 4.4. MPE Baseline
+for Molina. This suggests that even if the additional supervision is
+neutral for onset/offset detection, it is helpful for identifying note         Here we briefly validate how NMP performs at MPE, comparing
+pitches, and we get the benefit of an additional output which contains         NMP’s MPE outputs with the output of the deep salience model
+some information about ornamentation and expressivity.                         [13]. We report results on the Bach 10 [12] and Su [2] datasets,
+                                                                               each of which contain 10 recordings of polyphonic western classical
+                                                                               chamber music ensembles. The MPE outputs for NMP outperform
+4.3. Comparison with instrument-specific approaches                            deep salience for the Bach10 dataset with a frame-level accuracy of
+                                                                               72.5±3.8 versus 55.7±2.9 for deep salience. However, deep salience
+                                                                               achieves better results on Su 43.6 ± 7.9 where NMP gets 37.7 ± 15.4.
+                                                                               While this is a small-scale validation, these results indicate that the
+             Molina (Vocano) GS-solo (TENT)        Maestro (OF)
+                                                                               information captured by Yp is meaningful and potentially competitive
+             Acc Fno      F    Acc   Fno     F    Acc   Fno    F               with strong baseline models. While the 3-bin-per-semitone resolution
+    Baseline 61.6 64.2 51.3
+                         63.2 76.3 54.6 43.8 95.2 36.4                         posteriorgrams may seem relatively low-resolution for this task, they
+      NMP 62.6 52.3 34.6 71.7 84.0 65.0 37.5 70.9 10.5                         can be used to estimate continuous multi pitch estimates, by using the
+                                                                               amplitude values of the estimated f0 bin, and those of its neighboring
+                                                                               bins in frequency. Note that despite not being trained on multi-
+Table 3. Average note event metrics on NMP vs. instrument-specific             instrument mixtures, it seems to achieve compelling results.
+models for vocals, guitar and piano. The best score for each column
+is in bold. The compared instrument-specific model name is indicated
+in the column headers in parenthesis. All non-underlined results               4.5. Efficiency
+are statistically significantly different with p < 0.05 compared with          To illustrate the computational efficiency of NMP, we compare peak
+NMP via a paired t-test.                                                       memory usage and total run time against MI-AMT. Benchmarks
+                                                                               were conducted on a 2017 Macbook Pro with a 3.1GHz Quad Core
+     We’ve seen that the proposed model outperforms a comparable               Intel Core i7 CPU and 16GB 2133MHz LPDDR3 Memory. All
+instrument-agnostic baseline on a variety of datasets. To further              benchmarks were measured using first a “short” (.35 second) file of
+understand the upper limits of our model, we provide a comparison              white noise to approximate the system’s overhead, and a “long” (7
+with recent, open-source instrument-specific models. Onsets and                minute 45 second) file from the Slakh dataset in order to show a more
+frames (OF) [4] is a polyphonic piano transcription method trained             realistic input for each method. Audio files were resampled to the
+on the MAESTRO dataset which jointly predicts onset and note                   expected sampling rate of the method before measurement. We find
+posteriorgrams using a CNN and RNN consisting of approximately                 that both methods are comparable in estimated overhead, with NMP
+18M parameters, followed by a note-creation post-processing phase.             using 490 MB peak memory and taking 7 s and MI-AMT using 561
+Vocano [9] is a monophonic vocal transcription method which first              MB and taking 10 s; however on the long file, NMP substantially
+performs vocal source separation, then applies a pre-trained pitch             outperforms MI-AMT, using only 951 MB peak memory and taking
+extractor followed by a note segmentation neural network, trained on           24 s, while MI-AMT used 3.3 GB and took 96 s. It’s interesting to
+solo vocal data. TENT [6] is a monophonic solo guitar transcription            note that the peak memory of the instrument-specific models is even
+method, which first performs melody contour extraction followed                higher, with OF using 5.4 GB and Vocano using 8.5 GB.
+by playing technique detection of common guitar elements such as
+string bend, slide and vibrato using a CNN architecture, and a post-                                   5. CONCLUSIONS
+processing phase which obtains the final notes given the melody
+contour and the identification of the different playing techniques             We demonstrate that the proposed low-resource neural network-based
+at each time frame. We therefore only report results on the solo,              model (NMP) can be successfully applied to instrument-agnostic
+monophonic half of GuitarSet.                                                  polyphonic note transcription and MPE. NMP outperforms a recent
+     For guitar, NMP outperforms TENT for all metrics, and more                strong baseline note estimation model across five different datasets,
+importantly, these are state of the art results on GuitarSet to the best       and performs similarly to deep salience for MPE. Further, we see
+of our knowledge. For vocals (Molina), Vocano outperforms NMP in               that the use of harmonic stacking allows our model to remain low-
+Fno and F, but the frame-level pitch accuracy (Acc) is comparable              resource while maintaining its performance. When compared with
+to NMP, suggesting that Fno could increase with improved onset                 instrument-specific models, we see that NMP achieves state-of-the-art
+detection. The largest difference in performance between NMP and               results on GuitarSet. It however did not outperform the instrument-
+an instrument-specific method is in the MAESTRO dataset compared               specific models for piano and vocals. Nevertheless, NMP has the
+with OF, which was specifically trained for piano transcription, and           benefit of being a “one-size-fits-all” solution, and has much lower
+achieves 95.2% Fno, in comparison to 70.9% of our method (which                computational requirements. We hope to encourage further research
+is notably still a reasonably high score for this task). The main              into low-resource, multi-purpose AMT systems and believe that the
+reason for the difference in performance seems to be due to the onset          proposed solution can be a valuable baseline.
+detection accuracy which is higher in OF, since Acc is more similar                 Future work could explore low-resource transcription of audio
+for both methods (42.8% for OF vs. 37.5% for NMP). It is interesting           mixtures containing many instruments, and the use of offset predic-
+to note that NMP would perform competitively in comparison with                tions in this low-resource setting. The note event creation method
+Melodyne5 on piano data according to the results obtained in [24],             proposed is based on heuristics, and more carefully designed models
+even if a direct comparison would not be possible since they reported          similar to [16, 17] would likely result in note-event creation improve-
+results on another similar piano dataset.                                      ments. While this work aimed to create a lightweight model from
+                                                                               the start, we did not explore classic model pruning or compression
+   5 version 4.1.1.011, http://www.celemony.com/en/melodyne                    techniques, which would further improve the efficiency. Finally, the
+
+
+                                                                           4
+interaction between the note and multipitch outputs could be explored,       [18] R. Nishikimi, E. Nakamura, M. Goto, K. Itoyama, and K. Yoshii,
+for example, to estimate note-level pitch bends.                                  “Bayesian singing transcription based on a hierarchical gen-
+                                                                                  erative model of keys, musical notes, and F0 trajectories,”
+                        6. REFERENCES                                             IEEE/ACM Trans. Audio Speech Lang. Process., vol. 28, pp.
+                                                                                  1678–1691, 2020.
+ [1] E. Benetos, S. Dixon, Z. Duan, and S. Ewert, “Automatic music           [19] R. M. Bittner, J. Salamon, J. J. Bosch, and J. P. Bello, “Pitch
+     transcription: An overview,” IEEE Signal Process. Magazine,                  contours as a mid-level representation for music informatics,”
+     vol. 36, no. 1, pp. 20–30, 2019.                                             in Proc. AES Int. Conf. Semantic Audio, 2017.
+ [2] L. Su and Y.-H. Yang, “Escaping from the abyss of manual                [20] S. Ewert and M. B. Sandler, “An augmented Lagrangian method
+     annotation: New methodology of building polyphonic datasets                  for piano transcription using equal loudness thresholding and
+     for automatic music transcription,” in Proc. CMMR, 2015.                     LSTM-based decoding,” in Proc. WASPAA, 2017, pp. 146–150.
+ [3] S. Sigtia, E. Benetos, and S. Dixon, “An end-to-end neural              [21] R. Nishikimi, E. Nakamura, M. Goto, and K. Yoshii, “Audio-
+     network for polyphonic piano music transcription,” IEEE/ACM                  to-score singing transcription based on a CRNN-HSMM hybrid
+     Trans. Audio Speech Lang. Process., vol. 24, no. 5, pp. 927–939,             model,” APSIPA Trans. Signal Inf. Process., vol. 10, 2021.
+     2016.                                                                   [22] M. Mauch, C. Cannam, R. Bittner, G. Fazekas, J. Salamon,
+ [4] C. Hawthorne, A. Stasyuk, A. Roberts, I. Simon, C.-Z. A.                     J. Dai, J. Bello, and S. Dixon, “Computer-aided melody note
+     Huang, S. Dieleman, E. Elsen, J. Engel, and D. Eck, “Enabling                transcription using the Tony software: Accuracy and efficiency,”
+     factorized piano music modeling and generation with the MAE-                 in Proc. Int. Conf. Tech. Music Notation Representation, 2015.
+     STRO dataset,” in Proc. ICLR, 2019.                                     [23] J. Balhar, “Melody extraction using a harmonic convolutional
+ [5] C. Hawthorne, I. Simon, R. Swavely, E. Manilow, and J. Engel,                neural network,” in Proc. ISMIR, 2018, p. 4.
+     “Sequence-to-sequence piano transcription with transformers,”           [24] C. Hawthorne, E. Elsen, J. Song, A. Roberts, I. Simon, C. Raffel,
+     arXiv preprint arXiv:2107.09142, 2021.                                       J. Engel, S. Oore, and D. Eck, “Onsets and Frames: Dual-
+ [6] T.-W. Su, Y.-P. Chen, L. Su, and Y.-H. Yang, “TENT: Technique-               objective piano transcription,” in Proc. ISMIR, 2018, pp. 50–57.
+     embedded note tracking for real-world guitar solo recordings,”          [25] C.-Y. Liang, L. Su, Y.-H. Yang, and H.-M. Lin, “Musical offset
+     TISMIR, vol. 2, no. 1, pp. 15–28, 2019.                                      detection of pitched instruments: The case of violin,” in Proc.
+ [7] A. Wiggins and Y. Kim, “Guitar tablature estimation with a                   ISMIR, 2015, pp. 281–287.
+     convolutional neural network,” in Proc. ISMIR, 2019, pp. 284–           [26] C. Raffel, B. McFee, E. J. Humphrey, J. Salamon, O. Nieto,
+     291.                                                                         D. Liang, D. P. Ellis, and C. C. Raffel, “mir_eval: A transparent
+ [8] A. McLeod, R. Schramm, M. Steedman, and E. Benetos, “Au-                     implementation of common MIR metrics,” in Proc. ISMIR,
+     tomatic transcription of polyphonic vocal music,” Applied Sci-               2014, pp. 367–372.
+     ences, vol. 7, no. 12, p. 1285, 2017.                                   [27] M. Fuentes, R. Bittner, M. Miron, G. Plaja, P. Ramoneda,
+ [9] J.-Y. Hsu and L. Su, “VOCANO: A note transcription frame-                    V. Lostanlen, D. Rubinstein, A. Jansson, T. Kell, K. Choi, and
+     work for singing voice in polyphonic music,” in Proc. ISMIR,                 et al., “mirdata v.0.3.0,” Jan 2021.
+     2021.                                                                   [28] E. Molina, A. M. Barbancho-Perez, L. J. Tardon-Garcia,
+[10] J. W. Kim, J. Salamon, P. Li, and J. P. Bello, “Crepe: A convo-              I. Barbancho-Perez et al., “Evaluation framework for automatic
+     lutional representation for pitch estimation,” in Proc. ICASSP,              singing transcription,” in Proc. ISMIR, 2014, pp. 567–572.
+     2018, pp. 161–165.                                                      [29] Q. Xi, R. M. Bittner, J. Pauwels, X. Ye, and J. P. Bello, “Gui-
+[11] A. Klapuri and M. Davy, Signal Processing Methods for Music                  tarset: A dataset for guitar transcription.” in Proc. ISMIR, 2018,
+     Transcription. Springer US2007.                                              pp. 453–460.
+[12] Z. Duan, B. Pardo, and C. Zhang, “Multiple fundamental fre-             [30] E. Manilow, G. Wichern, P. Seetharaman, and J. Le Roux, “Cut-
+     quency estimation by modeling spectral peaks and non-peak                    ting music source separation some Slakh: A dataset to study the
+     regions,” IEEE Trans. Audio Speech Lang. Process., vol. 18,                  impact of training data quality and quantity,” in Proc. WASPAA,
+     no. 8, pp. 2121–2133, 2010.                                                  2019, pp. 45–49.
+[13] R. M. Bittner, B. McFee, J. Salamon, P. Li, and J. P. Bello,            [31] M. Miron, J. J. Carabias-Orti, J. J. Bosch, E. Gómez, and
+     “Deep salience representations for F0 estimation in polyphonic               J. Janer, “Score-informed source separation for multichannel or-
+     music,” in Proc. ISMIR, 2017, pp. 63–70.                                     chestral recordings,” Jour. of Electrical Computer Engineering,
+[14] M. P. Ryynanen and A. Klapuri, “Polyphonic music transcrip-                  vol. 2016, 2016.
+     tion using note event modeling,” in Proc. WASPAA, 2005.                 [32] T.-S. Chan, T.-C. Yeh, Z.-C. Fan, H.-W. Chen, L. Su, Y.-H. Yang,
+                                                                                  and R. Jang, “Vocal activity informed singing voice separation
+[15] Z. Duan, J. Han, and B. Pardo, “Multi-pitch streaming of har-
+                                                                                  with the ikala dataset,” in Proc. ICASSP, 2015, pp. 718–722.
+     monic sound mixtures,” IEEE/ACM Trans. Audio Speech Lang.
+     Process., vol. 22, no. 1, pp. 138–150, 2013.                            [33] R. M. Bittner, J. Salamon, M. Tierney, M. Mauch, C. Cannam,
+                                                                                  and J. P. Bello, “Medleydb: A multitrack dataset for annotation-
+[16] E. Benetos, “Polyphonic note and instrument tracking using
+                                                                                  intensive mir research.” in Proc. ISMIR, 2014, pp. 155–160.
+     linear dynamical systems,” in Proc. AES Int. Conf. Semantic
+     Audio, 2017.                                                            [34] Y.-T. Wu, B. Chen, and L. Su, “Multi-instrument automatic
+                                                                                  music transcription with self-attention-based instance segmenta-
+[17] A. Ycart and E. Benetos, “Polyphonic music sequence transduc-
+                                                                                  tion,” IEEE/ACM Trans. Audio Speech Lang. Process., vol. 28,
+     tion with meter-constrained LSTM networks,” in Proc. ICASSP,
+                                                                                  pp. 2796–2809, 2020.
+     2018, pp. 386–390.
+
+
+                                                                         5
+

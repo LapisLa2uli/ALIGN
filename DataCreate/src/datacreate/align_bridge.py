@@ -192,6 +192,8 @@ def _bridge_command_env(config: PipelineConfig) -> tuple[Path, dict[str, str]]:
 
 def _v9_candidate(config: PipelineConfig) -> Path:
     version = config.alignment.get("model_version", "stack-v9")
+    if version == "stack-solo-v1":
+        return _configured_path(config, "note_alignment_candidate", ROOT / "align-model/runs/solo-v1/CANDIDATE_SOLO_V1.json")
     number = "V10" if version == "stack-v10" else "V9"
     return _configured_path(
         config, "note_alignment_candidate",
@@ -215,6 +217,12 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
         return False
     provenance = payload.get("provenance") or {}
     revision = "v10-boundary-v1" if config.alignment.get("model_version") == "stack-v10" else "v9-passage-v2"
+    if config.alignment.get("model_version") == "stack-solo-v1":
+        revision = "solo-multi-v1"
+        from datacreate.score_transposition import score_transposition
+        shift = score_transposition(sample_dir / "verified_score.musicxml", config.alignment.get("written_to_sounding"))
+        if provenance.get("written_to_sounding") != shift:
+            return False
     if provenance.get("pipeline_revision") != revision:
         return False
     inputs = {
@@ -228,7 +236,7 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
 
 def ensure_current_model_feedback(sample_dir: Path, config: PipelineConfig, logger) -> bool:
     """Upgrade legacy/stale UI artifacts before relabeling; never silently downgrade."""
-    if config.alignment.get("model_version", "legacy") not in {"stack-v9", "stack-v10"}:
+    if config.alignment.get("model_version", "legacy") not in {"stack-v9", "stack-v10", "stack-solo-v1"}:
         return False
     if current_v9_feedback(sample_dir, config):
         return False
@@ -247,6 +255,8 @@ def _run_v9_alignment(sample_dir: Path, config: PipelineConfig, logger, *, detec
     work = config.resolved_path("work_dir") or ROOT / "DataCreate/work"
     version = config.alignment.get("model_version", "stack-v9")
     tag = "v10" if version == "stack-v10" else "v9"
+    if version == "stack-solo-v1":
+        tag = "solo"
     run = work / f"{tag}-ui" / f"{sample_dir.name}-{uuid.uuid4().hex}"
     command = [
         str(python), str(ROOT / f"align-model/scripts/publish_datacreate_{tag}.py"),
@@ -256,6 +266,8 @@ def _run_v9_alignment(sample_dir: Path, config: PipelineConfig, logger, *, detec
         "--sample-rate", str(config.sample_rate()),
         "--hop-length", str(config.mel.get("hop_length", 512)),
     ]
+    if version == "stack-solo-v1" and config.alignment.get("written_to_sounding") is not None:
+        command.extend(["--written-to-sounding", str(config.alignment["written_to_sounding"])])
     logger.info("Running ALIGN %s: %s", tag, subprocess.list2cmdline(command))
     completed = subprocess.run(
         command, cwd=ROOT, env=env, capture_output=True, text=True,
@@ -281,7 +293,7 @@ def dump_transcription(
     *,
     output: Path | None = None,
 ) -> Path:
-    """Write frozen Basic Pitch notes for score-span location."""
+    """Write transcription notes for score-span location using the selected model."""
 
     python, env = _bridge_command_env(config)
     output = output or (sample_dir / "transcription_notes.json")
@@ -308,6 +320,18 @@ def dump_transcription(
     checkpoint = _joint_checkpoint(config, weights)
     if checkpoint is not None:
         command.extend(["--checkpoint", str(checkpoint)])
+    solo = config.alignment.get('model_version') == 'stack-solo-v1'
+    if solo:
+        from datacreate.score_transposition import score_transposition
+        candidate = json.loads(_v9_candidate(config).read_text())
+        if _sha256(Path(candidate['checkpoint'])) != candidate['checkpoint_sha256']:
+            raise ValueError('Solo checkpoint hash mismatch')
+        score = sample_dir / 'verified_score.musicxml'
+        shift = score_transposition(score, config.alignment.get('written_to_sounding'))
+        command = [str(python), str(ROOT/'align-model/scripts/run_solo_transcriber.py'),
+                   '--audio', str(sample_dir/'performance_audio.wav'), '--output', str(output),
+                   '--candidate', str(_v9_candidate(config)), '--written-to-sounding', str(shift),
+                   '--device', str(config.alignment.get('note_alignment_device', 'cuda'))]
     logger.info("Transcribing %s", sample_dir.name)
     completed = subprocess.run(
         command,
@@ -322,6 +346,12 @@ def dump_transcription(
             "Transcription failed: "
             + (completed.stderr.strip() or completed.stdout.strip())
         )
+    if solo:
+        payload = json.loads(output.read_text())
+        # The legacy corpus locator compares written score pitches.
+        payload['transcribed_notes'] = [{**n, 'pitch': n['written_pitch']} for n in payload['notes']]
+        payload['transcribed_notes_pitch_space'] = 'written'
+        output.write_text(json.dumps(payload, indent=2), encoding='utf-8')
     return output
 
 
@@ -397,7 +427,7 @@ def run_preferred_alignment(
     """Run the configured version; v9 regenerates alignment and agent feedback together."""
 
     version = config.alignment.get("model_version", "legacy")
-    if version in {"stack-v9", "stack-v10"}:
+    if version in {"stack-v9", "stack-v10", "stack-solo-v1"}:
         return _run_v9_alignment(sample_dir, config, logger, detect_candidates=detect_candidates)
     if version != "legacy":
         raise ValueError(f"Unknown alignment model_version: {version}")

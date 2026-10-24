@@ -1,0 +1,18 @@
+schema_version: '1.2'
+dataset:
+  name: solo-chromatic-support-v1
+  mode: chromatic_coverage
+  seed: 30261017
+  clips_per_instrument: 192
+paths:
+  output_root: E:/ALIGN_Data/solo_chromatic_support_v1
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
+audio: {sample_rate: 22050, mono: true}
+musescore: {synthesizer_gain_db: -9, tail_seconds: 0.35, render_chunk_size: 4096}
+render: {soundfont: msbasic, sounding_transpose: 0}
+generation:
+  repeat_pitch_probability: 0.15
+degrade:
+  probability: 0.5
+  snr_db: [25, 45]
+  reverb_mix: [0.02, 0.15]

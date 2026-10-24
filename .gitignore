@@ -144,3 +144,28 @@ align-model/runs/**/*features*.json
 reports/**/alignments/
 align-model/runs/**/alignments/
 align-model/runs/**/ui-review-*/
+
+# Compiler, numerical-library, and package-manager caches
+*.nbc
+*.nbi
+*.cache
+.numba_cache/
+.numba-cache/
+.torch/
+.triton/
+.cupy/
+.huggingface/
+.uv-cache/
+.pip-cache/
+.npm/
+.eslintcache
+.stylelintcache
+.sass-cache/
+.vite/
+.webpack-cache/
+
+# Cache directories using plural or underscore naming
+caches/
+cache_*/
+*_cache/
+*_cache_*/

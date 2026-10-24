@@ -1,0 +1,1961 @@
+{
+  "feedback": {
+    "schema_version": "align-score-feedback-v10",
+    "status": "ok",
+    "labels": [
+      {
+        "id": "v10_0000",
+        "type": "wrong_note",
+        "score_event_indices": [
+          38
+        ],
+        "note_ids": [
+          "note_0038"
+        ],
+        "score_part": {
+          "start_note_index": 38,
+          "end_note_index": 38,
+          "core_start_note_index": 38,
+          "core_end_note_index": 38,
+          "pad_notes": 0
+        },
+        "context_score_event_indices": [
+          36,
+          37,
+          38,
+          39,
+          40
+        ],
+        "start_time": 31.82294784580499,
+        "end_time": 32.07836734693878,
+        "heard_pitch": 69
+      },
+      {
+        "id": "v10_0001",
+        "type": "wrong_note",
+        "score_event_indices": [
+          39
+        ],
+        "note_ids": [
+          "note_0039"
+        ],
+        "score_part": {
+          "start_note_index": 39,
+          "end_note_index": 39,
+          "core_start_note_index": 39,
+          "core_end_note_index": 39,
+          "pad_notes": 0
+        },
+        "context_score_event_indices": [
+          37,
+          38,
+          39,
+          40,
+          41
+        ],
+        "start_time": 32.3221768707483,
+        "end_time": 32.64725623582766,
+        "heard_pitch": 76
+      },
+      {
+        "id": "v10_0002",
+        "type": "repetition",
+        "score_event_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "note_ids": [
+          "note_0000",
+          "note_0001",
+          "note_0002",
+          "note_0003",
+          "note_0004",
+          "note_0005",
+          "note_0006",
+          "note_0007",
+          "note_0008",
+          "note_0009",
+          "note_0010",
+          "note_0011",
+          "note_0012",
+          "note_0013",
+          "note_0014",
+          "note_0015",
+          "note_0016",
+          "note_0017"
+        ],
+        "score_part": {
+          "start_note_index": 0,
+          "end_note_index": 17,
+          "core_start_note_index": 0,
+          "core_end_note_index": 17,
+          "pad_notes": 0
+        },
+        "context_score_event_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "start_time": 9.85687074829932,
+        "end_time": 14.616961451247166,
+        "extra_copies": 1,
+        "repeats_label_range": {
+          "start_time": 3.7035827664399092,
+          "end_time": 9.85687074829932
+        }
+      },
+      {
+        "id": "v10_0003",
+        "type": "repetition",
+        "score_event_indices": [
+          44,
+          45,
+          46,
+          47
+        ],
+        "note_ids": [
+          "note_0044",
+          "note_0045",
+          "note_0046",
+          "note_0047"
+        ],
+        "score_part": {
+          "start_note_index": 44,
+          "end_note_index": 47,
+          "core_start_note_index": 44,
+          "core_end_note_index": 47,
+          "pad_notes": 0
+        },
+        "context_score_event_indices": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49
+        ],
+        "start_time": 41.586938775510205,
+        "end_time": 44.33850340136055,
+        "extra_copies": 1,
+        "repeats_label_range": {
+          "start_time": 37.918185941043085,
+          "end_time": 41.586938775510205
+        }
+      }
+    ],
+    "diagnostics": {
+      "extras_withheld": 3,
+      "missed_withheld": 0,
+      "missed_inferred": 0,
+      "clip_abstained": false,
+      "status": "ok",
+      "match_fraction": 0.9425287356321839,
+      "minimum_match_fraction": 0.45,
+      "passage_location": {
+        "revision": "v9-passage-v2",
+        "score_notes": 63,
+        "heard_notes": 87,
+        "config": {
+          "full_score_limit": 128,
+          "max_score_notes": 512,
+          "max_candidates": 4,
+          "padding_notes": 8,
+          "minimum_notes": 8,
+          "minimum_similarity": 0.52,
+          "ambiguity_margin": 0.04,
+          "max_locator_cells": 20000000
+        },
+        "candidates": [],
+        "status": "provided_excerpt",
+        "limits": {
+          "max_score_notes": 512,
+          "max_hypotheses": 1024,
+          "max_dp_cells": 2000000,
+          "max_template_notes": 2048
+        },
+        "selected_start": 0,
+        "selected_end": 63,
+        "selection_policy": "earliest_plausible",
+        "ambiguity_resolved": false,
+        "plausible_starts": [
+          0
+        ]
+      },
+      "pipeline_revision": "v10-boundary-v1",
+      "transition_candidates": 0,
+      "same_pitch_repair": {
+        "schema_version": "same-pitch-repair-v2",
+        "config": {
+          "context_sec": 0.09,
+          "neighbor_margin_sec": 0.005,
+          "energy_range_db": 54,
+          "spectral_step_max": 0.35,
+          "spectral_drift_max": 0.65,
+          "merge_attack_max": 1.0,
+          "voiced_min": 0.0,
+          "silence_db": -120.0,
+          "gap_depth_db": 18.0,
+          "gap_min_sec": 0.01,
+          "envelope_window_sec": 0.004,
+          "envelope_hop_sec": 0.001
+        },
+        "energy_source": "waveform_4ms_at_1ms",
+        "pairs_checked": 3,
+        "merged_boundaries": 3,
+        "input_note_count": 90,
+        "output_note_count": 87,
+        "source_groups": [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9
+          ],
+          [
+            10
+          ],
+          [
+            11
+          ],
+          [
+            12
+          ],
+          [
+            13
+          ],
+          [
+            14
+          ],
+          [
+            15
+          ],
+          [
+            16
+          ],
+          [
+            17
+          ],
+          [
+            18
+          ],
+          [
+            19
+          ],
+          [
+            20
+          ],
+          [
+            21
+          ],
+          [
+            22
+          ],
+          [
+            23
+          ],
+          [
+            24
+          ],
+          [
+            25
+          ],
+          [
+            26
+          ],
+          [
+            27
+          ],
+          [
+            28
+          ],
+          [
+            29
+          ],
+          [
+            30
+          ],
+          [
+            31
+          ],
+          [
+            32
+          ],
+          [
+            33
+          ],
+          [
+            34
+          ],
+          [
+            35
+          ],
+          [
+            36
+          ],
+          [
+            37
+          ],
+          [
+            38
+          ],
+          [
+            39
+          ],
+          [
+            40
+          ],
+          [
+            41
+          ],
+          [
+            42
+          ],
+          [
+            43
+          ],
+          [
+            44
+          ],
+          [
+            45
+          ],
+          [
+            46,
+            47
+          ],
+          [
+            48
+          ],
+          [
+            49
+          ],
+          [
+            50
+          ],
+          [
+            51
+          ],
+          [
+            52
+          ],
+          [
+            53
+          ],
+          [
+            54
+          ],
+          [
+            55
+          ],
+          [
+            56
+          ],
+          [
+            57
+          ],
+          [
+            58
+          ],
+          [
+            59
+          ],
+          [
+            60
+          ],
+          [
+            61,
+            62,
+            63
+          ],
+          [
+            64
+          ],
+          [
+            65
+          ],
+          [
+            66
+          ],
+          [
+            67
+          ],
+          [
+            68
+          ],
+          [
+            69
+          ],
+          [
+            70
+          ],
+          [
+            71
+          ],
+          [
+            72
+          ],
+          [
+            73
+          ],
+          [
+            74
+          ],
+          [
+            75
+          ],
+          [
+            76
+          ],
+          [
+            77
+          ],
+          [
+            78
+          ],
+          [
+            79
+          ],
+          [
+            80
+          ],
+          [
+            81
+          ],
+          [
+            82
+          ],
+          [
+            83
+          ],
+          [
+            84
+          ],
+          [
+            85
+          ],
+          [
+            86
+          ],
+          [
+            87
+          ],
+          [
+            88
+          ],
+          [
+            89
+          ]
+        ],
+        "decisions": [
+          {
+            "source_indices": [
+              46,
+              47
+            ],
+            "pitch": 76,
+            "boundary_sec": 24.044263038548753,
+            "decision": "merge",
+            "reason": "continuous_within_relaxed_limits",
+            "evidence": {
+              "window_sec": [
+                23.954263038548753,
+                24.134263038548752
+              ],
+              "energy_range_db": 8.402582397226418,
+              "energy_min_db": -23.1861793282918,
+              "spectral_step": 0.08045188972538325,
+              "spectral_drift": 0.021590241739894593,
+              "attack_max": 0.56884765625,
+              "voiced_min": 0.99951171875,
+              "gap": {
+                "depth_db": 1.024219954259749,
+                "core_start_sec": 24.014,
+                "core_end_sec": 24.054,
+                "core_duration_sec": 0.04
+              }
+            }
+          },
+          {
+            "source_indices": [
+              61,
+              62
+            ],
+            "pitch": 81,
+            "boundary_sec": 33.73859410430839,
+            "decision": "merge",
+            "reason": "continuous_within_relaxed_limits",
+            "evidence": {
+              "window_sec": [
+                33.64859410430839,
+                33.828594104308394
+              ],
+              "energy_range_db": 12.441731899975295,
+              "energy_min_db": -27.314847998315038,
+              "spectral_step": 0.09746480892993066,
+              "spectral_drift": 0.11065374355024263,
+              "attack_max": 0.462890625,
+              "voiced_min": 0.994140625,
+              "gap": {
+                "depth_db": 1.3331064852680363,
+                "core_start_sec": 33.711,
+                "core_end_sec": 33.721,
+                "core_duration_sec": 0.01
+              }
+            }
+          },
+          {
+            "source_indices": [
+              62,
+              63
+            ],
+            "pitch": 81,
+            "boundary_sec": 34.28426303854875,
+            "decision": "merge",
+            "reason": "continuous_within_relaxed_limits",
+            "evidence": {
+              "window_sec": [
+                34.19426303854875,
+                34.374263038548754
+              ],
+              "energy_range_db": 8.107090410676879,
+              "energy_min_db": -22.748194936542983,
+              "spectral_step": 0.07074583486531018,
+              "spectral_drift": 0.08233537901865012,
+              "attack_max": 0.274658203125,
+              "voiced_min": 0.99755859375,
+              "gap": {
+                "depth_db": 1.3845612261414928,
+                "core_start_sec": 34.253,
+                "core_end_sec": 34.268,
+                "core_duration_sec": 0.015
+              }
+            }
+          }
+        ]
+      },
+      "boundary_refinement": {
+        "supported_boundaries": [
+          47
+        ],
+        "proposed_restorations": [
+          47
+        ],
+        "accepted_restorations": [],
+        "outside_region_preserved": true,
+        "rejected_reason": "realignment_changed_protected_output_or_failed_boundary",
+        "proposed_audit": {
+          "schema_version": "same-pitch-repair-v3",
+          "config": {
+            "context_sec": 0.09,
+            "neighbor_margin_sec": 0.005,
+            "energy_range_db": 54,
+            "spectral_step_max": 0.35,
+            "spectral_drift_max": 0.65,
+            "merge_attack_max": 1.0,
+            "voiced_min": 0.0,
+            "silence_db": -120.0,
+            "gap_depth_db": 18.0,
+            "gap_min_sec": 0.01,
+            "envelope_window_sec": 0.004,
+            "envelope_hop_sec": 0.001
+          },
+          "energy_source": "waveform_4ms_at_1ms",
+          "pairs_checked": 3,
+          "merged_boundaries": 2,
+          "input_note_count": 90,
+          "output_note_count": 88,
+          "source_groups": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ],
+            [
+              3
+            ],
+            [
+              4
+            ],
+            [
+              5
+            ],
+            [
+              6
+            ],
+            [
+              7
+            ],
+            [
+              8
+            ],
+            [
+              9
+            ],
+            [
+              10
+            ],
+            [
+              11
+            ],
+            [
+              12
+            ],
+            [
+              13
+            ],
+            [
+              14
+            ],
+            [
+              15
+            ],
+            [
+              16
+            ],
+            [
+              17
+            ],
+            [
+              18
+            ],
+            [
+              19
+            ],
+            [
+              20
+            ],
+            [
+              21
+            ],
+            [
+              22
+            ],
+            [
+              23
+            ],
+            [
+              24
+            ],
+            [
+              25
+            ],
+            [
+              26
+            ],
+            [
+              27
+            ],
+            [
+              28
+            ],
+            [
+              29
+            ],
+            [
+              30
+            ],
+            [
+              31
+            ],
+            [
+              32
+            ],
+            [
+              33
+            ],
+            [
+              34
+            ],
+            [
+              35
+            ],
+            [
+              36
+            ],
+            [
+              37
+            ],
+            [
+              38
+            ],
+            [
+              39
+            ],
+            [
+              40
+            ],
+            [
+              41
+            ],
+            [
+              42
+            ],
+            [
+              43
+            ],
+            [
+              44
+            ],
+            [
+              45
+            ],
+            [
+              46
+            ],
+            [
+              47
+            ],
+            [
+              48
+            ],
+            [
+              49
+            ],
+            [
+              50
+            ],
+            [
+              51
+            ],
+            [
+              52
+            ],
+            [
+              53
+            ],
+            [
+              54
+            ],
+            [
+              55
+            ],
+            [
+              56
+            ],
+            [
+              57
+            ],
+            [
+              58
+            ],
+            [
+              59
+            ],
+            [
+              60
+            ],
+            [
+              61,
+              62,
+              63
+            ],
+            [
+              64
+            ],
+            [
+              65
+            ],
+            [
+              66
+            ],
+            [
+              67
+            ],
+            [
+              68
+            ],
+            [
+              69
+            ],
+            [
+              70
+            ],
+            [
+              71
+            ],
+            [
+              72
+            ],
+            [
+              73
+            ],
+            [
+              74
+            ],
+            [
+              75
+            ],
+            [
+              76
+            ],
+            [
+              77
+            ],
+            [
+              78
+            ],
+            [
+              79
+            ],
+            [
+              80
+            ],
+            [
+              81
+            ],
+            [
+              82
+            ],
+            [
+              83
+            ],
+            [
+              84
+            ],
+            [
+              85
+            ],
+            [
+              86
+            ],
+            [
+              87
+            ],
+            [
+              88
+            ],
+            [
+              89
+            ]
+          ],
+          "decisions": [
+            {
+              "source_indices": [
+                46,
+                47
+              ],
+              "pitch": 76,
+              "boundary_sec": 24.044263038548753,
+              "decision": "retain",
+              "reason": "score_supported_rearticulation",
+              "evidence": {
+                "window_sec": [
+                  23.954263038548753,
+                  24.134263038548752
+                ],
+                "energy_range_db": 8.402582397226418,
+                "energy_min_db": -23.1861793282918,
+                "spectral_step": 0.08045188972538325,
+                "spectral_drift": 0.021590241739894593,
+                "attack_max": 0.56884765625,
+                "voiced_min": 0.99951171875,
+                "gap": {
+                  "depth_db": 1.024219954259749,
+                  "core_start_sec": 24.014,
+                  "core_end_sec": 24.054,
+                  "core_duration_sec": 0.04
+                }
+              },
+              "v9_decision": "merge",
+              "v9_reason": "continuous_within_relaxed_limits",
+              "repeat_score": 0.7107346358974588
+            },
+            {
+              "source_indices": [
+                61,
+                62
+              ],
+              "pitch": 81,
+              "boundary_sec": 33.73859410430839,
+              "decision": "merge",
+              "reason": "v9_preserved_without_score_support",
+              "evidence": {
+                "window_sec": [
+                  33.64859410430839,
+                  33.828594104308394
+                ],
+                "energy_range_db": 12.441731899975295,
+                "energy_min_db": -27.314847998315038,
+                "spectral_step": 0.09746480892993066,
+                "spectral_drift": 0.11065374355024263,
+                "attack_max": 0.462890625,
+                "voiced_min": 0.994140625,
+                "gap": {
+                  "depth_db": 1.3331064852680363,
+                  "core_start_sec": 33.711,
+                  "core_end_sec": 33.721,
+                  "core_duration_sec": 0.01
+                }
+              },
+              "v9_decision": "merge",
+              "v9_reason": "continuous_within_relaxed_limits"
+            },
+            {
+              "source_indices": [
+                62,
+                63
+              ],
+              "pitch": 81,
+              "boundary_sec": 34.28426303854875,
+              "decision": "merge",
+              "reason": "v9_preserved_without_score_support",
+              "evidence": {
+                "window_sec": [
+                  34.19426303854875,
+                  34.374263038548754
+                ],
+                "energy_range_db": 8.107090410676879,
+                "energy_min_db": -22.748194936542983,
+                "spectral_step": 0.07074583486531018,
+                "spectral_drift": 0.08233537901865012,
+                "attack_max": 0.274658203125,
+                "voiced_min": 0.99755859375,
+                "gap": {
+                  "depth_db": 1.3845612261414928,
+                  "core_start_sec": 34.253,
+                  "core_end_sec": 34.268,
+                  "core_duration_sec": 0.015
+                }
+              },
+              "v9_decision": "merge",
+              "v9_reason": "continuous_within_relaxed_limits"
+            }
+          ],
+          "boundary_config": {
+            "repeat_threshold": 0.5
+          },
+          "boundary_model": "same-pitch-boundary-forest-v1"
+        }
+      }
+    },
+    "unassessed_score_event_indices": []
+  },
+  "summary": {
+    "status": "ok",
+    "labels": 4,
+    "notes": 87,
+    "match_fraction": 0.9425287356321839
+  },
+  "provenance": {
+    "audio_sha256": "ad6f482830416f7ae8ff99d2f71db246152aad020ac8c7b1490aeafc9b899dc4",
+    "score_sha256": "4856779e1d081d4fa6beec74914b2491a7bd2f07d9a2d58c132329537a0d3dee",
+    "checkpoint_sha256": "35cf4d3e540c04c86270a966f7c2b6abdd7827d9643964cc6763bf7bd0ccec3b",
+    "configuration_sha256": "c128323af0ce35001ac8180b6324568e7900ae26911480d8ef298c6824403a90",
+    "source_sha256": "461d0045dd4ce950e6055b080d326e0a2d4a221f8a0b403b59a5c892c260e3bb",
+    "device": "cpu",
+    "written_to_sounding": -2
+  },
+  "events": [
+    {
+      "pitch": 76,
+      "score_span": [
+        0,
+        1
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 3.7035827664399092,
+      "end": 3.9590022675736964
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        1,
+        2
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 3.9590022675736964,
+      "end": 4.214421768707483
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        2,
+        3
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 4.214421768707483,
+      "end": 4.458231292517007
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        3,
+        4
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 4.458231292517007,
+      "end": 4.725260770975057
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        4,
+        5
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 4.725260770975057,
+      "end": 4.992290249433107
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        5,
+        6
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 4.992290249433107,
+      "end": 5.2477097505668935
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        6,
+        7
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 5.2477097505668935,
+      "end": 5.5147392290249435
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        7,
+        8
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 5.5147392290249435,
+      "end": 5.793378684807256
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        8,
+        9
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 5.793378684807256,
+      "end": 6.048798185941044
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        9,
+        10
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 6.048798185941044,
+      "end": 6.339047619047619
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        10,
+        11
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 6.339047619047619,
+      "end": 6.594467120181406
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        11,
+        12
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 6.594467120181406,
+      "end": 6.884716553287982
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        12,
+        13
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 6.884716553287982,
+      "end": 7.116916099773243
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        13,
+        14
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 7.116916099773243,
+      "end": 7.4071655328798185
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        14,
+        15
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 7.4071655328798185,
+      "end": 7.627755102040816
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        15,
+        16
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 7.627755102040816,
+      "end": 7.929614512471655
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        16,
+        17
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 7.929614512471655,
+      "end": 8.150204081632653
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        17,
+        18
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 8.150204081632653,
+      "end": 9.85687074829932
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        0,
+        1
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 9.85687074829932,
+      "end": 10.12390022675737
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        1,
+        2
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 10.12390022675737,
+      "end": 10.39092970521542
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        2,
+        3
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 10.39092970521542,
+      "end": 10.646349206349207
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        3,
+        4
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 10.646349206349207,
+      "end": 10.936598639455783
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        4,
+        5
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 10.936598639455783,
+      "end": 11.19201814058957
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        5,
+        6
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 11.19201814058957,
+      "end": 11.459047619047618
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        6,
+        7
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 11.459047619047618,
+      "end": 11.737687074829932
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        7,
+        8
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 11.737687074829932,
+      "end": 12.004716553287983
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        8,
+        9
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 12.004716553287983,
+      "end": 12.26013605442177
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        9,
+        10
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 12.26013605442177,
+      "end": 12.527165532879819
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        10,
+        11
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 12.527165532879819,
+      "end": 12.782585034013605
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        11,
+        12
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 12.782585034013605,
+      "end": 13.049614512471656
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        12,
+        13
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 13.049614512471656,
+      "end": 13.281814058956916
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        13,
+        14
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 13.281814058956916,
+      "end": 13.548843537414966
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        14,
+        15
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 13.548843537414966,
+      "end": 13.804263038548752
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        15,
+        16
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 13.804263038548752,
+      "end": 14.05968253968254
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        16,
+        17
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 14.05968253968254,
+      "end": 14.338321995464852
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        17,
+        18
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 14.338321995464852,
+      "end": 14.616961451247166
+    },
+    {
+      "pitch": 71,
+      "score_span": [
+        18,
+        19
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 14.616961451247166,
+      "end": 14.849160997732426
+    },
+    {
+      "pitch": 69,
+      "score_span": [
+        19,
+        20
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 14.849160997732426,
+      "end": 15.185850340136055
+    },
+    {
+      "pitch": 68,
+      "score_span": [
+        20,
+        21
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 15.185850340136055,
+      "end": 17.055056689342404
+    },
+    {
+      "pitch": 64,
+      "score_span": [
+        21,
+        22
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 17.055056689342404,
+      "end": 17.322086167800453
+    },
+    {
+      "pitch": 71,
+      "score_span": [
+        22,
+        23
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 17.322086167800453,
+      "end": 17.60072562358277
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        23,
+        24
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 17.60072562358277,
+      "end": 17.87936507936508
+    },
+    {
+      "pitch": 80,
+      "score_span": [
+        24,
+        25
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 17.87936507936508,
+      "end": 21.269478458049885
+    },
+    {
+      "pitch": 64,
+      "score_span": [
+        25,
+        26
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 21.269478458049885,
+      "end": 21.81514739229025
+    },
+    {
+      "pitch": 69,
+      "score_span": [
+        26,
+        27
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 21.81514739229025,
+      "end": 22.38403628117914
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        27,
+        28
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 22.38403628117914,
+      "end": 22.918095238095237
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        28,
+        30
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 22.918095238095237,
+      "end": 24.61315192743764
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        30,
+        31
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 24.61315192743764,
+      "end": 25.158820861678006
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        31,
+        32
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 25.158820861678006,
+      "end": 25.704489795918366
+    },
+    {
+      "pitch": 71,
+      "score_span": [
+        32,
+        33
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 25.704489795918366,
+      "end": 26.23854875283447
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        33,
+        34
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 26.23854875283447,
+      "end": 27.921995464852607
+    },
+    {
+      "pitch": 64,
+      "score_span": [
+        34,
+        35
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 27.921995464852607,
+      "end": 28.723083900226758
+    },
+    {
+      "pitch": 69,
+      "score_span": [
+        35,
+        36
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 28.723083900226758,
+      "end": 29.00172335600907
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        36,
+        37
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 29.00172335600907,
+      "end": 29.245532879818594
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        37,
+        38
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 29.245532879818594,
+      "end": 29.547392290249434
+    },
+    {
+      "pitch": 84,
+      "score_span": null,
+      "relationship": "extra",
+      "copy_pass": 0,
+      "start": 29.547392290249434,
+      "end": 31.068299319727892
+    },
+    {
+      "pitch": 64,
+      "score_span": null,
+      "relationship": "extra",
+      "copy_pass": 0,
+      "start": 31.068299319727892,
+      "end": 31.82294784580499
+    },
+    {
+      "pitch": 69,
+      "score_span": [
+        38,
+        39
+      ],
+      "relationship": "substitute",
+      "copy_pass": 0,
+      "start": 31.82294784580499,
+      "end": 32.07836734693878
+    },
+    {
+      "pitch": 72,
+      "score_span": null,
+      "relationship": "extra",
+      "copy_pass": 0,
+      "start": 32.07836734693878,
+      "end": 32.3221768707483
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        39,
+        40
+      ],
+      "relationship": "substitute",
+      "copy_pass": 0,
+      "start": 32.3221768707483,
+      "end": 32.64725623582766
+    },
+    {
+      "pitch": 81,
+      "score_span": [
+        40,
+        41
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 32.64725623582766,
+      "end": 34.911201814058956
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        41,
+        42
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 34.911201814058956,
+      "end": 35.82839002267574
+    },
+    {
+      "pitch": 77,
+      "score_span": [
+        42,
+        43
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 35.82839002267574,
+      "end": 36.10702947845805
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        43,
+        44
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 36.10702947845805,
+      "end": 37.918185941043085
+    },
+    {
+      "pitch": 71,
+      "score_span": [
+        44,
+        45
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 37.918185941043085,
+      "end": 38.44063492063492
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        45,
+        46
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 38.44063492063492,
+      "end": 38.963083900226756
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        46,
+        47
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 38.963083900226756,
+      "end": 39.555192743764174
+    },
+    {
+      "pitch": 83,
+      "score_span": [
+        47,
+        48
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 39.555192743764174,
+      "end": 41.586938775510205
+    },
+    {
+      "pitch": 71,
+      "score_span": [
+        44,
+        45
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 41.586938775510205,
+      "end": 42.10938775510204
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        45,
+        46
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 42.10938775510204,
+      "end": 42.64344671201814
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        46,
+        47
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 42.64344671201814,
+      "end": 43.223945578231294
+    },
+    {
+      "pitch": 83,
+      "score_span": [
+        47,
+        48
+      ],
+      "relationship": "copy",
+      "copy_pass": 1,
+      "start": 43.223945578231294,
+      "end": 44.33850340136055
+    },
+    {
+      "pitch": 81,
+      "score_span": [
+        48,
+        49
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 44.33850340136055,
+      "end": 44.88417233560091
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        49,
+        50
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 44.88417233560091,
+      "end": 45.39501133786848
+    },
+    {
+      "pitch": 78,
+      "score_span": [
+        50,
+        51
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 45.39501133786848,
+      "end": 45.952290249433105
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        51,
+        52
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 45.952290249433105,
+      "end": 46.48634920634921
+    },
+    {
+      "pitch": 81,
+      "score_span": [
+        52,
+        53
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 46.48634920634921,
+      "end": 47.50802721088436
+    },
+    {
+      "pitch": 79,
+      "score_span": [
+        53,
+        54
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 47.50802721088436,
+      "end": 48.042086167800456
+    },
+    {
+      "pitch": 78,
+      "score_span": [
+        54,
+        55
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 48.042086167800456,
+      "end": 49.028934240362815
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        55,
+        56
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 49.028934240362815,
+      "end": 49.5978231292517
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        56,
+        57
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 49.5978231292517,
+      "end": 50.14349206349206
+    },
+    {
+      "pitch": 72,
+      "score_span": [
+        57,
+        58
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 50.14349206349206,
+      "end": 50.64272108843537
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        58,
+        59
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 50.64272108843537,
+      "end": 51.17678004535148
+    },
+    {
+      "pitch": 76,
+      "score_span": [
+        59,
+        60
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 51.17678004535148,
+      "end": 51.72244897959184
+    },
+    {
+      "pitch": 74,
+      "score_span": [
+        60,
+        61
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 51.72244897959184,
+      "end": 52.291337868480724
+    },
+    {
+      "pitch": 69,
+      "score_span": [
+        61,
+        62
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 52.291337868480724,
+      "end": 52.88344671201814
+    },
+    {
+      "pitch": 71,
+      "score_span": [
+        62,
+        63
+      ],
+      "relationship": "match",
+      "copy_pass": 0,
+      "start": 52.88344671201814,
+      "end": 52.98344671201814
+    }
+  ]
+}

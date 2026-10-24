@@ -1,0 +1,82 @@
+# Opt-in shared solo transcriber. MusicXML transpose metadata is used automatically.
+# If absent, score pitches are concert pitch; set alignment.written_to_sounding
+# explicitly for transposing notation without XML metadata (Bb clarinet: -2).
+schema_version: '1.1'
+paths:
+  audiveris: C:/Program Files/Audiveris/Audiveris.exe
+  audiveris_home: C:/Program Files/Audiveris
+  musescore: C:/Program Files/MuseScore 4/bin/MuseScore4.exe
+  soundfont: C:/Program Files/MuseScore 4/sound/MS Basic.sf3
+  samples_root: ./samples
+  synthetic_root: ./samples/synthetic
+  work_dir: ./work
+  raw_data_score: ../RawData/Score
+  raw_data_audio: ../RawData/Audio
+  note_alignment_candidate: ../align-model/runs/solo-v1/CANDIDATE_SOLO_V1.json
+audio:
+  sample_rate: 22050
+  mono: true
+mel:
+  n_fft: 2048
+  hop_length: 512
+  n_mels: 128
+  fmin: 30.0
+  fmax: null
+alignment:
+  engine: joint
+  model_version: stack-solo-v1
+  note_alignment_device: cuda
+  note_alignment_timeout_sec: 900
+  feature: chroma
+  cqt_bins: 84
+  dtw_band_ratio: 0.1
+  jump_dtw: true
+  cents_tolerance: 20
+  rhythm_ewma_alpha: 0.3
+  rhythm_ewma_log_threshold: 0.25
+  rhythm_far_window: 12
+  rhythm_far_gap: 6
+  rhythm_far_log_threshold: 0.35
+  residual_tolerance: 1.2
+  min_candidate_duration_sec: 0.15
+  onset_refine: true
+  onset_lookback_sec: 0.15
+  onset_max_shift_sec: 0.6
+  onset_rise_db: 8.0
+  trim_silence: true
+  silence_top_db: 35
+  silence_pad_sec: 0.08
+  energy_weight: 1.5
+  midi_weight: 1.5
+  cluster_repair: true
+  compress_silence: true
+  silence_energy_thresh: 0.08
+  keep_silence_sec: 0.16
+  phrase_dtw: true
+  phrase_min_rest_ql: 0.25
+  phrase_slack: 1.12
+taxonomy:
+- wrong_note
+- intonation_error
+- missed_note
+- extra_note
+- rhythm_error
+- repetition
+- stylistic_choice
+- bad_start
+- bad_timbre
+- squeak
+- sliding
+- misc
+musescore:
+  min_version: 4.2.0
+  export_format: wav
+  synthesizer_gain_db: -6
+  tail_seconds: 2.0
+omr:
+  open_in_gui: true
+review:
+  sampling_rate: 0.1
+synthetic:
+  output_separate_root: true
+  corruptions_per_score: 3

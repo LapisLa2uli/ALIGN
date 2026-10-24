@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "http": {
+    "/": 200,
+    "/api/samples/sample/note-alignment": 200
+  },
+  "ui_imports_torch": false,
+  "checkpoint_sha256": "2f97227e14a258e53f0b1da53d6ee379c28503308a18f268577d010da1e5f547",
+  "notes": 10,
+  "protected_inputs_unchanged": {
+    "performance_audio.wav": "866b5775ac7e557ea202675152a2a0958741606dbc5997b25e356de8064e5bd9",
+    "verified_score.musicxml": "a8b98976d570d2e96e50d3eb9b2eb58927f910d68c726cba4b350ce3cc26714c",
+    "labels.json": "03d1e8469333299cba9e346c96133e477ebb260c39efeb9c320265eb1650c3dd",
+    "metadata.json": "eaeab130487b2bb5130a3d65d6a55beaedaf2ad0e6024b85089ca7bb67ca5b78"
+  },
+  "routes": [
+    "CLI with score",
+    "transcription locator",
+    "alignment publisher",
+    "UI read"
+  ]
+}

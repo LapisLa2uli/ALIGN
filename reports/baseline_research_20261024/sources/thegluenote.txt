@@ -1,0 +1,491 @@
+                                                                THEGLUENOTE: LEARNED REPRESENTATIONS
+                                                               FOR ROBUST AND FLEXIBLE NOTE ALIGNMENT
+
+                                                                      Silvan David Peter1            Gerhard Widmer1,2
+                                                      1
+                                                        Institute of Computational Perception, Johannes Kepler University Linz, Austria
+                                                                      2
+                                                                        LIT AI Lab, Linz Institute of Technology, Austria
+
+
+                                                                    ABSTRACT                                        repeats, variations, and ornamentations; rehearsal record-
+                                                                                                                    ings discontinue or restart; automatic transcriptions con-
+                                        Note alignment refers to the task of matching individual                    tain various amounts of note mismatches; and the musical
+                                        notes of two versions of the same symbolically encoded                      material tends towards the virtuosic, dense, and complex.
+                                        piece. Methods addressing this task commonly rely on                            Due to its close similarity with sequence alignment,
+                                        sequence alignment algorithms such as Hidden Markov                         note alignment is usually approached with flavors of Dy-
+arXiv:2408.04309v1 [cs.SD] 8 Aug 2024
+
+
+
+
+                                        Models or Dynamic Time Warping (DTW) applied di-                            namic Time Warping (DTW) or Hidden Markov Models
+                                        rectly to note or onset sequences. While successful in                      (HMM) based on note or chord representations. Such
+                                        many cases, such methods struggle with large mismatches                     representations are typically localized, and the alignment
+                                        between the versions. In this work, we learn note-wise                      methods process them sequentially. The aforementioned
+                                        representations from data augmented with various com-                       common difficulties in MIDI performances do not harmo-
+                                        plex mismatch cases, e.g. repeats, skips, block insertions,                 nize well with these constraints: e.g., differently ordered
+                                        and long trills. At the heart of our approach lies a trans-                 chord onsets clash with DTW’s monotonicity condition,
+                                        former encoder network — TheGlueNote 1 — which pre-                         trills create (sometimes substantial) mismatches with simi-
+                                        dicts pairwise note similarities for two 512 note subse-                    lar pitches and thus misleading local distances, and repeats,
+                                        quences. We postprocess the predicted similarities using                    skips, recording takes, etc. introduce large mismatches be-
+                                        flavors of weightedDTW and pitch-separated onsetDTW to                      tween the sequences which require a more zoomed-out per-
+                                        retrieve note matches for two sequences of arbitrary length.                spective. To be clear, there is nothing that a priori prevents
+                                        Our approach performs on par with the state of the art in                   sequence alignment methods from working in these sce-
+                                        terms of note alignment accuracy, is considerably more ro-                  narios, however, in practice, the propensity of alignment
+                                        bust to version mismatches, and works directly on any pair                  methods for propagating errors render the matching qual-
+                                        of MIDI files.                                                              ity hit-and-miss.
+                                                                                                                        In this work, we address note alignment via learned
+                                                                                                                    representations which leverage non-local information, i.e.,
+                                                             1. INTRODUCTION
+                                                                                                                    the entire sequence of notes influences the representation
+                                        Note alignment refers to the task of matching individual                    of each note. We train an attention-based encoder —
+                                        symbolically encoded notes in two versions of the same                      TheGlueNote — to predict note representations for two
+                                        piece. Note matches can be derived for any two ver-                         512 note subsequences. Before being passed to the net-
+                                        sions, however, this task is usually addressed for pairs of                 work, the subsequences are augmented with a variety of
+                                        MIDI performances and scores encoded in various formats.                    challenging and large mismatch cases. At the network’s
+                                        The resulting performance-to-score alignments provide the                   output, we compute a pairwise similarity matrix between
+                                        data for several research directions in MIR and computa-                    the note representations and compare this matrix to tar-
+                                        tional musicology, such as expressive performance gener-                    get note matches via two classification loss terms. That
+                                        ation, score quantization, and performance research.                        is, the notes are guided towards similar representations if
+                                           To match notes can sometimes be a near-trivial task,                     they match, and dissimilar representations for all others.
+                                        especially with well corresponding versions, minimal ex-                    In the process, TheGlueNote is trained to robustly predict
+                                        pressive playing, and simple pieces. However, more often                    note similarities even in the presence of substantial mis-
+                                        than not the unaligned data of interest and availability does               matches.
+                                        not fit these criteria: performers make mistakes; play extra                    We took care to design TheGlueNote as annotation-
+                                                                                                                    agnostic as possible. Prior approaches mitigate edge cases
+                                          1 https://github.com/sildater/thegluenote
+                                                                                                                    by introducing additional submethods, e.g., by modeling
+                                                                                                                    left-right hand streams separately, excluding notated or-
+                                                                                                                    naments from certain steps, or requiring coinciding chord
+                                                      © S. Peter and G. Widmer. Licensed under a Creative Com-
+                                        mons Attribution 4.0 International License (CC BY 4.0). Attribution: S.
+                                                                                                                    notes (see section 2). This introduces limitations on the
+                                        Peter and G. Widmer, “TheGlueNote: learned representations for robust       types of files which can be processed, requiring staff or
+                                        and flexible note alignment”, in Proc. of the 25th Int. Society for Music   voice information, scores with ornament information, or
+                                        Information Retrieval Conf., San Francisco, United States, 2024.            even just quantized scores. In contrast, our model is trained
+directly on data from MIDI files with no quantization or        ror the previous methods in their core elements: On-Line
+score annotation requirement.                                   Time Warping (OLTW), [12] and Bayesian Networks, in
+    To extract final note matches from the similarity matrix,   particular HMM [3, 7, 13].
+we present three possible additional methods. First, we             Alignment of musical audio is an important idea genera-
+simply match the notes with maximal similarity. Second,         tor for symbolic note alignment. For introductions of audio
+we add a decoder head to our note representation back-          alignment, we refer the reader to Arzt [14] and Müller [15].
+bone – a network which predicts matching notes based on         Audio alignment is prone to memory and compute bottle-
+the similarity matrix. Third, we use DTW alignment tech-        necks. Several versions of DTW addressing these issues
+niques to extract a mapping from the similarity matrix and      have been developed [16].
+in turn use this mapping to match individual notes. Putting         Deep Learning has largely been absent from music
+the pieces together, TheGlueNote leverages learned rep-         alignment, with notable exceptions in real-time audio-
+resentations for note alignment, performs on par with the       image matching [17, 18] and in symbolic score follow-
+state of the art, excels at complex mismatch cases, and         ing [9]. On the other hand, we take inspiration from im-
+works with plain MIDI input data.                               age processing, in particular from the task of local feature
+    The rest of the paper is structured as follows: Section 2   matching [19]: the matching of pixels encoding the same
+discusses related work. Section 3 describes the model ar-       location on an object in two images of the same object. Lo-
+chitecture and match extractor variants. Section 4 intro-       cal feature matching often uses neural network-based fea-
+duces training specifications, data processing, and met-        ture extractors [20, 21] and our proposed model in particu-
+rics which are applied in Section 5 where we evaluate the       lar is informed by the MatchFormer [21].
+trained model in an ablation study on the variations of ar-
+chitecture and match extraction, and in comparison with
+                                                                                        3. MODEL
+state-of-the-art methods both in regular and complex mis-
+match cases. Section 6, the discussion, concludes the pa-       In this article, we present a model which is trained to cre-
+per.                                                            ate note representations for two sequences such that the
+                                                                representations’ pairwise similarity corresponds to the se-
+                 2. RELATED WORK                                quences’ alignment ground truth. Using these represen-
+                                                                tations, we aim to uniquely match individual notes. The
+Note alignment is a basic technology vital to many down-        proposed model consists of a fixed-length tokenization, an
+stream tasks in symbolic music processing and computa-          encoder backbone, and a dual classification loss. Further-
+tional musicology. We structure this review of related lit-     more, we introduce three variants of match extraction from
+erature into a part on current state-of-the-art methods, rel-   the model’s output similarity matrix: direct similarity ma-
+evant work in the neighboring domains of audio and real-        trix processing, using a decoder head for classification,
+time alignment, and pertinent literature on matching tasks      and DTW-based match extraction. Figure 1 presents an
+for non-music data.                                             overview of the components.
+   Note alignment methods almost universally make use
+of either Dynamic Time Warping or Bayesian Networks             3.1 TheGlueNote
+on pitch-based representations of either individual notes
+or chords [1–9]. As the principal formulation is straight-      At the heart of our model is a non-causal transformer en-
+forward, most recent efforts have focused on formaliza-         coder (see Figure 1 middle left). Its purpose is to learn note
+tions and heuristics that mitigate specific problems in edge    representations for two note sequences s1 and s2 , and its
+cases. Skips and repeats present a major difficulty which       target is the alignment between the sequences. A pairwise
+can be directly modelled at the cost of computational com-      similarity matrix computed between the note representa-
+plexity [5] or side-stepped if the use of annotated anchor      tions of two sequences mediates between output and target.
+points is possible [8]. Another difficulty are ornamenta-       We treat the matrix as a match classifier for each note, i.e.,
+tion notes which can be modelled as separate states [4] or      for each row (a note in s1 ) the column (a note in s2 ) with
+excluded from a first coarse alignment and handled sepa-        maximal similarity should correspond to matching notes,
+rately in a fine-grained note matching step [9]. Nakamura       and vice versa.
+et al. [3] further model left-right hand asynchrony in pi-         Technically, two at least partially matching subse-
+ano performance. In their most recent work, note align-         quences s1 and s2 of 512 notes each are prepended with
+ment is framed as a hierarchical refinement with explicit       a default note and processed using the fixed-length struc-
+modelling of an alignment error identification step [6]. In     tured tokenization [22, 23], which encodes relative onset,
+recent work by Peter [9], sequence non-ordinality is miti-      pitch, duration, and velocity. The now 513 note (2052
+gated by a score-based chord representation, the resulting      token) sequences s1 and s2 are concatenated and passed
+model is thus limited to performance to score alignment.        to the encoder. The encoder sums the four tokens per
+The current state of the art (SOTA) which we will use for       note and adds a learned positional embedding for a note-
+reference in this work is given by two DTW-based meth-          wise sequence of length 1026. Layer normalization is ap-
+ods [8, 9] and one HMM-based method [6].                        plied before the first encoder block and within the atten-
+   Realtime alignment or score following methods have           tion and feedforward blocks but not again on the residual
+been developed since the 1980s [10, 11] and largely mir-        stream. Self-attention is applied to the full concatenated
+Figure 1. Overview of the proposed model. During training (top row), the data flows from Data Processing (black, top
+left) through TheGlueNote (blue, middle left) into the Decoder Head (blue, middle right) and the aggregated Loss (yellow,
+top right). Concretely, a MIDI file is loaded into the Data Processing module which outputs matching targets to the loss
+module and the concatenated sequences s1 and s2 to TheGlueNote. TheGlueNote (middle row) consist of a transformer
+encoder with learned positional embeddings (LPE) and repeated attention blocks (center module with multihead-attention
+MHA and a two-layer feedforward network 2L FF). The note-wise representations are split and multiplied for a pairwise
+similarity matrix with s1 in the row and s2 in the column dimension shown in the loss module. Two cross-entropy loss
+terms are computed from this matrix and it is also forwarded to the decoder head whose classifier output adds a third loss
+term. During inference (bottom row), two MIDI files to be matched are directly passed to TheGlueNote. The resulting
+similarity matrix can be processed in three ways: 1) direct maximal similarity match extraction (Matrix Match box) 2)
+using the decoder head’s output, or 3) using a DTW-based match extraction (red, bottom right).
+
+
+sequence, which amounts to combined within-sequence at-           3.2 Match Extractors
+tention (s1 -s1 , s2 -s2 ) and between-sequence attention (s1 -
+s2 , s2 -s1 ). The final residual is normalized after the last    Note similarities are a useful intermediary, however, they
+block and fed through a single dimension-conserving lin-          do not yet define note matches. In this section, we de-
+ear layer. For dimensions and hyperparameters of different        tail three possible note match extractors. The simplest way
+versions see section 4.2 and in particular Table 3.               of producing matches is to directly use similarity matrix-
+                                                                  based match extraction. That is, for each note in s2 , we
+   The 1026 final output vectors of size corresponding to         match it to its most similar note in s1 , including the de-
+the residual stream are treated as representations of indi-       fault note (=unmatched) as possibility. A little bit of index
+vidual notes. The sequences are split again and pairwise          housekeeping avoids conflicting matches and notes with-
+similarities between all 513 notes of s1 and all 513 notes        out prediction.
+of s2 are obtained via dot product. The resulting similarity          A second approach is to train TheGlueNote with an ad-
+matrix (s1 in the rows and s2 in the columns, see Figure 1        ditional decoder head for match extraction. The decoder
+top right) is compared to two classification targets: Soft-       is also an non-causal neural network with the same high-
+max across row dimension is the model’s prediction of the         level structure as the encoder 2 (see Figure 1 middle right).
+matching note in s1 for each note in s2 (except for the           The decoder head processes the pairwise similarity matrix
+prepended default note), and softmax across the column            for each actual note of s2 (hence a 512 by 513 matrix, ex-
+dimension is the model’s prediction of the matching note          cluding the default note in s2 ) and directly predicts the
+in s2 for each note in s1 (again, except for its prepended        matching note in s1 via 513 output logits (including the
+default note). Both are compared against the ground truth         default note in s1 for unmatched notes). During training,
+via a cross-entropy loss (CEL). Unmatched notes in the            its classification CEL is added to the other two losses in an
+ground truth receive a target corresponding to the default           2 The "decoder head" is technically also a transformer encoder without
+note in the other sequence, the default notes itself receive      memory input, however, it decodes the representation towards classifica-
+no loss.                                                          tion logits, so we opt for this name.
+unweighted fashion (see Figure 1 top right).                                        4. EXPERIMENTS
+   DTW match extraction offers a way of introducing               We report several experiments to asses the qualities of our
+meaningful constraints to the note matching. Concretely,          proposed model. In this section, we describe the dataset,
+naive note matching via maximum similarity in the pre-            data preprocessing, and training as well as model configu-
+diction treats every note separately and ignores informa-         rations.
+tion on predictions for notes in its vicinity and previously
+matched notes. To introduce this information, we adapt the        4.1 Data
+DTW-based mapping and matching procedure introduced
+by Peter [9] for similarity matrix post-processing.               A data sample for our model is a pair of 512 note subse-
+                                                                  quences. Note alignment ground truth data of real pieces
+    DTW extraction is split in two processes (see Figure 1        and performances is available [8,24,25], however, this data
+bottom right). First, understanding similarity as the recip-      is biased towards cases where prior note alignment meth-
+rocal of learned pairwise distance, we use the network’s          ods could successfully be applied. To present the model
+output as input to a weighted DTW with possible directions        with a wide variety of (mis)match cases we use synthet-
+[[0, 1], [1, 1], [1, 0]] and associated weights [1, 2, 1]. This   ically augmented MIDI data for training. The original
+choice of weights normalizes the directions under the Man-        MIDI tracks are taken from the (n)ASAP dataset [8], albeit
+hattan distance, i.e., any direction is equally costly overall    not its note alignments, only the score and performance
+and the diagonal is not favored. A standard DTW path is           MIDI files directly.
+computed starting at the top left and ending at the bottom           Ground truth match data is created entirely synthetically
+right of the similarity matrix. Note that extracting a min-       by copying each MIDI file and augmenting it with a combi-
+imizing path through the learned distances discards infor-        nation of the processes which we describe in the following,
+mation relevant to local non-ordinality in favor of added in-     and whose parameters are given in Table 1. The original
+formation about each note’s neighborhood. The extracted           inter-onset intervals (as a proxy for tempo) are stretched
+path should not be used as direct note match prediction,          by a global factor g, and by note-wise factors nt , these
+instead it defines a coarse sequence to sequence mapping          factors are multiplicative and normally distributed. Note
+m : R → R by linear interpolation between the onset times         onsets and durations are also changed note-wise, yet by
+of notes in the path.                                             additive uniform noise in MIDI ticks. All MIDI files are
+    In a second process, we separate all notes in both se-        encoded using 480 ticks per beat and 120 beats per minute,
+quences by pitch. For subsequences sp1 and sp2 of pitch p,        one MIDI tick is thus slightly longer than one millisecond.
+we match onset sequences using a DTW pass to find onset           Velocities are modified by additive uniform noise within
+pairs that minimize the distance between sp2 and m(sp1 ).         the 128 standard MIDI velocity values. For repeats, skips,
+Newly matched notes are then added to or overwritten in           and trills, the probability of generating the mismatch per
+the original DTW path and the mapping m is updated. If            512 note sequence is given, as well as note quantities sam-
+the MIDI files to be aligned do not fit within the 512 note       pled uniformly. The mismatches are inserted contiguously
+contexts of the model, which is often the case, we compute        into the sequence and there is at most one augmentation of
+several similarity matrices for 512 note windows with a           each mismatch type per 512 note sequence. Finally, inser-
+stride of 256 notes. We then aggregate the resulting output       tions and deletions are generated from the existing notes,
+matrices to a global similarity matrix.                           each note is deleted or copied and randomized (i.e., in-
+                                                                  serted) with the given probability. All augmentations are
+                                                                  recomputed for every batch of training data. The values
+ Feature          Noise and Mismatch Probabilities
+                                                                  in Table 1 are given for reproducibility and transparency,
+ Tempo Tt         gTt 2nt , g ∼ N (1, 0.5), nt ∼ N (0, 0.5)
+                                                                  although different variations were tested, we do not claim
+ Onset Ot         Ot + nt , nt ∼ U(−50, 50)
+                                                                  that these are optimal values.
+ Velocity Vt      Vt + nt , nt ∼ U(−10, 10)
+                                                                     We further add transposition to the maximal extent
+ Duration Dt      Dt + nt , nt ∼ U(−250, 250)
+                                                                  available on a piano keyboard as general augmentation af-
+ Repeats          Prepeat = 1, #noterepeat ∼ U(8, 200)            fecting both subsequences. The augmentation is carried
+ Skips            Pskip = 1, #noteskip ∼ U(8, 200)                out in the data loader so each epoch will produce differ-
+ Insertions       Pinsertion = 0.2, random location               ent samples from the 1032 valid MIDI files in our dataset.
+ Deletions        Pdeletions = 0.2, random location               Data augmentation is only used during training, at infer-
+ Trills           Ptrill = 1, #notetrill ∼ U(20, 100)             ence two MIDI files are matched as is (see Figure 1).
+                                                                     For testing, we obtained the exact test files used in
+Table 1. Augmentations to synthesize complex mismatch             the reference literature [9]. These files stem from propri-
+cases. Four noise terms are added to note features in the         etary datasets [26, 27] and were chosen due to the align-
+first row terms. Sampled noise is clipped to avoid degener-       ment complexity they provide. To test for robustness under
+ate cases like negative durations. Duration and onset noise       challenging mismatch scenarios, we augment these perfor-
+are indicated in MIDI ticks. Skips, repeats, and trills are in-   mances for an experiment including extended (100+ note)
+troduced with the indicated probability and uniformly sam-        mismatches that cover approximately 20% of the notes.
+pled length. Insertions and deletions are added at random         Each 512 note subsequence pair contains exactly two mis-
+locations with overall probabilities given.                       matching segments, one in s1 and one in s2 , each segment
+   Data Source                                                 Vienna 4x22                              Training Data
+   Match Extractor                         Sim Matrix         Decoder Head          DTW                      n.a.
+   Unit                                 Prec Rec      F      Prec Rec      F   Prec Rec        F       TL     VL      VA
+   Pitch-Onset Similarity Matrix           7     7    7         -      -   -     85   89      82        -         -     -
+   TGN-large                              97    97 97          96    97 96       99 100       99    0.183 0.126 0.958
+   TGN-mid                                81    81 81          87    88 87       99   99      98    0.171 0.145 0.996
+   TGN-small                              75    75 75          83    87 81       99   99      99    0.374 0.280 0.902
+
+Table 2. Ablation of Model configuration and match extraction. All match results are computed on the Vienna4x22 Dataset.
+Values reported are average note match precision, recall, and F-score across all performances. The results are computed for
+each match extractor / model combination. The first line serves as a simple baseline for the similarity matrix-based and the
+DTW-based match extractors: we report results of their processing a pitch and onset-based similarity matrix. We further
+report the average training loss (TL), validation loss (VL), and validation accuracy (VA) in the final epoch for each model.
+
+
+is contiguous and its notes are randomly sampled. Note             recall, and F-score as our main metrics. We further report
+that such randomized contiguous mismatches are different           mean final classification losses of the predicted similarity
+from the synthetic mismatch segments seen during train-            matrix which corresponds to direct note matching on the
+ing (i.e., trills, repeats, skips, see Table 1). For comparison    training and validation data as well as the runtime of dif-
+with our reference models, we have to limit ourselves to           ferent model setups.
+score to performance alignment instead of general MIDI
+to MIDI alignment, as some of the compared models only             5.1 Ablation Study of Model Configurations
+work with this type of musical material. To compare differ-        In a first experiment we train three model configura-
+ent model configurations and match extractors, we further          tions. We evaluate their note matching quality on the Vi-
+use the public Vienna 4x22 Dataset [24]. This dataset con-         enna4x22 dataset using three different match extractors:
+sists of 4 pieces with 22 performances each. The pieces are        direct similarity matrix processing, decoder head predic-
+comparatively simple and mismatches minimal.                       tion, and DTW-based match extraction. Table 2 details
+                                                                   the results. For all model configurations the match ex-
+   Model              #p     rd    #b     #h   bs      #ph         tractors are clearly ranked with DTW-based processing
+   TGN-large        28M     512     8     8     8     27M          the most promising. DTW-based match extraction in it-
+   TGN-mid         5.7M     256     6     8    16      2M          self is, however, not enough for good matching. To il-
+   TGN-small       1.1M     128     4     8    24    0.6M          lustrate this point, we compute a simple pitch and onset
+                                                                   based similarity matrix (the closer in pitch and onset, the
+Table 3. Hyperparameters for TheGlueNote (TGN) vari-               higher the similarity) akin to what would be used to as-
+ations: #p = parameter count, rd = residual dimension,             sess local distances in standard approaches. We then apply
+#b = number of blocks, #h = number of attention heads,             the similarity matrix-based match extractor and the DTW-
+bs = batch size, and #p dh = parameter count of decoder            based match extractor directly on this matrix. The first row
+head. Parameter counts of the TheGlueNote models (#p)              in Table 2 shows these reference methods, which perform
+and their decoder heads (#ph) are approximate.                     subpar.
+
+                                                                   5.2 Comparison to Reference Models
+4.2 Training Setup
+                                                                   We compare our proposed model against three SOTA refer-
+We train model variations differentiated in three sizes. All       ence models: Nakamura’s HMM matcher [6], Peter’s Du-
+our models are trained on a single GeForce GTX 1080 Ti             alDTWMatcher [9] and AutomaticNoteMatcher [8]. The
+with 12 GB of memory. We train for 200k steps, indepen-            first one is implemented in C++ and compiled locally 3 ,
+dent of batch size, which is set to the maximal capacity of        the other’s are part of a python package 4 . The test data
+the GPU for each model. The learning rate is initialized           consists of five challenging pieces for solo piano in two
+at 5 ∗ 10−4 and is scheduled using cosine annealing with           settings, one default and one with mismatches. Table 4 de-
+warm restarts at an interval of 2k steps. Table 3 details          tails the results. All values are note match F-scores given
+the hyperparameters for model variations. For all attention        in percent, except for the runtime given in seconds. In
+blocks, the inverted bottleneck of the feedforward network         the default setting, all three model configurations perform
+is four times the residual dimension.                              on par with the best model with the best reference model
+                                                                   "DualDTWMatcher". In the mismatch setting, all refer-
+                    5. EVALUATION                                  ence models show (partial) failure. Note that not all align-
+                                                                   ments fail, however, no reference model stays consistently
+In this section, we evaluate our proposed model. The first
+                                                                     3 downloaded from: https://midialignment.github.io/
+part compares different model configurations, the second
+                                                                   AlignmentTool_v190813.zip
+part compares against state-of-the-art reference methods.            4 downloaded   from:   https://github.com/sildater/
+To evaluate our models, we use note matching precision,            parangonar
+     Data Source                                                                Default Data                                                                                                           20 % Mismatch Data
+
+
+
+
+                                       B. Op. 53 3rd. m.
+
+
+
+
+                                                                                                                                                                  B. Op. 53 3rd. m.
+                                                                                             C. Op. 10 No. 11
+
+
+
+
+                                                                                                                                                                                                                          C. Op. 10 No. 11
+                                                                                                                              mean of 5 pieces
+
+
+
+
+                                                                                                                                                                                                                                                         mean of 5 pieces
+                                                           C. Op. 9 No. 1
+
+                                                                            C. Op. 9 No. 2
+
+
+
+
+                                                                                                                                                                                      C. Op. 9 No. 1
+
+                                                                                                                                                                                                         C. Op. 9 No. 2
+                                                                                                                                                  total runtime
+
+
+
+
+                                                                                                                                                                                                                                                                              total runtime
+                                                                                                                C. Op. 60
+
+
+
+
+                                                                                                                                                                                                                                             C. Op. 60
+     Piece
+     Unit                                                  Match F-Score in %                                                                      s                                  Match F-Score in %                                                                       s
+     Nakamura HMM                      98                  99 98 94 95                                                       98                  152              39                  65 35 20 63                                                        44                 6458
+     Peter AutomaticNoteMatcher        99                  84 94 96 89                                                       92                  588              82                  74 89 71 75                                                        78                  808
+     Peter DualDTWMatcher              99                  98 99 96 98                                                       98                   96              85                  96 94 80 83                                                        88                  208
+     TGN-large + DTW                   99                  99 98 96 97                                                       98                   33              94                  96 95 93 94                                                        94                   42
+     TGN-mid + DTW                     96                  98 98 96 98                                                       97                   27              92                  95 96 92 95                                                        94                   38
+     TGN-small + DTW                   99                  98 98 96 97                                                       98                   21              94                  97 95 93 94                                                        95                   31
+
+Table 4. F-scores of three reference models and our proposed models across five challenging pieces. The matching results
+are given as f-scores in % and the runtime in seconds. The data is split in two groups: a default case with the original
+performances, and a mismatch case, where challenging skips and repeats which in total constitue 2̃0% of the notes have
+been introduced. The models are split in two groups: three state-of-the-art reference models and our proposed model in
+three configurations.
+
+
+above 90 %. Our proposed models take a performance loss                                                                     processing, however, end-to-end note matching remains
+as well, yet only in the range of 0-7 % and the F-score                                                                     challenging. Learning representations shifts the problem
+stays above 92 % throughout. In terms of F-score, no sig-                                                                   of edge cases from the modeling stage (or even post-hoc
+nificant difference between TheGlueNote configurations is                                                                   engineering) towards the training data. Augmenting data
+found. Despite several forward passes to retrieve local sim-                                                                with complex mismatches in combination with a model
+ilarity matrices, TheGlueNote configurations also require                                                                   that effectively predicts matches frees us from having to
+the lowest runtime. Unlike for the reference models the                                                                     address all possible cases explicitly. Randomized training
+runtime does not seem to vary with the complexity of the                                                                    mismatches enable the model to learn robust representa-
+match to be performed, only with the number of notes and                                                                    tion for a variety of mismatching sequences. In practice,
+the network size. The advantageous runtime comparison                                                                       this also leads to greater flexibility, as no quantized music,
+with the reference models is surprising and to be taken with                                                                score annotations, or any attributes beyond the basic MIDI
+a grain of salt as implementation details possibly outweigh                                                                 notes are required.
+the merits of each algorithm.
+                                                                                                                                Many extensions of our approach are possible. The hy-
+                    6. DISCUSSION                                                                                           perparameter and architectural space of plausible represen-
+                                                                                                                            tation models open several possibilities for future research.
+In this article, we presented TheGlueNote, a note represen-                                                                 Furthermore, the data used to train and test the model is
+tation model which effectively predicts note matching sim-                                                                  specific: solo piano pieces and performances of common
+ilarities. Despite the fundamental role of (note) alignment                                                                 practice period music. This is due to the fact that refer-
+in several MIR areas, machine learning approaches have                                                                      ence models work on the piano data, and large symbolic
+seen limited adoption so far — in contrast with many other                                                                  piano datasets are available. Note that this data presents
+areas of MIR, where machine learning models virtually su-                                                                   one of the most challenging note alignment scenarios and
+perseded more traditional approaches. We can only con-                                                                      we expect our core ideas to translate to other symbolic
+jecture on the reasons for this absence, however, it seems                                                                  data — after retraining. An open question is whether this
+to us that sequence alignment methods faithfully model a                                                                    type of token-based match representation learning can be
+variety of alignment problems and the established meth-                                                                     used in audio or multimodal domains, e.g. by applying
+ods’ correspondingly high performance leaves little room                                                                    it to discrete audio encodings. Lastly, the representation
+for improvement. However, this observation does not hold                                                                    learning backbone is trained without any information about
+for the question which sequence representations are to be                                                                   the DTW post-processing. SoftDTW [28] approaches ap-
+processed by alignment algorithms, a question that is not                                                                   pear promising to bridge this gap while keeping sensible
+settled, neither in the symbolic nor in the audio domain.                                                                   alignment constraints in an end-to-end model. However,
+Feature representations and local metrics abound, and have                                                                  we want to stress again that the monotonicity condition of
+myriad downstream implications for alignment success or                                                                     (soft)DTW does not strictly hold in symbolic music even
+failure which are often hard to predict.                                                                                    though it has proven an effective heuristic. Many ques-
+    Our approach excels at this point by producing learned                                                                  tions remain open, yet we hope to have shown that repre-
+representations which leverage non-local information.                                                                       sentation learning can be integrated successfully and ben-
+The representations play well with DTW-based post-                                                                          eficially into note alignment methods.
+                7. REPRODUCIBILITY                             [9] S. D. Peter, “Online symbolic music alignment with
+                                                                   offline reinforcement learning,” in Proceedings of the
+Code and pre-trained checkpoints and public data
+                                                                   24th International Society for Music Information Re-
+available at: https://github.com/sildater/
+                                                                   trieval Conference (ISMIR), 2023.
+thegluenote
+                                                              [10] R. B. Dannenberg, “An On-Line Algorithm for Real-
+              8. ACKNOWLEDGMENTS                                   Time Accompaniment,” in Proceedings of the Interna-
+                                                                   tional Computer Music Conference (ICMC), vol. 84,
+This work receives funding from the European Research              1984, pp. 193–198.
+Council (ERC), under the European Union’s Horizon
+2020 research and innovation programme, grant agreement       [11] B. Vercoe, “The Synthetic Performer in the Context of
+No. 101019375 (Whither Music?). The LIT AI Lab is sup-             Live Performance,” in Proceedings of the International
+ported by the Federal State of Upper Austria.                      Computer Music Conference (ICMC), 1984, pp. 199–
+                                                                   200.
+                   9. REFERENCES                              [12] C. Cancino-Chacón, S. Peter, P. Hu, E. Karystinaios,
+[1] B. Gingras and S. McAdams, “Improved Score-                    F. Henkel, F. Foscarin, N. Varga, and G. Widmer, “The
+    Performance Matching using Both Structural and Tem-            accompanion: Combining reactivity, robustness, and
+    poral Information from MIDI Recordings,” Journal of            musical expressivity in an automatic piano accompa-
+    New Music Research, vol. 40, no. 1, pp. 43–57, 2011.           nist,” in International Joint Conference on Artificial In-
+                                                                   telligence (IJCAI), 2023.
+[2] C.-T. Chen, J.-S. R. Jang, and W. Liou, “Improved
+    Score-Performance Alignment Algorithms on Poly-           [13] C. Raphael and Y. Gu, “Orchestral Accompaniment for
+    phonic Music,” in 2014 IEEE International Conference           a Reproducing Piano,” in International Conference on
+    on Acoustics, Speech and Signal Processing (ICASSP).           Mathematics and Computing, 2009.
+    IEEE, 2014, pp. 1365–1369.
+                                                              [14] A. Arzt, “Flexible and robust music tracking,” Ph.D.
+[3] E. Nakamura, N. Ono, Y. Saito, and S. Sagayama,                dissertation, Johannes Kepler University Linz, Linz,
+    “Merged-Output Hidden Markov Model for Score Fol-              Austria, 2016.
+    lowing of MIDI Performance with Ornaments, Desyn-
+                                                              [15] M. Müller, Fundamentals of Music Processing – Au-
+    chronized Voices, Repeats and Skips,” in International
+                                                                   dio, Analysis, Algorithms, Applications. Springer,
+    Conference on Mathematics and Computing, 2014.
+                                                                   2015.
+[4] E. Nakamura, N. Ono, S. Sagayama, and K. Watanabe,
+                                                              [16] M. Müller, Y. Özer, M. Krause, T. Prätzlich, and
+    “A Stochastic Temporal Model of Polyphonic MIDI
+                                                                   J. Driedger, “Sync toolbox: A python package for ef-
+    Performance with Ornaments,” Journal of New Music
+                                                                   ficient, robust, and accurate music synchronization,”
+    Research, vol. 44, no. 4, pp. 287–304, 2015.
+                                                                   Journal of Open Source Software, p. 3434, 2021.
+[5] E. Nakamura, T. Nakamura, Y. Saito, N. Ono, and           [17] M. Dorfer, F. Henkel, and G. Widmer, “Learning to
+    S. Sagayama, “Outer-product hidden markov model                Listen, Read, and Follow: Score Following as a Rein-
+    and polyphonic midi score following,” Journal of New           forcement Learning Game,” in Proceedings of the 19th
+    Music Research, vol. 43, no. 2, pp. 183–201, 2014.             International Society for Music Information Retrieval
+[6] E. Nakamura, K. Yoshii, and H. Katayose, “Perfor-              Conference. Paris, France: ISMIR, 2018, pp. 784–
+    mance Error Detection and Post-Processing for Fast             791.
+    and Accurate Symbolic Music Alignment,” in Pro-           [18] F. Henkel, S. Balke, M. Dorfer, and G. Widmer, “Score
+    ceedings of the International Society for Music Infor-         following as a multi-modal reinforcement learning
+    mation Retrieval Conference (ISMIR), 2017, pp. 347–            problem,” Transactions of the International Society for
+    353.                                                           Music Information Retrieval, Nov 2019.
+[7] E. Nakamura, P. Cuvillier, A. Cont, N. Ono, and           [19] S. Xu, S. Chen, R. Xu, C. Wang, P. Lu, and L. Guo,
+    S. Sagayama, “Autoregressive hidden semi-markov                “Local feature matching using deep learning: A sur-
+    model of symbolic music performance for score fol-             vey,” arXiv preprint arXiv:2401.17592, 2024.
+    lowing,” in 16th International Society for Music Infor-
+    mation Retrieval Conference (ISMIR), 2015.                [20] P. Lindenberger, P.-E. Sarlin, and M. Pollefeys, “Light-
+                                                                   glue: Local feature matching at light speed,” in Pro-
+[8] S. D. Peter, C. E. Cancino-Chacón, F. Foscarin, A. P.          ceedings of the IEEE/CVF International Conference on
+    McLeod, F. Henkel, E. Karystinaios, and G. Widmer,             Computer Vision, 2023, pp. 17 627–17 638.
+    “Automatic note-level score-to-performance align-
+    ments in the asap dataset,” Transactions of the Inter-    [21] P.-E. Sarlin, D. DeTone, T. Malisiewicz, and A. Ra-
+    national Society for Music Information Retrieval, Jun          binovich, “Superglue: Learning feature matching
+    2023.                                                          with graph neural networks,” in Proceedings of the
+     IEEE/CVF conference on computer vision and pattern
+     recognition, 2020, pp. 4938–4947.
+
+[22] G. Hadjeres and L. Crestel, “The piano inpainting ap-
+     plication,” arXiv preprint arXiv:2107.05944, 2021.
+
+[23] N. Fradet, J.-P. Briot, F. Chhel, A. El Fal-
+     lah Seghrouchni, and N. Gutowski, “MidiTok: A
+     python package for MIDI file tokenization,” in Ex-
+     tended Abstracts for the Late-Breaking Demo Session
+     of the 22nd International Society for Music Informa-
+     tion Retrieval Conference, 2021.
+
+[24] W. Goebl. (1999) The Vienna 4x22 Piano Corpus.
+     [Online]. Available: http://repo.mdw.ac.at/projects/
+     IWK/the_vienna_4x22_piano_corpus/index.html
+
+[25] P. Hu and G. Widmer, “The Batik-plays-Mozart Cor-
+     pus: Linking Performance to Score to Musicological
+     Annotations,” in Proceedings of the International So-
+     ciety for Music Information Retrieval Conference (IS-
+     MIR), 2023.
+
+[26] C. E. Cancino-Chacón, T. Gadermaier, G. Widmer, and
+     M. Grachten, “An Evaluation of Linear and Non-linear
+     Models of Expressive Dynamics in Classical Piano and
+     Symphonic Music,” Machine Learning, vol. 106, no. 6,
+     pp. 887–909, 2017.
+
+[27] S. Flossmann, W. Goebl, M. Grachten, B. Nieder-
+     mayer, and G. Widmer, “The Magaloff Project: An In-
+     terim Report,” Journal of New Music Research, vol. 39,
+     no. 4, pp. 363–377, 2010.
+
+[28] M. Cuturi and M. Blondel, “Soft-dtw: a differentiable
+     loss function for time-series,” in International confer-
+     ence on machine learning. ICML, 2017, pp. 894–903.
+
