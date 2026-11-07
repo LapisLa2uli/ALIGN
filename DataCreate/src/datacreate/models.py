@@ -46,6 +46,11 @@ class Label(BaseModel):
     note_ids: list[str] | None = None
     core_note_ids: list[str] | None = None
     extra_copies: int | None = None
+    # Exact affected identities are independent of the padded GUI score_part.
+    score_event_indices: list[int] | None = None
+    context_score_event_indices: list[int] | None = None
+    location_policy: str | None = None
+    location_evidence: dict[str, Any] | None = None
 
 
 class SelfReportedMark(BaseModel):

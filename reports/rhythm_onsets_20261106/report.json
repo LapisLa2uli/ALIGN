@@ -1,0 +1,4360 @@
+{
+  "protocol": "110 newly generated symbolic clips: 55 selection, 55 check; exact oracle identity and tempo-integrated timings; no acoustic inference",
+  "gold": "Consecutive canonical onset interval changed by injector before nuisance tempo/articulation/jitter; release-only changes are clean; no display padding",
+  "selected": {
+    "method": "median",
+    "alpha": 0.3,
+    "log_threshold": 0.2,
+    "minimum_ms": 60.0,
+    "window": 65,
+    "minimum_context": 6
+  },
+  "selection_baseline": {
+    "tp": 27,
+    "fp": 2,
+    "fn": 48,
+    "precision": 0.9310344827586207,
+    "recall": 0.36,
+    "f1": 0.5192307692307693,
+    "per_kind": {
+      "clean": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_start": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 8,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.3333333333333333
+      },
+      "early_start": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "early_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "tempo_change": {
+        "tp": 3,
+        "fp": 2,
+        "fn": 39,
+        "precision": 0.6,
+        "recall": 0.07142857142857142,
+        "f1": 0.1276595744680851
+      },
+      "uneven": {
+        "tp": 12,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1.0,
+        "recall": 0.9230769230769231,
+        "f1": 0.96
+      },
+      "smooth_tempo": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "short_releases": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "legato_overlap": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "final_release": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "cases": [
+      {
+        "seed": 61000,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61001,
+        "kind": "late_start",
+        "gold": [
+          8,
+          9
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 61002,
+        "kind": "early_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [
+          37,
+          38
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61003,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61004,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61005,
+        "kind": "tempo_change",
+        "gold": [
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35
+        ],
+        "predicted": [
+          24,
+          36
+        ],
+        "counts": [
+          1,
+          1,
+          11
+        ]
+      },
+      {
+        "seed": 61006,
+        "kind": "uneven",
+        "gold": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "predicted": [
+          8,
+          9,
+          10,
+          11
+        ],
+        "counts": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61007,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61008,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61009,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61010,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61011,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61012,
+        "kind": "late_start",
+        "gold": [
+          0,
+          1
+        ],
+        "predicted": [
+          1
+        ],
+        "counts": [
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "seed": 61013,
+        "kind": "early_start",
+        "gold": [
+          5,
+          6
+        ],
+        "predicted": [
+          5,
+          6
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61014,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61015,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61016,
+        "kind": "tempo_change",
+        "gold": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "predicted": [
+          12,
+          20
+        ],
+        "counts": [
+          1,
+          1,
+          7
+        ]
+      },
+      {
+        "seed": 61017,
+        "kind": "uneven",
+        "gold": [
+          32,
+          33,
+          34
+        ],
+        "predicted": [
+          32,
+          33,
+          34
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61018,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61019,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61020,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61021,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61022,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61023,
+        "kind": "late_start",
+        "gold": [
+          3,
+          4
+        ],
+        "predicted": [
+          4
+        ],
+        "counts": [
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "seed": 61024,
+        "kind": "early_start",
+        "gold": [
+          13,
+          14
+        ],
+        "predicted": [
+          13,
+          14
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61025,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61026,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61027,
+        "kind": "tempo_change",
+        "gold": [
+          44,
+          45,
+          46
+        ],
+        "predicted": [
+          44
+        ],
+        "counts": [
+          1,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 61028,
+        "kind": "uneven",
+        "gold": [
+          16,
+          17,
+          18
+        ],
+        "predicted": [
+          16,
+          18
+        ],
+        "counts": [
+          2,
+          0,
+          1
+        ]
+      },
+      {
+        "seed": 61029,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61030,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61031,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61032,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61033,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61034,
+        "kind": "late_start",
+        "gold": [
+          25,
+          26
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 61035,
+        "kind": "early_start",
+        "gold": [
+          13,
+          14
+        ],
+        "predicted": [
+          13,
+          14
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61036,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61037,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61038,
+        "kind": "tempo_change",
+        "gold": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          12
+        ]
+      },
+      {
+        "seed": 61039,
+        "kind": "uneven",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61040,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61041,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61042,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61043,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61044,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61045,
+        "kind": "late_start",
+        "gold": [
+          41,
+          42
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 61046,
+        "kind": "early_start",
+        "gold": [
+          20,
+          21
+        ],
+        "predicted": [
+          20,
+          21
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61047,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61048,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61049,
+        "kind": "tempo_change",
+        "gold": [
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          7
+        ]
+      },
+      {
+        "seed": 61050,
+        "kind": "uneven",
+        "gold": [
+          32,
+          33,
+          34
+        ],
+        "predicted": [
+          32,
+          33,
+          34
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61051,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61052,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61053,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 61054,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "deployed": {
+    "method": "median",
+    "alpha": 0.3,
+    "log_threshold": 0.2,
+    "minimum_ms": 60.0,
+    "window": 65,
+    "minimum_context": 6
+  },
+  "check_deployed": {
+    "tp": 63,
+    "fp": 0,
+    "fn": 11,
+    "precision": 1.0,
+    "recall": 0.8513513513513513,
+    "f1": 0.9197080291970803,
+    "per_kind": {
+      "clean": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_start": {
+        "tp": 8,
+        "fp": 0,
+        "fn": 2,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888
+      },
+      "early_start": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "early_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "tempo_change": {
+        "tp": 31,
+        "fp": 0,
+        "fn": 9,
+        "precision": 1.0,
+        "recall": 0.775,
+        "f1": 0.8732394366197183
+      },
+      "uneven": {
+        "tp": 14,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "smooth_tempo": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "short_releases": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "legato_overlap": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "final_release": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "cases": [
+      {
+        "seed": 71000,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71001,
+        "kind": "late_start",
+        "gold": [
+          34,
+          35
+        ],
+        "predicted": [
+          34,
+          35
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71002,
+        "kind": "early_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [
+          37,
+          38
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71003,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71004,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71005,
+        "kind": "tempo_change",
+        "gold": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71006,
+        "kind": "uneven",
+        "gold": [
+          18,
+          19
+        ],
+        "predicted": [
+          18,
+          19
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71007,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71008,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71009,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71010,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71011,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71012,
+        "kind": "late_start",
+        "gold": [
+          6,
+          7
+        ],
+        "predicted": [
+          6,
+          7
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71013,
+        "kind": "early_start",
+        "gold": [
+          28,
+          29
+        ],
+        "predicted": [
+          28,
+          29
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71014,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71015,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71016,
+        "kind": "tempo_change",
+        "gold": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "predicted": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71017,
+        "kind": "uneven",
+        "gold": [
+          4,
+          6,
+          7
+        ],
+        "predicted": [
+          4,
+          6,
+          7
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71018,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71019,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71020,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71021,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71022,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71023,
+        "kind": "late_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 71024,
+        "kind": "early_start",
+        "gold": [
+          4,
+          5
+        ],
+        "predicted": [
+          4,
+          5
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71025,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71026,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71027,
+        "kind": "tempo_change",
+        "gold": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "predicted": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71028,
+        "kind": "uneven",
+        "gold": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "counts": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71029,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71030,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71031,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71032,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71033,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71034,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          21,
+          22
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71035,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71036,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71037,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71038,
+        "kind": "tempo_change",
+        "gold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "predicted": [
+          0,
+          2,
+          4,
+          5
+        ],
+        "counts": [
+          4,
+          0,
+          4
+        ]
+      },
+      {
+        "seed": 71039,
+        "kind": "uneven",
+        "gold": [
+          0,
+          2
+        ],
+        "predicted": [
+          0,
+          2
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71040,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71041,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71042,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71043,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71044,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71045,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          21,
+          22
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71046,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71047,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71048,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71049,
+        "kind": "tempo_change",
+        "gold": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          21,
+          24,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          5
+        ]
+      },
+      {
+        "seed": 71050,
+        "kind": "uneven",
+        "gold": [
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          25,
+          26,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71051,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71052,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71053,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71054,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "check_ewma": {
+    "tp": 32,
+    "fp": 3,
+    "fn": 42,
+    "precision": 0.9142857142857143,
+    "recall": 0.43243243243243246,
+    "f1": 0.5871559633027523,
+    "per_kind": {
+      "clean": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_start": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 5,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6666666666666666
+      },
+      "early_start": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "early_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "tempo_change": {
+        "tp": 3,
+        "fp": 3,
+        "fn": 37,
+        "precision": 0.5,
+        "recall": 0.075,
+        "f1": 0.13043478260869565
+      },
+      "uneven": {
+        "tp": 14,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "smooth_tempo": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "short_releases": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "legato_overlap": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "final_release": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "cases": [
+      {
+        "seed": 71000,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71001,
+        "kind": "late_start",
+        "gold": [
+          34,
+          35
+        ],
+        "predicted": [
+          34,
+          35
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71002,
+        "kind": "early_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [
+          37,
+          38
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71003,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71004,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71005,
+        "kind": "tempo_change",
+        "gold": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "predicted": [
+          36,
+          44
+        ],
+        "counts": [
+          1,
+          1,
+          7
+        ]
+      },
+      {
+        "seed": 71006,
+        "kind": "uneven",
+        "gold": [
+          18,
+          19
+        ],
+        "predicted": [
+          18,
+          19
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71007,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71008,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71009,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71010,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71011,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71012,
+        "kind": "late_start",
+        "gold": [
+          6,
+          7
+        ],
+        "predicted": [
+          7
+        ],
+        "counts": [
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "seed": 71013,
+        "kind": "early_start",
+        "gold": [
+          28,
+          29
+        ],
+        "predicted": [
+          28,
+          29
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71014,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71015,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71016,
+        "kind": "tempo_change",
+        "gold": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "predicted": [
+          12,
+          20
+        ],
+        "counts": [
+          1,
+          1,
+          7
+        ]
+      },
+      {
+        "seed": 71017,
+        "kind": "uneven",
+        "gold": [
+          4,
+          6,
+          7
+        ],
+        "predicted": [
+          4,
+          6,
+          7
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71018,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71019,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71020,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71021,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71022,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71023,
+        "kind": "late_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 71024,
+        "kind": "early_start",
+        "gold": [
+          4,
+          5
+        ],
+        "predicted": [
+          4,
+          5
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71025,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71026,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71027,
+        "kind": "tempo_change",
+        "gold": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "predicted": [
+          4,
+          12
+        ],
+        "counts": [
+          1,
+          1,
+          7
+        ]
+      },
+      {
+        "seed": 71028,
+        "kind": "uneven",
+        "gold": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "counts": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71029,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71030,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71031,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71032,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71033,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71034,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          22
+        ],
+        "counts": [
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "seed": 71035,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71036,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71037,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71038,
+        "kind": "tempo_change",
+        "gold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          8
+        ]
+      },
+      {
+        "seed": 71039,
+        "kind": "uneven",
+        "gold": [
+          0,
+          2
+        ],
+        "predicted": [
+          0,
+          2
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71040,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71041,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71042,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71043,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71044,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71045,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          22
+        ],
+        "counts": [
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "seed": 71046,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71047,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71048,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71049,
+        "kind": "tempo_change",
+        "gold": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          8
+        ]
+      },
+      {
+        "seed": 71050,
+        "kind": "uneven",
+        "gold": [
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          25,
+          26,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71051,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71052,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71053,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71054,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "check_selected": {
+    "tp": 63,
+    "fp": 0,
+    "fn": 11,
+    "precision": 1.0,
+    "recall": 0.8513513513513513,
+    "f1": 0.9197080291970803,
+    "per_kind": {
+      "clean": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_start": {
+        "tp": 8,
+        "fp": 0,
+        "fn": 2,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888
+      },
+      "early_start": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "early_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "tempo_change": {
+        "tp": 31,
+        "fp": 0,
+        "fn": 9,
+        "precision": 1.0,
+        "recall": 0.775,
+        "f1": 0.8732394366197183
+      },
+      "uneven": {
+        "tp": 14,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "smooth_tempo": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "short_releases": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "legato_overlap": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "final_release": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "cases": [
+      {
+        "seed": 71000,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71001,
+        "kind": "late_start",
+        "gold": [
+          34,
+          35
+        ],
+        "predicted": [
+          34,
+          35
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71002,
+        "kind": "early_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [
+          37,
+          38
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71003,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71004,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71005,
+        "kind": "tempo_change",
+        "gold": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71006,
+        "kind": "uneven",
+        "gold": [
+          18,
+          19
+        ],
+        "predicted": [
+          18,
+          19
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71007,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71008,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71009,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71010,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71011,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71012,
+        "kind": "late_start",
+        "gold": [
+          6,
+          7
+        ],
+        "predicted": [
+          6,
+          7
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71013,
+        "kind": "early_start",
+        "gold": [
+          28,
+          29
+        ],
+        "predicted": [
+          28,
+          29
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71014,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71015,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71016,
+        "kind": "tempo_change",
+        "gold": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "predicted": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71017,
+        "kind": "uneven",
+        "gold": [
+          4,
+          6,
+          7
+        ],
+        "predicted": [
+          4,
+          6,
+          7
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71018,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71019,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71020,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71021,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71022,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71023,
+        "kind": "late_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 71024,
+        "kind": "early_start",
+        "gold": [
+          4,
+          5
+        ],
+        "predicted": [
+          4,
+          5
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71025,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71026,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71027,
+        "kind": "tempo_change",
+        "gold": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "predicted": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71028,
+        "kind": "uneven",
+        "gold": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "counts": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71029,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71030,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71031,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71032,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71033,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71034,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          21,
+          22
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71035,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71036,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71037,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71038,
+        "kind": "tempo_change",
+        "gold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "predicted": [
+          0,
+          2,
+          4,
+          5
+        ],
+        "counts": [
+          4,
+          0,
+          4
+        ]
+      },
+      {
+        "seed": 71039,
+        "kind": "uneven",
+        "gold": [
+          0,
+          2
+        ],
+        "predicted": [
+          0,
+          2
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71040,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71041,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71042,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71043,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71044,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71045,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          21,
+          22
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71046,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71047,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71048,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71049,
+        "kind": "tempo_change",
+        "gold": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          21,
+          24,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          5
+        ]
+      },
+      {
+        "seed": 71050,
+        "kind": "uneven",
+        "gold": [
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          25,
+          26,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71051,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71052,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71053,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71054,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "check_onset_only": {
+    "tp": 63,
+    "fp": 0,
+    "fn": 11,
+    "precision": 1.0,
+    "recall": 0.8513513513513513,
+    "f1": 0.9197080291970803,
+    "per_kind": {
+      "clean": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_start": {
+        "tp": 8,
+        "fp": 0,
+        "fn": 2,
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888
+      },
+      "early_start": {
+        "tp": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "early_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "late_end": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "tempo_change": {
+        "tp": 31,
+        "fp": 0,
+        "fn": 9,
+        "precision": 1.0,
+        "recall": 0.775,
+        "f1": 0.8732394366197183
+      },
+      "uneven": {
+        "tp": 14,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "smooth_tempo": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "short_releases": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "legato_overlap": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "final_release": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    },
+    "cases": [
+      {
+        "seed": 71000,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71001,
+        "kind": "late_start",
+        "gold": [
+          34,
+          35
+        ],
+        "predicted": [
+          34,
+          35
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71002,
+        "kind": "early_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [
+          37,
+          38
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71003,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71004,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71005,
+        "kind": "tempo_change",
+        "gold": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71006,
+        "kind": "uneven",
+        "gold": [
+          18,
+          19
+        ],
+        "predicted": [
+          18,
+          19
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71007,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71008,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71009,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71010,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71011,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71012,
+        "kind": "late_start",
+        "gold": [
+          6,
+          7
+        ],
+        "predicted": [
+          6,
+          7
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71013,
+        "kind": "early_start",
+        "gold": [
+          28,
+          29
+        ],
+        "predicted": [
+          28,
+          29
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71014,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71015,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71016,
+        "kind": "tempo_change",
+        "gold": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "predicted": [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71017,
+        "kind": "uneven",
+        "gold": [
+          4,
+          6,
+          7
+        ],
+        "predicted": [
+          4,
+          6,
+          7
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71018,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71019,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71020,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71021,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71022,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71023,
+        "kind": "late_start",
+        "gold": [
+          37,
+          38
+        ],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          2
+        ]
+      },
+      {
+        "seed": 71024,
+        "kind": "early_start",
+        "gold": [
+          4,
+          5
+        ],
+        "predicted": [
+          4,
+          5
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71025,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71026,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71027,
+        "kind": "tempo_change",
+        "gold": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "predicted": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "counts": [
+          8,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71028,
+        "kind": "uneven",
+        "gold": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "predicted": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "counts": [
+          4,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71029,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71030,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71031,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71032,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71033,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71034,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          21,
+          22
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71035,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71036,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71037,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71038,
+        "kind": "tempo_change",
+        "gold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "predicted": [
+          0,
+          2,
+          4,
+          5
+        ],
+        "counts": [
+          4,
+          0,
+          4
+        ]
+      },
+      {
+        "seed": 71039,
+        "kind": "uneven",
+        "gold": [
+          0,
+          2
+        ],
+        "predicted": [
+          0,
+          2
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71040,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71041,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71042,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71043,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71044,
+        "kind": "clean",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71045,
+        "kind": "late_start",
+        "gold": [
+          21,
+          22
+        ],
+        "predicted": [
+          21,
+          22
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71046,
+        "kind": "early_start",
+        "gold": [
+          38,
+          39
+        ],
+        "predicted": [
+          38,
+          39
+        ],
+        "counts": [
+          2,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71047,
+        "kind": "early_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71048,
+        "kind": "late_end",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71049,
+        "kind": "tempo_change",
+        "gold": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          21,
+          24,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          5
+        ]
+      },
+      {
+        "seed": 71050,
+        "kind": "uneven",
+        "gold": [
+          25,
+          26,
+          27
+        ],
+        "predicted": [
+          25,
+          26,
+          27
+        ],
+        "counts": [
+          3,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71051,
+        "kind": "smooth_tempo",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71052,
+        "kind": "short_releases",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71053,
+        "kind": "legato_overlap",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "seed": 71054,
+        "kind": "final_release",
+        "gold": [],
+        "predicted": [],
+        "counts": [
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "source_sha256": {
+    "align-model/src/alignmodel/joint/rhythm_v1.py": "10c4ac00d74b528b4cfd97acbab59b9711040b1784f9e803e1a40e4db79e07fe",
+    "synth-pipeline/src/synthpipeline/errors.py": "2276213d878f90085c313afc2a457e1c5bc006fc77f03a517b211b6cd3849d1b"
+  }
+}

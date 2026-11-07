@@ -1,0 +1,158 @@
+{
+  "original_report_sha256": "95b9ff4189988cc063146dbbfd0466c9e3f0ef2d97c86051cb36a95721b74a9b",
+  "reason": "Legacy FreePats note_map rendered_notes disagree with the actual rendering MIDI.",
+  "method": "Score every original FreePats clip against performance_audio.mid, the soundfont_v1 renderer input. Keep all cached predictions unchanged.",
+  "realistic92_matching_pitch_sequences": 100,
+  "per_clip": [
+    {
+      "sample": "synth_MozartClConcertoA_0042",
+      "midi_sha256": "8e6a8f70dac61d224474aeee0168978ae5bc6ebba7558dd7324f32a6dc1e407d",
+      "midi_pitch_space": "sounding",
+      "midi_written_shift": 2,
+      "note_map_notes": 113,
+      "midi_notes": 111,
+      "pitch_sequences_match": false,
+      "original_sequence": {
+        "matched": 110,
+        "predicted": 110,
+        "gold": 113,
+        "precision": 1.0,
+        "recall": 0.9734513274336283,
+        "f1": 0.9865470852017937
+      },
+      "original_onset_50ms": {
+        "matched": 110,
+        "predicted": 110,
+        "gold": 113,
+        "precision": 1.0,
+        "recall": 0.9734513274336283,
+        "f1": 0.9865470852017937
+      }
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0044",
+      "midi_sha256": "a17159658589fcba93616a79319b1f5dfe6e745de84e0d4450ea4244ed7a1999",
+      "midi_pitch_space": "sounding",
+      "midi_written_shift": 2,
+      "note_map_notes": 42,
+      "midi_notes": 46,
+      "pitch_sequences_match": false,
+      "original_sequence": {
+        "matched": 39,
+        "predicted": 47,
+        "gold": 42,
+        "precision": 0.8297872340425532,
+        "recall": 0.9285714285714286,
+        "f1": 0.8764044943820225
+      },
+      "original_onset_50ms": {
+        "matched": 21,
+        "predicted": 47,
+        "gold": 42,
+        "precision": 0.44680851063829785,
+        "recall": 0.5,
+        "f1": 0.47191011235955055
+      }
+    },
+    {
+      "sample": "synth_MozartClConcertoA_0046",
+      "midi_sha256": "ef3af84674ae57b26e5ae5b1f9df9958117edd60392e5ce76fb0cdf7442fd12d",
+      "midi_pitch_space": "sounding",
+      "midi_written_shift": 2,
+      "note_map_notes": 50,
+      "midi_notes": 50,
+      "pitch_sequences_match": true,
+      "original_sequence": {
+        "matched": 49,
+        "predicted": 55,
+        "gold": 50,
+        "precision": 0.8909090909090909,
+        "recall": 0.98,
+        "f1": 0.9333333333333333
+      },
+      "original_onset_50ms": {
+        "matched": 48,
+        "predicted": 55,
+        "gold": 50,
+        "precision": 0.8727272727272727,
+        "recall": 0.96,
+        "f1": 0.9142857142857143
+      }
+    },
+    {
+      "sample": "synth_WeberITAV_0043",
+      "midi_sha256": "b4cf0bb5552d4c9ff5f3c0fcc05b684ec9fd2d8e81fddb7cc7a1ca64858ff19b",
+      "midi_pitch_space": "sounding",
+      "midi_written_shift": 2,
+      "note_map_notes": 98,
+      "midi_notes": 98,
+      "pitch_sequences_match": false,
+      "original_sequence": {
+        "matched": 83,
+        "predicted": 98,
+        "gold": 98,
+        "precision": 0.8469387755102041,
+        "recall": 0.8469387755102041,
+        "f1": 0.8469387755102041
+      },
+      "original_onset_50ms": {
+        "matched": 80,
+        "predicted": 98,
+        "gold": 98,
+        "precision": 0.8163265306122449,
+        "recall": 0.8163265306122449,
+        "f1": 0.8163265306122449
+      }
+    },
+    {
+      "sample": "synth_WeberITAV_0045",
+      "midi_sha256": "f9bd3cbcca5bbceeef0028014107354922aa03bc39b1b4b18695215da7c8dcbe",
+      "midi_pitch_space": "sounding",
+      "midi_written_shift": 2,
+      "note_map_notes": 3,
+      "midi_notes": 79,
+      "pitch_sequences_match": false,
+      "original_sequence": {
+        "matched": 3,
+        "predicted": 158,
+        "gold": 3,
+        "precision": 0.0189873417721519,
+        "recall": 1.0,
+        "f1": 0.037267080745341616
+      },
+      "original_onset_50ms": {
+        "matched": 2,
+        "predicted": 158,
+        "gold": 3,
+        "precision": 0.012658227848101266,
+        "recall": 0.6666666666666666,
+        "f1": 0.024844720496894408
+      }
+    },
+    {
+      "sample": "synth_WeberITAV_0047",
+      "midi_sha256": "fd3e0ad5f3a93be0c8e2b311f714b0fc4b5acf9630c054f5881fab4c39c123dc",
+      "midi_pitch_space": "sounding",
+      "midi_written_shift": 2,
+      "note_map_notes": 25,
+      "midi_notes": 125,
+      "pitch_sequences_match": false,
+      "original_sequence": {
+        "matched": 25,
+        "predicted": 126,
+        "gold": 25,
+        "precision": 0.1984126984126984,
+        "recall": 1.0,
+        "f1": 0.33112582781456956
+      },
+      "original_onset_50ms": {
+        "matched": 24,
+        "predicted": 126,
+        "gold": 25,
+        "precision": 0.19047619047619047,
+        "recall": 0.96,
+        "f1": 0.31788079470198677
+      }
+    }
+  ]
+}

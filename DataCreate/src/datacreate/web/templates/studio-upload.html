@@ -22,6 +22,9 @@
         <label for="score-file">Or upload a MusicXML score</label>
         <input id="score-file" type="file" accept=".musicxml,.xml,.mxl">
         <small>MusicXML · XML · MXL · up to 10 MB</small>
+        <label for="transcriber-select">Transcriber</label>
+        <select id="transcriber-select"><option value="align">ALIGN (existing)</option><option value="muscriptor">MuScriptor</option></select>
+        <small>Both choices align the transcribed notes to your score.</small>
         <p id="upload-readiness" role="status">Connecting to the server…</p>
         <p id="upload-error" class="error" role="alert" hidden></p>
         <button id="upload-submit" class="primary" type="submit" disabled>Upload &amp; generate feedback</button>

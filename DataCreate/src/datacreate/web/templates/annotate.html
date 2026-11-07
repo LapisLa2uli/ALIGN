@@ -77,7 +77,13 @@
       <strong>View</strong>
       <button id="viewNormalBtn" type="button" class="mode-btn active">Normal</button>
       <button id="viewAlignmentBtn" type="button" class="mode-btn">Alignment</button>
-      <button id="realignBtn" type="button" title="Re-run the configured model's transcription, alignment, and agent feedback">Re-align</button>
+      <label>Transcriber
+        <select id="transcriberSelect">
+          <option value="align">ALIGN (existing)</option>
+          <option value="muscriptor">MuScriptor</option>
+        </select>
+      </label>
+      <button id="realignBtn" type="button" title="Re-run the selected transcriber, score alignment, and agent feedback">Re-align</button>
       <button id="relabelBtn" type="button" title="Use feedback from the configured model; regenerate older or stale alignments first (does not change your labels)">Re-label</button>
       <button id="toggleLabelsBtn" type="button" class="mode-btn active" title="Show/hide confirmed label regions">Labels</button>
       <label class="zoom-control">Zoom

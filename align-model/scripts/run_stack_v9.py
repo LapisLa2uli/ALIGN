@@ -47,7 +47,8 @@ def main():
     index,alignment,events,deletions,info=align_outputs(outputs,args.score,base,mel=mel,audio=audio,presence=presence,
         config={'minimum_match_fraction':candidate.get('minimum_match_fraction',.45),'decoder':candidate['decoder'],'gate':candidate.get('gate',{}),'same_pitch':candidate.get('same_pitch',{})})
     document=feedback(index,alignment,events,deletions,info)
-    document['provenance']={'pipeline_revision':REVISION,'candidate':str(args.candidate.resolve()),'checkpoint_sha256':candidate['checkpoint_sha256'],
+    from alignmodel.joint.rhythm_v1 import REVISION as RHYTHM_REVISION
+    document['provenance']={'rhythm_revision':RHYTHM_REVISION,'pipeline_revision':REVISION,'candidate':str(args.candidate.resolve()),'checkpoint_sha256':candidate['checkpoint_sha256'],
                             'candidate_sha256':hashlib.sha256(args.candidate.read_bytes()).hexdigest(),
                             'score':str(args.score.resolve()),'audio':str(args.audio.resolve()),
                             'audio_sha256':hashlib.sha256(args.audio.read_bytes()).hexdigest(),

@@ -1,0 +1,8 @@
+{
+  "rule": "For each model and N=10/20/40, select highest validation strict F1 among trained steps100/200/300; ties earlier. Report stability-guard eligibility but never replace the trained row with step0. No test results select the checkpoint.",
+  "purpose": "Ensure all six requested trained trials are actually tested, including candidates rejected for deployment by the original protocol.",
+  "source_sha256": "e45a84ff02d78cd44c9c1636d78e4ac8b03c0ec93f287284dbae0e6969fafa9f",
+  "original_protocol_sha256": "e39ca7a795cf8a67ca2f9a34e5db4df6c5b889266bdf430fd0e55a67c3346437",
+  "runtime_amendment_sha256": "9393d8dccda15aebd0da417f09904f722c919374885b06694691fbcf8b1c9b53",
+  "declared_before_any_test_generation": true
+}

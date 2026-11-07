@@ -119,8 +119,18 @@ def apply_performance_trim(
         )
 
     full_backup = sample_dir / "performance_audio_full.wav"
-    if not full_backup.exists():
+    _had_full_backup = full_backup.exists()
+    if not _had_full_backup:
         shutil.copy2(perf_path, full_backup)
+
+    # A second trim is relative to the current WAV, not the first backup.
+    # Preserve the absolute clock when the preceding crop can be verified.
+    from datacreate.muscriptor_audio import transcription_source
+    source_origin = 0.0 if not _had_full_backup else None
+    if _had_full_backup:
+        _, context = transcription_source(sample_dir)
+        if context['mode'] == 'verified_full_recording':
+            source_origin = context['crop_start']
 
     start_idx = int(trim_start * sr)
     end_idx = int(trim_end * sr)
@@ -142,6 +152,9 @@ def apply_performance_trim(
         "original_duration": round(duration, 4),
         "trimmed_duration": round(len(trimmed) / sr, 4),
     }
+    if source_origin is not None:
+        trim_info.update(source_start=source_origin + start_idx / sr,
+                         source_end=source_origin + end_idx / sr)
     _update_metadata(sample_dir, config, {"performance_trim": trim_info}, logger)
     _invalidate_alignment_artifacts(sample_dir, logger)
     return trim_info

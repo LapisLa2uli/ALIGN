@@ -96,6 +96,11 @@ function snapshotRegions() {
         pitches: r.data?.pitches || null,
         note_ids: r.data?.note_ids || null,
         core_note_ids: r.data?.core_note_ids || null,
+        extra_copies: r.data?.extra_copies ?? null,
+        score_event_indices: r.data?.score_event_indices ?? null,
+        context_score_event_indices: r.data?.context_score_event_indices ?? null,
+        location_policy: r.data?.location_policy ?? null,
+        location_evidence: r.data?.location_evidence ?? null,
       }),
     }));
 }
@@ -732,6 +737,10 @@ function regionDataToLabel(region) {
   if (d.note_ids?.length) label.note_ids = d.note_ids;
   if (d.core_note_ids?.length) label.core_note_ids = d.core_note_ids;
   if (d.extra_copies != null) label.extra_copies = d.extra_copies;
+  if (Array.isArray(d.score_event_indices)) label.score_event_indices = d.score_event_indices;
+  if (Array.isArray(d.context_score_event_indices)) label.context_score_event_indices = d.context_score_event_indices;
+  if (d.location_policy) label.location_policy = d.location_policy;
+  if (d.location_evidence) label.location_evidence = d.location_evidence;
   return label;
 }
 
@@ -1506,6 +1515,7 @@ async function loadNoteAlignment() {
     const res = await fetch(`/api/samples/${currentSample}/note-alignment`);
     if (!res.ok) throw new Error(await res.text());
     noteAlignmentData = await res.json();
+    document.getElementById("transcriberSelect").value = noteAlignmentData.transcriber || "align";
     renderAlignmentInfo(noteAlignmentData);
     renderScoreCompare();
   } catch (err) {
@@ -2058,6 +2068,10 @@ function melodyFieldsFromCore(events, coreIds) {
     .filter((ev) => !ev.is_rest && ev.sounding_index != null);
   const fields = {
     core_note_ids: events.slice(core.lo, core.hi + 1).map((ev) => ev.id),
+    score_event_indices: coreSounding.map((ev) => ev.sounding_index),
+    context_score_event_indices: sounding.map((ev) => ev.sounding_index),
+    location_policy: "manual_score_selection",
+    location_evidence: null,
     score_part: {
       start_note_index: sounding.length ? sounding[0].sounding_index : pad.lo,
       end_note_index: sounding.length
@@ -2090,6 +2104,10 @@ function applyMelodyToRegion(region, coreIds, { undo = true } = {}) {
     delete region.data.pitches;
     delete region.data.note_ids;
     delete region.data.core_note_ids;
+    delete region.data.score_event_indices;
+    delete region.data.context_score_event_indices;
+    delete region.data.location_policy;
+    delete region.data.location_evidence;
   } else {
     region.data = { ...(region.data || {}), ...fields };
   }
@@ -3312,6 +3330,7 @@ async function loadSample(sampleId) {
 
   noteAlignmentData = null;
   scoreEventData = null;
+  document.getElementById("transcriberSelect").value = data.transcriber || "align";
   userZoomed = false;
   clearAlignmentOverlays();
   const transStrip = document.getElementById("transcriptionStrip");
@@ -3557,12 +3576,17 @@ async function applyScoreSegment() {
 
 async function reAlignSample() {
   if (!currentSample) return;
-  if (!confirm("Re-run the configured model on the current score and performance? This updates transcription, alignment, and agent feedback. Your labels stay unchanged.")) return;
+  const selector = document.getElementById("transcriberSelect");
+  const transcriber = selector.value;
+  if (!confirm(`Re-run ${selector.selectedOptions[0].textContent} on the current score and performance? This updates transcription, alignment, and agent feedback. Your labels stay unchanged.`)) return;
   const btn = document.getElementById("realignBtn");
   btn.disabled = true;
+  selector.disabled = true;
   btn.textContent = "Aligning…";
   try {
-    const res = await fetch(`/api/samples/${currentSample}/re-align`, { method: "POST" });
+    const res = await fetch(`/api/samples/${currentSample}/re-align`, {
+      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({transcriber}),
+    });
     if (!res.ok) throw new Error(await res.text());
     const result = await res.json();
     labelSource = "agent";
@@ -3575,6 +3599,7 @@ async function reAlignSample() {
   } finally {
     btn.disabled = false;
     btn.textContent = "Re-align";
+    selector.disabled = false;
   }
 }
 

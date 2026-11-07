@@ -1,0 +1,183 @@
+{
+  "post_http_status": 200,
+  "post_status_evidence": "Updated server stdout: POST /api/samples/002/re-align HTTP/1.1 200 OK",
+  "post_port": 8766,
+  "get_results": {
+    "8765": {
+      "http_status": 200,
+      "summary": {
+        "engine": "align-joint",
+        "backend": "MuScriptor + ALIGN",
+        "pipeline_revision": "muscriptor-medium-align-v9-v2",
+        "passage_location": {
+          "revision": "v9-passage-v2",
+          "score_notes": 117,
+          "heard_notes": 117,
+          "config": {
+            "full_score_limit": 128,
+            "max_score_notes": 512,
+            "max_candidates": 4,
+            "padding_notes": 8,
+            "minimum_notes": 8,
+            "minimum_similarity": 0.52,
+            "ambiguity_margin": 0.04,
+            "max_locator_cells": 20000000
+          },
+          "candidates": [],
+          "status": "provided_excerpt",
+          "limits": {
+            "max_score_notes": 512,
+            "max_hypotheses": 1024,
+            "max_dp_cells": 2000000,
+            "max_template_notes": 2048
+          },
+          "selected_start": 0,
+          "selected_end": 117,
+          "selection_policy": "earliest_plausible",
+          "ambiguity_resolved": false,
+          "plausible_starts": [
+            0
+          ]
+        },
+        "candidate_generation": "MuScriptor medium",
+        "event_count": 116,
+        "transcribed_note_count": 117,
+        "mapped_note_count": 116,
+        "kept_note_count": 117,
+        "ignored_note_count": 0,
+        "score_event_count": 117,
+        "candidate_count": 14,
+        "status": "ok",
+        "match_fraction": 0.9914529914529915,
+        "same_pitch_merged": 0,
+        "same_pitch_pairs": 0,
+        "note_end_policy": "MuScriptor note offsets; score mapping may merge notes.",
+        "review_notice": "MuScriptor transcription with ALIGN score alignment. Review suggested errors.",
+        "alignment_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\002\\note_alignment_v2.json"
+      },
+      "transcriber": "muscriptor"
+    },
+    "8766": {
+      "http_status": 200,
+      "summary": {
+        "engine": "align-joint",
+        "backend": "MuScriptor + ALIGN",
+        "pipeline_revision": "muscriptor-medium-align-v9-v2",
+        "passage_location": {
+          "revision": "v9-passage-v2",
+          "score_notes": 117,
+          "heard_notes": 117,
+          "config": {
+            "full_score_limit": 128,
+            "max_score_notes": 512,
+            "max_candidates": 4,
+            "padding_notes": 8,
+            "minimum_notes": 8,
+            "minimum_similarity": 0.52,
+            "ambiguity_margin": 0.04,
+            "max_locator_cells": 20000000
+          },
+          "candidates": [],
+          "status": "provided_excerpt",
+          "limits": {
+            "max_score_notes": 512,
+            "max_hypotheses": 1024,
+            "max_dp_cells": 2000000,
+            "max_template_notes": 2048
+          },
+          "selected_start": 0,
+          "selected_end": 117,
+          "selection_policy": "earliest_plausible",
+          "ambiguity_resolved": false,
+          "plausible_starts": [
+            0
+          ]
+        },
+        "candidate_generation": "MuScriptor medium",
+        "event_count": 116,
+        "transcribed_note_count": 117,
+        "mapped_note_count": 116,
+        "kept_note_count": 117,
+        "ignored_note_count": 0,
+        "score_event_count": 117,
+        "candidate_count": 14,
+        "status": "ok",
+        "match_fraction": 0.9914529914529915,
+        "same_pitch_merged": 0,
+        "same_pitch_pairs": 0,
+        "note_end_policy": "MuScriptor note offsets; score mapping may merge notes.",
+        "review_notice": "MuScriptor transcription with ALIGN score alignment. Review suggested errors.",
+        "alignment_path": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\samples\\002\\note_alignment_v2.json"
+      },
+      "transcriber": "muscriptor"
+    }
+  },
+  "protected_unchanged": {
+    "labels.json": true,
+    "performance_audio.wav": true,
+    "performance_audio_full.wav": true,
+    "verified_score.musicxml": true,
+    "metadata.json": true
+  },
+  "provenance": {
+    "candidate": "D:\\stuff\\Audio Evaluation\\ALIGN\\align-model\\runs\\stack-v9\\CANDIDATE_STACK_V9.json",
+    "candidate_sha256": "3d4c8fbc8fdb619903828c2f73cfa8b118b5a4d5a81b4e3c71d999dd1187d461",
+    "pipeline_revision": "muscriptor-medium-align-v9-v2",
+    "checkpoint_sha256": "35cf4d3e540c04c86270a966f7c2b6abdd7827d9643964cc6763bf7bd0ccec3b",
+    "audio_sha256": "6db253f7d1137a7945740af53c414b7b882a91d29854328413a0466411ec68fc",
+    "score_sha256": "7bc8cc0c8b05bc8336125ad2c5e81b602bc354cd7652e76c56e404042a58eb7d",
+    "pitch_convention": "written Bb-clarinet; sounding = written - 2",
+    "note_end_policy": "MuScriptor note offsets; score mapping may merge notes",
+    "run": "D:\\stuff\\Audio Evaluation\\ALIGN\\DataCreate\\work\\muscriptor-ui\\002-6740ee19ef5844318d6f9174b04b9694\\publish",
+    "inference": "fresh waveform inference",
+    "human_labels_used": false,
+    "rhythm_revision": "aligned-rhythm-v1",
+    "transcriber": "muscriptor",
+    "transcription": {
+      "transcriber": "muscriptor",
+      "model": "medium",
+      "model_sha256": "ac80adbdf85d87231735fd948af7013441c0afced316c4e9067fd5d8a7fb97ec",
+      "written_shift": 2,
+      "dtype": "float16",
+      "batch_size": 1,
+      "prelude_forcing": true,
+      "time_projection": {
+        "crop_start": 5.208390022675737,
+        "crop_end": 72.86848072562358,
+        "source_note_count": 117,
+        "retained_note_count": 117,
+        "outside_crop_count": 0,
+        "clipped_note_count": 0
+      },
+      "confidence_policy": "MuScriptor emits no note probabilities; confidence=1 is a placeholder",
+      "audio_sha256": "6db253f7d1137a7945740af53c414b7b882a91d29854328413a0466411ec68fc",
+      "score_sha256": "7bc8cc0c8b05bc8336125ad2c5e81b602bc354cd7652e76c56e404042a58eb7d",
+      "audio_context": {
+        "context_revision": "muscriptor-full-context-v1",
+        "trim_sha256": "1963ff62a7d5a58e1e10836a09fe4a7aca509d19d5305329f004fc65b9d515f7",
+        "full_audio_sha256": "aed57bf414c9b5e3e672c90012e9c03fbb5040781e3023ba3de56d17ab0a42b6",
+        "source_audio": "performance_audio_full.wav",
+        "source_audio_sha256": "aed57bf414c9b5e3e672c90012e9c03fbb5040781e3023ba3de56d17ab0a42b6",
+        "mode": "verified_full_recording",
+        "crop_start": 5.208390022675737,
+        "crop_end": 72.86848072562358,
+        "source_start_sample": 114845,
+        "source_end_sample": 1606750,
+        "sample_rate": 22050,
+        "max_slice_difference": 0.0,
+        "reason": "verified_waveform_slice"
+      }
+    },
+    "transcription_sha256": "2ee5a9b61b0da480d145edf62ca76007d94c742cd2b6bbd6028e0d3f93121dce",
+    "feedback_calibration": "Existing ALIGN clarinet gates; MuScriptor combination is experimental"
+  },
+  "relationships": {
+    "match": 116,
+    "extra": 1
+  },
+  "labels": {
+    "rhythm_error": 14
+  },
+  "original_server_restart": "Blocked by automatic approval review; original process retained. Updated server on port 8766.",
+  "verification_note": "The initial HTTP harness expected top-level provenance in the GET response; the API exposes it through summary. GET checks were corrected and repeated without repeating inference."
+}

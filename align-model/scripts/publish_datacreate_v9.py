@@ -50,7 +50,19 @@ def main():
     parser.add_argument('--sample-rate',type=int,default=22050,help='UI compatibility timing rate')
     parser.add_argument('--hop-length',type=int,default=512,help='UI compatibility timing hop')
     parser.add_argument('--candidate',type=Path,default=ROOT/'align-model/runs/stack-v9/CANDIDATE_STACK_V9.json')
+    parser.add_argument('--transcription',type=Path,help='MuScriptor written-pitch notes for a single sample')
+    parser.add_argument('--transcriptions-dir',type=Path,help='Publish only the numbered samples with matching NNN.json note files')
     args=parser.parse_args();out=args.output.resolve();samples_root=args.samples.resolve()
+    batch_notes={}
+    external_contexts={}
+    if args.transcriptions_dir:
+        if args.sample or args.transcription:
+            parser.error('--transcriptions-dir cannot be combined with single-sample options')
+        batch_notes={p.stem:p for p in sorted(args.transcriptions_dir.glob('[0-9][0-9][0-9].json'))}
+        if not batch_notes:
+            parser.error('No numbered transcriptions found')
+    if args.transcription and not args.sample:
+        parser.error('--transcription requires --sample')
     if out.exists():raise FileExistsError(out)
     c=json.loads(args.candidate.read_text());base=json.loads(Path(c['base_candidate']).read_text())
     for relative,digest in c['code_sha256'].items():assert sha(ROOT/'align-model'/relative)==digest,relative
@@ -60,6 +72,8 @@ def main():
         samples=[args.sample.resolve()];samples_root=samples[0].parent
         for name in ('performance_audio.wav','verified_score.musicxml'):
             if not (samples[0]/name).is_file():raise FileNotFoundError(samples[0]/name)
+    elif batch_notes:
+        samples=[samples_root/name for name in batch_notes]
     else:
         samples=sorted(p for p in samples_root.iterdir() if p.is_dir() and (p/'performance_audio.wav').is_file() and (p/'verified_score.musicxml').is_file())
     out.mkdir(parents=True)
@@ -95,10 +109,39 @@ def main():
         presence=lambda queries:score_presence(verifier,np.asarray(mel,np.float32),queries,device)
         # Decoding still belongs to transcription; align_outputs reports passage
         # retrieval and alignment when those operations actually begin.
-        index,alignment,events,deletions,info=align_outputs(outputs,sample/'verified_score.musicxml',base,
-            mel=mel,audio=audio,presence=presence,config=cfg,progress=lambda step:report_progress(sample,step))
+        external = None
+        transcription_path=batch_notes.get(sample.name) or args.transcription
+        if transcription_path:
+            from alignmodel.joint.stack_v9_passage import align_notes
+            from alignmodel.joint.index import ScoreEventIndex
+            from datacreate.muscriptor_bridge import REVISION as MUSCRIPTOR_REVISION
+            external = json.loads(transcription_path.read_text(encoding='utf-8'))
+            if external.get('transcribed_notes_pitch_space') != 'written':
+                raise ValueError('External notes must use written pitch')
+            for key, filename in [('audio_sha256','performance_audio.wav'),('score_sha256','verified_score.musicxml')]:
+                if external['provenance'][key] != protected[sample.name][filename]:
+                    raise ValueError('MuScriptor input changed before alignment: ' + filename)
+            from datacreate.muscriptor_audio import context_signature
+            external_context = external['provenance'].get('audio_context', {})
+            expected_context = context_signature(sample)
+            if any(external_context.get(k) != v for k, v in expected_context.items()):
+                raise ValueError('MuScriptor transcription has stale audio context; transcribe again')
+            external_contexts[sample.name] = expected_context
+            rows = [(n['pitch'], n['start'], n['end'], n.get('confidence', 1.0))
+                    for n in external['transcribed_notes']]
+            report_progress(sample, 'locator')
+            index = ScoreEventIndex.from_musicxml(sample/'verified_score.musicxml')
+            alignment,events,deletions,info = align_notes(rows,index,sample/'verified_score.musicxml',base,
+                evidence={**outputs,'hop':256/22050,'midi_min':52,'presence':presence}, config=cfg,
+                progress=lambda step:report_progress(sample,step))
+            info.update(pipeline_revision=MUSCRIPTOR_REVISION,
+                same_pitch_repair={'source_groups':[[i] for i in range(len(rows))], 'merged_boundaries':0, 'pairs_checked':0},
+                transcription_backend='muscriptor-medium')
+        else:
+            index,alignment,events,deletions,info=align_outputs(outputs,sample/'verified_score.musicxml',base,
+                mel=mel,audio=audio,presence=presence,config=cfg,progress=lambda step:report_progress(sample,step))
         report_progress(sample, 'labels')
-        doc=feedback(index,alignment,events,deletions,info)
+        doc=feedback(index,alignment,events,deletions,info, measured_offsets=bool(external))
         provenance={'candidate':str(args.candidate.resolve()),'candidate_sha256':sha(args.candidate),
             'pipeline_revision':REVISION,
             'checkpoint_sha256':c['checkpoint_sha256'],'audio_sha256':protected[sample.name]['performance_audio.wav'],
@@ -106,10 +149,31 @@ def main():
             'pitch_convention':'written Bb-clarinet; sounding = written - 2',
             'note_end_policy':'next decoded onset, last onset + 0.1s, merged as needed; not measured offsets',
             'run':str(out),'inference':'fresh waveform inference','human_labels_used':False}
+        from alignmodel.joint.rhythm_v1 import REVISION as RHYTHM_REVISION
+        provenance['rhythm_revision']=RHYTHM_REVISION
         doc['provenance']=provenance
+        if external:
+            provenance.update(pipeline_revision=MUSCRIPTOR_REVISION, transcriber='muscriptor',
+                transcription=external['provenance'], transcription_sha256=sha(transcription_path),
+                note_end_policy='MuScriptor note offsets; score mapping may merge notes',
+                feedback_calibration='Existing ALIGN clarinet gates; MuScriptor combination is experimental')
         gui,labels=gui_documents(sample,index,alignment,doc,duration=len(audio)/22050,provenance=provenance)
+        if external:
+            gui['summary'].update(backend='MuScriptor + ALIGN', candidate_generation='MuScriptor medium',
+                note_end_policy='MuScriptor note offsets; score mapping may merge notes.',
+                review_notice='MuScriptor transcription with ALIGN score alignment. Review suggested errors.')
+            gui['label_generation']['method']='muscriptor_align_v9'
+            labels['agent_labeling']['method']='muscriptor_align_v9'
+            for label in gui['labels']:
+                if label['type'] != 'rhythm_error':
+                    label['comment']='MuScriptor transcription with ALIGN score alignment; review suggested errors.'
+            for label in labels['labels']:
+                if label['type'] != 'rhythm_error':
+                    label['comment']='MuScriptor transcription with ALIGN score alignment; review suggested errors.'
         transcription={'engine':'align-v9','sample_id':sample.name,'transcribed_notes':gui['transcribed_notes'],
                        'summary':gui['summary'],'provenance':provenance,'same_pitch_repair':info['same_pitch_repair']}
+        if external:
+            transcription['engine']='muscriptor-align-v9'
         for name in ('note_alignment_v2.json','note_alignment_v9.json'):write(stage/name,gui)
         for name in ('transcription_notes.json','transcription_v9.json'):write(stage/name,transcription)
         write(stage/'labels_agent.json',labels);write(stage/'feedback_v9.json',doc)
@@ -125,6 +189,10 @@ def main():
             'file_sha256':{f:sha(stage/f) for f in FILES}})
         if pos%5==0 or pos==len(samples):
             write(out/'manifest.json',manifest);print('staged',pos,len(samples),sample.name,flush=True)
+    for sample in samples:
+        if sample.name in external_contexts:
+            if context_signature(sample) != external_contexts[sample.name]:
+                raise RuntimeError('MuScriptor source context changed during alignment: ' + sample.name)
     # Check for concurrent human edits or input changes before any replacement.
     for sample in samples:
         for f,digest in protected[sample.name].items():assert sha(sample/f)==digest,f'Input changed: {sample/f}'

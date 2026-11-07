@@ -13,7 +13,7 @@ from .robust_dp_aligner_v3 import GateConfig
 from .robust_dp_aligner_v4 import gate_v4
 from .robust_dp_aligner_v5 import AlignerV5Config, AlignmentV5, align_v5
 from .stack_v7 import HOP
-from .stack_v9 import feedback
+from .stack_v9 import feedback as _content_feedback
 from ..transcription.transition_v7 import DecodeV7Config, decode_v7
 from ..transcription.same_pitch_v2 import SamePitchConfig, repair_same_pitch
 
@@ -113,3 +113,27 @@ def align_outputs(outputs, score_path, candidate, *, mel, audio=None, presence=N
     info.update(decode_info)
     info['same_pitch_repair'] = repair
     return index, alignment, events, deletions, info
+
+
+def feedback(index, alignment, events, deletions, info, *, measured_offsets=False,
+             rhythm_config=None):
+    """Add independent rhythm feedback after the content alignment is accepted.
+
+    Use raw mapped acoustic events, never gate-inferred matches. The selected
+    pilot policy is a 65-note median with a 0.20 log / 60 ms joint threshold.
+    Rhythm uses consecutive attacks even when measured note offsets exist;
+    release length and legato overlap are not scored.
+    """
+    from .rhythm_v1 import RhythmConfig, classify_rhythm, REVISION as RHYTHM_REVISION
+    result = _content_feedback(index, alignment, events, deletions, info)
+    if result['status'] != 'ok':
+        result['diagnostics']['rhythm'] = {
+            'revision': RHYTHM_REVISION, 'status': 'alignment_uncertain',
+            'assessed_score_event_indices': []}
+        return result
+    config = rhythm_config or RhythmConfig(method='median', window=65, log_threshold=.20)
+    labels, diagnostic = classify_rhythm(index.events, alignment.events,
+        measured_offsets=measured_offsets, config=config)
+    result['labels'].extend(labels)
+    result['diagnostics']['rhythm'] = diagnostic
+    return result

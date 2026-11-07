@@ -567,7 +567,14 @@ def extra_features(alignment: AlignmentV3, extra: AlignedExtra, evidence: Mappin
         frame = int(round(event.start / hop))
         heads = evidence.get("onset")
         if heads is not None and len(heads):
-            onset = float(np.max(heads[max(0, frame - 2):frame + 3]))
+            # A transcription event can legitimately fall just beyond the
+            # final CTC/onset frame (especially for short recordings).  Clamp
+            # the look-around window before reducing it so an empty slice does
+            # not raise and abort the whole corpus publish.
+            start = max(0, frame - 2)
+            stop = min(len(heads), frame + 3)
+            if start < stop:
+                onset = float(np.max(heads[start:stop]))
     paired = any(
         (unit.previous_onset is None or unit.previous_onset < event.start)
         and (unit.next_onset is None or event.start < unit.next_onset)

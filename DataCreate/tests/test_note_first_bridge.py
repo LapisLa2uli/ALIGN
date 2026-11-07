@@ -275,6 +275,9 @@ def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path
             },
         }
         payload["provenance"]["pipeline_revision"] = revision
+        if tag == "v9":
+            from alignmodel.joint.rhythm_v1 import REVISION as RHYTHM_REVISION
+            payload["provenance"]["rhythm_revision"] = RHYTHM_REVISION
         if tag == 'solo':
             payload["provenance"]["written_to_sounding"] = -2
         (sample / "note_alignment_v2.json").write_text(json.dumps(payload))
@@ -302,6 +305,14 @@ def test_v9_bridge_uses_serving_environment_and_never_legacy_checkpoint(tmp_path
 
     from datacreate.align_bridge import current_v9_feedback
     assert current_v9_feedback(sample, config)
+    if tag == "v9":
+        artifact = sample / "note_alignment_v2.json"
+        payload = json.loads(artifact.read_text())
+        saved = payload["provenance"].pop("rhythm_revision")
+        artifact.write_text(json.dumps(payload))
+        assert not current_v9_feedback(sample, config)
+        payload["provenance"]["rhythm_revision"] = saved
+        artifact.write_text(json.dumps(payload))
     if tag == 'solo':
         assert seen['command'][seen['command'].index('--written-to-sounding')+1] == '-2'
         config.alignment['written_to_sounding'] = 0

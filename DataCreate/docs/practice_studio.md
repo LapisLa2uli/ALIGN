@@ -11,7 +11,7 @@ and its matching score, then submit. The form is replaced by the centered Studio
 progress panel as the only page content. Once the shared pipeline finishes,
 the page displays **feedback uploaded!** with a video player to preview the generated
 feedback MP4. If this take has no MP4, the preview uses the newest completed video
-with identical WAV audio samples and the same score and selected passage, and
+with identical WAV audio samples and the same score, selected passage, and transcriber, and
 identifies it as previously generated feedback. WAV header metadata is ignored
 when matching. This also works for older saved takes. If no matching video exists,
 the page explains why this take has no preview.
@@ -80,6 +80,41 @@ without changing the detector's note indices. An unrecoverable rendering or
 validation failure still stops the take rather than using an incorrect example.
 
 ## Server configuration
+
+The **Transcriber** selector is available on Upload, Practice Studio, and beside
+**Re-align** in the annotation UI. **ALIGN (existing)** is the default.
+**MuScriptor** uses the local medium model to transcribe notes, then passes them
+to the existing ALIGN v9 score mapper and feedback checks. This combination is
+experimental; its feedback thresholds have not been recalibrated for MuScriptor.
+Each take keeps its own choice. Re-labeling, trimming, and score passage changes
+retain the last successfully published choice. Re-align preserves human labels.
+
+For trimmed recordings, MuScriptor uses the preserved full recording when its
+waveform matches the selected audio, then clips and shifts the resulting note
+times onto the trimmed timeline. This preserves the model's five-second chunk
+boundaries and preceding context; transcribing a crop can otherwise produce a
+different note sequence from transcribing the original recording. Repeated trims
+retain the original time origin. If the full recording is missing or cannot be
+verified, it uses the current audio and records the reason in provenance.
+Changes to the full recording or trim invalidate cached MuScriptor feedback.
+
+Rhythm feedback compares the spacing between consecutive aligned note attacks
+with the surrounding pulse. Short releases, articulation gaps, and overlapping
+legato notes are not errors by themselves, even when MuScriptor supplies measured
+note endings. The final note is not assessed without a following attack. Early
+or late attacks can still produce rhythm suggestions; each suggestion describes
+the interval to the next attack, rather than requiring the sound to fill the
+entire written note duration.
+
+MuScriptor runs automatically in its separate Python environment; its standalone
+web server on port 8222 does not need to be running. Install it with
+`muscriptor/setup-local.ps1` and accept the Hugging Face model license before
+first use. The default interpreter is `muscriptor/.venv/Scripts/python.exe`;
+set `paths.muscriptor_python` to override it. ALIGN's environment and v9 model
+must also be installed for score mapping. Set `alignment.transcriber` to change
+the default. API clients can send `transcriber=align` or `transcriber=muscriptor`
+in the `/api/studio/takes` multipart form, or JSON such as
+`{"transcriber":"muscriptor"}` to `/api/samples/{id}/re-align`.
 
 Use the existing DataCreate environment with the score renderer and ALIGN model
 installed. The studio uses `config/default.yaml` (or the configuration passed to

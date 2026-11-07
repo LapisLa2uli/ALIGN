@@ -2,6 +2,8 @@
 
 This integration uses the authors' implementations to train, run inference, and evaluate three note classes on ALIGN's frozen synthetic data: Extra, Missing, and Correct. LadderSym supports both prompted (with reference MIDI as an additional input) and unprompted settings.
 
+**Current label alignment:** new DataCreate exports use **policy 3**, mapping baseline error intervals through the stored MuScriptor transcription and ALIGN score mapping. The existing `scripts/label_datacreate_baselines.py` command defaults to it. New Python evaluations should import `label_datacreate_baselines_v3.document_from_midi`. See [the policy-3 workflow and scoring contract](docs/LABEL_ALIGNMENT_POLICY.md). Historical v1/v2 experiment APIs and results remain available for reproduction.
+
 **Start with the [GPU server runbook](docs/GPU_RUNBOOK.md)** for code and data transfer, installation, smoke tests, full training, checkpoint resumption, evaluation, GPU memory issues, and troubleshooting.
 
 ALIGN comparison F1 is official note-wise score-event identity (`official_note_wise` in `note_metrics.json`), produced by mapping Extra/Missing/Correct notes onto canonical score locations. The authors' mir_eval onset 50 ms / 50 cents protocol remains available as `legacy_mir_eval_onset_50ms` and is not the ALIGN headline.

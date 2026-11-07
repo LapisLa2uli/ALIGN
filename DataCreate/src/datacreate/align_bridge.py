@@ -207,6 +207,9 @@ def _sha256(path: Path) -> str:
 
 def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
     """Only reuse feedback for this candidate and these exact score/audio inputs."""
+    if config.alignment.get('transcriber', 'align') == 'muscriptor':
+        from datacreate.muscriptor_bridge import current_feedback
+        return current_feedback(sample_dir, config)
     from datacreate.transcription_labeling import _has_model_feedback
 
     path = sample_dir / "note_alignment_v2.json"
@@ -216,6 +219,10 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
     if not _has_model_feedback(payload):
         return False
     provenance = payload.get("provenance") or {}
+    if config.alignment.get("model_version") == "stack-v9":
+        from alignmodel.joint.rhythm_v1 import REVISION as RHYTHM_REVISION
+        if provenance.get("rhythm_revision") != RHYTHM_REVISION:
+            return False
     revision = "v10-boundary-v1" if config.alignment.get("model_version") == "stack-v10" else "v9-passage-v2"
     if config.alignment.get("model_version") == "stack-solo-v1":
         revision = "solo-multi-v1"
@@ -236,6 +243,12 @@ def current_v9_feedback(sample_dir: Path, config: PipelineConfig) -> bool:
 
 def ensure_current_model_feedback(sample_dir: Path, config: PipelineConfig, logger) -> bool:
     """Upgrade legacy/stale UI artifacts before relabeling; never silently downgrade."""
+    if config.alignment.get('transcriber', 'align') == 'muscriptor':
+        if current_v9_feedback(sample_dir, config):
+            return False
+        run_preferred_alignment(sample_dir / 'performance_audio.wav', sample_dir / 'reference_audio.wav',
+                                sample_dir, config, logger)
+        return True
     if config.alignment.get("model_version", "legacy") not in {"stack-v9", "stack-v10", "stack-solo-v1"}:
         return False
     if current_v9_feedback(sample_dir, config):
@@ -294,6 +307,10 @@ def dump_transcription(
     output: Path | None = None,
 ) -> Path:
     """Write transcription notes for score-span location using the selected model."""
+
+    if config.alignment.get('transcriber', 'align') == 'muscriptor':
+        from datacreate.muscriptor_bridge import transcribe
+        return transcribe(sample_dir, config, logger, output or sample_dir / 'transcription_notes.json')
 
     python, env = _bridge_command_env(config)
     output = output or (sample_dir / "transcription_notes.json")
@@ -425,6 +442,10 @@ def run_preferred_alignment(
     detect_candidates: bool = True,
 ) -> NoteFirstAlignmentResult:
     """Run the configured version; v9 regenerates alignment and agent feedback together."""
+
+    if config.alignment.get('transcriber', 'align') == 'muscriptor':
+        from datacreate.muscriptor_bridge import run_alignment
+        return run_alignment(sample_dir, config, logger, detect_candidates)
 
     version = config.alignment.get("model_version", "legacy")
     if version in {"stack-v9", "stack-v10", "stack-solo-v1"}:

@@ -18,6 +18,7 @@ from fastapi import APIRouter, BackgroundTasks, File, Form, Header, HTTPExceptio
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 
 from datacreate.config import PipelineConfig
+from datacreate.transcriber_selection import Transcriber, selected_config
 from datacreate.analysis_status import sample_assessment, UNCERTAIN_MESSAGE
 from datacreate.credentials import credential_value
 from datacreate.feedback import FeedbackConfig, PIPELINE_REVISION, run_feedback
@@ -176,12 +177,13 @@ class StudioJobs:
         full_score = sample / 'full_score.musicxml'
         metadata = sample / 'metadata.json'
         segment = json.loads(metadata.read_text(encoding='utf-8')).get('score_segment') if metadata.is_file() else None
+        state = json.loads((self.directory(job_id) / 'status.json').read_text(encoding='utf-8'))
         return (self._preview_hash(self.directory(job_id) / 'recording.wav', audio=True),
                 self._preview_hash(score), self._preview_hash(full_score if full_score.is_file() else score),
-                json.dumps(segment or {}, sort_keys=True))
+                json.dumps(segment or {}, sort_keys=True), state.get('transcriber', 'align'))
 
     def matching_video(self, job_id):
-        """Find a real completed video for identical audio, score, and selected passage."""
+        """Find a completed video for identical audio, score, passage, and transcriber."""
         try:
             identity = self._preview_identity(job_id)
         except (OSError, ValueError, EOFError, wave.Error):
@@ -295,7 +297,7 @@ class StudioJobs:
                 raise HTTPException(409, "Another take is processing. Please wait for it to finish.")
             self.active = job_id
 
-    def accept_request(self, key, fingerprint, staging, score_name):
+    def accept_request(self, key, fingerprint, staging, score_name, transcriber=None):
         """Commit acceptance before scheduling any inference or provider calls."""
         digest = key_digest(key)
         job_id = uuid4().hex
@@ -319,7 +321,8 @@ class StudioJobs:
                         raise HTTPException(503, ready['message'])
                     directory.parent.mkdir(parents=True, exist_ok=True)
                     staging.replace(directory)
-                    self.save(job_id, status="processing", stage="queued", message="Your take is queued")
+                    self.save(job_id, status="processing", stage="queued", message="Your take is queued",
+                              transcriber=transcriber or self.config.alignment.get('transcriber', 'align'))
                     # Ensure inputs and initial status reach disk before the durable receipt.
                     for path in directory.iterdir():
                         with path.open('r+b') as stream:
@@ -365,7 +368,7 @@ class StudioJobs:
                 return
             config = self.feedback_config()
             if not retry:
-                pipeline = make_pipeline(self.config)
+                pipeline = make_pipeline(selected_config(self.config, saved.get('transcriber')))
                 job = pipeline.create_sample(job_id, score=score, performance=directory / "recording.wav")
                 stages = [("score", "Preparing your score", pipeline.run_stage1_2),
                           ("reference", "Rendering the reference performance", pipeline.run_stage3),
@@ -467,6 +470,7 @@ def studio_router(config: PipelineConfig):
     def settings():
         available = scores()
         return {**jobs.readiness(), "max_seconds": MAX_SECONDS, "feedback_pipeline_revision": PIPELINE_REVISION,
+                "transcriber": config.alignment.get('transcriber', 'align'),
                 "integration_contract": "studio-robot-v1",
                 "default_score_id": available[0].name if len(available) == 1 else None,
                 "scores": [{"id": p.name, "name": p.stem.replace("_", " ")} for p in available]}
@@ -482,7 +486,9 @@ def studio_router(config: PipelineConfig):
     @router.post("/api/studio/takes", status_code=202)
     async def create_take(background: BackgroundTasks, audio: UploadFile = File(...),
                           score: UploadFile | None = File(None), score_id: str = Form(""),
+                          transcriber: Transcriber | None = Form(None),
                           idempotency_key: str | None = Header(None, alias="Idempotency-Key")):
+        transcriber = transcriber or config.alignment.get('transcriber', 'align')
         if idempotency_key is not None:
             # Hash and validate complete uploads before acceptance. No inference
             # occurs here; same-key replays remain available even while busy.
@@ -513,8 +519,9 @@ def studio_router(config: PipelineConfig):
                         shutil.copyfile(selected, score_path)
                     fingerprint = hashlib.sha256(json.dumps(
                         [file_digest(audio_path), file_digest(score_path), score_path.suffix]
+                        + ([transcriber] if transcriber != 'align' else [])
                     ).encode()).hexdigest()
-                    result, accepted_score = jobs.accept_request(idempotency_key, fingerprint, staging, score_path.name)
+                    result, accepted_score = jobs.accept_request(idempotency_key, fingerprint, staging, score_path.name, transcriber)
                     if accepted_score is not None:
                         background.add_task(jobs.process, result['id'], accepted_score)
                     return JSONResponse(result, status_code=200 if result['replayed'] else 202,
@@ -543,7 +550,7 @@ def studio_router(config: PipelineConfig):
                 score_path = next((p for p in scores() if p.name == score_id), None)
                 if score_path is None:
                     raise HTTPException(422, "Select or upload a score first")
-            jobs.save(job_id, status="processing", stage="queued", message="Your take is queued")
+            jobs.save(job_id, status="processing", stage="queued", message="Your take is queued", transcriber=transcriber)
             background.add_task(jobs.process, job_id, score_path)
             return {"id": job_id}
         except Exception:

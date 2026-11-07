@@ -1,0 +1,476 @@
+{
+  "seed": 20261105,
+  "selection": "30 random clips from the 87 cached dataset-9.2 test clips passing prior lineage audit",
+  "metric": "Canonical affected-score-note content-error micro F1, exact location+type credit 1, location-only credit .5",
+  "error_types": [
+    "wrong_note",
+    "missed_note",
+    "extra_note",
+    "repetition"
+  ],
+  "context_padding_excluded": true,
+  "test_tuning": false,
+  "baseline_weights": "author pretrained CocoChorales-E / CocoChorales prompted; not ALIGN retrained",
+  "checkpoints": {
+    "polytune": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\experiments\\baselines_datacreate_095_124_20260921\\checkpoints\\polytune\\CocoChorales-E\\last.ckpt",
+      "sha256": "9ed49dcdf864cb4957facf6d0ecfed944ea0484a5a69bccf1a7b0ed0c222f207"
+    },
+    "laddersym": {
+      "path": "D:\\stuff\\Audio Evaluation\\ALIGN\\experiments\\baselines_datacreate_095_124_20260921\\checkpoints\\laddersym\\checkpoints\\cocochorales\\prompted\\model.ckpt",
+      "sha256": "c28b4e43cb9dbf56e0fd68c9d647c24decbc6a89d08ded022bd704751109ef33"
+    }
+  },
+  "samples": [
+    {
+      "sample": "synth_WeberITAV_25668",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_25668",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "edb0308756c7a9d46fb050074aadb624296daa892e79215b1aaa993a0758fe30",
+        "reference_audio.wav": "2d9ccdce0e54e2c4eda869502279f28fd1aef08e999e20d715a59c63ff59a588",
+        "reference_audio.mid": "35d7df28b42eda93856b68d9ced89eef543e02278ff8817593b3d09ab7e23c77",
+        "verified_score.musicxml": "59ffb11646f39063975af80ad29e30dec94580e8d2b96320f31f234641e66258",
+        "metadata.json": "25a7dd97a6a376530e32d41e10ad4faeea2669c7878dd6c67159346013987f07"
+      },
+      "score_event_count": 102,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_25668.json",
+      "muscriptor_prediction_sha256": "5f0f42c1ae66790f420a3db58d40ea23e7b088ffb862dde6db12630aa1e60fce"
+    },
+    {
+      "sample": "synth_WeberITAV_25917",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_25917",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "e06ceef7d0215a928eae6b9fba96c972f85d09ffa0f4733dc3f2da438962eb15",
+        "reference_audio.wav": "651ed523ea5dc6b60b61da05b88c3e0e938b9a20a4ebc02541ab3f7a069e504a",
+        "reference_audio.mid": "3abec5785f3a72a125d8ad31c0d9ae8a4506509616319df162921f17ce986862",
+        "verified_score.musicxml": "c23d907eee97359e39a7f4855727be12560fabd64ba281f721f2e756b9b7699a",
+        "metadata.json": "22d66b1c8acab1961a272af9e7c7ff4cc4214eb605a8e5d8b6a71a5df29398ff"
+      },
+      "score_event_count": 30,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_25917.json",
+      "muscriptor_prediction_sha256": "b481f3e7aa8b47350f4409d4d135bd594efc2cb01ba1814d9e46469089a2adf7"
+    },
+    {
+      "sample": "synth_WeberITAV_25938",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_25938",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "d1491cb76dff424a14c4126b671dd86ec9fef5bd0b56e80b0524a1cefe38ea94",
+        "reference_audio.wav": "eec8c7f03e21c48cd40765d1f7f94712b3bb3c4077abfe072612639d99d03376",
+        "reference_audio.mid": "abf39c3349a9425aa4d779341a7ee4a74eede87063a9af8c7c6beea51a310b87",
+        "verified_score.musicxml": "859e73216d514ddac5225dfc2766243fc2d77f0b8ffd302726c5bbe49dbeb552",
+        "metadata.json": "d4ca68ca1517455ea47748de157e39618a271c58c01fe09c3515fe9a6270b0ee"
+      },
+      "score_event_count": 103,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_25938.json",
+      "muscriptor_prediction_sha256": "7865c08cffaa66799efcc781b4ea603a1b4b1f43125650f7ff5c7fbd95d04f28"
+    },
+    {
+      "sample": "synth_WeberITAV_26120",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_26120",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "72bdb96d538a9ccf0e7231f85a3c13ba1f3459530b36d5205b20ae983889d22a",
+        "reference_audio.wav": "a59809dae578f90cc7f4e3d0dc99d365a1a1477c87adcac2de1537d54ab895a7",
+        "reference_audio.mid": "31f89ab694edb109aa71ba8d310b2a061372b6a0fc1406fd28a25dd948f76213",
+        "verified_score.musicxml": "e23eddb66621154b9f5e811367c7b3b04523ece11138634ae9387fb9f72c3f34",
+        "metadata.json": "c94fd970dd15764d90b0608c0623c5caa0c6c5235430cd29ec097edcb1a42555"
+      },
+      "score_event_count": 125,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_26120.json",
+      "muscriptor_prediction_sha256": "f51ee73faaaf78ef929f68566f55b2954715c8aeded24f5089be3c8f9877620f"
+    },
+    {
+      "sample": "synth_WeberITAV_26211",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_26211",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "70b1938cc232ecffa7a9fa1ec6e2bb9b1e5b39a552f6b45f1e74cef5a65fc21a",
+        "reference_audio.wav": "fdc7a2e3d489bc0f171dabe391449cc5fae43befe603553b6f33b092b83aaaa7",
+        "reference_audio.mid": "6b8ffc3bc3de2113d1b4c68a41d536a4d69b07b6d73323caed88e16ef27eb6d2",
+        "verified_score.musicxml": "e340585911178491626ba4e0ead1c7a6996b366209d6ee39c3fddf16be72ea83",
+        "metadata.json": "fcf9bdd6ac1bc68188ba5b908fd46e3ef23f3c8776740100dc991a0497e0da76"
+      },
+      "score_event_count": 100,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_26211.json",
+      "muscriptor_prediction_sha256": "67f45e67a9d9fa0ce0bdf64c245fccd6fbdbe2cb87cf93bc2eb572e8d81a0a9d"
+    },
+    {
+      "sample": "synth_WeberITAV_26306",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_26306",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "cb8a2d67bb4bb6192cc3707196f2fd7131ed4a91485000a4428d972f44f2cd09",
+        "reference_audio.wav": "f55f2393462e2c82eb34942eea73afa99087be4bd6e3e207820932482fe091f1",
+        "reference_audio.mid": "7ae2dad6fbbaf98d0514a52dc6fc49e9e7c9d466fc632a9a195cde89a36b9a9b",
+        "verified_score.musicxml": "e2435546a39bfef7583499e2555dccc729d0faf0803c9c52b11aaab0697e999c",
+        "metadata.json": "244273c1bcc8f750a220527cc882d1bddbf69cb12f2bed8086ff15458e3d1b83"
+      },
+      "score_event_count": 91,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_26306.json",
+      "muscriptor_prediction_sha256": "1fd08ac9926135037602a417c3ca3be412b169540b89b9a791d9700aba476a56"
+    },
+    {
+      "sample": "synth_WeberITAV_27392",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_27392",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "b059da886b24cc7bff88c46c393a3a9fbb712f0008a1baabd3a824236aa52a11",
+        "reference_audio.wav": "606d7b1a93d1d401fdaf8917686f59f41290fede2e022cd956d86d624ed18ac6",
+        "reference_audio.mid": "9ea46d0d173072c499670967ac2fcf5faecaaafc3f2bef1c5bd030d2e5dbdabf",
+        "verified_score.musicxml": "e92670e92bdea4ecfb5da2cce4f974da8e226f25dfe1371e519ce38b7289468e",
+        "metadata.json": "efbc4887fe14a76b29df8847905de45574727ea1744faef686cc8b3de3e2f72f"
+      },
+      "score_event_count": 68,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_27392.json",
+      "muscriptor_prediction_sha256": "277d6aca5a456d91e06e20f89414e28fb738a534a1aae074920bd46c5ed72733"
+    },
+    {
+      "sample": "synth_WeberITAV_27732",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_27732",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "3352b9ad60f4b7af41e5cef3971c6d1ee7c3abca6c92df6639c4a2d5beeea224",
+        "reference_audio.wav": "8fea32ffa8e9b3c09973add585b3952c3282ac24929f722b4618c059558f4925",
+        "reference_audio.mid": "8c418488d1024439265367beaf029db30aaa4552c85f4d6780851c4635504220",
+        "verified_score.musicxml": "f631ef468138d617665681d6d9a5c7875a37c8f2cf503df567c7c76e80984263",
+        "metadata.json": "82695bc1c208c185de6a92dc35f7bbf573005964db74dbf660a8a445ccbfc220"
+      },
+      "score_event_count": 80,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_27732.json",
+      "muscriptor_prediction_sha256": "c93c7f8754d43a908dce620577b153ad5dfbf796424be1530257a89b9dff69db"
+    },
+    {
+      "sample": "synth_WeberITAV_27858",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_27858",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "e6014983a9d3617f673f91c238479e749103119850339e9bdd346e937767967e",
+        "reference_audio.wav": "238ef3d50c9c2b0eabcb601c22abccf989a76e173673cec93974193b6815cd5d",
+        "reference_audio.mid": "f4e98d79b74f5319947e123b44dd6179322a145a4c3b1082dff81c97c7972838",
+        "verified_score.musicxml": "8c58935cce23701e518d3a3fc7732efcd4ca91b17d331f1b66d418b61f3bc0eb",
+        "metadata.json": "ac5bc6072b6a9a08a8b15773077727730c8cc1e6539f9634f5ff33e63110e20e"
+      },
+      "score_event_count": 81,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_27858.json",
+      "muscriptor_prediction_sha256": "fac80b84fa012685a8b0fa4b59de5f4405afd8de98bc1b2c0bea706ab103446a"
+    },
+    {
+      "sample": "synth_WeberITAV_28580",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_28580",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "da6dcdddb3828790ffe234f9fa0401cbf6ffc2d65d4ff4352b473638cc689c98",
+        "reference_audio.wav": "380e1e561a7032c4b224dc4cf274360ef6efc440718624fbe7c54f18dec43c65",
+        "reference_audio.mid": "13978fb81d33f7a84afbe8b556869cc20e6063c3e5699162ac46891d022785d1",
+        "verified_score.musicxml": "233b9950dc4128953b8cdd5bede9cbb37c77956176f89e93e578a1eff04bfad2",
+        "metadata.json": "6bfd75e07226268c037da45ac7c819e6947b8c95623214a179ee3cf04a8b0a75"
+      },
+      "score_event_count": 155,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_28580.json",
+      "muscriptor_prediction_sha256": "ccfdbad5e8401302182f234c5320c6f027de9d172bce9e1e02ec961faf51db97"
+    },
+    {
+      "sample": "synth_WeberITAV_28720",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_28720",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "96414436b8bd802bc590811110151079c55db822a1fc872deaaec399d425eec5",
+        "reference_audio.wav": "709c3792b8d3e3a9d66db3cf596f6645cf53ab6dcd372ba5f918f3eb3158d070",
+        "reference_audio.mid": "801a0a094653b1bdf9d056be10606d480c8232d0539fdb05b5e0d82186c3b44b",
+        "verified_score.musicxml": "706488578ef2e4e37838426ffecece2358b81674c4b89241d084bdc110a13e52",
+        "metadata.json": "b43b863c720b25933d23296322bff030fef3ea9d638648423f1e4d91d93c8cf2"
+      },
+      "score_event_count": 45,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_28720.json",
+      "muscriptor_prediction_sha256": "54e7be26de30429154b19646203c72401a2962dac573b093b0b7ef797448e41b"
+    },
+    {
+      "sample": "synth_WeberITAV_29891",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_WeberITAV_29891",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "a79ff89df7a1066e9ee5dfdf9b55c4576b8ad6ce0f7fed441e6fcd43968b258c",
+        "reference_audio.wav": "5a7b569a6d6f5da914c6ed90a9d00784057a7e9e7cd499ca053bcd6caa69201f",
+        "reference_audio.mid": "214ae735cdda50e04c9c1efa5373f5eb9c99c813fb37a82bc1056c39095f1c9b",
+        "verified_score.musicxml": "e4fe8aecc7c342de6d60cc5668837dbcb05609145b0d35292f40811c9d0a6337",
+        "metadata.json": "b67efbdf2b98923fd4bad46b96a20a860fcc68dd580995ad4101fe9cdfdbd294"
+      },
+      "score_event_count": 31,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_WeberITAV_29891.json",
+      "muscriptor_prediction_sha256": "a79b73e207fbe555d82cfaa8234af1d4a6785d85ca5984fc8ccf110e5521fcb2"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_25358",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_25358",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "682e43a09f35551ba2b702ef665d317c9b944c820a17e2d547163d0b116383fe",
+        "reference_audio.wav": "86462b4d5ce44436cad45a7158073f71e2a8679c0d466670965958d687e57469",
+        "reference_audio.mid": "6fcbd8f6b526241827ce81aaa9a0b9c4e39b576bee3d372ce12f53f945335d29",
+        "verified_score.musicxml": "3e632b177af81b3c14e546677ac1d9730f6247b325115544f454b3bd409ba3c5",
+        "metadata.json": "cac95a2ea81a77c3cc7f133b7f7cca00d130875580e52a80e8b0f0c047df74b9"
+      },
+      "score_event_count": 60,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_25358.json",
+      "muscriptor_prediction_sha256": "ca000b395f6f171f69c32c3c59677ae50197650f28eeeef9305165989e02bb4d"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_25796",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_25796",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "1be764d079032ac6550f9446a2b097e5804eb4812a6c49c1f9df9fc76432a6b8",
+        "reference_audio.wav": "a7d0420a6683c72095d40aaaba14342d7079d6e7fa93b66bb41b6bcd1e12f5a1",
+        "reference_audio.mid": "751f61e6c504453590dc923340a6fc367b848e0e5484348f013c9002074f4d61",
+        "verified_score.musicxml": "b3f70eaa83336d23bafeef8f6331cb677a8b6dbcb4e6038f238aba12c005f713",
+        "metadata.json": "79ae0f8f91f48c72c8a7cb5946a0a52fb1e76b58596c8b2e313ac273d3da8800"
+      },
+      "score_event_count": 53,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_25796.json",
+      "muscriptor_prediction_sha256": "6b38fc80e8d1ef471c086feb90bdc6fa8e2de132c83b347e25e950ff579c8920"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_27117",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_27117",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "131932a1deccf33fe70e1f0354d8b9654e51471176ab7599f7e737218b1f9a96",
+        "reference_audio.wav": "a0cc684c0040a7d9457bcabb80adc9f931d870a455044b9d11c72159cf1a97fb",
+        "reference_audio.mid": "ffef8e0394f53daf165c37dd4285d152aee91d915a6fb7a7e191558de0ad8094",
+        "verified_score.musicxml": "7ce7d614dc23133535e07123e4e2d9550778997c4e5c443b9b9752f9f6a36ab7",
+        "metadata.json": "21807ed6cdf956607457796dfd56d055b3553545c85caccce5bd3a9046a76eb5"
+      },
+      "score_event_count": 72,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_27117.json",
+      "muscriptor_prediction_sha256": "98024a58a8fca9a1c73a8d9bc288063548e9576c79b678a2e9a4cd57da68cc7f"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_27163",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_27163",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "ae69d5ec0b0f8ab0650ac9d58a41ed83716d6ff089e5f5cfd4d7389dca8044eb",
+        "reference_audio.wav": "4b18bc588be5b737124e544c3a9f1a50e633d1d89d226f3737d95b8027af9382",
+        "reference_audio.mid": "131435af0f713d34a64a86a819c0886843b3ed86fb68aa13b93c6cbefee8942c",
+        "verified_score.musicxml": "8234a178490b8a6ccc123a99556a0d6a4029619a186043edbc7fe5c26ec13218",
+        "metadata.json": "1c5f3a7ce716ef1f3f36c52b80d388a86322a163aac66f6ed0bfc741b93a0ead"
+      },
+      "score_event_count": 78,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_27163.json",
+      "muscriptor_prediction_sha256": "3441dc3eaa702e880ee6625aee210bd0a163e6f3d556ed7c68f49672bb39d664"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_27212",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_27212",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "1dfec57747a9e0560f9efdfd3b6ceb34eb6c91c6717ebb14d03e13da7c616d5f",
+        "reference_audio.wav": "d4d081b68a38a3b4b6033fb69568b4832452bdac4366e93f3add44961dd33c7c",
+        "reference_audio.mid": "781b35e0ecce57603503d322c78a29127360071a13eaf7795d3cb67932414498",
+        "verified_score.musicxml": "be0e940c7bc31c99cbe073031bc82a6acce10ad25a9b3a28095c4ec246bda1ce",
+        "metadata.json": "743cdf1289edb97c09f1bbdab7cc5410d56acbf316d581f6bf3b9206260264ee"
+      },
+      "score_event_count": 56,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_27212.json",
+      "muscriptor_prediction_sha256": "17eeee106329b4e73e8132f2b37656dfd2d2b559d6e20104562a3f5e00c8ba92"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_27587",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_27587",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "57815adf3b875a14929dcb700aeadd038ca03b307596694a32e14c9eb6f05c28",
+        "reference_audio.wav": "8b7dd613c481b26450e9541aa9a1bc026b6ad81004bf2105c36f48e1f419987f",
+        "reference_audio.mid": "63d02947e5e1dec0705b47f1b0fbd60864b9e59101df4e4e66ad4b56dd1e9d07",
+        "verified_score.musicxml": "ce70c88c983243f2ae39926ef084e4ce72af7e5dd6a76be265ad4c2896b75bb3",
+        "metadata.json": "3c859427f652616185753cdb6292e4cd443f8428ebcaff2b9769da60b03934af"
+      },
+      "score_event_count": 70,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_27587.json",
+      "muscriptor_prediction_sha256": "e060420582a35ff8401d8b846e33d3731ae62ec202d91767ecc971bb1c7612c1"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_28844",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_28844",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "91cdb9013bb5745a6f6f6211dfdb64cab1e96711654e78bf4ebf33cc54a94d5c",
+        "reference_audio.wav": "ab9b7214c3fa6e0944352bf00c8df25dbd0f4f53b13e320d4990a8859a183115",
+        "reference_audio.mid": "f6ebb3dc3f8cf27dbfc2e9f398e788a9e44cebde3c489ee3b2a532dcb1c0c851",
+        "verified_score.musicxml": "8248a3e26f985bb745a5d967304bea0552a4a2a6e251cb5a1dad53e14c015fe8",
+        "metadata.json": "7948984b8840e998399293c4a31da153659c5ec36750f2bfe647948e67f59b80"
+      },
+      "score_event_count": 79,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_28844.json",
+      "muscriptor_prediction_sha256": "1cab99ef403c6d2fd81da208c3c7e58c6f6cfc048518a56fb2250dcf1a6dcc80"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_29089",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_29089",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "79158b840178ee647f50d18fd3682e183be5050fb5843b6d931cf7d8c3aa80cb",
+        "reference_audio.wav": "25c5e04c4cf9a666b78dcbe2ffc6d8b85c3206f8869ea49aa82250fca16edbcb",
+        "reference_audio.mid": "fb8e6bfb6245dd98b4e4622a6ebe11a97c8747145de4b0b4881f856d77e4ac73",
+        "verified_score.musicxml": "445d09c5d330283b46663e096f2de616cf5431f12b573fc955c603362e96305f",
+        "metadata.json": "67b5d568ce1222d201c3ee9cee250d9d8aa44b803c03dacdee97cdfab191ec6a"
+      },
+      "score_event_count": 86,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_29089.json",
+      "muscriptor_prediction_sha256": "c783820d8a23ce5630b41f43c27f4bddc4bb20e4c334182906e6d5b8b0bced85"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_29358",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_29358",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "fb9cb406cb79b0c4be954fc323c167c9d7eb11362931a9660ac80775a602d9d4",
+        "reference_audio.wav": "e6bf252a2e604df0bec1a5beff751748e14544a6af1a56506d4d750529ee5f04",
+        "reference_audio.mid": "08b15a1d59fa2d3a9ea3477c49375ddf64f515b3d2d1df71bb91eecde4baf694",
+        "verified_score.musicxml": "d89f1bdc1805a03e1e6179657aba5e1ad7e845d75b10f039ef4504e94a7717d5",
+        "metadata.json": "bceca8ed9f1baebea0f6f9614595fc9c3296b66011699d24785ef82ab227885f"
+      },
+      "score_event_count": 18,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_29358.json",
+      "muscriptor_prediction_sha256": "68e8421561ff3ea73b17be442420dfc82823e9871f1b59f14304168966bb56f5"
+    },
+    {
+      "sample": "synth_a-cruel-angels-thesis-clarinet_30040",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_a-cruel-angels-thesis-clarinet_30040",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "4cf7176b7d1356f2852cef8b5b86174e9a9c6c97363676494043588b589c44a9",
+        "reference_audio.wav": "453faa99629364cb2b2aabd6f0083cb42f09f391e0c1e649236cadf20888d937",
+        "reference_audio.mid": "6b2cefe1ff546f2b24a66b1d3da4b98353859a25b04756ba94501ba8acc4a262",
+        "verified_score.musicxml": "d67543de8fc9fcd010896be0778bc7e8c2433a42bb2c4bccaeddf816ccc87922",
+        "metadata.json": "dbb38d50d39491183b52978291a4cced7ec4d5249bc72df35050ccad1c85f153"
+      },
+      "score_event_count": 47,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_a-cruel-angels-thesis-clarinet_30040.json",
+      "muscriptor_prediction_sha256": "3fd99b763e7435e18a06f311a0d16748c0166766369040fb3ece6ef8d088a5be"
+    },
+    {
+      "sample": "synth_gen_20432",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_20432",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "f16a24a7077296caaa66e5341fe82085775c5e6d1cee4feb9c88c45e66b697d5",
+        "reference_audio.wav": "1ef9c0580969f81a8cc225a5312b77f2a3d6de172a6941e3454330c4a8448788",
+        "reference_audio.mid": "bb3b60bbe094936fe27cd8d772912d17691f0d05e5e02435cc37787c8d10901f",
+        "verified_score.musicxml": "5f2d13db4148d090b28e50915aa5ac0bf5f8badc8cd2e421f58db8c3ac3eeb3e",
+        "metadata.json": "f41227cf8218dea412d695f39feb15c465d2a42001ccd3ce3ce2b8b87959aae2"
+      },
+      "score_event_count": 46,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_20432.json",
+      "muscriptor_prediction_sha256": "d076e7f38eb95d11ac9b04496108a4b5eff8b2ad900ac914b3c592c04f6c1854"
+    },
+    {
+      "sample": "synth_gen_20435",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_20435",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "76be3afcd0116eb89c8332dc32a96cce544ecad116655ea2d1f6516ec90c362c",
+        "reference_audio.wav": "f01084c279024371bddab17f4d62262ffcd92c7cabddf577baf92d34485fcb79",
+        "reference_audio.mid": "56524adff26e27cb178264b7fbe9818c881b4fab9adaf02930c2bd8bdca7c882",
+        "verified_score.musicxml": "ad92ba9e3b9027b3c419c09443d73c76ba1f9b8364bdc29eca72b924857a517d",
+        "metadata.json": "ed958f4bcc4bdc246affd676003e1ea789832197fe74f5529cc466cc17b97184"
+      },
+      "score_event_count": 85,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_20435.json",
+      "muscriptor_prediction_sha256": "488e230a3912b8c2da146a553d498846b4b96eb1bb7f813f33dad3d619e4ef84"
+    },
+    {
+      "sample": "synth_gen_21179",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_21179",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "d8ddde16edcf53485e663171ba42bf711f0252840299a457a8174680819ef331",
+        "reference_audio.wav": "3bfbc4c32b4471e9cce86d84296bd19b7bd80330a88f7318bc359061e7a35957",
+        "reference_audio.mid": "a9193cbcf9cfdad296dad1d81d62ec7a6c2bc1063529f22957392bea29f79eca",
+        "verified_score.musicxml": "a9d606962d64fded0b162215bf4e3836f595a9d85d23a59f514f7558fcb56afa",
+        "metadata.json": "eae18a18c9d7fd0bb5caf2e19bbd4679efad0bf3752de3ac90bd340dfeb7ad40"
+      },
+      "score_event_count": 55,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_21179.json",
+      "muscriptor_prediction_sha256": "b2bd0041d392067ea26c66326ab75f57a812678f7463e88bfd012d8d6ab47d1d"
+    },
+    {
+      "sample": "synth_gen_22820",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_22820",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "996bc99d597e49679c4a4bb95ce17e55c7b9a4d3c6e97c48907a7b8551b8d5ec",
+        "reference_audio.wav": "06fcd15886260750b35cf35cbc686a66b301c5817ef69ea43f316eef3e6d4fab",
+        "reference_audio.mid": "5e3fe1f0d7580c48067feb86b81d7746a2f7e891058d5cff196cfe7d829f1450",
+        "verified_score.musicxml": "0671355cdde64a2e7b493c2e760688a937848ed71fa8d3935d67c4ae64dde5e5",
+        "metadata.json": "4104b66d4e4b8b95a8ca4c9a1c4616b7f1e26234900976555b086673e53fcad4"
+      },
+      "score_event_count": 138,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_22820.json",
+      "muscriptor_prediction_sha256": "bbbea79fd909313fa7497f5b9f8d6a1a25218624ad21268e3dcaa918313c255e"
+    },
+    {
+      "sample": "synth_gen_23216",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_23216",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "0f57c282fde8d4f9fdc23bb71a8854ac4decfd3657ae74f47c403e18e8968725",
+        "reference_audio.wav": "7923693ace6d46305a678dfeefde64a2b5b5f3e4f537bdb6ad163d6d284ad066",
+        "reference_audio.mid": "4ddeda8968371f627f7340241c6247ad1b050fc2b956fadf77b94da8ec329cdf",
+        "verified_score.musicxml": "d567cfb8be4806471c8c357895f9bbf47d758d3a02c8ee9b7044517aeee86389",
+        "metadata.json": "a6cf8492113e582aa87902b4c20de2308ce42043be020ae7400d5b0c55ac1c9a"
+      },
+      "score_event_count": 141,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_23216.json",
+      "muscriptor_prediction_sha256": "db9a44f4993e83f7ce60cf005352d251e15b8cd42c68b6f0f282f23721989af4"
+    },
+    {
+      "sample": "synth_gen_23347",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_23347",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "617fc6e15d8e8f2362a7f0760bf969dd61965dfdc92fe0d0aaeaeadb23f4b693",
+        "reference_audio.wav": "927a8f04fa57bac4a53f1f0ac7bdb3c1e848409f990be82d011f0bad9b918b09",
+        "reference_audio.mid": "e14a86fea2bc8a6d24f0d2ea891215269067c738180705309891eee18084afc8",
+        "verified_score.musicxml": "dea7be467c42e89009e68c35fbf36de781c1e86cda8e7f5902061a0d716ae62b",
+        "metadata.json": "9e0aeee45ff2791efe91d6613ab9d114e0b42565880398165d76cddc8a4dc9f7"
+      },
+      "score_event_count": 37,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_23347.json",
+      "muscriptor_prediction_sha256": "d9c4afda3e51550761c65ffc106686317ea184e0464a64db0dc8d898325a9024"
+    },
+    {
+      "sample": "synth_gen_23873",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_23873",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "6d670d6a02f9ae99d664a41301e9524af27a232bacba87edeac465c58d227b54",
+        "reference_audio.wav": "049b58824c8bce139f7972324934927dba515cb555814e124145730ec8c01f7d",
+        "reference_audio.mid": "c0881654d40f88ad21528b51abc2f6390beb809f10658715a6cb30735f47c35f",
+        "verified_score.musicxml": "3810389ce5fbb66960a20fdc3ebdd7941596b2b138b4b3c856e3cb1fdcfe510b",
+        "metadata.json": "21655991669f24dcbf45c317195d0df6bf550c071167a9ff5d19c54759a3587c"
+      },
+      "score_event_count": 30,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_23873.json",
+      "muscriptor_prediction_sha256": "72c50994fff92bbb661f221f66abd2963230cc2c030b59e0f5c28b6673027a48"
+    },
+    {
+      "sample": "synth_gen_24798",
+      "path": "E:\\ALIGN_Data\\outputRaw_realistic_10k\\synth_gen_24798",
+      "written_shift": 2,
+      "hashes": {
+        "performance_audio.wav": "5577ba0240386080dc483dda2f7d86fec7844754132fc0b9374165fedbb29d15",
+        "reference_audio.wav": "68491bb1879057751281a71a6ecabd4d0001f324689df0aafbfcb8f382db90f8",
+        "reference_audio.mid": "1bccc015c5388b3eeeac7d849b221f095e2b3f5f2747200e4195520ae6f8b32b",
+        "verified_score.musicxml": "76bfbb8ed1c45327a307b4063d22408a1a3b24a91f274b1de499362c9b6bd3eb",
+        "metadata.json": "285d4bbb71b20f5761daf4104eada12e3331d681ac10db903c88987621b115cc"
+      },
+      "score_event_count": 127,
+      "muscriptor_prediction": "D:\\stuff\\Audio Evaluation\\ALIGN\\reports\\muscriptor_synthetic_20261024\\predictions\\realistic92\\synth_gen_24798.json",
+      "muscriptor_prediction_sha256": "2c50ae5027c80703d0738964046227f1f869933c68e1c17594616c049e574e23"
+    }
+  ]
+}

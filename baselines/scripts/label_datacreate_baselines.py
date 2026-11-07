@@ -308,4 +308,7 @@ def main(argv: Sequence[str] | None = None) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    # Keep this module's v1 functions stable for frozen experiment imports.
+    # All new command-line exports default to the adopted policy 3.
+    from label_datacreate_baselines_v3 import main as current_main
+    current_main()

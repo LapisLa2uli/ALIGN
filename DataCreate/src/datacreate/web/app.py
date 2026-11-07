@@ -16,6 +16,7 @@ from pydantic import BaseModel
 
 from datacreate.batch_audio import list_available_audio_ids, run_batch_range
 from datacreate.config import PipelineConfig
+from datacreate.transcriber_selection import Transcriber, selected_config, sample_config
 from datacreate.models import LabelsDocument
 from datacreate.melody import match_note_wise_labels_detail
 from datacreate.note_alignment import build_note_alignment, build_score_events
@@ -74,6 +75,10 @@ class ScoreSegmentPayload(BaseModel):
 class PerformanceTrimPayload(BaseModel):
     trim_start: float
     trim_end: float | None = None
+
+
+class RealignPayload(BaseModel):
+    transcriber: Transcriber | None = None
 
 
 class BatchRangePayload(BaseModel):
@@ -256,6 +261,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             "taxonomy": config.taxonomy,
             "schema_version": config.schema_version,
             "has_alignment": align_path.exists(),
+            "transcriber": sample_config(sample_dir, config).alignment['transcriber'],
             "labels": labels.get("labels", []),
             "self_reported": labels.get("self_reported", []),
             "annotator_id": labels.get("annotator_id"),
@@ -339,7 +345,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
                 sample_dir,
                 payload.start_measure,
                 payload.end_measure,
-                config,
+                sample_config(sample_dir, config),
                 logger,
                 start_beat=payload.start_beat,
                 end_beat=payload.end_beat,
@@ -369,7 +375,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         logger = setup_sample_logger(sample_dir, name="prep")
         try:
             if not (sample_dir / "note_alignment_v2.json").exists():
-                reprocess_alignment(sample_dir, config, logger)
+                reprocess_alignment(sample_dir, sample_config(sample_dir, config), logger)
             return build_note_alignment(sample_dir, logger)
         except FileNotFoundError as exc:
             raise HTTPException(404, str(exc)) from exc
@@ -377,13 +383,14 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
             raise HTTPException(500, str(exc)) from exc
 
     @app.post("/api/samples/{sample_id}/re-align")
-    def realign_sample(sample_id: str) -> dict[str, Any]:
+    def realign_sample(sample_id: str, payload: RealignPayload | None = None) -> dict[str, Any]:
         sample_dir = samples_root / sample_id
         if not sample_dir.exists():
             raise HTTPException(404, "Sample not found")
         logger = setup_sample_logger(sample_dir, name="prep")
         try:
-            info = reprocess_alignment(sample_dir, config, logger)
+            request_config = selected_config(config, payload.transcriber) if payload and payload.transcriber else sample_config(sample_dir, config)
+            info = reprocess_alignment(sample_dir, request_config, logger)
         except (FileNotFoundError, ValueError, RuntimeError) as exc:
             raise HTTPException(400, str(exc)) from exc
         return {"status": "ok", **info}
@@ -404,7 +411,7 @@ def create_app(config: PipelineConfig | None = None) -> FastAPI:
         try:
             from datacreate.align_bridge import ensure_current_model_feedback
 
-            regenerated = ensure_current_model_feedback(sample_dir, config, logger)
+            regenerated = ensure_current_model_feedback(sample_dir, sample_config(sample_dir, config), logger)
             info = relabel_sample_from_current_alignment(
                 sample_dir, maximum_per_type=MAX_LABELS_PER_TYPE
             )

@@ -1,0 +1,28 @@
+{
+  "metric": "Micro pitch-sequence LCS F1",
+  "clips": 100,
+  "reference_notes": 11710,
+  "bootstrap_unit": "clip",
+  "bootstrap_replicates": 2000,
+  "seed": 20261024,
+  "method": "Paired clip resampling; percentile 2.5% and 97.5%; micro-F1 recomputed each replicate",
+  "caveat": "Timing ignored; clip interval does not estimate generalization across source scores",
+  "models": [
+    {
+      "model": "MuScriptor medium",
+      "f1": 0.8821840312004458,
+      "ci95": [
+        0.8448056263796766,
+        0.9132644310620415
+      ]
+    },
+    {
+      "model": "ALIGN CTC R2A",
+      "f1": 0.9689083569526754,
+      "ci95": [
+        0.9640156134913186,
+        0.9736716564646523
+      ]
+    }
+  ]
+}

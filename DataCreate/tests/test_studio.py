@@ -77,6 +77,36 @@ def submit(client, audio=None, score_id="piece.musicxml"):
     return client.post("/api/studio/takes", files={"audio": ("take.wav", wav_bytes() if audio is None else audio, "audio/wav")}, data={"score_id": score_id})
 
 
+@pytest.mark.parametrize('keyed', [False, True])
+def test_transcriber_is_frozen_per_take_and_sent_to_pipeline(harness, monkeypatch, keyed):
+    client, calls, config, _ = harness
+    original = studio.make_pipeline
+    selected = []
+    def pipeline(request_config):
+        selected.append(request_config.alignment['transcriber'])
+        return original(request_config)
+    monkeypatch.setattr(studio, 'make_pipeline', pipeline)
+    headers = {'Idempotency-Key': 'transcriber-choice'} if keyed else {}
+    def send(choice):
+        return client.post('/api/studio/takes', headers=headers,
+            files={'audio': ('take.wav', wav_bytes(), 'audio/wav')},
+            data={'score_id': 'piece.musicxml', 'transcriber': choice})
+    response = send('muscriptor')
+    assert response.status_code == 202
+    status = client.get('/api/studio/takes/' + response.json()['id']).json()
+    assert status['transcriber'] == 'muscriptor'
+    assert selected == ['muscriptor']
+    assert 'transcriber' not in config.alignment
+    if keyed:
+        assert send('muscriptor').status_code == 200
+        assert send('align').status_code == 409
+        assert selected == ['muscriptor']
+    else:
+        assert send('align').status_code == 202
+        assert selected == ['muscriptor', 'align']
+    assert send('invalid').status_code == 422
+
+
 def test_dedicated_upload_page(harness):
     client, _, _, _ = harness
     page = client.get('/upload')
@@ -168,7 +198,7 @@ def test_upload_preview_reuses_video_for_same_pcm_and_score(preview_takes):
     assert 'preview_video_url' not in state
 
 
-@pytest.mark.parametrize('change', ['audio', 'score', 'full_score', 'segment',
+@pytest.mark.parametrize('change', ['audio', 'score', 'full_score', 'segment', 'transcriber',
                                   'failed', 'uncertain', 'missing', 'empty', 'corrupt'])
 def test_upload_preview_rejects_unrelated_or_unavailable_video(preview_takes, change):
     client, jobs, current, previous = preview_takes
@@ -182,6 +212,8 @@ def test_upload_preview_rejects_unrelated_or_unavailable_video(preview_takes, ch
         (sample / 'full_score.musicxml').write_text('<different-full-score/>')
     elif change == 'segment':
         (sample / 'metadata.json').write_text('{"score_segment":{"start_measure":12}}')
+    elif change == 'transcriber':
+        jobs.save(previous, transcriber='muscriptor')
     elif change == 'failed':
         jobs.save(previous, status='failed')
     elif change == 'uncertain':

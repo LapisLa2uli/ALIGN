@@ -1,5 +1,7 @@
 # 真实录音 baseline F1 与使用流程
 
+> 以下记录保留历史实验的时间戳评估流程。新的 DataCreate 标签导出默认使用第三种策略：借助已有 MuScriptor 转录及 ALIGN 对齐，将错误标签定位到参考谱音符。新评估请遵循 [policy 3 工作流与评分约定](LABEL_ALIGNMENT_POLICY.md)，以准确的谱面音符身份和错误类型为主要标准。
+
 当前结果来自 2026-09-18 修复后从头训练的 Polytune 和 prompted LadderSym。
 入口是 `experiments/baselines_retrain_20260918/`。两个 best checkpoint 均选自第
 30 epoch，选择依据是固定 32 条**合成验证录音**的 class-aware note F1，真实集不参与选模。

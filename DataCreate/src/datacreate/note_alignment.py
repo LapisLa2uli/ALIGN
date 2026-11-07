@@ -897,6 +897,7 @@ def build_note_alignment(sample_dir: Path, logger: logging.Logger | None = None)
             "note_mapping": mapping,
             "unassessed_score_event_indices": list(payload.get("unassessed_score_event_indices") or []),
             "feedback_review": feedback_review(payload, sample_dir),
+            "transcriber": (payload.get('provenance') or {}).get('transcriber', 'align'),
             "summary": summary,
         }
     align_path = sample_dir / "alignment.npz"

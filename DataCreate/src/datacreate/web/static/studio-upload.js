@@ -31,6 +31,7 @@ async function request(url, options) {
 async function settings() {
   try {
     const config = await request('/api/studio/config');
+    $('transcriber-select').value = config.transcriber || 'align';
     ready = config.ready; maxSeconds = config.max_seconds;
     $('upload-readiness').textContent = config.message;
     $('score-choice').replaceChildren(new Option('Choose a score', ''), ...config.scores.map(s => new Option(s.name, s.id)));
@@ -91,6 +92,7 @@ $('upload-form').addEventListener('submit', async event => {
     catch { throw new Error('This file could not be opened as audio. Try WAV or MP3.'); }
     const wav = uploadedAudioWav(decoded, maxSeconds);
     const form = new FormData(); form.append('audio', wav, 'recording.wav');
+    form.append('transcriber', $('transcriber-select').value);
     if (score) form.append('score', score); else form.append('score_id', scoreId);
     view.waiting('Uploading your recording and score…');
     const job = await request('/api/studio/takes', {method: 'POST', body: form});

@@ -1,0 +1,15 @@
+{
+  "reason": "PolyTune upstream ignores use_cache and recomputes the entire decoder prefix; enable its existing KV cache and absolute position offsets.",
+  "scope": "Inference runtime only. Training, data, checkpoint selection, token budget, float32 precision, labels, and scoring unchanged.",
+  "before_any_test_generation": true,
+  "source_sha256": {
+    "cached_decode.py": "dc4e9a5196425567bf307617f97313787a49fba1dce7622e005bce46604ceb05",
+    "engine_cached.py": "79d5bd1e756182dc6a65b7b529b644c9c72bb5ad581d8b07ede5c3a1e07906a7",
+    "run_campaign_cached.py": "2135118514740db5f0723bd9c5755ce4b741481fc0417de4765a2ee5d1c3766c",
+    "verify_cached_decode.py": "9069eb6ccb3ff44d4c63dad3a80c06360bc0517c4dbf034d9386147410583878"
+  },
+  "parity_report_sha256": "428ebf8cc41b9e67498a51de8cb1d747182134ace0c995c81d17e654f5a1b97c",
+  "checked_windows": 287,
+  "all_checked_tokens_identical": true,
+  "original_protocol_sha256": "e39ca7a795cf8a67ca2f9a34e5db4df6c5b889266bdf430fd0e55a67c3346437"
+}

@@ -57,7 +57,7 @@ def gui_documents(sample, index, alignment, feedback, *, duration, provenance):
             'note_id':selected[0].note_id,'note_ids':[n.note_id for n in selected],
             'core_note_ids':[n.note_id for n in selected],'pitches':[n.pitch for n in selected],
             'measure_number':selected[0].measure,
-            'comment':'ALIGN v9 experimental: relaxed same-pitch repair; reference-note identity is primary.',
+            'comment':raw.get('comment') or 'ALIGN v9 experimental: relaxed same-pitch repair; reference-note identity is primary.',
             'score_part':{**raw['score_part'],'start_measure':selected[0].measure,'end_measure':selected[-1].measure}}
         if raw.get('repeats_label_range'):
             r=raw['repeats_label_range']

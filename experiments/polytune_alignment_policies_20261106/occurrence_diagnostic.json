@@ -1,0 +1,429 @@
+{
+  "scope": "Post-hoc diagnostic after primary scoring; no threshold selection or alteration of trials",
+  "rule": "Re-match one-to-one requiring exact reference location/type plus strictly positive temporal overlap; no minimum IoU",
+  "results": {
+    "status_quo": {
+      "credit": 0,
+      "predicted": 365,
+      "gold": 76,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "samples": [
+        {
+          "sample": "100",
+          "credit": 0,
+          "predicted": 14,
+          "gold": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "102",
+          "credit": 0,
+          "predicted": 15,
+          "gold": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "103",
+          "credit": 0,
+          "predicted": 10,
+          "gold": 14,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "104",
+          "credit": 0,
+          "predicted": 16,
+          "gold": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "106",
+          "credit": 0,
+          "predicted": 35,
+          "gold": 11,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "107",
+          "credit": 0,
+          "predicted": 21,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "108",
+          "credit": 0,
+          "predicted": 24,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "109",
+          "credit": 0,
+          "predicted": 30,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "110",
+          "credit": 0,
+          "predicted": 31,
+          "gold": 9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "111",
+          "credit": 0,
+          "predicted": 30,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "112",
+          "credit": 0,
+          "predicted": 32,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "113",
+          "credit": 0,
+          "predicted": 36,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "115",
+          "credit": 0,
+          "predicted": 10,
+          "gold": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "116",
+          "credit": 0,
+          "predicted": 27,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "118",
+          "credit": 0,
+          "predicted": 15,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "119",
+          "credit": 0,
+          "predicted": 10,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "120",
+          "credit": 0,
+          "predicted": 9,
+          "gold": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        }
+      ],
+      "matched_fragments_under_20ms": 0
+    },
+    "transcription_lookup": {
+      "credit": 8,
+      "predicted": 365,
+      "gold": 76,
+      "precision": 0.021917808219178082,
+      "recall": 0.10526315789473684,
+      "f1": 0.036281179138321996,
+      "samples": [
+        {
+          "sample": "100",
+          "credit": 0,
+          "predicted": 14,
+          "gold": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "102",
+          "credit": 0,
+          "predicted": 15,
+          "gold": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "103",
+          "credit": 1,
+          "predicted": 10,
+          "gold": 14,
+          "precision": 0.1,
+          "recall": 0.07142857142857142,
+          "f1": 0.08333333333333333,
+          "pairs": [
+            {
+              "prediction_index": 3,
+              "gold_index": 0,
+              "prediction_id": "polytune_0003",
+              "duration": 1.0499999999999998,
+              "iou": 0.5047619047619051
+            }
+          ]
+        },
+        {
+          "sample": "104",
+          "credit": 0,
+          "predicted": 16,
+          "gold": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "106",
+          "credit": 3,
+          "predicted": 35,
+          "gold": 11,
+          "precision": 0.08571428571428572,
+          "recall": 0.2727272727272727,
+          "f1": 0.13043478260869565,
+          "pairs": [
+            {
+              "prediction_index": 3,
+              "gold_index": 0,
+              "prediction_id": "polytune_0003",
+              "duration": 0.31820000000000004,
+              "iou": 0.46206640697458795
+            },
+            {
+              "prediction_index": 6,
+              "gold_index": 4,
+              "prediction_id": "polytune_0006",
+              "duration": 0.009100000000000108,
+              "iou": 0.008666666666666779
+            },
+            {
+              "prediction_index": 7,
+              "gold_index": 5,
+              "prediction_id": "polytune_0007",
+              "duration": 0.4408999999999992,
+              "iou": 0.7309680870030308
+            }
+          ]
+        },
+        {
+          "sample": "107",
+          "credit": 0,
+          "predicted": 21,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "108",
+          "credit": 0,
+          "predicted": 24,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "109",
+          "credit": 0,
+          "predicted": 30,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "110",
+          "credit": 2,
+          "predicted": 31,
+          "gold": 9,
+          "precision": 0.06451612903225806,
+          "recall": 0.2222222222222222,
+          "f1": 0.1,
+          "pairs": [
+            {
+              "prediction_index": 1,
+              "gold_index": 0,
+              "prediction_id": "polytune_0001",
+              "duration": 0.21819999999999995,
+              "iou": 0.5897297297297301
+            },
+            {
+              "prediction_index": 17,
+              "gold_index": 6,
+              "prediction_id": "polytune_0017",
+              "duration": 0.011400000000001853,
+              "iou": 0.04071428571429217
+            }
+          ]
+        },
+        {
+          "sample": "111",
+          "credit": 0,
+          "predicted": 30,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "112",
+          "credit": 0,
+          "predicted": 32,
+          "gold": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "113",
+          "credit": 0,
+          "predicted": 36,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "115",
+          "credit": 0,
+          "predicted": 10,
+          "gold": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "116",
+          "credit": 1,
+          "predicted": 27,
+          "gold": 3,
+          "precision": 0.037037037037037035,
+          "recall": 0.3333333333333333,
+          "f1": 0.06666666666666667,
+          "pairs": [
+            {
+              "prediction_index": 20,
+              "gold_index": 0,
+              "prediction_id": "polytune_0020",
+              "duration": 0.4795000000000016,
+              "iou": 0.3474637681159434
+            }
+          ]
+        },
+        {
+          "sample": "118",
+          "credit": 1,
+          "predicted": 15,
+          "gold": 4,
+          "precision": 0.06666666666666667,
+          "recall": 0.25,
+          "f1": 0.10526315789473684,
+          "pairs": [
+            {
+              "prediction_index": 7,
+              "gold_index": 0,
+              "prediction_id": "polytune_0007",
+              "duration": 0.2591000000000001,
+              "iou": 0.4982692307692314
+            }
+          ]
+        },
+        {
+          "sample": "119",
+          "credit": 0,
+          "predicted": 10,
+          "gold": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        },
+        {
+          "sample": "120",
+          "credit": 0,
+          "predicted": 9,
+          "gold": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pairs": []
+        }
+      ],
+      "matched_fragments_under_20ms": 2
+    }
+  }
+}

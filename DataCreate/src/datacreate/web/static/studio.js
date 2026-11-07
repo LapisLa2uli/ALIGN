@@ -22,6 +22,7 @@ function updateControls() {
   $('live-badge').textContent = mode === 'recording' ? '● RECORDING' : mode === 'processing' ? 'PROCESSING' : recordingBlob ? 'TAKE SAVED' : 'STANDBY';
   $('live-badge').classList.toggle('active', mode === 'recording');
   $('score-select').disabled = busy || mode === 'recording';
+  $('transcriber-select').disabled = busy || mode === 'recording';
   $('score-upload').disabled = busy || mode === 'recording';
   $('choose-audio').disabled = busy || mode === 'recording';
   $('audio-upload').disabled = busy || mode === 'recording';
@@ -157,6 +158,7 @@ async function submit() {
   error(); resetFeedback(); setMode('uploading');
   $('recording-playback').pause();
   const data = new FormData(); data.append('audio', recordingBlob, 'recording.wav');
+  data.append('transcriber', $('transcriber-select').value);
   if ($('score-upload').files[0]) data.append('score', $('score-upload').files[0]);
   else data.append('score_id', $('score-select').value);
   $('job-status').textContent = 'Uploading your take…'; $('empty-feedback').hidden = true;
@@ -298,6 +300,7 @@ function draw(time) {
 requestAnimationFrame(draw);
 try {
   const settings = await request('/api/studio/config');
+  $('transcriber-select').value = settings.transcriber || 'align';
   maxSeconds = settings.max_seconds;
   $('instrument').textContent = settings.instrument; $('service-status').textContent = settings.message;
   settings.scores.forEach(score => { const option = document.createElement('option'); option.value = score.id; option.textContent = score.name; $('score-select').append(option); });
