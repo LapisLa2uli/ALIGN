@@ -1,0 +1,17 @@
+# Disposable smoke-test runs and their generated outputs, not tests/ source.
+runs/**/*smoke*/
+runs/**/*smoke*.json
+
+# Temporary test/profiling output directories.
+runs/**/pytest*/
+runs/**/test-results/
+runs/**/test-output/
+runs/**/tmp/
+runs/**/temp/
+*.prof
+*.lprof
+
+# Rebuildable cache indexes and compiled/exported model artifacts.
+runs/**/cache-index.json
+runs/**/*.keras
+runs/**/saved_model/
